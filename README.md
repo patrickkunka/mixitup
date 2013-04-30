@@ -129,4 +129,4 @@ MixItUp is instantiated on your container in your JavaScript like this:
 
 And we're done!
 
-As long as you use the default selectors in your HTML, MixItUp should run straight out of the box. If you're looking to do something more advanced, see below for all available configuration options.
+As long as you use the default selectors in your HTML, MixItUp should run straight out of the box. If you're looking to do something more advanced, see our the full documentation on [mixitup.io](http://mixitup.io) for all available configuration options.
