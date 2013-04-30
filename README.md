@@ -2,7 +2,7 @@
 
 ### What Is MixItUp?
 
-MixItUp is a light-weight but powerful jQuery plugin that provides beautiful animated filtering and sorting of categorized and ordered content. It plays nice with your existing HTML and CSS, making it a great choice for fluid, responsive layouts. It's perfect for portfolios, galleries, blogs, or any categorized or ordered content! Check out our demos for some inspiration »
+MixItUp is a light-weight but powerful jQuery plugin that provides beautiful animated filtering and sorting of categorized and ordered content. It plays nice with your existing HTML and CSS, making it a great choice for fluid, responsive layouts. It's perfect for portfolios, galleries, blogs, or any categorized or ordered content!
 
 ### How does it work?
 
@@ -18,9 +18,9 @@ In older browsers (such as Internet Explorer 9 and below) that do not support CS
 
 ### How did it begin development?
 
-At Barrel LLC, many of the designs we create for our clients involve pages with responsive grid layouts and filtering between categories. We weren't satisfied with how the existing filtering plugins out there handled percentage-based responsive behavior, and seeing a need for something lighter and more forward-looking, we decided to build our own solution! Check out some other Barrel Tools »
+At Barrel LLC, many of the designs we create for our clients involve pages with responsive grid layouts and filtering between categories. We weren't satisfied with how the existing filtering plugins out there handled percentage-based responsive behavior, and seeing a need for something lighter and more forward-looking, we decided to build our own solution!
 
-### What constitutes 'non-commercial' use?
+### What constitutes "non-commercial" use?
 
 Any project in which you and/or your client are not making profit. MixItUp is currently free to try for everyone, but we will be rolling out one-time commercial licenses soon.
 
@@ -38,23 +38,23 @@ MixItUp can be applied to any type of elements within a container, such as an un
 
 The filtering categories of each target element should be entered into its class attribute (after the targetSelector class if you are using a class):
 
-<ul id="Grid">
-    <li class="mix dogs"></li>
-    <li class="mix cats"></li>
-    <li class="mix krakens"></li>
-    <li class="mix dogs cats"></li>
-    <li ...
-</ul>
+	<ul id="Grid">
+    	<li class="mix dogs"></li>
+    	<li class="mix cats"></li>
+    	<li class="mix krakens"></li>
+    	<li class="mix dogs cats"></li>
+    	<li ...
+	</ul>
 
 Additional alphabetic or numeric HTML5 data attributes for sorting may also be added to your target elements:
 
-<ul id="Grid">
-    <li class="mix dogs" data-name="Abby" data-age="2"></li>
-    <li class="mix cats" data-name="Bucky" data-age="9"></li>
-    <li class="mix dogs" data-name="Francis" data-age="5"></li>
-    <li class="mix krakens" data-name="Kraken" data-age="3987"></li>
-    <li ...
-</ul>
+	<ul id="Grid">
+    	<li class="mix dogs" data-name="Abby" data-age="2"></li>
+    	<li class="mix cats" data-name="Bucky" data-age="9"></li>
+    	<li class="mix dogs" data-name="Francis" data-age="5"></li>
+    	<li class="mix krakens" data-name="Kraken" data-age="3987"></li>
+    	<li ...
+	</ul>
 
 #### Build Your Filter Controls
 
@@ -62,12 +62,12 @@ Filtering happens when filter buttons are clicked. By default MixItUp will apply
 
 These buttons could also be part of an unordered list. The desired filter categories of each filter button should be entered as the "data-filter" attribute. See the 'filterLogic' option for details on how MixItUp handles multiple filters.
 
-<ul>
-    <li class="filter" data-filter="dogs"></li>
-    <li class="filter" data-filter="cats"></li>
-    <li class="filter" data-filter="krakens"></li>
-    <li class="filter" data-filter="dogs cats"></li>
-</ul>
+	<ul>
+	    <li class="filter" data-filter="dogs"></li>
+	    <li class="filter" data-filter="cats"></li>
+	    <li class="filter" data-filter="krakens"></li>
+	    <li class="filter" data-filter="dogs cats"></li>
+	</ul>
 
 Alternatively, elements may be filtered directly via javascript with the 'filter' method.
 
@@ -77,14 +77,14 @@ Sorting happens when sort buttons are clicked. By default MixItUp will apply sor
 
 These buttons could also be part of an unordered list, with the data attribute to sort by entered as the "data-sort" attribute, and the order to sort by entered as the "data-order" attribute:
 
-<ul>
-    <li class="sort" data-sort="data-name" data-order="desc"></li>
-    <li class="sort" data-sort="data-name" data-order="asc"></li>
-    <li class="sort" data-sort="data-age" data-order="desc"></li>
-    <li class="sort" data-sort="data-age" data-order="asc"></li>
-    <li class="sort" data-sort="default" data-order="asc"></li>
-    <li class="sort" data-sort="random"></li>
-</ul>
+	<ul>
+	    <li class="sort" data-sort="data-name" data-order="desc"></li>
+	    <li class="sort" data-sort="data-name" data-order="asc"></li>
+	    <li class="sort" data-sort="data-age" data-order="desc"></li>
+	    <li class="sort" data-sort="data-age" data-order="asc"></li>
+	    <li class="sort" data-sort="default" data-order="asc"></li>
+	    <li class="sort" data-sort="random"></li>
+	</ul>
 
 Sorting by 'default' maintains the order that elements are originally entered into the DOM, and is useful for toggling between descending and ascending order, without sorting by a specific attribute.
 
@@ -100,10 +100,10 @@ If you want to go it alone though, here are some dos and don'ts:
 
 Because MixItUp never interferes the flow, width, or height of your elements, the styling and design is completely up to you. Just be sure to make sure your target elements have the following CSS properties in your stylesheet:
 
-#Grid .mix{
-    opacity: 0;
-    display: none;
-}
+	#Grid .mix{
+	    opacity: 0;
+	    display: none;
+	}
 
 You'll probably want to add these two properties only once you've finished designing your layout and you're ready to instantiate MixItUp - otherwise you won't be able to see your elements!
 
@@ -115,17 +115,17 @@ Avoid applying styles such as position: absolute or float: left/right to your el
 
 MixItUp uses the jQuery JavaScript library. Make sure you have jQuery loaded into your project's head before MixItUp:
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="js/jquery.mixitup.min.js"></script>
-...
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="js/jquery.mixitup.min.js"></script>
+	...
 
 MixItUp is instantiated on your container in your JavaScript like this:
 
-$(function(){
+	$(function(){
      
-    $('#Grid').mixitup();
+	    $('#Grid').mixitup();
      
-});
+	});
 
 And we're done!
 
