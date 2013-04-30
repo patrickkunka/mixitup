@@ -1,0 +1,29 @@
+{
+    "name": "mixitup",
+    "title": "MixItUp",
+    "description": "A CSS3 & jQuery Filter and Sort Plugin",
+    "keywords": [
+        "filter",
+        "sort",
+	"CSS3",
+	"grid",
+	"responsive"
+    ],
+    "version": "1.4.0",
+    "author": {
+        "name": "Patrick Kunka, Barrel NY",
+        "url": "http://www.barrelny.com"
+    },
+    "licenses": [
+        {
+            "type": "CC BY-NC-SA",
+            "url": "http://creativecommons.org/licenses/by-nc-sa/3.0"
+        }
+    ],
+    "homepage": "http://mixitup.io",
+    "docs": "http://mixitup.io",
+    "download": "http://mixitup.io",
+    "dependencies": {
+        "jquery": ">=1.4"
+    }
+}
