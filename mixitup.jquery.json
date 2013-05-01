@@ -16,8 +16,8 @@
     },
     "licenses": [
         {
-            "type": "CC BY-NC-SA",
-            "url": "http://creativecommons.org/licenses/by-nc-sa/3.0"
+            "type": "CC BY-ND",
+            "url": "http://creativecommons.org/licenses/by-nd/3.0/"
         }
     ],
     "homepage": "http://mixitup.io",
