@@ -104,6 +104,8 @@ Because MixItUp never interferes the flow, width, or height of your elements, th
 	    opacity: 0;
 	    display: none;
 	}
+	
+These two styles ensure that there's no FOUC (flash of unstyled content) or showing of hidden target elements before MixItUp instantiates. This way, MixItUp controls the initial loading of your elements, when your page is ready.
 
 You'll probably want to add these two properties only once you've finished designing your layout and you're ready to instantiate MixItUp - otherwise you won't be able to see your elements!
 
