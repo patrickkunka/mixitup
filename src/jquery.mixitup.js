@@ -1,5 +1,5 @@
 /*
-* MIXITUP - A CSS3 & JQuery Filter and Sort Plugin
+* MIXITUP - A CSS3 and JQuery Filter & Sort Plugin
 * Version: 1.4.0
 * Author: Patrick Kunka
 * Copyright 2012-2013 Patrick Kunka, All Rights Reserved
