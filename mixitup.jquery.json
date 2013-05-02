@@ -4,10 +4,11 @@
     "description": "A CSS3 and jQuery Filter & Sort Plugin",
     "keywords": [
         "filter",
-        "sort",
+	"sort",
 	"CSS3",
 	"grid",
-	"responsive"
+	"responsive",
+	"animation"
     ],
     "version": "1.4.0",
     "author": {
