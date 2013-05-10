@@ -1,6 +1,6 @@
 /*
 * MIXITUP - A CSS3 and JQuery Filter & Sort Plugin
-* Version: 1.4.0
+* Version: 1.4.1
 * License: Creative Commons Attribution-NoDerivs 3.0 Unported - CC BY-ND 3.0
 * http://creativecommons.org/licenses/by-nd/3.0/
 * This software may be used freely on commercial and non-commercial projects with attribution to the author/copyright holder.
@@ -1075,9 +1075,9 @@
 		// COMPARE BY ATTRIBUTE
 
 		function compare(a,b) {
-		  if (a.attr(sortby).toLowerCase()*1 < b.attr(sortby).toLowerCase()*1)
+		  if (a.attr(sortby).toLowerCase() < b.attr(sortby).toLowerCase())
 		     return -1;
-		  if (a.attr(sortby).toLowerCase()*1 > b.attr(sortby).toLowerCase()*1)
+		  if (a.attr(sortby).toLowerCase() > b.attr(sortby).toLowerCase())
 		    return 1;
 		  return 0;
 		};
@@ -1086,11 +1086,9 @@
 
 		function rebuild(element){
 			if(order == 'asc'){
-				$sortWrapper.prepend(element).prepend(' \
-				');
+				$sortWrapper.prepend(element).prepend(' ');
 			} else {
-				$sortWrapper.append(element).append(' \
-				');
+				$sortWrapper.append(element).append(' ');
 			};
 		};
 		
@@ -1129,8 +1127,7 @@
 		
 		if(sortby == 'reset'){
 			$.each(config.startOrder,function(){
-				$sortWrapper.append(this).append(' \
-				');
+				$sortWrapper.append(this).append(' ');
 			});
 		} else if(sortby == 'default'){
 			$.each(config.origOrder,function(){
@@ -1141,8 +1138,7 @@
 				config.newOrder = arrayShuffle(config.startOrder);
 			};
 			$.each(config.newOrder,function(){
-				$sortWrapper.append(this).append(' \
-				');
+				$sortWrapper.append(this).append(' ');
 			});	
 		} else if(sortby == 'custom'){
 			$.each(order, function(){
