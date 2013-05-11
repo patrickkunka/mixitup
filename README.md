@@ -92,7 +92,7 @@ Alternatively, elements may be sorted directly via javascript with the 'sort' me
 
 ### CSS
 
-If you're not sure where to begin with your styling, why not use our template included in the MixItUp Demos Bundle »
+If you're not sure where to begin with your styling, check out our boilerplate template and Demos.
 
 If you want to go it alone though, here are some dos and don'ts:
 
