@@ -20,9 +20,9 @@ In older browsers (such as Internet Explorer 9 and below) that do not support CS
 
 At Barrel LLC, many of the designs we create for our clients involve pages with responsive grid layouts and filtering between categories. We weren't satisfied with how the existing filtering plugins out there handled percentage-based responsive behavior, and seeing a need for something lighter and more forward-looking, we decided to build our own solution!
 
-### What constitutes "non-commercial" use?
+### How may I use MixItUp?
 
-Any project in which you and/or your client are not making profit. MixItUp is currently free to try for everyone, but we will be rolling out one-time commercial licenses soon.
+You are free to use MixItUp on any commercial or non-commercial project. Just be sure to keep the license information and attribution in the code.
 
 ## GETTING STARTED
 
