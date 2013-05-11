@@ -1,4 +1,5 @@
-# MixItUp - A CSS3 and jQuery Filter & Sort Plugin
+# MixItUp
+## A CSS3 and jQuery Filter & Sort Plugin
 
 ### What Is MixItUp?
 
