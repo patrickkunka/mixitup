@@ -24,7 +24,7 @@ At Barrel LLC, many of the designs we create for our clients involve pages with 
 
 You are free to use MixItUp on any commercial or non-commercial project. Just be sure to keep the license information and attribution in the code.
 
-## GETTING STARTED
+## Getting Started
 
 For the full documentation and list of configuration options please visit out marketing site at [mixitup.io](http://mixitup.io).
 
