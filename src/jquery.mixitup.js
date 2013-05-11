@@ -1,13 +1,13 @@
 /*
 * MIXITUP - A CSS3 and JQuery Filter & Sort Plugin
-* Version: 1.4.1
+* Version: 1.5
 * License: Creative Commons Attribution-NoDerivs 3.0 Unported - CC BY-ND 3.0
 * http://creativecommons.org/licenses/by-nd/3.0/
 * This software may be used freely on commercial and non-commercial projects with attribution to the author/copyright holder.
 * Author: Patrick Kunka
 * Copyright 2012-2013 Patrick Kunka, Barrel LLC, All Rights Reserved
 * 
-* http://www.mixitup.io
+* http://mixitup.io
 */
 
 (function($){
@@ -42,6 +42,7 @@
 					gridClass : '',
 					transitionSpeed : 600,
 					showOnLoad : 'all',
+					sortOnLoad : false,
 					multiFilter : false,
 					filterLogic : 'or',
 					resizeContainer : true,
@@ -120,6 +121,20 @@
 				$cont.find(config.targetSelector).each(function(){
 					config.origOrder.push($(this));
 				});
+				
+				// PERFORM SORT ON LOAD 
+				
+				if(config.sortOnLoad){
+					var sortby, order;
+					if($.isArray(config.sortOnLoad)){
+						sortby = config.sortOnLoad[0], order = config.sortOnLoad[1];
+						$(config.sortSelector+'[data-sort='+config.sortOnLoad[0]+'][data-order='+config.sortOnLoad[1]+']').addClass('active');
+					} else {
+						$(config.sortSelector+'[data-sort='+config.sortOnLoad+']').addClass('active');
+						sortby = config.sortOnLoad, config.sortOnLoad = 'desc';
+					};
+					sort(sortby, order, $cont, config);
+				};
 				
 				// BUILD TRANSITION AND PERSPECTIVE OBJECTS
 				
@@ -343,11 +358,10 @@
 		filter: function(arg){
 			return this.each(function(){
 				var config = this.config;
-				$(config.filterSelector).removeClass('active');
-				$(config.filterSelector+'[data-filter="'+arg+'"]').addClass('active');
-		
-				if(arg == 'all')arg = 'mix_all';
 				if(!config.mixing){	
+					$(config.filterSelector).removeClass('active');
+					$(config.filterSelector+'[data-filter="'+arg+'"]').addClass('active');
+					if(arg == 'all')arg = 'mix_all';
 					config.filter = arg;
 					goMix(arg, null, null, $(this), config);
 				};
@@ -358,19 +372,74 @@
 	
 		sort: function(args){
 			return this.each(function(){
-				var config = this.config;
-				if($.isArray(args)){
-					var sortby = args[0], order = args[1];
-				} else {
-					var sortby = args, order = 'desc';
-				};
+				var config = this.config,
+					$t = $(this);
 				if(!config.mixing){
-					$(this).find(config.targetSelector).each(function(){
+					$(config.sortSelector).removeClass('active');
+					if($.isArray(args)){
+						var sortby = args[0], order = args[1];
+						$(config.sortSelector+'[data-sort="'+args[0]+'"][data-order="'+args[1]+'"]').addClass('active');
+					} else {
+						$(config.sortSelector+'[data-sort="'+args+'"]').addClass('active');
+						var sortby = args, order = 'desc';
+					};
+					$t.find(config.targetSelector).each(function(){
 						config.startOrder.push($(this));
 					});
 					
-					goMix(config.filter,sortby,order, $(this), config);
+					goMix(config.filter,sortby,order, $t, config);
 				
+				};
+			});
+		},
+		
+		// "MULTIMIX" METHOD
+		
+		multimix: function(args){
+			return this.each(function(){
+				var config = this.config,
+					$t = $(this);
+					multiOut = {
+						filter: config.filter,
+						sort: null,
+						order: 'desc',
+						layoutMode: config.layoutMode
+					};
+				$.extend(multiOut, args);
+				if(!config.mixing){
+					$(config.filterSelector).add(config.sortSelector).removeClass('active');
+					$(config.filterSelector+'[data-filter="'+multiOut.filter+'"]').addClass('active');
+					if(multiOut.filter == 'all')multiOur.filter = 'mix_all';
+					if(typeof multiOut.sort !== 'undefined'){
+						$(config.sortSelector+'[data-sort="'+multiOut.sort+'"][data-order="'+multiOut.order+'"]').addClass('active');
+						$t.find(config.targetSelector).each(function(){
+							config.startOrder.push($(this));
+						});
+					};
+					config.layoutMode = multiOut.layoutMode;
+					goMix(multiOut.filter,multiOut.sort,multiOut.order, $t, config);
+				};
+			});
+		},
+		
+		// "REMIX" METHOD
+		
+		remix: function(arg){
+			return this.each(function(){
+				var config = this.config,
+					$t = $(this);	
+				config.origOrder = [];
+				$t.find(config.targetSelector).each(function(){
+					var $th = $(this);
+					$th.addClass('mix_all'); 
+				    config.origOrder.push($th);
+				});
+				if(!config.mixing && typeof arg !== 'undefined'){
+					$(config.filterSelector).removeClass('active');
+					$(config.filterSelector+'[data-filter="'+arg+'"]').addClass('active');
+					if(arg == 'all')arg = 'mix_all';	
+					config.filter = arg;
+					goMix(arg, null, null, $t, config);
 				};
 			});
 		}
@@ -1075,11 +1144,13 @@
 		// COMPARE BY ATTRIBUTE
 
 		function compare(a,b) {
-		  if (a.attr(sortby).toLowerCase() < b.attr(sortby).toLowerCase())
-		     return -1;
-		  if (a.attr(sortby).toLowerCase() > b.attr(sortby).toLowerCase())
-		    return 1;
-		  return 0;
+			var sortAttrA = isNaN(a.attr(sortby) * 1) ? a.attr(sortby).toLowerCase() : a.attr(sortby) * 1,
+				sortAttrB = isNaN(b.attr(sortby) * 1) ? b.attr(sortby).toLowerCase() : b.attr(sortby) * 1;
+		  	if (sortAttrA < sortAttrB)
+		    	return -1;
+		  	if (sortAttrA > sortAttrB)
+		    	return 1;
+		  	return 0;
 		};
 		
 		// REBUILD DOM
@@ -1145,11 +1216,11 @@
 				rebuild(this);
 			});
 		} else { 
-			
 			// SORT BY ATTRIBUTE
 			
 			if(typeof config.origOrder[0].attr(sortby) === 'undefined'){
 				console.log('No such attribute found. Terminating');
+				return false;
 			};
 			
 			if(!config.newOrder.length){
