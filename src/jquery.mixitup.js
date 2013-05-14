@@ -1,6 +1,6 @@
 /*
 * MIXITUP - A CSS3 and JQuery Filter & Sort Plugin
-* Version: 1.5
+* Version: 1.5.1
 * License: Creative Commons Attribution-NoDerivs 3.0 Unported - CC BY-ND 3.0
 * http://creativecommons.org/licenses/by-nd/3.0/
 * This software may be used freely on commercial and non-commercial projects with attribution to the author/copyright holder.
@@ -417,6 +417,7 @@
 						});
 					};
 					config.layoutMode = multiOut.layoutMode;
+					config.filter = multiOut.filter;
 					goMix(multiOut.filter,multiOut.sort,multiOut.order, $t, config);
 				};
 			});
