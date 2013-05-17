@@ -1,6 +1,6 @@
 /*
 * MIXITUP - A CSS3 and JQuery Filter & Sort Plugin
-* Version: 1.5.1
+* Version: 1.5.2
 * License: Creative Commons Attribution-NoDerivs 3.0 Unported - CC BY-ND 3.0
 * http://creativecommons.org/licenses/by-nd/3.0/
 * This software may be used freely on commercial and non-commercial projects with attribution to the author/copyright holder.
@@ -290,9 +290,6 @@
 						
 							$(config.filterSelector+'[data-filter="'+config.filter+'"]').addClass('active');
 
-							if(config.filter == 'all'){
-								config.filter ='mix_all';
-							};
 						} else {
 						
 							// MULTIPLE ACTIVE BUTTONS
@@ -361,8 +358,6 @@
 				if(!config.mixing){	
 					$(config.filterSelector).removeClass('active');
 					$(config.filterSelector+'[data-filter="'+arg+'"]').addClass('active');
-					if(arg == 'all')arg = 'mix_all';
-					config.filter = arg;
 					goMix(arg, null, null, $(this), config);
 				};
 			});	
@@ -409,7 +404,6 @@
 				if(!config.mixing){
 					$(config.filterSelector).add(config.sortSelector).removeClass('active');
 					$(config.filterSelector+'[data-filter="'+multiOut.filter+'"]').addClass('active');
-					if(multiOut.filter == 'all')multiOur.filter = 'mix_all';
 					if(typeof multiOut.sort !== 'undefined'){
 						$(config.sortSelector+'[data-sort="'+multiOut.sort+'"][data-order="'+multiOut.order+'"]').addClass('active');
 						$t.find(config.targetSelector).each(function(){
@@ -417,14 +411,13 @@
 						});
 					};
 					config.layoutMode = multiOut.layoutMode;
-					config.filter = multiOut.filter;
 					goMix(multiOut.filter,multiOut.sort,multiOut.order, $t, config);
 				};
 			});
 		},
 		
 		// "REMIX" METHOD
-		
+
 		remix: function(arg){
 			return this.each(function(){
 				var config = this.config,
@@ -438,8 +431,6 @@
 				if(!config.mixing && typeof arg !== 'undefined'){
 					$(config.filterSelector).removeClass('active');
 					$(config.filterSelector+'[data-filter="'+arg+'"]').addClass('active');
-					if(arg == 'all')arg = 'mix_all';	
-					config.filter = arg;
 					goMix(arg, null, null, $t, config);
 				};
 			});
@@ -464,6 +455,10 @@
 
 		clearInterval(config.failsafe);
 		config.mixing = true;	
+		
+		// APPLY ARGS TO CONFIG
+		
+		config.filter = filter;
 		
 		// FIRE "ONMIXSTART" CALLBACK
 		
@@ -546,16 +541,23 @@
 		
 		var $show = $(), 
 		$hide = $();
-	
+		
+		// FOR EACH PEROID SEPERATED CLASS NAME, ADD STRING TO FILTER ARRAY
+
+		var filterArray = filters.split('.');
+		
+		// IF ALL, REPLACE WITH MIX_ALL
+		
+		$.each(filterArray,function(i){
+			if(this == 'all')filterArray[i] = 'mix_all';
+		});
+
 		// "OR" LOGIC (DEFAULT)
 		
-		if(config.filterLogic == "or"){
+		if(config.filterLogic == 'or'){
 			
-			// FOR EACH PEROID SEPERATED CLASS NAME, ADD STRING TO FILTER ARRAY
 
-			var filterArray = filters.split('.');
-
-			if(config.multiFilter == true && filterArray[0] == "") filterArray.shift(); // IF FIRST ITEM IN ARRAY IS AN EMPTY SPACE, DELETE
+			if(config.multiFilter && filterArray[0] == "") filterArray.shift(); // IF FIRST ITEM IN ARRAY IS AN EMPTY SPACE, DELETE
 			
 			// IF NO ELEMENTS ARE DESIRED THEN ADD "MIX_HIDE" CLASS TO ALL VISIBLE ELEMENTS
 		
@@ -594,13 +596,13 @@
 			
 			// ADD "MIX_SHOW" CLASS TO ELEMENTS THAT HAVE ALL FILTERS
 			
-			$show = $show.add($par.find(mixSelector+'.'+filters));
+			$show = $show.add($par.find(mixSelector+'.'+filterArray.join('.')));
 			
 			// ADD "MIX_HIDE" CLASS TO EVERYTHING ELSE
 			
-			$hide = $hide.add($par.find(mixSelector+':not(.'+filters+'):visible'));
-		};	
-
+			$hide = $hide.add($par.find(mixSelector+':not(.'+filterArray.join('.')+'):visible'));
+		};
+		
 		// GET TOTAL NUMBER OF ELEMENTS TO SHOW
 		
 		var total = $show.length;
