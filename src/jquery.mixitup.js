@@ -1,6 +1,6 @@
 /*
 * MIXITUP - A CSS3 and JQuery Filter & Sort Plugin
-* Version: 1.5.2
+* Version: 1.5.3
 * License: Creative Commons Attribution-NoDerivs 3.0 Unported - CC BY-ND 3.0
 * http://creativecommons.org/licenses/by-nd/3.0/
 * This software may be used freely on commercial and non-commercial projects with attribution to the author/copyright holder.
@@ -295,9 +295,7 @@
 							// MULTIPLE ACTIVE BUTTONS
 							
 							var thisFilter = $t.attr('data-filter'); 
-							if(thisFilter == 'all'){
-								thisFilter ='mix_all';
-							}; 
+						
 							if($t.hasClass('active')){
 								$t.removeClass('active');
 								
@@ -533,33 +531,39 @@
 			config.grayscale = effectsOut.indexOf('grayscale') > -1 ? 'grayscale(100%)' : '';
 		};
 		
-		// REPLACE ALL SPACES IN FILTER STRING WITH PERIODS
-		
-		var filters = filter.replace(/\s|\//g, '.');
-		
 		// DECLARE NEW JQUERY OBJECTS FOR GROUPING
 		
 		var $show = $(), 
-		$hide = $();
+		$hide = $(),
+		filterArray = [],
+		multiDimensional = false;
 		
-		// FOR EACH PEROID SEPERATED CLASS NAME, ADD STRING TO FILTER ARRAY
-
-		var filterArray = filters.split('.');
+		// BUILD FILTER ARRAY(S)
 		
-		// IF ALL, REPLACE WITH MIX_ALL
-		
-		$.each(filterArray,function(i){
-			if(this == 'all')filterArray[i] = 'mix_all';
-		});
+		if(typeof filter === 'string'){
+			
+			// SINGLE DIMENSIONAL FILTERING
+			
+			filterArray = buildFilterArray(filter);
+			
+		} else {
+			
+			// MULTI DIMENSIONAL FILTERING
+			
+			multiDimensional = true;
+			
+			$.each(filter,function(i){
+				filterArray[i] = buildFilterArray(this);
+			});
+		};
 
 		// "OR" LOGIC (DEFAULT)
 		
 		if(config.filterLogic == 'or'){
 			
-
-			if(config.multiFilter && filterArray[0] == "") filterArray.shift(); // IF FIRST ITEM IN ARRAY IS AN EMPTY SPACE, DELETE
+			if(filterArray[0] == '') filterArray.shift(); // IF FIRST ITEM IN ARRAY IS AN EMPTY SPACE, DELETE
 			
-			// IF NO ELEMENTS ARE DESIRED THEN ADD "MIX_HIDE" CLASS TO ALL VISIBLE ELEMENTS
+			// IF NO ELEMENTS ARE DESIRED THEN HIDE ALL VISIBLE ELEMENTS
 		
 			if(filterArray.length < 1){
 				
@@ -570,21 +574,36 @@
 			// ELSE CHECK EACH TARGET ELEMENT FOR ANY FILTER CATEGORY:
 			
 				$targets.each(function(){
-					var checkSum = 0,
-					$t = $(this);
-					
-					// IF HAS ANY FILTER, ADD TO "SHOW" OBJECT
-					
-					for (var i = 0; i < filterArray.length; i++) {
-					    if ($t.hasClass(filterArray[i])) {
-				            $show = $show.add($t);
-							checkSum++;
-				        };
-					};
-					
-					// IF HAS NO FILTERS, ADD TO "HIDE" OBJECT
-					if(checkSum == 0){
-						$hide = $hide.add($t);
+					var $t = $(this);
+					if(!multiDimensional){
+						// IF HAS ANY FILTER, ADD TO "SHOW" OBJECT
+						if($t.is('.'+filterArray.join(', .'))){
+							$show = $show.add($t);
+						// ELSE IF HAS NO FILTERS, ADD TO "HIDE" OBJECT
+						} else {
+							$hide = $hide.add($t);
+						};
+					} else {
+						
+						var pass = 0;
+						// FOR EACH DIMENSION
+						
+						$.each(filterArray,function(i){
+							if(this.length){
+								if($t.is('.'+this.join(', .'))){
+									pass++
+								};
+							} else if(pass > 0){
+								pass++;
+							};
+						});
+						// IF PASSES ALL DIMENSIONS, SHOW
+						if(pass == filterArray.length){
+							$show = $show.add($t);
+						// ELSE HIDE
+						} else {
+							$hide = $hide.add($t);
+						};
 					};
 				});
 			
@@ -1294,6 +1313,21 @@
 	        if (this[i] !== testArr[i]) return false;
 	    };
 	    return true;
+	};
+	
+	// BUILD FILTER ARRAY(S)
+	
+	function buildFilterArray(str){
+		// CLEAN FILTER STRING
+		str = str.replace(/\s{2,}/g, ' ');
+		// FOR EACH PEROID SEPERATED CLASS NAME, ADD STRING TO FILTER ARRAY
+		var arr = str.split(' ');
+		// IF ALL, REPLACE WITH MIX_ALL
+		$.each(arr,function(i){
+			if(this == 'all')arr[i] = 'mix_all';
+		});
+		if(arr[0] == "")arr.shift(); 
+		return arr;
 	};
 
 	
