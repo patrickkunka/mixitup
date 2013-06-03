@@ -355,7 +355,12 @@
 				var config = this.config;
 				if(!config.mixing){	
 					$(config.filterSelector).removeClass('active');
-					$(config.filterSelector+'[data-filter="'+arg+'"]').addClass('active');
+					
+					// Go through all filters
+					arg.split(" ").forEach(function(filterArg){
+						$(config.filterSelector+'[data-filter="'+filterArg+'"]').addClass('active');
+					});
+					
 					goMix(arg, null, null, $(this), config);
 				};
 			});	
