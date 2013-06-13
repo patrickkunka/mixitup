@@ -1,6 +1,6 @@
 /*
 * MIXITUP - A CSS3 and JQuery Filter & Sort Plugin
-* Version: 1.5.3
+* Version: 1.5.4
 * License: Creative Commons Attribution-NoDerivs 3.0 Unported - CC BY-ND 3.0
 * http://creativecommons.org/licenses/by-nd/3.0/
 * This software may be used freely on commercial and non-commercial projects with attribution to the author/copyright holder.
@@ -787,7 +787,7 @@
 			
 			// IF VISIBLE SORT ORDER IS THE SAME (WHICH WOULD NOT TRIGGER A TRANSITION EVENT)
 		
-			if(sortby && config.origSort.compare(config.checkSort)){
+			if(sortby && compareArr(config.origSort, config.checkSort)){
 				
 				// THEN CLEAN UP AND GO HOME
 				resetFilter();
@@ -1088,25 +1088,28 @@
 
 		function resetFilter(){
 			
-			// UNBIND CONTAINER
-			$par.unbind();
+			// UNBIND TRANSITION END EVENTS FROM CONTAINER
 			
-			// IF A SORT ARGUMENT AS BEEN SENT, SORT ELEMENTS TO THEIR FINAL ORDER
+			$par.unbind('webkitTransitionEnd transitionend otransitionend oTransitionEnd');
+			
+			// IF A SORT ARGUMENT HAS BEEN SENT, SORT ELEMENTS TO THEIR FINAL ORDER
 			
 			if(sortby){
 				sort(sortby, order, $cont, config);
 			};
 			
 			// EMPTY SORTING ARRAYS
-			
+		
 			config.startOrder = [], config.newOrder = [], config.origSort = [], config.checkSort = [];
 		
 			// REMOVE INLINE STYLES FROM ALL TARGET ELEMENTS AND SLAM THE BRAKES ON
+			
 			$targets.removeStyle(
 				config.prefix+'filter, filter, '+config.prefix+'transform, transform, opacity, display'
 			).css(config.clean).removeAttr('data-checksum');
 			
 			// BECAUSE IE SUCKS
+			
 			if(!window.atob){
 				$targets.css({
 					display: 'none',
@@ -1304,13 +1307,13 @@
 
 	// COMPARE ARRAYS 
 	
-	Array.prototype.compare = function(testArr) {
-	    if (this.length != testArr.length) return false;
-	    for (var i = 0; i < testArr.length; i++){
-	        if (this[i].compare) { 
-	            if (!this[i].compare(testArr[i])) return false;
+	function compareArr(a,b){
+	    if (a.length != b.length) return false;
+	    for (var i = 0; i < b.length; i++){
+	        if (a[i].compare) { 
+	            if (!a[i].compare(b[i])) return false;
 	        };
-	        if (this[i] !== testArr[i]) return false;
+	        if (a[i] !== b[i]) return false;
 	    };
 	    return true;
 	};
