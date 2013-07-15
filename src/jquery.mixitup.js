@@ -250,30 +250,47 @@
 						
 						var $t = $(this),
 						sortby = $t.attr('data-sort'),
+						orderType = $t.attr('data-order'),
 						order = $t.attr('data-order');
+						
+						if(orderType == 'toggle') {
+							
+							// IF CURRENTLY SORTED BY THIS BUTTON, SWAP SORT ORDER
+							
+							if ($t.hasClass('active')) {
+								if ($t.hasClass('asc')) {
+									order = 'desc';
+								} else {
+									order = 'asc';
+								}
+								
+							// OTHERWISE, REVERT TO LAST USED SORT ORDER
+							
+							} else {
+								if ($t.hasClass('asc')) {
+									order = 'asc';
+								} else {
+									order = 'desc';
+								}
+							}
+							if (order == 'desc') {
+								$t.removeClass('asc');
+								$t.addClass('desc');
+							} else {
+								$t.removeClass('desc');
+								$t.addClass('asc');
+							}
+						}
 						
 						if(!$t.hasClass('active')){
 							$(config.sortSelector).removeClass('active');
 							$t.addClass('active');
 						} else {
-							if(sortby != 'random' && order != 'toggle') {
+							if(sortby != 'random' && orderType != 'toggle') {
 								return false;
 							}
 						};
 						
-						// SWAP SORT ORDER IF SET TO TOGGLE
-						
-						if(order == 'toggle') {
-							if (!$t.hasClass('desc')) {
-								order = 'desc';
-								$t.removeClass('asc');
-								$t.addClass('desc');
-							} else {
-								order = 'asc';
-								$t.removeClass('desc');
-								$t.addClass('asc');
-							}
-						}
 						
 						$cont.find(config.targetSelector).each(function(){
 							config.startOrder.push($(this));
