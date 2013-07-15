@@ -256,8 +256,24 @@
 							$(config.sortSelector).removeClass('active');
 							$t.addClass('active');
 						} else {
-							if(sortby != 'random')return false;
+							if(sortby != 'random' && order != 'toggle') {
+								return false;
+							}
 						};
+						
+						// SWAP SORT ORDER IF SET TO TOGGLE
+						
+						if(order == 'toggle') {
+							if (!$t.hasClass('desc')) {
+								order = 'desc';
+								$t.removeClass('asc');
+								$t.addClass('desc');
+							} else {
+								order = 'asc';
+								$t.removeClass('desc');
+								$t.addClass('asc');
+							}
+						}
 						
 						$cont.find(config.targetSelector).each(function(){
 							config.startOrder.push($(this));
