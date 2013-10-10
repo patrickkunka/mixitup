@@ -184,9 +184,14 @@
 				// FADE IN 'SHOWONLOAD'
 				
 				var $showOnLoad = $();
-				$.each(showOnLoadArray, function(){
-					$showOnLoad = $showOnLoad.add($('.'+this))
-				});
+				
+				if(config.filterLogic == 'or'){
+					$.each(showOnLoadArray, function(){
+						$showOnLoad = $showOnLoad.add($('.'+this))
+					});
+				} else {
+					$showOnLoad = $('.'+showOnLoadArray.join('.'));
+				}
 				
 				$showOnLoad.each(function(){
 					var $t = $(this);
