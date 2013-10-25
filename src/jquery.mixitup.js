@@ -355,7 +355,9 @@
 				var config = this.config;
 				if(!config.mixing){	
 					$(config.filterSelector).removeClass('active');
-					$(config.filterSelector+'[data-filter="'+arg+'"]').addClass('active');
+					$.each(arg.split(" "),function(index,item){
+						$(config.filterSelector+'[data-filter="'+item+'"]').addClass('active');
+					});					
 					goMix(arg, null, null, $(this), config);
 				};
 			});	
