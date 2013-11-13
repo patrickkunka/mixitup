@@ -1,6 +1,6 @@
 /*
 * MIXITUP - A CSS3 and JQuery Filter & Sort Plugin
-* Version: 1.5.4
+* Version: 1.5.5
 * License: Creative Commons Attribution-NoDerivs 3.0 Unported - CC BY-ND 3.0
 * http://creativecommons.org/licenses/by-nd/3.0/
 * This software may be used freely on commercial and non-commercial projects with attribution to the author/copyright holder.
@@ -21,6 +21,25 @@
 	    init: function(settings){
 
 			return this.each(function(){
+				
+				var browser = window.navigator.appVersion.match(/Chrome\/(\d+)\./),
+					ver = browser ? parseInt(browser[1], 10) : false,
+					chromeFix = function(id){
+						var grid = document.getElementById(id),
+					        parent = grid.parentElement,
+					        placeholder = document.createElement('div'),
+					        frag = document.createDocumentFragment();
+
+					    parent.insertBefore(placeholder, grid);  
+					    frag.appendChild(grid);
+					    parent.replaceChild(grid, placeholder);
+					    frag = null;
+					    placeholder = null;
+					};
+				
+				if(ver && ver == 31 || ver == 32){
+					chromeFix(this.id);
+				};
 				
 				// BUILD CONFIG OBJECT
 

@@ -1,6 +1,6 @@
 {
   "name": "mixitup",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "main": "jquery.mixitup.min.js",
   "dependencies": {
     "jquery": ">=1.4"
