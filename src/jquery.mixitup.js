@@ -24,9 +24,8 @@
 				
 				var browser = window.navigator.appVersion.match(/Chrome\/(\d+)\./),
 					ver = browser ? parseInt(browser[1], 10) : false,
-					chromeFix = function(id){
-						var grid = document.getElementById(id),
-					        parent = grid.parentElement,
+					chromeFix = function(grid){
+						var parent = grid.parentElement,
 					        placeholder = document.createElement('div'),
 					        frag = document.createDocumentFragment();
 
@@ -38,7 +37,7 @@
 					};
 				
 				if(ver && ver == 31 || ver == 32){
-					chromeFix(this.id);
+					chromeFix(this);
 				};
 				
 				// BUILD CONFIG OBJECT
