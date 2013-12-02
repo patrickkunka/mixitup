@@ -1,11 +1,11 @@
 /*
 * MIXITUP - A CSS3 and JQuery Filter & Sort Plugin
-* Version: 1.5.5
+* Version: 1.5.6
 * License: Creative Commons Attribution-NoDerivs 3.0 Unported - CC BY-ND 3.0
 * http://creativecommons.org/licenses/by-nd/3.0/
 * This software may be used freely on commercial and non-commercial projects with attribution to the author/copyright holder.
 * Author: Patrick Kunka
-* Copyright 2012-2013 Patrick Kunka, Barrel LLC, All Rights Reserved
+* Copyright 2012-2013 Patrick Kunka, All Rights Reserved
 * 
 * http://mixitup.io
 */
@@ -24,9 +24,8 @@
 				
 				var browser = window.navigator.appVersion.match(/Chrome\/(\d+)\./),
 					ver = browser ? parseInt(browser[1], 10) : false,
-					chromeFix = function(id){
-						var grid = document.getElementById(id),
-					        parent = grid.parentElement,
+					chromeFix = function(grid){
+						var parent = grid.parentElement,
 					        placeholder = document.createElement('div'),
 					        frag = document.createDocumentFragment();
 
@@ -38,7 +37,7 @@
 					};
 				
 				if(ver && ver == 31 || ver == 32){
-					chromeFix(this.id);
+					chromeFix(this);
 				};
 				
 				// BUILD CONFIG OBJECT
@@ -741,7 +740,7 @@
 				return false;
 			};
 			
-			// IF IE, FUCK OFF, AND THEN CLEAN UP AND GO HOME
+			// IF IE
 		
 			if(!window.atob){
 				resetFilter();
@@ -1029,7 +1028,7 @@
 	
 			if(config.resizeContainer)$par.css('height', config.origHeight+'px');
 			
-			// IF IE, FUCK OFF, AND THEN GO HOME
+			// IF IE
 			
 			if(!window.atob){
 				resetFilter();
