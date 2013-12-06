@@ -1237,7 +1237,7 @@
 		
 		
 		
-		$sortWrapper.empty();
+		$sortWrapper.children().detach();
 		
 		if(sortby == 'reset'){
 			$.each(config.startOrder,function(){
