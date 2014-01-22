@@ -71,6 +71,7 @@
 					animateGridList : true,
 					onMixLoad: null,
 					onMixStart : null,
+					onMixStarted : null,
 					onMixEnd : null,
 
 					// MISC
@@ -1101,6 +1102,12 @@
 	
 			}, 10);
 		}; 
+		
+		if(typeof config.onMixStarted == 'function') {
+			var output = config.onMixStarted.call(this, config);
+			// UPDATE CONFIG IF DATA RETURNED
+			config = output ? output : config;
+		};
 		
 		// CLEAN UP AND RESET FUNCTION
 
