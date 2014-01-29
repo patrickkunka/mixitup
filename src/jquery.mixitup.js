@@ -305,6 +305,8 @@
 							$t.addClass('active');
 						
 							config.filter = $t.attr('data-filter');
+							
+							config.filterText = $t.text();
 						
 							$(config.filterSelector+'[data-filter="'+config.filter+'"]').addClass('active');
 
