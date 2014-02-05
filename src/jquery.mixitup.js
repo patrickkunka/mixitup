@@ -753,6 +753,7 @@
 			
 			// FOR EACH PRE-EXISTING ELEMENT, ADD STARTING POSITION TO 'ORIGPOS' ARRAY
 			
+			var parOrigPos = $par.offset();
 			$pre.each(function(){
 				this.data.origPos = $(this).offset();
 			});
@@ -770,6 +771,9 @@
 				$toshow.css('display',config.targetDisplayGrid);
 			};
 			
+			var parInterPos = $par.offset();
+			var parOrigMoved = subOffsets($par.offset(), parOrigPos);
+
 			// FOR EACH ELEMENT NOW SHOWN, ADD ITS INTERMEDIATE POSITION TO 'SHOWINTERPOS' ARRAY
 	
 			$toshow.each(function(){
@@ -786,7 +790,7 @@
 			// FOR EACH PRE-EXISTING ELEMENT, NOW MOVED DUE TO SHOWN ELEMENTS, ADD ITS POSITION TO 'PREINTERPOS' ARRAY
 	
 			$pre.each(function(){
-				this.data.preInterPos = $(this).offset();
+				this.data.preInterPos = subOffsets($(this).offset(), parOrigMoved);
 			});
 			
 			// SET DISPLAY PROPERTY OF PRE-EXISTING ELEMENTS INCASE WE ARE CHANGING LAYOUT MODE
@@ -815,18 +819,23 @@
 			// TEMPORARILY HIDE ALL SHOWN ELEMENTS TO HIDE
 
 			$tohide.hide();
+			var parInterMoved = subOffsets($par.offset(), parInterPos);
 			
 			// FOR EACH ELEMENT TO SHOW, AND NOW MOVED DUE TO HIDDEN ELEMENTS BEING REMOVED, 
 			// ADD ITS POSITION TO 'FINALPOS' ARRAY
 			
 			$toshow.each(function(i){
-				this.data.finalPos = $(this).offset();
+				this.data.finalPos = subOffsets($(this).offset(), parInterMoved);
 			});
 			
 			// FOR EACH PRE-EXISTING ELEMENT NOW MOVED DUE TO HIDDEN ELEMENTS BEING REMOVED,
 			// ADD ITS POSITION TO 'FINALPREPOS' ARRAY
 	
 			$pre.each(function(){
+				this.data.finalPrePos = subOffsets(subOffsets($(this).offset(), parOrigMoved), parInterMoved);
+			});
+
+			$tohide.each(function(){
 				this.data.finalPrePos = $(this).offset();
 			});
 			
@@ -1351,5 +1360,18 @@
 		return arr;
 	};
 
+	function subOffsets(a, b) {
+		var result = {};
+
+		if (!a)
+			a = { top: 0, left: 0 };
+		if (!b)
+			b = { top: 0, left: 0 };
+
+		result.top = a.top - b.top;
+		result.left = a.left - b.left;
+
+		return result;
+	}
 	
 })(jQuery);
