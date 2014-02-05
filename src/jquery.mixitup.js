@@ -1189,6 +1189,12 @@
 		function compare(a,b) {
 			var sortAttrA = isNaN(a.attr(sortby) * 1) ? a.attr(sortby).toLowerCase() : a.attr(sortby) * 1,
 				sortAttrB = isNaN(b.attr(sortby) * 1) ? b.attr(sortby).toLowerCase() : b.attr(sortby) * 1;
+
+				if (sortAttrA === 0 && typeof sortAttrB === "string")
+					sortAttrA = ""
+				if (sortAttrB === 0 && typeof sortAttrA === "string")
+					sortAttrB = ""
+
 		  	if (sortAttrA < sortAttrB)
 		    	return -1;
 		  	if (sortAttrA > sortAttrB)
