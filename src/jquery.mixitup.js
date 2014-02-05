@@ -1267,7 +1267,7 @@
 			};
 			
 			if(!config.newOrder.length){
-				$.each(config.origOrder,function(){
+				$.each(config.startOrder,function(){
 					config.newOrder.push($(this));
 				});
 				config.newOrder.sort(compare);
