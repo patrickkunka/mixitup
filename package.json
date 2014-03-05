@@ -1,6 +1,6 @@
 {
   "name": "mixitup",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "devDependencies": {
     "grunt": "~0.4.1",
     "matchdep": "~0.1.1",

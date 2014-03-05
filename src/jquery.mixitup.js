@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.0.1
+ * MixItUp v2.0.2
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -435,7 +435,7 @@
 						
 						self._toggleString = self._toggleArray.join(seperator);
 						
-						self.filter(self._toggleString, $button, type);
+						self.filter(self._toggleString);
 					}
 				}
 				
