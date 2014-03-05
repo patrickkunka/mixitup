@@ -1,1355 +1,1903 @@
-/*
-* MIXITUP - A CSS3 and JQuery Filter & Sort Plugin
-* Version: 1.5.6
-* License: Creative Commons Attribution-NoDerivs 3.0 Unported - CC BY-ND 3.0
-* http://creativecommons.org/licenses/by-nd/3.0/
-* This software may be used freely on commercial and non-commercial projects with attribution to the author/copyright holder.
-* Author: Patrick Kunka
-* Copyright 2012-2013 Patrick Kunka, All Rights Reserved
-* 
-* http://mixitup.io
-*/
+/**! 
+ * MixItUp v2.0.0
+ *
+ * @copyright Copyright 2014 KunkaLabs Limited.
+ * @author    KunkaLabs Limited.
+ * @link      https://mixitup.kunkalabs.com
+ *
+ * @license   Commercial use requires a commercial license. 
+ *            https://mixitup.kunkalabs.com/licenses/
+ *
+ *            Non-commercial use permitted under terms of CC-BY-NC license.
+ *            http://creativecommons.org/licenses/by-nc/3.0/
+ */
 
-(function($){
+(function($, undf){
 	
-	// DECLARE METHODS
- 
-	var methods = {
-
-		// "INIT" METHOD
+	/**
+	 * MixItUp Constructor Function
+	 * @constructor
+	 * @extends jQuery
+	 */
 	
-	    init: function(settings){
-
-			return this.each(function(){
-				
-				var browser = window.navigator.appVersion.match(/Chrome\/(\d+)\./),
-					ver = browser ? parseInt(browser[1], 10) : false,
-					chromeFix = function(grid){
-						var parent = grid.parentElement,
-					        placeholder = document.createElement('div'),
-					        frag = document.createDocumentFragment();
-
-					    parent.insertBefore(placeholder, grid);  
-					    frag.appendChild(grid);
-					    parent.replaceChild(grid, placeholder);
-					    frag = null;
-					    placeholder = null;
-					};
-				
-				if(ver && ver == 31 || ver == 32){
-					chromeFix(this);
-				};
-				
-				// BUILD CONFIG OBJECT
-
-				var config = {
-					
-					// PUBLIC PROPERTIES
-					
-					targetSelector : '.mix',
-					filterSelector : '.filter',
-					sortSelector : '.sort',
-					buttonEvent: 'click',
-					effects : ['fade', 'scale'],
-					listEffects : null,
-					easing : 'smooth',
-					layoutMode: 'grid',
-					targetDisplayGrid : 'inline-block',
-					targetDisplayList: 'block',
-					listClass : '',
-					gridClass : '',
-					transitionSpeed : 600,
-					showOnLoad : 'all',
-					sortOnLoad : false,
-					multiFilter : false,
-					filterLogic : 'or',
-					resizeContainer : true,
-					minHeight : 0,
-					failClass : 'fail',
-					perspectiveDistance : '3000',
-					perspectiveOrigin : '50% 50%',
-					animateGridList : true,
-					onMixLoad: null,
-					onMixStart : null,
-					onMixEnd : null,
-
-					// MISC
-
-					container : null,
-					origOrder : [],
-					startOrder : [],
-					newOrder : [],
-					origSort: [],
-					checkSort: [],
-					filter : '',
-					mixing : false,
-					origDisplay : '',
-					origLayout: '',
-					origHeight : 0, 
-					newHeight : 0,
-					isTouch : false,
-					resetDelay : 0,
-					failsafe : null,
-
-					// CSS
-					
-					prefix : '',
-					easingFallback : 'ease-in-out',
-					transition : {}, 
-					perspective : {}, 
-					clean : {},
-					fade : '1',
-					scale : '',
-					rotateX : '',
-					rotateY : '',
-					rotateZ : '',
-					blur : '',
-					grayscale : ''
-				};
-				
-				if(settings){
-					$.extend(config, settings);
-				};
-
-				// ADD CONFIG OBJECT TO CONTAINER OBJECT PER INSTANTIATION
-				
-				this.config = config;
-				
-				// DETECT TOUCH
-				
-				$.support.touch = 'ontouchend' in document;
-
-				if ($.support.touch) {
-					config.isTouch = true;
-					config.resetDelay = 350;
-				};
-				
-				// LOCALIZE CONTAINER
-	
-				config.container = $(this);
-				var $cont = config.container;
-				
-				// GET VENDOR PREFIX
-				
-				config.prefix = prefix($cont[0]);
-				config.prefix = config.prefix ? '-'+config.prefix.toLowerCase()+'-' : '';
-				
-				// CACHE 'DEFAULT' SORTING ORDER
-			
-				$cont.find(config.targetSelector).each(function(){
-					config.origOrder.push($(this));
-				});
-				
-				// PERFORM SORT ON LOAD 
-				
-				if(config.sortOnLoad){
-					var sortby, order;
-					if($.isArray(config.sortOnLoad)){
-						sortby = config.sortOnLoad[0], order = config.sortOnLoad[1];
-						$(config.sortSelector+'[data-sort='+config.sortOnLoad[0]+'][data-order='+config.sortOnLoad[1]+']').addClass('active');
-					} else {
-						$(config.sortSelector+'[data-sort='+config.sortOnLoad+']').addClass('active');
-						sortby = config.sortOnLoad, config.sortOnLoad = 'desc';
-					};
-					sort(sortby, order, $cont, config);
-				};
-				
-				// BUILD TRANSITION AND PERSPECTIVE OBJECTS
-				
-				for(var i = 0; i<2; i++){
-					var a = i==0 ? a = config.prefix : '';
-					config.transition[a+'transition'] = 'all '+config.transitionSpeed+'ms ease-in-out';
-					config.perspective[a+'perspective'] = config.perspectiveDistance+'px';
-					config.perspective[a+'perspective-origin'] = config.perspectiveOrigin;
-				};
-				
-				// BUILD TRANSITION CLEANER
-				
-				for(var i = 0; i<2; i++){
-					var a = i==0 ? a = config.prefix : '';
-					config.clean[a+'transition'] = 'none';
-				};
-	
-				// CHOOSE GRID OR LIST
-	
-				if(config.layoutMode == 'list'){
-					$cont.addClass(config.listClass);
-					config.origDisplay = config.targetDisplayList;
-				} else {
-					$cont.addClass(config.gridClass);
-					config.origDisplay = config.targetDisplayGrid;
-				};
-				config.origLayout = config.layoutMode;
-				
-				// PARSE 'SHOWONLOAD'
-				
-				var showOnLoadArray = config.showOnLoad.split(' ');
-				
-				// GIVE ACTIVE FILTER ACTIVE CLASS
-				
-				$.each(showOnLoadArray, function(){
-					$(config.filterSelector+'[data-filter="'+this+'"]').addClass('active');
-				});
-				
-				// RENAME "ALL" CATEGORY TO "MIX_ALL"
-	
-				$cont.find(config.targetSelector).addClass('mix_all');
-				if(showOnLoadArray[0]  == 'all'){
-					showOnLoadArray[0] = 'mix_all',
-					config.showOnLoad = 'mix_all';
-				};
-				
-				// FADE IN 'SHOWONLOAD'
-				
-				var $showOnLoad = $();
-				$.each(showOnLoadArray, function(){
-					$showOnLoad = $showOnLoad.add($('.'+this))
-				});
-				
-				$showOnLoad.each(function(){
-					var $t = $(this);
-					if(config.layoutMode == 'list'){
-						$t.css('display',config.targetDisplayList);
-					} else {
-						$t.css('display',config.targetDisplayGrid);
-					};
-					$t.css(config.transition);
-				});
-				
-				// WRAP FADE-IN TO PREVENT RACE CONDITION
-				
-				var delay = setTimeout(function(){
-					
-					config.mixing = true;
-					
-					$showOnLoad.css('opacity','1');
-					
-					// CLEAN UP
-					
-					var reset = setTimeout(function(){
-						if(config.layoutMode == 'list'){
-							$showOnLoad.removeStyle(config.prefix+'transition, transition').css({
-								display: config.targetDisplayList,
-								opacity: 1
-							});
-						} else {
-							$showOnLoad.removeStyle(config.prefix+'transition, transition').css({
-								display: config.targetDisplayGrid,
-								opacity: 1
-							});
-						};
-						
-						// FIRE "ONMIXLOAD" CALLBACK
-						
-						config.mixing = false;
-
-						if(typeof config.onMixLoad == 'function') {
-							var output = config.onMixLoad.call(this, config);
-
-							// UPDATE CONFIG IF DATA RETURNED
-
-							config = output ? output : config;
-						};
-						
-					},config.transitionSpeed);
-				},10);
-				
-				// PRESET ACTIVE FILTER
-				
-				config.filter = config.showOnLoad;
-			
-				// BIND SORT CLICK HANDLERS
-			
-				$(config.sortSelector).bind(config.buttonEvent,function(){
-					
-					if(!config.mixing){
-						
-						// PARSE SORT ARGUMENTS FROM BUTTON CLASSES
-						
-						var $t = $(this),
-						sortby = $t.attr('data-sort'),
-						order = $t.attr('data-order');
-						
-						if(!$t.hasClass('active')){
-							$(config.sortSelector).removeClass('active');
-							$t.addClass('active');
-						} else {
-							if(sortby != 'random')return false;
-						};
-						
-						$cont.find(config.targetSelector).each(function(){
-							config.startOrder.push($(this));
-						});
-				
-						goMix(config.filter,sortby,order,$cont, config);
-				
-					};
-				
-				});
-
-				// BIND FILTER CLICK HANDLERS
-
-				$(config.filterSelector).bind(config.buttonEvent,function(){
-				
-					if(!config.mixing){
-						
-						var $t = $(this);
-						
-						// PARSE FILTER ARGUMENTS FROM BUTTON CLASSES
+	$.MixItUp = function(){
+		var self = this;
 		
-						if(config.multiFilter == false){
-							
-							// SINGLE ACTIVE BUTTON
-							
-							$(config.filterSelector).removeClass('active');
-							$t.addClass('active');
-						
-							config.filter = $t.attr('data-filter');
-						
-							$(config.filterSelector+'[data-filter="'+config.filter+'"]').addClass('active');
+		self._execAction('_constructor', 0);
+		
+		$.extend(self, {
+			
+			/* Public Properties
+			---------------------------------------------------------------------- */
+			
+			selectors: {
+				target: '.mix',
+				filter: '.filter',
+				sort: '.sort'
+			},
+				
+			animation: {
+				enable: true,
+				effects: 'fade scale',
+				duration: 600,
+				easing: 'ease',
+				perspectiveDistance: '3000',
+				perspectiveOrigin: '50% 50%',
+				queue: true,
+				queueLimit: 1,
+				animateChangeLayout: false,
+				animateResizeContainer: true,
+				animateResizeTargets: false,
+				staggerSequence: false,
+				reverseOut: false
+			},
+				
+			callbacks: {
+				onMixLoad: false,
+				onMixStart: false,
+				onMixBusy: false,
+				onMixEnd: false,
+				onMixFail: false,
+				_user: false
+			},
+				
+			controls: {
+				enable: true,
+				live: false,
+				toggleFilterButtons: false,
+				toggleLogic: 'or',
+				activeClass: 'active'
+			},
 
-						} else {
-						
-							// MULTIPLE ACTIVE BUTTONS
-							
-							var thisFilter = $t.attr('data-filter'); 
-						
-							if($t.hasClass('active')){
-								$t.removeClass('active');
-								
-								// REMOVE FILTER FROM SPACE-SEPERATED STRING
-								
-								var re = new RegExp('(\\s|^)'+thisFilter);
-								config.filter = config.filter.replace(re,'');
-							} else {
-								
-								// ADD FILTER TO SPACE-SEPERATED STRING
-								
-								$t.addClass('active');
-								config.filter = config.filter+' '+thisFilter;
-								
+			layout: {
+				display: 'inline-block',
+				containerClass: '',
+				containerClassFail: 'fail'
+			},
+			
+			load: {
+				filter: 'all',
+				sort: false
+			},
+			
+			/* Private Properties
+			---------------------------------------------------------------------- */
+				
+			_$body: null,
+			_$container: null,
+			_$targets: null,
+			_$parent: null,
+			_$sortButtons: null,
+			_$filterButtons: null,
+		
+			_suckMode: false,
+			_mixing: false,
+			_sorting: false,
+			_clicking: false,
+			_loading: true,
+			_changingLayout: false,
+			_changingClass: false,
+			_changingDisplay: false,
+			
+			_origOrder: [],
+			_startOrder: [],
+			_newOrder: [],
+			_activeFilter: null,
+			_toggleArray: [],
+			_toggleString: '',
+			_activeSort: 'default:asc',
+			_newSort: null,
+			_startHeight: null,
+			_newHeight: null,
+			_incPadding: true,
+			_newDisplay: null,
+			_newClass: null,
+			_targetsBound: 0,
+			_targetsDone: 0,
+			_queue: [],
+				
+			_$show: $(),
+			_$hide: $()	
+		});
+	
+		self._execAction('_constructor', 1);
+	};
+	
+	/**
+	 * MixItUp Prototype
+	 * @override
+	 */
+	
+	$.MixItUp.prototype = {
+		constructor: $.MixItUp,
+		_instances: {},
+		
+		/* Extensible Actions
+		---------------------------------------------------------------------- */
+		
+		_actions: {},
+		
+		/* Extensible Filters
+		---------------------------------------------------------------------- */
+		
+		_filters: {},
+		
+		/* Private Methods
+		---------------------------------------------------------------------- */
+		
+		/**
+		 * Initialise
+		 * @since 2.0.0
+		 * @param {object} domNode
+		 * @param {object} config
+		 */
+		
+		_init: function(domNode, config){
+			var self = this;
+			
+			self._execAction('_init', 0, arguments);
+			
+			config && $.extend(true, self, config);
+			
+			self._$body = $('body');
+			self._domNode = domNode;
+			self._$container = $(domNode);
+			self._$container.addClass(self.layout.containerClass);
+			self._id = domNode.id;
+			
+			self._platformDetect();
+			
+			self._brake = self._getPrefixedCSS('transition', 'none');
+			
+			self._refresh(true);
+			
+			self._$parent = self._$targets.parent().length ? self._$targets.parent() : self._$container;
+			
+			if(self.load.sort){
+				self._newSort = self._parseSort(self.load.sort);
+				self._newSortString = self.load.sort;
+				self._activeSort = self.load.sort;
+				self._sort();
+				self._printSort();
+			}
+			
+			self._activeFilter = self.load.filter == 'all' ? self.selectors.target : self.load.filter;
+			
+			self.controls.enable && self._bindHandlers();
+			
+			if(self.controls.toggleFilterButtons){
+				self._buildToggleArray();
+				
+				for(var i = 0; i < self._toggleArray.length; i++){
+					self._updateControls({filter: self._toggleArray[i], sort: self._activeSort}, true);
+				};
+			} else if(self.controls.enable){
+				self._updateControls({filter: self._activeFilter, sort: self._activeSort});
+			}
+			
+			self._filter();
+			
+			self._init = true;
+			
+			self._$container.data('mixItUp',self);
+			
+			self._execAction('_init', 1, arguments);
+			
+			self._buildState();
+			
+			self._$targets.css(self._brake);
+		
+			self._goMix(self.animation.enable);
+		},
+		
+		/**
+		 * Platform Detect
+		 * @since 2.0.0
+		 */
+		
+		_platformDetect: function(){
+			var self = this,
+				vendorsTrans = ['Webkit', 'Moz', 'O', 'ms'],
+				vendorsRAF = ['webkit', 'moz'],
+				chrome = window.navigator.appVersion.match(/Chrome\/(\d+)\./) || false,
+				ff = typeof InstallTrigger !== 'undefined',
+				prefix = function(el){
+					for (var i = 0; i < vendorsTrans.length; i++){
+						if (vendorsTrans[i] + 'Transition' in el.style){
+							return {
+								prefix: '-'+vendorsTrans[i].toLowerCase()+'-',
+								vendor: vendorsTrans[i]
 							};
 						};
-						
-						// GO MIX
-						
-						goMix(config.filter, null, null, $cont, config);
-
-					};
+					}; 
+					return 'transition' in el.style ? '' : false;
+				},
+				transPrefix = prefix(self._domNode);
 				
-				});
-					
-			});
-		},
-	
-		// "TOGRID" METHOD
-	
-		toGrid: function(){
-			return this.each(function(){
-				var config = this.config;
-				if(config.layoutMode != 'grid'){
-					config.layoutMode = 'grid';
-					goMix(config.filter, null, null, $(this), config);
-				};
-			});
-		},
-	
-		// "TOLIST" METHOD
-	
-		toList: function(){
-			return this.each(function(){
-				var config = this.config;
-				if(config.layoutMode != 'list'){
-					config.layoutMode = 'list';
-					goMix(config.filter, null, null, $(this), config);
-				};
-			});
-		},
-	
-		// "FILTER" METHOD
-	
-		filter: function(arg){
-			return this.each(function(){
-				var config = this.config;
-				if(!config.mixing){	
-					$(config.filterSelector).removeClass('active');
-					$(config.filterSelector+'[data-filter="'+arg+'"]').addClass('active');
-					goMix(arg, null, null, $(this), config);
-				};
-			});	
-		},
-	
-		// "SORT" METHOD
-	
-		sort: function(args){
-			return this.each(function(){
-				var config = this.config,
-					$t = $(this);
-				if(!config.mixing){
-					$(config.sortSelector).removeClass('active');
-					if($.isArray(args)){
-						var sortby = args[0], order = args[1];
-						$(config.sortSelector+'[data-sort="'+args[0]+'"][data-order="'+args[1]+'"]').addClass('active');
-					} else {
-						$(config.sortSelector+'[data-sort="'+args+'"]').addClass('active');
-						var sortby = args, order = 'desc';
+			self._execAction('_platformDetect', 0);
+			
+			self._chrome = chrome ? parseInt(chrome[1], 10) : false;
+			self._ff = ff ? parseInt(window.navigator.userAgent.match(/rv:([^)]+)\)/)[1]) : false;
+			self._prefix = transPrefix.prefix;
+			self._vendor = transPrefix.vendor;
+			self._suckMode = window.atob && self._prefix ? false : true;
+
+			self._suckMode && (self.animation.enable = false);
+			(self._ff && self._ff <= 4) && (self.animation.enable = false);
+			
+			/* Polyfills
+			---------------------------------------------------------------------- */
+			
+			/**
+			 * window.requestAnimationFrame
+			 */
+			
+			for(var x = 0; x < vendorsRAF.length && !window.requestAnimationFrame; x++){
+				window.requestAnimationFrame = window[vendorsRAF[x]+'RequestAnimationFrame'];
+			}
+
+			/**
+			 * Object.getPrototypeOf
+			 */
+
+			if(typeof Object.getPrototypeOf !== 'function'){
+				if(typeof 'test'.__proto__ === 'object'){
+					Object.getPrototypeOf = function(object){
+						return object.__proto__;
 					};
-					$t.find(config.targetSelector).each(function(){
-						config.startOrder.push($(this));
+				} else {
+					Object.getPrototypeOf = function(object){
+						return object.constructor.prototype;
+					};
+				}
+			}
+
+			/**
+			 * Element.nextElementSibling
+			 */
+			
+			if(self._domNode.nextElementSibling === undf){
+				Object.defineProperty(Element.prototype, 'nextElementSibling',{
+					get: function(){
+						var el = this.nextSibling;
+						
+						while(el){
+							if(el.nodeType ===1){
+								return el;
+							}
+							el = el.nextSibling;
+						}
+						return null;
+					}
+				});	
+			}
+			
+			self._execAction('_platformDetect', 1);
+		},
+		
+		/**
+		 * Refresh
+		 * @since 2.0.0
+		 * @param {boolean} init
+		 */
+		
+		_refresh: function(init){
+			var self = this;
+				
+			self._execAction('_refresh', 0, arguments);
+
+			self._$targets = self._$container.find(self.selectors.target);
+			
+			for(var i = 0;  i < self._$targets.length; i++){
+				var target = self._$targets[i];
+					
+				if(target.dataset === undf){
+						
+					target.dataset = {};
+					
+					for(var j = 0; j < target.attributes.length; j++){
+						
+						var attr =  target.attributes[j],
+							name = attr.name,
+							val = attr.nodeValue;
+							
+						if(name.indexOf('data-') > -1){
+							var dataName = self._helpers._camelCase(name.substring(5,name.length));
+							target.dataset[dataName] = val;
+						}
+					}
+				}
+				
+				if(target.mixParent === undf){
+					target.mixParent = self._id;
+				}
+			}
+			
+			if(
+				(self._$targets.length && init) ||
+				(!self._origOrder.length && self._$targets.length)
+			){
+				self._origOrder = [];
+				
+				for(var i = 0;  i < self._$targets.length; i++){
+					var target = self._$targets[i];
+					
+					self._origOrder.push(target);
+				}
+			}
+			
+			self._execAction('_refresh', 1, arguments);
+		},
+		
+		/**
+		 * Bind Handlers
+		 * @since 2.0.0
+		 */
+		
+		_bindHandlers: function(){
+			var self = this;
+			
+			self._execAction('_bindHandlers', 0);
+			
+			if(self.controls.live){
+				self._$body
+					.on('click.mixItUp.'+self._id, self.selectors.sort, function(){
+						self._processClick($(this), 'sort');
+					})
+					.on('click.mixItUp.'+self._id, self.selectors.filter, function(){
+						self._processClick($(this), 'filter');
 					});
-					
-					goMix(config.filter,sortby,order, $t, config);
+			} else {
+				self._$sortButtons = $(self.selectors.sort);
+				self._$filterButtons = $(self.selectors.filter);
 				
-				};
-			});
-		},
-		
-		// "MULTIMIX" METHOD
-		
-		multimix: function(args){
-			return this.each(function(){
-				var config = this.config,
-					$t = $(this);
-					multiOut = {
-						filter: config.filter,
-						sort: null,
-						order: 'desc',
-						layoutMode: config.layoutMode
-					};
-				$.extend(multiOut, args);
-				if(!config.mixing){
-					$(config.filterSelector).add(config.sortSelector).removeClass('active');
-					$(config.filterSelector+'[data-filter="'+multiOut.filter+'"]').addClass('active');
-					if(typeof multiOut.sort !== 'undefined'){
-						$(config.sortSelector+'[data-sort="'+multiOut.sort+'"][data-order="'+multiOut.order+'"]').addClass('active');
-						$t.find(config.targetSelector).each(function(){
-							config.startOrder.push($(this));
-						});
-					};
-					config.layoutMode = multiOut.layoutMode;
-					goMix(multiOut.filter,multiOut.sort,multiOut.order, $t, config);
-				};
-			});
-		},
-		
-		// "REMIX" METHOD
-
-		remix: function(arg){
-			return this.each(function(){
-				var config = this.config,
-					$t = $(this);	
-				config.origOrder = [];
-				$t.find(config.targetSelector).each(function(){
-					var $th = $(this);
-					$th.addClass('mix_all'); 
-				    config.origOrder.push($th);
+				self._$sortButtons.on('click.mixItUp.'+self._id, function(){
+					self._processClick($(this), 'sort');
 				});
-				if(!config.mixing && typeof arg !== 'undefined'){
-					$(config.filterSelector).removeClass('active');
-					$(config.filterSelector+'[data-filter="'+arg+'"]').addClass('active');
-					goMix(arg, null, null, $t, config);
+				
+				self._$filterButtons.on('click.mixItUp.'+self._id, function(){
+					self._processClick($(this), 'filter');
+				});
+			}
+			
+			self._execAction('_bindHandlers', 1);
+		},
+		
+		/**
+		 * Process Click
+		 * @since 2.0.0
+		 * @param {object} $button
+		 * @param {string} type
+		 */
+		
+		_processClick: function($button, type){
+			var self = this;
+			
+			self._execAction('_processClick', 0, arguments);
+			
+			if(!self._mixing || (self.animation.queue && self._queue.length < self.animation.queueLimit)){
+				self._clicking = true;
+				
+				if(type === 'sort'){
+					var sort = $button.attr('data-sort');
+					
+					if(!$button.hasClass(self.controls.activeClass) || sort.indexOf('random') > -1){
+						$(self.selectors.sort).removeClass(self.controls.activeClass);
+						$button.addClass(self.controls.activeClass);
+						self.sort(sort);
+					}
+				}
+				
+				if(type === 'filter') {
+					var filter = $button.attr('data-filter'),
+						ndx,
+						seperator = self.controls.toggleLogic === 'or' ? ',' : '';
+					
+					if(!self.controls.toggleFilterButtons){
+						if(!$button.hasClass(self.controls.activeClass)){
+							$(self.selectors.filter).removeClass(self.controls.activeClass);
+							$button.addClass(self.controls.activeClass);
+							self.filter(filter);
+						}
+					} else {
+						self._buildToggleArray();
+						
+						if(!$button.hasClass(self.controls.activeClass)){
+							$button.addClass(self.controls.activeClass);
+							
+							self._toggleArray.push(filter);
+						} else {
+							$button.removeClass(self.controls.activeClass);
+						
+							ndx = self._toggleArray.indexOf(filter);
+							self._toggleArray.splice(ndx, 1);
+						}
+						
+						self._toggleString = self._toggleArray.join(seperator);
+						
+						self.filter(self._toggleString, $button, type);
+					}
+				}
+				
+				self._execAction('_processClick', 1, arguments);
+			} else {
+				if(typeof self.callbacks.onMixBusy === 'function'){
+					self.callbacks.onMixBusy.call(self._domNode, self._state, self);
+				}
+				self._execAction('_processClickBusy', 1, arguments);
+			}
+		},
+		
+		/**
+		 * Build Toggle Array
+		 * @since 2.0.0
+		 */
+		
+		_buildToggleArray: function(){
+			var self = this;
+			
+			self._execAction('_buildToggleArray', 0, arguments);
+			
+			self._toggleArray = self._activeFilter.replace(/\s/g, '').split(',');
+			
+			self._execAction('_buildToggleArray', 1, arguments);
+		},
+		
+		/**
+		 * Update Controls
+		 * @since 2.0.0
+		 * @param {object} command
+		 * @param {boolean} multi
+		 */
+		
+		_updateControls: function(command, multi){
+			var self = this,
+				output = {
+					filter: command.filter,
+					sort: command.sort
+				},
+				update = function($el, filter){
+					multi ?
+						$el.filter(filter).addClass(self.controls.activeClass) :
+						$el.removeClass(self.controls.activeClass).filter(filter).addClass(self.controls.activeClass);
+				},
+				type = 'filter',
+				$el = null;
+				
+			self._execAction('_updateControls', 0, arguments);	
+				
+			(command.filter === undf) && (output.filter = self._activeFilter);
+			(command.sort === undf) && (output.sort = self._activeSort);
+			(output.filter === self.selectors.target) && (output.filter = 'all');
+			
+			for(var i = 0; i < 2; i++){
+				$el = self.controls.live ? $(self.selectors[type]) : self['_$'+type+'Buttons'];
+				$el && update($el, '[data-'+type+'="'+output[type]+'"]');
+				type = 'sort';
+			}
+			
+			self._execAction('_updateControls', 1, arguments);
+		},
+		
+		/**
+		 * Filter (private)
+		 * @since 2.0.0
+		 */
+		
+		_filter: function(){
+			var self = this;
+			
+			self._execAction('_filter', 0);	
+			
+			for(var i = 0; i < self._$targets.length; i++){
+				var $target = $(self._$targets[i]);
+				
+				if($target.is(self._activeFilter)){
+					self._$show = self._$show.add($target);
+				} else {
+					self._$hide = self._$hide.add($target);
+				}
+			}
+			
+			self._execAction('_filter', 1);	
+		},
+		
+		/**
+		 * Sort (private)
+		 * @since 2.0.0
+		 */
+		
+		_sort: function(){
+			var self = this,
+				arrayShuffle = function(oldArray){
+					var newArray = oldArray.slice(),
+						len = newArray.length,
+						i = len;
+
+					while(i--){
+						var p = parseInt(Math.random()*len);
+						var t = newArray[i];
+						newArray[i] = newArray[p];
+						newArray[p] = t;
+					};
+					return newArray; 
 				};
-			});
+				
+			self._execAction('_sort', 0);	
+			
+			self._startOrder = [];
+			
+			for(var i = 0; i < self._$targets.length; i++){
+				var target = self._$targets[i];
+				
+				self._startOrder.push(target);
+			}
+			
+			switch(self._newSort[0].sortBy){
+				case 'default':
+					self._newOrder = self._origOrder;
+					break;
+				case 'random':
+					self._newOrder = arrayShuffle(self._startOrder);
+					break;
+				case 'custom':
+					self._newOrder = self._newSort[0].order;
+					break;
+				default:
+					self._newOrder = self._startOrder.concat().sort(function(a, b){
+						return self._compare(a, b);
+					});
+			}
+			
+			self._execAction('_sort', 1);	
+		},
+		
+		/**
+		 * Compare Algorithm
+		 * @since 2.0.0
+		 * @param {string|number} a
+		 * @param {string|number} b
+		 * @param {number} depth (recursion)
+		 * @return {number}
+		 */
+		
+		_compare: function(a, b, depth){
+			depth = depth ? depth : 0;
+		
+			var self = this,
+				order = self._newSort[depth].order,
+				getData = function(el){
+					return el.dataset[self._newSort[depth].sortBy] || 0;
+				},
+				attrA = isNaN(getData(a) * 1) ? getData(a).toLowerCase() : getData(a) * 1,
+				attrB = isNaN(getData(b) * 1) ? getData(b).toLowerCase() : getData(b) * 1;
+				
+			if(attrA < attrB)
+				return order == 'asc' ? -1 : 1;
+			if(attrA > attrB)
+				return order == 'asc' ? 1 : -1;
+			if(attrA == attrB && self._newSort.length > depth+1)
+				return self._compare(a, b, depth+1);
+
+			return 0;
+		},
+		
+		/**
+		 * Print Sort
+		 * @since 2.0.0
+		 * @param {boolean} reset
+		 */
+		
+		_printSort: function(reset){
+			var self = this,
+				order = reset ? self._startOrder : self._newOrder,
+				targets = self._$parent[0].querySelectorAll(self.selectors.target),
+				nextSibling = targets[targets.length -1].nextElementSibling,
+				frag = document.createDocumentFragment();
+				
+			self._execAction('_printSort', 0, arguments);
+			
+			for(var i = 0; i < targets.length; i++){
+				var target = targets[i],
+					whiteSpace = target.nextSibling;
+
+				if(target.style.position === 'absolute') continue;
+			
+				if(whiteSpace && whiteSpace.nodeName == '#text'){
+					self._$parent[0].removeChild(whiteSpace);
+				}
+				
+				self._$parent[0].removeChild(target);
+			}
+			
+			for(var i = 0; i < order.length; i++){
+				var el = order[i];
+
+				if(self._newSort[0].sortBy == 'default' && self._newSort[0].order == 'desc'){
+					var firstChild = frag.firstChild;
+					frag.insertBefore(el, firstChild);
+					frag.insertBefore(document.createTextNode(' '), el);
+				} else {
+					frag.appendChild(el);
+					frag.appendChild(document.createTextNode(' '));
+				}
+			}
+			
+			nextSibling ? 
+				self._$parent[0].insertBefore(frag, nextSibling) :
+				self._$parent[0].appendChild(frag);
+				
+			self._execAction('_printSort', 1, arguments);
+		},
+		
+		/**
+		 * Parse Sort
+		 * @since 2.0.0
+		 * @param {string} sortString
+		 * @return {array} newSort
+		 */
+		
+		_parseSort: function(sortString){
+			var self = this,
+				rules = typeof sortString === 'string' ? sortString.split(' ') : [sortString],
+				newSort = [];
+				
+			for(var i = 0; i < rules.length; i++){
+				var rule = typeof sortString === 'string' ? rules[i].split(':') : ['custom', rules[i]],
+					ruleObj = {
+						sortBy: self._helpers._camelCase(rule[0]),
+						order: rule[1] || 'asc'
+					};
+					
+				newSort.push(ruleObj);
+				
+				if(ruleObj.sortBy == 'default' || ruleObj.sortBy == 'random') break;
+			}
+			
+			return self._execFilter('_parseSort', newSort, arguments);
+		},
+		
+		/**
+		 * Parse Effects
+		 * @since 2.0.0
+		 * @return {object} effects
+		 */
+		
+		_parseEffects: function(){
+			var self = this,
+				effects = {
+					opacity: '',
+					transformIn: '',
+					transformOut: '',
+					filter: ''
+				},
+				parse = function(effect, extract, reverse){
+					if(self.animation.effects.indexOf(effect) > -1){
+						if(extract){
+							var propIndex = self.animation.effects.indexOf(effect+'(');
+							if(propIndex > -1){
+								var str = self.animation.effects.substring(propIndex),
+									match = /\(([^)]+)\)/.exec(str),
+									val = match[1];
+
+									return {val: val};
+							}
+						}
+						return true;
+					} else {
+						return false;
+					}
+				},
+				negate = function(value, invert){
+					if(invert){
+						return value.charAt(0) === '-' ? value.substr(1, value.length) : '-'+value;
+					} else {
+						return value;
+					}
+				},
+				buildTransform = function(key, invert){
+					var transforms = [
+						['scale', '.01'],
+						['translateX', '20px'],
+						['translateY', '20px'],
+						['translateZ', '20px'],
+						['rotateX', '90deg'],
+						['rotateY', '90deg'],
+						['rotateZ', '180deg'],
+					];
+					
+					for(var i = 0; i < transforms.length; i++){
+						var prop = transforms[i][0],
+							def = transforms[i][1],
+							inverted = invert && prop !== 'scale';
+							
+						effects[key] += parse(prop) ? prop+'('+negate(parse(prop, true).val || def, inverted)+') ' : '';
+					}
+				};
+			
+			effects.opacity = parse('fade') ? parse('fade',true).val || '0' : '';
+			
+			buildTransform('transformIn');
+			
+			self.animation.reverseOut ? buildTransform('transformOut', true) : (effects.transformOut = effects.transformIn);
+
+			effects.transition = {};
+			
+			effects.transition = self._getPrefixedCSS('transition','all '+self.animation.duration+'ms '+self.animation.easing+', opacity '+self.animation.duration+'ms linear');
+		
+			self.animation.stagger = parse('stagger') ? true : false;
+			self.animation.staggerDuration = parseInt(parse('stagger') ? (parse('stagger',true).val ? parse('stagger',true).val : 100) : 100);
+
+			return self._execFilter('_parseEffects', effects);
+		},
+		
+		/**
+		 * Build State
+		 * @since 2.0.0
+		 */
+		
+		_buildState: function(){
+			var self = this;
+			
+			self._execAction('_buildState', 0);
+			
+			self._state = {
+				activeFilter: self._activeFilter,
+				activeSort: self._activeSort,
+				fail: !self._$show.length && self._activeFilter !== 'none',
+				$targets: self._$targets,
+				$show: self._$show,
+				$hide: self._$hide,
+				totalTargets: self._$targets.length,
+				totalShow: self._$show.length,
+				totalHide: self._$hide.length,
+				display: self.layout.display
+			};
+			
+			self._execAction('_buildState', 1);
+		},
+		
+		/**
+		 * Go Mix
+		 * @since 2.0.0
+		 * @param {boolean} animate
+		 */
+		
+		_goMix: function(animate){
+			var self = this,
+				phase1 = function(){
+					
+					if(self._chrome && (self._chrome === 31)){
+						chromeFix(self._$parent[0]);
+					}
+					
+					self._setInter();
+					
+					phase2();
+				},
+				phase2 = function(){
+					self._getInterMixData();
+					
+					self._setFinal();
+
+					self._getFinalMixData();
+
+					self._prepTargets();
+					
+					if(window.requestAnimationFrame){
+						requestAnimationFrame(phase3);
+					} else {
+						setTimeout(function(){
+							phase3();
+						},20);
+					}
+				},
+				phase3 = function(){
+					self._animateTargets();
+
+					if(self._targetsBound === 0){
+						self._cleanUp();
+					}
+				},
+				chromeFix = function(grid){
+					var parent = grid.parentElement,
+						placeholder = document.createElement('div'),
+						frag = document.createDocumentFragment();
+
+					parent.insertBefore(placeholder, grid);
+					frag.appendChild(grid);
+					parent.replaceChild(grid, placeholder);
+				};
+				
+			self._execAction('_goMix', 0, arguments);
+				
+			!self.animation.duration && (animate = false);
+
+			self._mixing = true;
+			
+			self._$container.removeClass(self.layout.containerClassFail);
+			
+			if(typeof self.callbacks.onMixStart === 'function'){
+				self.callbacks.onMixStart.call(self._domNode, self._state, self);
+			}
+			
+			self._$container.trigger('mixStart', [self._state, self]);
+			
+			self._getOrigMixData();
+			
+			if(animate && !self._suckMode){
+			
+				window.requestAnimationFrame ?
+					requestAnimationFrame(phase1) :
+					phase1();
+			
+			} else {
+				self._cleanUp();
+			}
+			
+			self._execAction('_goMix', 1, arguments);
+		},
+		
+		/**
+		 * Get Target Data
+		 * @since 2.0.0
+		 */
+		
+		_getTargetData: function(el, stage){
+			var self = this,
+				elStyle;
+			
+			el.dataset[stage+'PosX'] = el.offsetLeft;
+			el.dataset[stage+'PosY'] = el.offsetTop;
+			
+			if(self.animation.animateResizeTargets){
+				elStyle = window.getComputedStyle(el);
+			
+				el.dataset[stage+'MarginBottom'] = parseInt(elStyle.marginBottom);
+				el.dataset[stage+'MarginRight'] = parseInt(elStyle.marginRight);
+				el.dataset[stage+'Width'] = el.offsetWidth;
+				el.dataset[stage+'Height'] = el.offsetHeight;
+			}
+		},
+		
+		/**
+		 * Get Original Mix Data
+		 * @since 2.0.0
+		 */
+		
+		_getOrigMixData: function(){
+			var self = this,
+				parentStyle = window.getComputedStyle(self._$parent[0]);
+				parentBS = parentStyle.boxSizing || parentStyle[self._vendor+'BoxSizing'];
+	
+			self._incPadding = (parentBS === 'border-box');
+			
+			self._execAction('_getOrigMixData', 0);
+			
+			self.effects = self._parseEffects();
+		
+			self._$toHide = self._$hide.filter(':visible');
+			self._$toShow = self._$show.filter(':hidden');
+			self._$pre = self._$targets.filter(':visible');
+
+			self._startHeight = self._incPadding ? 
+				self._$parent.outerHeight() : 
+				self._$parent.height();
+				
+			for(var i = 0; i < self._$pre.length; i++){
+				var el = self._$pre[i];
+				
+				self._getTargetData(el, 'orig');
+			}
+			
+			self._execAction('_getOrigMixData', 1);
+		},
+		
+		/**
+		 * Set Intermediate Positions
+		 * @since 2.0.0
+		 */
+		
+		_setInter: function(){
+			var self = this;
+			
+			self._execAction('_setInter', 0);
+			
+			if(self._changingLayout && self.animation.animateChangeLayout){
+				self._$toShow.css('display',self._newDisplay);
+
+				if(self._changingClass){
+					self._$container
+						.removeClass(self.layout.containerClass)
+						.addClass(self._newClass);
+				}
+			} else {
+				self._$toShow.css('display', self.layout.display);
+			}
+			
+			self._execAction('_setInter', 1);
+		},
+		
+		/**
+		 * Get Intermediate Mix Data
+		 * @since 2.0.0
+		 */
+		
+		_getInterMixData: function(){
+			var self = this;
+			
+			self._execAction('_getInterMixData', 0);
+			
+			for(var i = 0; i < self._$toShow.length; i++){
+				var el = self._$toShow[i];
+					
+				self._getTargetData(el, 'inter');
+			}
+			
+			for(var i = 0; i < self._$pre.length; i++){
+				var el = self._$pre[i];
+					
+				self._getTargetData(el, 'inter');
+			}
+			
+			self._execAction('_getInterMixData', 1);
+		},
+		
+		/**
+		 * Set Final Positions
+		 * @since 2.0.0
+		 */
+		
+		_setFinal: function(){
+			var self = this;
+			
+			self._execAction('_setFinal', 0);
+			
+			self._sorting && self._printSort();
+
+			self._$toHide.removeStyle('display');
+			
+			if(self._changingLayout && self.animation.animateChangeLayout){
+				self._$pre.css('display',self._newDisplay);
+			}
+			
+			self._execAction('_setFinal', 1);
+		},
+		
+		/**
+		 * Get Final Mix Data
+		 * @since 2.0.0
+		 */
+		
+		_getFinalMixData: function(){
+			var self = this;
+			
+			self._execAction('_getFinalMixData', 0);
+	
+			for(var i = 0; i < self._$toShow.length; i++){
+				var el = self._$toShow[i];
+					
+				self._getTargetData(el, 'final');
+			}
+			
+			for(var i = 0; i < self._$pre.length; i++){
+				var el = self._$pre[i];
+					
+				self._getTargetData(el, 'final');
+			}
+			
+			self._newHeight = self._incPadding ? 
+				self._$parent.outerHeight() : 
+				self._$parent.height();
+
+			self._sorting && self._printSort(true);
+	
+			self._$toShow.removeStyle('display');
+			
+			self._$pre.css('display',self.layout.display);
+			
+			if(self._changingClass && self.animation.animateChangeLayout){
+				self._$container
+					.removeClass(self._newClass)
+					.addClass(self.layout.containerClass);
+			}
+			
+			self._execAction('_getFinalMixData', 1);
+		},
+		
+		/**
+		 * Prepare Targets
+		 * @since 2.0.0
+		 */
+		
+		_prepTargets: function(){
+			var self = this,
+				transformCSS = {
+					_in: self._getPrefixedCSS('transform', self.effects.transformIn),
+					_out: self._getPrefixedCSS('transform', self.effects.transformOut)
+				};
+
+			self._execAction('_prepTargets', 0);
+			
+			if(self.animation.animateResizeContainer){
+				self._$parent.css('height',self._startHeight+'px');
+			}
+			
+			for(var i = 0; i < self._$toShow.length; i++){
+				var el = self._$toShow[i],
+					$el = $(el);
+				
+				el.style.opacity = self.effects.opacity;
+				el.style.display = (self._changingLayout && self.animation.animateChangeLayout) ?
+					self._newDisplay :
+					self.layout.display;
+					
+				$el.css(transformCSS._in);
+				
+				if(self.animation.animateResizeTargets){
+					el.style.width = el.dataset.finalWidth+'px';
+					el.style.height = el.dataset.finalHeight+'px';
+					el.style.marginRight = -(el.dataset.finalWidth - el.dataset.interWidth) + (el.dataset.finalMarginRight * 1)+'px';
+					el.style.marginBottom = -(el.dataset.finalHeight - el.dataset.interHeight) + (el.dataset.finalMarginBottom * 1)+'px';
+				}	
+			}
+
+			for(var i = 0; i < self._$pre.length; i++){
+				var el = self._$pre[i],
+					$el = $(el),
+					translate = {
+						x: el.dataset.origPosX - el.dataset.interPosX,
+						y: el.dataset.origPosY - el.dataset.interPosY
+					},
+					transformCSS = self._getPrefixedCSS('transform','translate('+translate.x+'px,'+translate.y+'px)');
+						
+				$el.css(transformCSS);
+				
+				if(self.animation.animateResizeTargets){		
+					el.style.width = el.dataset.origWidth+'px';
+					el.style.height = el.dataset.origHeight+'px';
+					
+					if(el.dataset.origWidth - el.dataset.finalWidth){
+						el.style.marginRight = -(el.dataset.origWidth - el.dataset.interWidth) + (el.dataset.origMarginRight * 1)+'px';
+					}
+					
+					if(el.dataset.origHeight - el.dataset.finalHeight){
+						el.style.marginBottom = -(el.dataset.origHeight - el.dataset.interHeight) + (el.dataset.origMarginBottom * 1) +'px';
+					}
+				}
+			}
+			
+			self._execAction('_prepTargets', 1);
+		},
+		
+		/**
+		 * Animate Targets
+		 * @since 2.0.0
+		 */
+		
+		_animateTargets: function(){
+			var self = this;
+
+			self._execAction('_animateTargets', 0);
+			
+			self._targetsDone = 0;
+			self._targetsBound = 0;
+			
+			self._$parent
+				.css(self._getPrefixedCSS('perspective', self.animation.perspectiveDistance+'px'))
+				.css(self._getPrefixedCSS('perspective-origin', self.animation.perspectiveOrigin));
+			
+			if(self.animation.animateResizeContainer){
+				self._$parent
+					.css(self._getPrefixedCSS('transition','height '+self.animation.duration+'ms ease'))
+					.css('height',self._newHeight+'px');
+			}
+			
+			for(var i = 0; i < self._$toShow.length; i++){
+				var el = self._$toShow[i],
+					$el = $(el),
+					translate = {
+						x: el.dataset.finalPosX - el.dataset.interPosX,
+						y: el.dataset.finalPosY - el.dataset.interPosY
+					},
+					delay = self._getDelay(i),
+					toShowCSS = {};
+				
+				el.style.opacity = '';
+				
+				for(var j = 0; j < 2; j++){
+					var a = j === 0 ? a = self._prefix : '';
+					
+					if(self._ff && self._ff <= 20){
+						toShowCSS[a+'transition-property'] = 'all';
+						toShowCSS[a+'transition-timing-function'] = self.animation.easing+'ms';
+						toShowCSS[a+'transition-duration'] = self.animation.duration+'ms';
+					}
+					
+					toShowCSS[a+'transition-delay'] = delay+'ms';
+					toShowCSS[a+'transform'] = 'translate('+translate.x+'px,'+translate.y+'px)';
+				}
+				
+				if(self.effects.transform || self.effects.opacity){
+					self._bindTargetDone($el);
+				}
+				
+				(self._ff && self._ff <= 20) ? 
+					$el.css(toShowCSS) : 
+					$el.css(self.effects.transition).css(toShowCSS);
+			}
+			
+			for(var i = 0; i < self._$pre.length; i++){
+				var el = self._$pre[i],
+					$el = $(el),
+					translate = {
+						x: el.dataset.finalPosX - el.dataset.interPosX,
+						y: el.dataset.finalPosY - el.dataset.interPosY
+					},
+					delay = self._getDelay(i);
+				
+				if(!(
+					el.dataset.finalPosX === el.dataset.origPosX &&
+					el.dataset.finalPosY === el.dataset.origPosY
+				)){
+					self._bindTargetDone($el);
+				}
+				
+				$el.css(self._getPrefixedCSS('transition', 'all '+self.animation.duration+'ms '+self.animation.easing+' '+delay+'ms'));
+				$el.css(self._getPrefixedCSS('transform', 'translate('+translate.x+'px,'+translate.y+'px)'));
+				
+				if(self.animation.animateResizeTargets){
+					if(el.dataset.origWidth - el.dataset.finalWidth && el.dataset.finalWidth * 1){
+						el.style.width = el.dataset.finalWidth+'px';
+						el.style.marginRight = -(el.dataset.finalWidth - el.dataset.interWidth)+(el.dataset.finalMarginRight * 1)+'px';
+					}
+					
+					if(el.dataset.origHeight - el.dataset.finalHeight && el.dataset.finalHeight * 1){
+						el.style.height = el.dataset.finalHeight+'px';
+						el.style.marginBottom = -(el.dataset.finalHeight - el.dataset.interHeight)+(el.dataset.finalMarginBottom * 1) +'px';
+					}	
+				}
+			}
+			
+			if(self._changingClass){
+				self._$container
+					.removeClass(self.layout.containerClass)
+					.addClass(self._newClass);
+			}
+			
+			for(var i = 0; i < self._$toHide.length; i++){
+				var el = self._$toHide[i],
+					$el = $(el),
+					delay = self._getDelay(i),
+					toHideCSS = {};
+
+				for(var j = 0; j<2; j++){
+					var a = j === 0 ? a = self._prefix : '';
+
+					toHideCSS[a+'transition-delay'] = delay+'ms';
+					toHideCSS[a+'transform'] = self.effects.transformOut;
+					toHideCSS.opacity = self.effects.opacity;
+				}
+				
+				$el.css(self.effects.transition).css(toHideCSS);
+			
+				if(self.effects.transform || self.effects.opacity){
+					self._bindTargetDone($el);
+				};
+			}
+			
+			self._execAction('_animateTargets', 1);
+
+		},
+		
+		/**
+		 * Bind Targets TransitionEnd
+		 * @since 2.0.0
+		 * @param {object} $el
+		 */
+		
+		_bindTargetDone: function($el){
+			var self = this,
+				el = $el[0];
+				
+			self._execAction('_bindTargetDone', 0, arguments);
+			
+			if(!el.dataset.bound){
+				
+				el.dataset.bound = true;
+				self._targetsBound++;
+			
+				$el.on('webkitTransitionEnd.mixItUp transitionend.mixItUp',function(e){
+					if(
+						(e.originalEvent.propertyName.indexOf('transform') > -1 || 
+						e.originalEvent.propertyName.indexOf('opacity') > -1) &&
+						$(e.originalEvent.target).is(self.selectors.target)
+					){
+						$el.off('.mixItUp');
+						delete el.dataset.bound;
+						self._targetDone();
+					}
+				});
+			}
+			
+			self._execAction('_bindTargetDone', 1, arguments);
+		},
+		
+		/**
+		 * Target Done
+		 * @since 2.0.0
+		 */
+		
+		_targetDone: function(){
+			var self = this;
+			
+			self._execAction('_targetDone', 0);
+			
+			self._targetsDone++;
+			
+			(self._targetsDone === self._targetsBound) && self._cleanUp();
+			
+			self._execAction('_targetDone', 1);
+		},
+		
+		/**
+		 * Clean Up
+		 * @since 2.0.0
+		 */
+		
+		_cleanUp: function(){
+			var self = this,
+				targetStyles = self.animation.animateResizeTargets ? 'transform opacity width height margin-bottom margin-right' : 'transform opacity';
+				unBrake = function(){
+					self._$targets.removeStyle('transition', self._prefix);
+				};
+				
+			self._execAction('_cleanUp', 0);
+			
+			!self._changingLayout ?
+				self._$show.css('display',self.layout.display) :
+				self._$show.css('display',self._newDisplay);
+			
+			self._$targets.css(self._brake);
+			
+			self._$targets
+				.removeStyle(targetStyles, self._prefix)
+				.removeAttr('data-inter-pos-x data-inter-pos-y data-final-pos-x data-final-pos-y data-orig-pos-x data-orig-pos-y data-orig-height data-orig-width data-final-height data-final-width data-inter-width data-inter-height data-orig-margin-right data-orig-margin-bottom data-inter-margin-right data-inter-margin-bottom data-final-margin-right data-final-margin-bottom');
+				
+			self._$hide.removeStyle('display');
+			
+			self._$parent.removeStyle('height transition perspective-distance perspective perspective-origin-x perspective-origin-y perspective-origin perspectiveOrigin', self._prefix);
+			
+			if(self._sorting){
+				self._printSort();
+				self._activeSort = self._newSortString;
+				self._sorting = false;
+			}
+			
+			if(self._changingLayout){
+				if(self._changingDisplay){
+					self.layout.display = self._newDisplay;
+					self._changingDisplay = false;
+				}
+				
+				if(self._changingClass){
+					self._$parent.removeClass(self.layout.containerClass).addClass(self._newClass);
+					self.layout.containerClass = self._newClass;
+					self._changingClass = false;
+				}
+				
+				self._changingLayout = false;
+			}
+			
+			self._refresh();
+			
+			self._buildState();
+			
+			if(self._state.fail){
+				self._$container.addClass(self.layout.containerClassFail);
+			}
+			
+			self._$show = $();
+			self._$hide = $();
+			
+			if(window.requestAnimationFrame){
+				requestAnimationFrame(unBrake);
+			}
+			
+			self._mixing = false;
+			
+			if(typeof self.callbacks._user === 'function'){
+				self.callbacks._user.call(self._domNode, self._state, self);
+			}
+			
+			if(typeof self.callbacks.onMixEnd === 'function'){
+				self.callbacks.onMixEnd.call(self._domNode, self._state, self);
+			}
+			
+			self._$container.trigger('mixEnd', [self._state, self]);
+			
+			if(self._state.fail){
+				(typeof self.callbacks.onMixFail === 'function') && self.callbacks.onMixFail.call(self._domNode, self._state, self);
+				self._$container.trigger('mixFail', [self._state, self]);
+			}
+			
+			if(self._loading){
+				(typeof self.callbacks.onMixLoad === 'function') && self.callbacks.onMixLoad.call(self._domNode, self._state, self);
+				self._$container.trigger('mixLoad', [self._state, self]);
+			}
+			
+			if(self._queue.length){
+				self._execAction('_queue', 0);
+				
+				self.multiMix(self._queue[0][0],self._queue[0][1],self._queue[0][2]);
+				self._queue.splice(0, 1);
+			}
+			
+			self._execAction('_cleanUp', 1);
+			
+			self._loading = false;
+		},
+		
+		/**
+		 * Get Prefixed CSS
+		 * @since 2.0.0
+		 * @param {string} property
+		 * @param {string} value
+		 * @param {boolean} prefixValue
+		 * @return {object} styles
+		 */
+		
+		_getPrefixedCSS: function(property, value, prefixValue){
+			var self = this,
+				styles = {};
+		
+			for(i = 0; i < 2; i++){
+				var prefix = i === 0 ? self._prefix : '';
+				prefixValue ? styles[prefix+property] = prefix+value : styles[prefix+property] = value;
+			}
+			
+			return self._execFilter('_getPrefixedCSS', styles, arguments);
+		},
+		
+		/**
+		 * Get Delay
+		 * @since 2.0.0
+		 * @param {number} i
+		 * @return {number} delay
+		 */
+		
+		_getDelay: function(i){
+			var self = this,
+				n = typeof self.animation.staggerFunction === 'function' ? self.animation.staggerFunction.call(self._domNode, i, self._state) : i,
+				delay = self.animation.stagger ?  n * self.animation.staggerDuration : 0;
+				
+			return self._execFilter('_getDelay', delay, arguments);
+		},
+		
+		/**
+		 * Parse MultiMix Arguments
+		 * @since 2.0.0
+		 * @param {array} args
+		 * @return {object} output
+		 */
+		
+		_parseMultiMixArgs: function(args){
+			var self = this,
+				output = {
+					command: null,
+					animate: self.animation.enable,
+					callback: null
+				};
+				
+			for(var i = 0; i < args.length; i++){
+				var arg = args[i];
+
+				if(arg !== null){	
+					if(typeof arg === 'object' || typeof arg === 'string'){
+						output.command = arg === '' ? 'none' : arg;
+					} else if(typeof arg === 'boolean'){
+						output.animate = arg;
+					} else if(typeof arg === 'function'){
+						output.callback = arg;
+					}
+				}
+			}
+			
+			return self._execFilter('_parseMultiMixArgs', output, arguments);
+		},
+		
+		/**
+		 * Parse Insert Arguments
+		 * @since 2.0.0
+		 * @param {array} args
+		 * @return {object} output
+		 */
+		
+		_parseInsertArgs: function(args){
+			var self = this,
+				output = {
+					index: 0,
+					$object: $(),
+					multiMix: {filter: self._state.activeFilter},
+					callback: null
+				};
+			
+			for(var i = 0; i < args.length; i++){
+				var arg = args[i];
+				
+				if(typeof arg === 'number'){
+					output.index = arg;
+				} else if(typeof arg === 'object' && arg instanceof $){
+					output.$object = arg;
+				} else if(typeof arg === 'object' && arg instanceof HTMLElement){
+					output.$object = $(arg);
+				} else if(typeof arg === 'object' && arg !== null){
+					output.multiMix = arg;
+				} else if(typeof arg === 'boolean' && !arg){
+					output.multiMix = false;
+				} else if(typeof arg === 'function'){
+					output.callback = arg;
+				}
+			}
+			
+			return self._execFilter('_parseInsertArgs', output, arguments);
+		},
+		
+		/**
+		 * Execute Action
+		 * @since 2.0.0
+		 * @param {string} methodName
+		 * @param {boolean} isPost
+		 * @param {array} args
+		 */
+		
+		_execAction: function(methodName, isPost, args){
+			var self = this,
+				context = isPost ? 'post' : 'pre';
+
+			if(!self._actions.isEmptyObject && self._actions.hasOwnProperty(methodName)){
+				for(var key in self._actions[methodName][context]){
+					self._actions[methodName][context][key].call(self, args);
+				}
+			}
+		},
+		
+		/**
+		 * Execute Filter
+		 * @since 2.0.0
+		 * @param {string} methodName
+		 * @param {mixed} value
+		 * @return {mixed} value
+		 */
+		
+		_execFilter: function(methodName, value, args){
+			var self = this;
+			
+			if(!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)){
+				for(var key in self._filters[methodName]){
+					return self._filters[methodName][key].call(self, args);
+				}
+			} else {
+				return value;
+			}
+		},
+		
+		/* Helpers
+		---------------------------------------------------------------------- */
+
+		_helpers: {
+			
+			/**
+			 * CamelCase
+			 * @since 2.0.0
+			 * @param {string}
+			 * @return {string}
+			 */
+
+			_camelCase: function(string){
+				return string.replace(/-([a-z])/g, function(g){
+						return g[1].toUpperCase();
+				});
+			}
+		},
+		
+		/* Public Methods
+		---------------------------------------------------------------------- */
+		
+		/**
+		 * Is Mixing
+		 * @since 2.0.0
+		 * @return {boolean}
+		 */
+		
+		isMixing: function(){
+			var self = this;
+			
+			return self._execFilter('isMixing', self._mixing);
+		},
+		
+		/**
+		 * Filter (public)
+		 * @since 2.0.0
+		 * @param {array} arguments
+		 */
+		
+		filter: function(){	
+			var self = this,
+				args = self._parseMultiMixArgs(arguments);
+
+			self._clicking && (self._toggleString = '');
+			
+			self.multiMix({filter: args.command}, args.animate, args.callback);
+		},
+		
+		/**
+		 * Sort (public)
+		 * @since 2.0.0
+		 * @param {array} arguments
+		 */
+		
+		sort: function(){
+			var self = this,
+				args = self._parseMultiMixArgs(arguments);
+
+			self.multiMix({sort: args.command}, args.animate, args.callback);
+		},
+
+		/**
+		 * Change Layout (public)
+		 * @since 2.0.0
+		 * @param {array} arguments
+		 */
+		
+		changeLayout: function(){
+			var self = this,
+				args = self._parseMultiMixArgs(arguments);
+				
+			self.multiMix({changeLayout: args.command}, args.animate, args.callback);
+		},
+		
+		/**
+		 * MultiMix
+		 * @since 2.0.0
+		 * @param {array} arguments
+		 */		
+		
+		multiMix: function(){
+			var self = this,
+				args = self._parseMultiMixArgs(arguments);
+
+			self._execAction('multiMix', 0, arguments);
+
+			if(!self._mixing){
+				if(self.controls.enable && !self._clicking){
+					self._updateControls(args.command);
+				}
+				(self._queue.length < 2) && (self._clicking = false);
+			
+				delete self.callbacks._user;
+				if(args.callback) self.callbacks._user = args.callback;
+			
+				var sort = args.command.sort,
+					filter = args.command.filter,
+					changeLayout = args.command.changeLayout;
+
+				self._refresh();
+
+				if(sort){
+					self._newSort = self._parseSort(sort);
+					self._newSortString = sort;
+					
+					self._sorting = true;
+					self._sort();
+				}
+				
+				if(filter){
+					filter = filter == 'all' ? self.selectors.target : filter;
+				
+					self._activeFilter = filter;
+				}
+				
+				self._filter();
+				
+				if(changeLayout){
+					self._newDisplay = (typeof changeLayout === 'string') ? changeLayout : changeLayout.display || self.layout.display;
+					self._newClass = changeLayout.containerClass || '';
+
+					if(
+						self._newDisplay !== self.layout.display ||
+						self._newClass !== self.layout.containerClass
+					){
+						self._changingLayout = true;
+						
+						self._changingClass = (self._newClass !== self.layout.containerClass);
+						self._changingDisplay = (self._newDisplay !== self.layout.display);
+					}
+				}
+				
+				self._$targets.css(self._brake);
+				
+				self._goMix(args.animate ^ self.animation.enable ? args.animate : self.animation.enable);
+				
+				self._execAction('multiMix', 1, arguments);
+				
+			} else {
+				if(self.animation.queue && self._queue.length < self.animation.queueLimit){
+					self._queue.push(arguments);
+					
+					if(self.controls.enable && !self._clicking){
+						self._updateControls(args.command);
+					}
+					
+					self._execAction('multiMixQueue', 1, arguments);
+					
+				} else {
+					if(typeof self.callbacks.onMixBusy === 'function'){
+						self.callbacks.onMixBusy.call(self._domNode, self._state, self);
+					}
+					self._$container.trigger('mixBusy', [self._state, self]);
+					
+					self._execAction('multiMixBusy', 1, arguments);
+				}
+			}
+		},
+		
+		/**
+		 * Insert
+		 * @since 2.0.0
+		 * @param {array} arguments
+		 */		
+		
+		insert: function(){
+			var self = this,
+				args = self._parseInsertArgs(arguments),
+				callback = (typeof args.callback === 'function') ? args.callback : null,
+				frag = document.createDocumentFragment(),
+				target = (args.index < self._$targets.length) ? 
+						self._$targets[args.index] :
+						self._$targets[self._$targets.length-1].nextElementSibling;
+						
+			self._execAction('insert', 0, arguments);
+				
+			if(args.$object){
+				for(var i = 0; i < args.$object.length; i++){
+					var el = args.$object[i];
+					
+					frag.appendChild(el);
+					frag.appendChild(document.createTextNode(' '));
+				}
+
+				self._$parent[0].insertBefore(frag, target);
+			}
+			
+			self._execAction('insert', 1, arguments);
+			
+			if(typeof args.multiMix === 'object'){
+				self.multiMix(args.multiMix, callback);
+			} else {
+				self._refresh();
+			}
+		},
+
+		/**
+		 * Prepend
+		 * @since 2.0.0
+		 * @param {array} arguments
+		 */		
+		
+		prepend: function(){
+			var self = this,
+				args = self._parseInsertArgs(arguments);
+				
+			self.insert(0, args.$object, args.multiMix, args.callback);
+		},
+		
+		/**
+		 * Append
+		 * @since 2.0.0
+		 * @param {array} arguments
+		 */
+		
+		append: function(){
+			var self = this,
+				args = self._parseInsertArgs(arguments);
+		
+			self.insert(self._state.totalTargets, args.$object, args.multiMix, args.callback);
+		},
+		
+		/**
+		 * getOption
+		 * @since 2.0.0
+		 * @param {string} string
+		 * @return {mixed} value
+		 */		
+		
+		getOption: function(string){
+			var self = this,
+				getProperty = function(obj, prop){
+					var parts = prop.split('.'),
+						last = parts.pop(),
+						l = parts.length,
+						i = 1,
+						current = parts[0] || prop;
+
+					while((obj = obj[current]) && i < l){
+						current = parts[i];
+						i++;
+					}
+
+					if(obj !== undf){
+						return obj[last] !== undf ? obj[last] : obj;
+					}
+				};
+
+			return string ? self._execFilter('getOption', getProperty(self, string), arguments) : self;
+		},
+		
+		/**
+		 * setOptions
+		 * @since 2.0.0
+		 * @param {object} config
+		 * @return {object} domNode
+		 */
+		
+		setOptions: function(config){
+			var self = this;
+			
+			self._execAction('setOptions', 0, arguments);
+			
+			typeof config === 'object' && $.extend(true, self, config);
+			
+			self._execAction('setOptions', 1, arguments);
+		},
+		
+		/**
+		 * getState
+		 * @since 2.0.0
+		 * @return {object} state
+		 */
+		
+		getState: function(){
+			var self = this;
+			
+			return self._execFilter('getState', self._state, self);
+		},
+		
+		/**
+		 * Destroy
+		 * @since 2.0.0
+		 * @param {boolean} hideAll
+		 * @return {object} domNode
+		 */
+		
+		destroy: function(hideAll){
+			var self = this;
+			
+			self._execAction('destroy', 0, arguments);
+		
+			self._$body
+				.add($(self.selectors.sort))
+				.add($(self.selectors.filter))
+				.off('.mixItUp');
+			
+			for(var i = 0; i < self._$targets.length; i++){
+				var target = self._$targets[i];
+
+				hideAll && (target.style.display = '');
+
+				delete target.mixParent;
+			}
+			
+			self._execAction('destroy', 1, arguments);
+			
+			delete $.MixItUp.prototype._instances[self._id];
+		}
+		
+	};
+	
+	/* jQuery Methods
+	---------------------------------------------------------------------- */
+	
+	/**
+	 * jQuery .mixItUp() method
+	 * @since 2.0.0
+	 * @extends $.fn
+	 */
+	
+	$.fn.mixItUp = function(){
+		var args = arguments,
+			dataReturn = [],
+			eachReturn,
+			_instantiate = function(domNode, settings){
+				var instance = new $.MixItUp(),
+					rand = function(){
+						return ('00000'+(Math.random()*16777216<<0).toString(16)).substr(-6).toUpperCase();
+					};
+					
+				instance._execAction('_instantiate', 0, arguments);
+
+				domNode.id = !domNode.id ? 'MixItUp'+rand() : domNode.id;
+				
+				if(!instance._instances[domNode.id]){
+					instance._instances[domNode.id] = instance;
+					instance._init(domNode, settings);
+				}
+				
+				instance._execAction('_instantiate', 1, arguments);
+			};
+			
+		eachReturn = this.each(function(){
+			if(args && typeof args[0] === 'string'){
+				var instance = $.MixItUp.prototype._instances[this.id];
+				if(args[0] == 'isLoaded'){
+					dataReturn.push(instance ? true : false);
+				} else {
+					var data = instance[args[0]](args[1], args[2], args[3]);
+					if(data !== undf)dataReturn.push(data);
+				}
+			} else {
+				_instantiate(this, args[0]);
+			}
+		});
+		
+		if(dataReturn.length){
+			return dataReturn.length > 1 ? dataReturn : dataReturn[0];
+		} else {
+			return eachReturn;
 		}
 	};
 	
-	// DECLARE PLUGIN
-
-	$.fn.mixitup = function(method, arg){
-		if (methods[method]) {
-			return methods[method].apply( this, Array.prototype.slice.call(arguments,1));
-		} else if (typeof method === 'object' || ! method){
-			return methods.init.apply( this, arguments );
-		};
-	};
+	/**
+	 * jQuery .removeStyle() method
+	 * @since 2.0.0
+	 * @extends $.fn
+	 */
 	
-	/* ==== THE MAGIC ==== */
+	$.fn.removeStyle = function(style, prefix){
+		prefix = prefix ? prefix : '';
 	
-	function goMix(filter, sortby, order, $cont, config){
-		
-		// WE ARE NOW MIXING
-
-		clearInterval(config.failsafe);
-		config.mixing = true;	
-		
-		// APPLY ARGS TO CONFIG
-		
-		config.filter = filter;
-		
-		// FIRE "ONMIXSTART" CALLBACK
-		
-		if(typeof config.onMixStart == 'function') {
-			var output = config.onMixStart.call(this, config);
-			
-			// UPDATE CONFIG IF DATA RETURNED
-			
-			config = output ? output : config;
-		};
-		
-		// SHORT LOCAL VARS
-		
-		var speed = config.transitionSpeed;
-		
-		// REBUILD TRANSITION AND PERSPECTIVE OBJECTS
-		
-		for(var i = 0; i<2; i++){
-			var a = i==0 ? a = config.prefix : '';
-			config.transition[a+'transition'] = 'all '+speed+'ms linear';
-			config.transition[a+'transform'] = a+'translate3d(0,0,0)';
-			config.perspective[a+'perspective'] = config.perspectiveDistance+'px';
-			config.perspective[a+'perspective-origin'] = config.perspectiveOrigin;
-		};
-		
-		// CACHE TARGET ELEMENTS FOR QUICK ACCESS
-		
-		var mixSelector = config.targetSelector,
-		$targets = $cont.find(mixSelector);
-		
-		// ADD DATA OBJECT TO EACH TARGET
-		
-		$targets.each(function(){
-			this.data = {};
-		});
-		
-		// RE-DEFINE CONTAINER INCASE NOT IMMEDIATE PARENT OF TARGET ELEMENTS 
-		
-		var $par = $targets.parent();
-	
-		// ADD PERSPECTIVE TO CONTAINER 
-		
-		$par.css(config.perspective);
-		
-		// SETUP EASING
-
-		config.easingFallback = 'ease-in-out';
-		if(config.easing == 'smooth')config.easing = 'cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-		if(config.easing == 'snap')config.easing = 'cubic-bezier(0.77, 0, 0.175, 1)';
-		if(config.easing == 'windback'){
-			config.easing = 'cubic-bezier(0.175, 0.885, 0.320, 1.275)',
-			config.easingFallback = 'cubic-bezier(0.175, 0.885, 0.320, 1)'; // Fall-back for old webkit, with no values > 1 or < 1
-		};
-		if(config.easing == 'windup'){
-			config.easing = 'cubic-bezier(0.6, -0.28, 0.735, 0.045)',
-			config.easingFallback = 'cubic-bezier(0.6, 0.28, 0.735, 0.045)';
-		};
-		
-		// USE LIST SPECIFIC EFFECTS IF DECLARED
-		
-		var effectsOut = config.layoutMode == 'list' && config.listEffects != null ? config.listEffects : config.effects;
-	
-		// BUILD EFFECTS STRINGS & SKIP IF IE8
-	
-		if (Array.prototype.indexOf){
-			config.fade = effectsOut.indexOf('fade') > -1 ? '0' : '';
-			config.scale = effectsOut.indexOf('scale') > -1 ? 'scale(.01)' : '';
-			config.rotateZ = effectsOut.indexOf('rotateZ') > -1 ? 'rotate(180deg)' : '';
-			config.rotateY = effectsOut.indexOf('rotateY') > -1 ? 'rotateY(90deg)' : '';
-			config.rotateX = effectsOut.indexOf('rotateX') > -1 ? 'rotateX(90deg)' : '';
-			config.blur = effectsOut.indexOf('blur') > -1 ? 'blur(8px)' : '';
-			config.grayscale = effectsOut.indexOf('grayscale') > -1 ? 'grayscale(100%)' : '';
-		};
-		
-		// DECLARE NEW JQUERY OBJECTS FOR GROUPING
-		
-		var $show = $(), 
-		$hide = $(),
-		filterArray = [],
-		multiDimensional = false;
-		
-		// BUILD FILTER ARRAY(S)
-		
-		if(typeof filter === 'string'){
-			
-			// SINGLE DIMENSIONAL FILTERING
-			
-			filterArray = buildFilterArray(filter);
-			
-		} else {
-			
-			// MULTI DIMENSIONAL FILTERING
-			
-			multiDimensional = true;
-			
-			$.each(filter,function(i){
-				filterArray[i] = buildFilterArray(this);
-			});
-		};
-
-		// "OR" LOGIC (DEFAULT)
-		
-		if(config.filterLogic == 'or'){
-			
-			if(filterArray[0] == '') filterArray.shift(); // IF FIRST ITEM IN ARRAY IS AN EMPTY SPACE, DELETE
-			
-			// IF NO ELEMENTS ARE DESIRED THEN HIDE ALL VISIBLE ELEMENTS
-		
-			if(filterArray.length < 1){
-				
-				$hide = $hide.add($cont.find(mixSelector+':visible'));
-				
-			} else {
-
-			// ELSE CHECK EACH TARGET ELEMENT FOR ANY FILTER CATEGORY:
-			
-				$targets.each(function(){
-					var $t = $(this);
-					if(!multiDimensional){
-						// IF HAS ANY FILTER, ADD TO "SHOW" OBJECT
-						if($t.is('.'+filterArray.join(', .'))){
-							$show = $show.add($t);
-						// ELSE IF HAS NO FILTERS, ADD TO "HIDE" OBJECT
-						} else {
-							$hide = $hide.add($t);
-						};
-					} else {
-						
-						var pass = 0;
-						// FOR EACH DIMENSION
-						
-						$.each(filterArray,function(i){
-							if(this.length){
-								if($t.is('.'+this.join(', .'))){
-									pass++
-								};
-							} else if(pass > 0){
-								pass++;
-							};
-						});
-						// IF PASSES ALL DIMENSIONS, SHOW
-						if(pass == filterArray.length){
-							$show = $show.add($t);
-						// ELSE HIDE
-						} else {
-							$hide = $hide.add($t);
-						};
-					};
-				});
-			
-			};
-	
-		} else {
-			
-		// "AND" LOGIC
-			
-			// ADD "MIX_SHOW" CLASS TO ELEMENTS THAT HAVE ALL FILTERS
-			
-			$show = $show.add($par.find(mixSelector+'.'+filterArray.join('.')));
-			
-			// ADD "MIX_HIDE" CLASS TO EVERYTHING ELSE
-			
-			$hide = $hide.add($par.find(mixSelector+':not(.'+filterArray.join('.')+'):visible'));
-		};
-		
-		// GET TOTAL NUMBER OF ELEMENTS TO SHOW
-		
-		var total = $show.length;
-		
-		// DECLARE NEW JQUERY OBJECTS
-
-		var $tohide = $(),
-		$toshow = $(),
-		$pre = $();
-		
-		// FOR ELEMENTS TO BE HIDDEN, IF NOT ALREADY HIDDEN THEN ADD TO OBJECTS "TOHIDE" AND "PRE" 
-		// TO INDICATE PRE-EXISTING ELEMENTS TO BE HIDDEN
-		
-		$hide.each(function(){
-			var $t = $(this);
-			if($t.css('display') != 'none'){
-				$tohide = $tohide.add($t);
-				$pre = $pre.add($t);
-			};
-		});
-		
-		// IF ALL ELEMENTS ARE ALREADY SHOWN AND THERE IS NOTHING TO HIDE, AND NOT PERFORMING A LAYOUT CHANGE OR SORT:
-		
-		if($show.filter(':visible').length == total && !$tohide.length && !sortby){
-			
-			if(config.origLayout == config.layoutMode){
-				
-				// THEN CLEAN UP AND GO HOME
-
-				resetFilter();
-				return false;
-			} else {
-				
-				// IF ONLY ONE ITEM AND CHANGING FORM GRID TO LIST, MOST LIKELY POSITION WILL NOT CHANGE SO WE'RE DONE
-			
-				if($show.length == 1){ 
-					
-					if(config.layoutMode == 'list'){ 
-						$cont.addClass(config.listClass);
-						$cont.removeClass(config.gridClass);
-						$pre.css('display',config.targetDisplayList);
-					} else {
-						$cont.addClass(config.gridClass);
-						$cont.removeClass(config.listClass);
-						$pre.css('display',config.targetDisplayGrid);
-					};
-					
-					// THEN CLEAN UP AND GO HOME
-
-					resetFilter();
-					return false;
-				}
-			};
-		};
-		
-		// GET CONTAINER'S STARTING HEIGHT
-
-		config.origHeight = $par.height();
-		
-		// IF THERE IS SOMETHING TO BE SHOWN:
-
-		if($show.length){
-			
-			// REMOVE "FAIL CLASS" FROM CONTAINER IF EXISTS
-			
-			$cont.removeClass(config.failClass);
-			
-			
-			// FOR ELEMENTS TO BE SHOWN, IF NOT ALREADY SHOWN THEN ADD TO OBJECTS "TOSHOW" ELSE ADD CLASS "MIX_PRE"
-			// TO INDICATE PRE-EXISTING ELEMENT
-
-			$show.each(function(){ 
-				var $t = $(this);
-				if($t.css('display') == 'none'){
-					$toshow = $toshow.add($t)
-				} else {
-					$pre = $pre.add($t);
-				};
-			});
-	
-			// IF NON-ANIMATED LAYOUT MODE TRANSITION:
-		
-			if((config.origLayout != config.layoutMode) && config.animateGridList == false){ 
-			
-				// ADD NEW DISPLAY TYPES, CLEAN UP AND GO HOME
-				
-				if(config.layoutMode == 'list'){ 
-					$cont.addClass(config.listClass);
-					$cont.removeClass(config.gridClass);
-					$pre.css('display',config.targetDisplayList);
-				} else {
-					$cont.addClass(config.gridClass);
-					$cont.removeClass(config.listClass);
-					$pre.css('display',config.targetDisplayGrid);
-				};
-				
-				resetFilter();
-				return false;
-			};
-			
-			// IF IE
-		
-			if(!window.atob){
-				resetFilter();
-				return false;
-			};
-			
-			// OVERRIDE ANY EXISTING TRANSITION TIMING FOR CALCULATIONS
-			
-			$targets.css(config.clean);
-			
-			// FOR EACH PRE-EXISTING ELEMENT, ADD STARTING POSITION TO 'ORIGPOS' ARRAY
-			
-			$pre.each(function(){
-				this.data.origPos = $(this).offset();
-			});
-	
-			// TEMPORARILY SHOW ALL ELEMENTS TO SHOW (THAT ARE NOT ALREADY SHOWN), WITHOUT HIDING ELEMENTS TO HIDE
-			// AND ADD/REMOVE GRID AND LIST CLASSES FROM CONTAINER
-	
-			if(config.layoutMode == 'list'){
-				$cont.addClass(config.listClass);
-				$cont.removeClass(config.gridClass);
-				$toshow.css('display',config.targetDisplayList);
-			} else {
-				$cont.addClass(config.gridClass);
-				$cont.removeClass(config.listClass);
-				$toshow.css('display',config.targetDisplayGrid);
-			};
-			
-			// FOR EACH ELEMENT NOW SHOWN, ADD ITS INTERMEDIATE POSITION TO 'SHOWINTERPOS' ARRAY
-	
-			$toshow.each(function(){
-				this.data.showInterPos = $(this).offset();
-			});
-			
-			// FOR EACH ELEMENT TO BE HIDDEN, BUT NOT YET HIDDEN, AND NOW MOVED DUE TO SHOWN ELEMENTS,
-			// ADD ITS INTERMEDIATE POSITION TO 'HIDEINTERPOS' ARRAY
-
-			$tohide.each(function(){
-				this.data.hideInterPos = $(this).offset();
-			});
-			
-			// FOR EACH PRE-EXISTING ELEMENT, NOW MOVED DUE TO SHOWN ELEMENTS, ADD ITS POSITION TO 'PREINTERPOS' ARRAY
-	
-			$pre.each(function(){
-				this.data.preInterPos = $(this).offset();
-			});
-			
-			// SET DISPLAY PROPERTY OF PRE-EXISTING ELEMENTS INCASE WE ARE CHANGING LAYOUT MODE
-	
-			if(config.layoutMode == 'list'){
-				$pre.css('display',config.targetDisplayList);
-			} else {
-				$pre.css('display',config.targetDisplayGrid);
-			};
-			
-			// IF A SORT ARGUMENT HAS BEEN SENT, RUN SORT FUNCTION SO OBJECTS WILL MOVE TO THEIR FINAL ORDER
-			
-			if(sortby){
-				sort(sortby, order, $cont, config);	
-			};
-			
-			// IF VISIBLE SORT ORDER IS THE SAME (WHICH WOULD NOT TRIGGER A TRANSITION EVENT)
-		
-			if(sortby && compareArr(config.origSort, config.checkSort)){
-				
-				// THEN CLEAN UP AND GO HOME
-				resetFilter();
-				return false;
-			};
-			
-			// TEMPORARILY HIDE ALL SHOWN ELEMENTS TO HIDE
-
-			$tohide.hide();
-			
-			// FOR EACH ELEMENT TO SHOW, AND NOW MOVED DUE TO HIDDEN ELEMENTS BEING REMOVED, 
-			// ADD ITS POSITION TO 'FINALPOS' ARRAY
-			
-			$toshow.each(function(i){
-				this.data.finalPos = $(this).offset();
-			});
-			
-			// FOR EACH PRE-EXISTING ELEMENT NOW MOVED DUE TO HIDDEN ELEMENTS BEING REMOVED,
-			// ADD ITS POSITION TO 'FINALPREPOS' ARRAY
-	
-			$pre.each(function(){
-				this.data.finalPrePos = $(this).offset();
-			});
-			
-			// SINCE WE ARE IN OUT FINAL STATE, GET NEW HEIGHT OF CONTAINER
-	
-			config.newHeight = $par.height();
-			
-			// IF A SORT ARGUMENT AS BEEN SENT, RUN SORT FUNCTION 'RESET' TO MOVE ELEMENTS BACK TO THEIR STARTING ORDER
-			
-			if(sortby){
-				sort('reset', null, $cont, config);
-			};
-			
-			// RE-HIDE ALL ELEMENTS TEMPORARILY SHOWN
-			
-			$toshow.hide();
-			
-			// SET DISPLAY PROPERTY OF PRE-EXISTING ELEMENTS BACK TO THEIR 
-			// ORIGINAL PROPERTY, INCASE WE ARE CHANGING LAYOUT MODE
-			
-			$pre.css('display',config.origDisplay);
-			
-			// ADD/REMOVE GRID AND LIST CLASSES FROM CONTAINER
-	
-			if(config.origDisplay == 'block'){
-				$cont.addClass(config.listClass);
-				$toshow.css('display', config.targetDisplayList);
-			} else {
-				$cont.removeClass(config.listClass);
-				$toshow.css('display', config.targetDisplayGrid);
-			};
-			
-			// IF WE ARE ANIMATING CONTAINER, RESET IT TO ITS STARTING HEIGHT
-		
-			if(config.resizeContainer)$par.css('height', config.origHeight+'px');
-	
-			// ADD TRANSFORMS TO ALL ELEMENTS TO SHOW
-			
-			var toShowCSS = {};
-			
-			for(var i = 0; i<2; i++){
-				var a = i==0 ? a = config.prefix : '';
-				toShowCSS[a+'transform'] = config.scale+' '+config.rotateX+' '+config.rotateY+' '+config.rotateZ;
-				toShowCSS[a+'filter'] = config.blur+' '+config.grayscale;
-			};
-			
-			$toshow.css(toShowCSS);
-	
-			// FOR EACH PRE-EXISTING ELEMENT, SUBTRACT ITS INTERMEDIATE POSITION FROM ITS ORIGINAL POSITION 
-			// TO GET ITS STARTING OFFSET
-	
-			$pre.each(function(){
-				var data = this.data,
-				$t = $(this);
-				
-				if ($t.hasClass('mix_tohide')){
-					data.preTX = data.origPos.left - data.hideInterPos.left;
-					data.preTY = data.origPos.top - data.hideInterPos.top;
-				} else {
-					data.preTX = data.origPos.left - data.preInterPos.left;
-					data.preTY = data.origPos.top - data.preInterPos.top;
-				};
-				var preCSS = {};
-				for(var i = 0; i<2; i++){
-					var a = i==0 ? a = config.prefix : '';
-					preCSS[a+'transform'] = 'translate('+data.preTX+'px,'+data.preTY+'px)';
-				};
-				
-				$t.css(preCSS);	
-			});
-			
-			// ADD/REMOVE GRID AND LIST CLASSES FROM CONTAINER
-	
-			if(config.layoutMode == 'list'){
-				$cont.addClass(config.listClass);
-				$cont.removeClass(config.gridClass);
-			} else {
-				$cont.addClass(config.gridClass);
-				$cont.removeClass(config.listClass);
-			};
-			
-			// WRAP ANIMATION FUNCTIONS IN 10ms TIMEOUT TO PREVENT RACE CONDITION
-			
-			var delay = setTimeout(function(){
-		
-				// APPLY TRANSITION TIMING TO CONTAINER, AND BEGIN ANIMATION TO NEW HEIGHT
-				
-				if(config.resizeContainer){
-					var containerCSS = {};
-					for(var i = 0; i<2; i++){
-						var a = i==0 ? a = config.prefix : '';
-						containerCSS[a+'transition'] = 'all '+speed+'ms ease-in-out';
-						containerCSS['height'] = config.newHeight+'px';
-					};
-					$par.css(containerCSS);
-				};
-	
-				// BEGIN FADING IN/OUT OF ALL ELEMENTS TO SHOW/HIDE
-				$tohide.css('opacity',config.fade);
-				$toshow.css('opacity',1);
-	
-				// FOR EACH ELEMENT BEING SHOWN, CALCULATE ITS TRAJECTORY BY SUBTRACTING
-				// ITS INTERMEDIATE POSITION FROM ITS FINAL POSITION.
-				// ALSO ADD SPEED AND EASING
-				
-				$toshow.each(function(){
-					var data = this.data;
-					data.tX = data.finalPos.left - data.showInterPos.left;
-					data.tY = data.finalPos.top - data.showInterPos.top;
-					
-					var toShowCSS = {};
-					for(var i = 0; i<2; i++){
-						var a = i==0 ? a = config.prefix : '';
-						toShowCSS[a+'transition-property'] = a+'transform, '+a+'filter, opacity';
-						toShowCSS[a+'transition-timing-function'] = config.easing+', linear, linear';
-						toShowCSS[a+'transition-duration'] = speed+'ms';
-						toShowCSS[a+'transition-delay'] = '0';
-						toShowCSS[a+'transform'] = 'translate('+data.tX+'px,'+data.tY+'px)';
-						toShowCSS[a+'filter'] = 'none';
-					};
-					
-					$(this).css('-webkit-transition', 'all '+speed+'ms '+config.easingFallback).css(toShowCSS);
-				});
-				
-				// FOR EACH PRE-EXISTING ELEMENT, IF IT HAS A FINAL POSITION, CALCULATE 
-				// ITS TRAJETORY BY SUBTRACTING ITS INTERMEDIATE POSITION FROM ITS FINAL POSITION.
-				// ALSO ADD SPEED AND EASING
-				
-				$pre.each(function(){
-					var data = this.data
-					data.tX = data.finalPrePos.left != 0 ? data.finalPrePos.left - data.preInterPos.left : 0;
-					data.tY = data.finalPrePos.left != 0 ? data.finalPrePos.top - data.preInterPos.top : 0;
-					
-					var preCSS = {};
-					for(var i = 0; i<2; i++){
-						var a = i==0 ? a = config.prefix : '';
-						preCSS[a+'transition'] = 'all '+speed+'ms '+config.easing;
-						preCSS[a+'transform'] = 'translate('+data.tX+'px,'+data.tY+'px)';
-					};
-					
-					$(this).css('-webkit-transition', 'all '+speed+'ms '+config.easingFallback).css(preCSS);
-				});
-		
-				// BEGIN TRANSFORMS ON ALL ELEMENTS TO BE HIDDEN
-				
-				var toHideCSS = {};
-				for(var i = 0; i<2; i++){
-					var a = i==0 ? a = config.prefix : '';
-					toHideCSS[a+'transition'] = 'all '+speed+'ms '+config.easing+', '+a+'filter '+speed+'ms linear, opacity '+speed+'ms linear';
-					toHideCSS[a+'transform'] = config.scale+' '+config.rotateX+' '+config.rotateY+' '+config.rotateZ;
-					toHideCSS[a+'filter'] = config.blur+' '+config.grayscale;
-					toHideCSS['opacity'] = config.fade;
-				};
-				
-				$tohide.css(toHideCSS);
-				
-				// ALL ANIMATIONS HAVE NOW BEEN STARTED, NOW LISTEN FOR TRANSITION END:
-				
-				$par.bind('webkitTransitionEnd transitionend otransitionend oTransitionEnd',function(e){
-					
-					if (e.originalEvent.propertyName.indexOf('transform') > -1 || e.originalEvent.propertyName.indexOf('opacity') > -1){
-						
-						if(mixSelector.indexOf('.') > -1){
-						
-						// IF MIXSELECTOR IS A CLASS NAME
-						
-							if($(e.target).hasClass(mixSelector.replace('.',''))){
-								resetFilter();
-							};
-						
-						} else {
-							
-						// IF MIXSELECTOR IS A TAG
-						
-							if($(e.target).is(mixSelector)){
-								resetFilter();
-							};
-							
-						};
-						
-					};
-				});	
-	
-			},10);
-			
-			// LAST RESORT EMERGENCY FAILSAFE
-			
-			config.failsafe = setTimeout(function(){
-				if(config.mixing){
-					resetFilter();
-				};
-			}, speed + 400);
-	
-		} else {
-			
-		// ELSE IF NOTHING TO SHOW, AND EVERYTHING TO BE HIDDEN
-		
-			// IF WE ARE RESIZING CONTAINER, SET ITS STARTING HEIGHT
-	
-			if(config.resizeContainer)$par.css('height', config.origHeight+'px');
-			
-			// IF IE
-			
-			if(!window.atob){
-				resetFilter();
-				return false;
-			};
-			
-			// GROUP ALL ELEMENTS TO HIDE INTO JQUERY OBJECT
-			
-			$tohide = $hide;
-			
-			// WRAP ANIMATION FUNCTIONS IN A 10ms DELAY TO PREVENT RACE CONDITION
-	
-			var delay = setTimeout(function(){
-				
-				// APPLY PERSPECTIVE TO CONTAINER
-	
-				$par.css(config.perspective);
-				
-				// APPLY TRANSITION TIMING TO CONTAINER, AND BEGIN ANIMATION TO NEW HEIGHT
-		
-				if(config.resizeContainer){
-					var containerCSS = {};
-					for(var i = 0; i<2; i++){
-						var a = i==0 ? a = config.prefix : '';
-						containerCSS[a+'transition'] = 'height '+speed+'ms ease-in-out';
-						containerCSS['height'] = config.minHeight+'px';
-					};
-					$par.css(containerCSS);
-				};
-	
-				// APPLY TRANSITION TIMING TO ALL TARGET ELEMENTS
-				
-				$targets.css(config.transition);
-				
-				// GET TOTAL NUMBER OF ELEMENTS TO HIDE
-	
-				var totalHide = $hide.length;
-				
-				// IF SOMETHING TO HIDE:
-	
-				if(totalHide){
-					
-					// BEGIN TRANSFORMS ON ALL ELEMENTS TO BE HIDDEN
-
-					var toHideCSS = {};
-					for(var i = 0; i<2; i++){
-						var a = i==0 ? a = config.prefix : '';
-						toHideCSS[a+'transform'] = config.scale+' '+config.rotateX+' '+config.rotateY+' '+config.rotateZ;
-						toHideCSS[a+'filter'] = config.blur+' '+config.grayscale;
-						toHideCSS['opacity'] = config.fade;
-					};
-
-					$tohide.css(toHideCSS);
-					
-					// ALL ANIMATIONS HAVE NOW BEEN STARTED, NOW LISTEN FOR TRANSITION END:
-
-					$par.bind('webkitTransitionEnd transitionend otransitionend oTransitionEnd',function(e){
-						if (e.originalEvent.propertyName.indexOf('transform') > -1 || e.originalEvent.propertyName.indexOf('opacity') > -1){
-							$cont.addClass(config.failClass);
-							resetFilter();
-						};
-					});
-		
-				} else {
-					
-				// ELSE, WE'RE DONE MIXING
-				 	
-					config.mixing = false;
-				};
-	
-			}, 10);
-		}; 
-		
-		// CLEAN UP AND RESET FUNCTION
-
-		function resetFilter(){
-			
-			// UNBIND TRANSITION END EVENTS FROM CONTAINER
-			
-			$par.unbind('webkitTransitionEnd transitionend otransitionend oTransitionEnd');
-			
-			// IF A SORT ARGUMENT HAS BEEN SENT, SORT ELEMENTS TO THEIR FINAL ORDER
-			
-			if(sortby){
-				sort(sortby, order, $cont, config);
-			};
-			
-			// EMPTY SORTING ARRAYS
-		
-			config.startOrder = [], config.newOrder = [], config.origSort = [], config.checkSort = [];
-		
-			// REMOVE INLINE STYLES FROM ALL TARGET ELEMENTS AND SLAM THE BRAKES ON
-			
-			$targets.removeStyle(
-				config.prefix+'filter, filter, '+config.prefix+'transform, transform, opacity, display'
-			).css(config.clean).removeAttr('data-checksum');
-			
-			// BECAUSE IE SUCKS
-			
-			if(!window.atob){
-				$targets.css({
-					display: 'none',
-					opacity: '0'
-				});
-			};
-			
-			// REMOVE HEIGHT FROM CONTAINER ONLY IF RESIZING
-			
-			var remH = config.resizeContainer ? 'height' : '';
-			
-			// REMOVE INLINE STYLES FROM CONTAINER
-		
-			$par.removeStyle(
-				config.prefix+'transition, transition, '+config.prefix+'perspective, perspective, '+config.prefix+'perspective-origin, perspective-origin, '+remH
-			);
-			
-			// ADD FINAL DISPLAY PROPERTIES AND OPACITY TO ALL SHOWN ELEMENTS
-			// CACHE CURRENT LAYOUT MODE & SORT FOR NEXT MIX
-			
-			if(config.layoutMode == 'list'){
-				$show.css({display:config.targetDisplayList, opacity:'1'});
-				config.origDisplay = config.targetDisplayList;
-			} else {
-				$show.css({display:config.targetDisplayGrid, opacity:'1'});
-				config.origDisplay = config.targetDisplayGrid;
-			};
-			config.origLayout = config.layoutMode;
-				
-			var wait = setTimeout(function(){
-				
-				// LET GO OF THE BRAKES
-				
-				$targets.removeStyle(config.prefix+'transition, transition');
-			
-				// WE'RE DONE MIXING
-			
-				config.mixing = false;
-			
-				// FIRE "ONMIXEND" CALLBACK
-			
-				if(typeof config.onMixEnd == 'function') {
-					var output = config.onMixEnd.call(this, config);
-				
-					// UPDATE CONFIG IF DATA RETURNED
-				
-					config = output ? output : config;
-				};
-			});
-		};
-	};
-	
-	// SORT FUNCTION
-	
-	function sort(sortby, order, $cont, config){
-
-		// COMPARE BY ATTRIBUTE
-
-		function compare(a,b) {
-			var sortAttrA = isNaN(a.attr(sortby) * 1) ? a.attr(sortby).toLowerCase() : a.attr(sortby) * 1,
-				sortAttrB = isNaN(b.attr(sortby) * 1) ? b.attr(sortby).toLowerCase() : b.attr(sortby) * 1;
-		  	if (sortAttrA < sortAttrB)
-		    	return -1;
-		  	if (sortAttrA > sortAttrB)
-		    	return 1;
-		  	return 0;
-		};
-		
-		// REBUILD DOM
-
-		function rebuild(element){
-			if(order == 'asc'){
-				$sortWrapper.prepend(element).prepend(' ');
-			} else {
-				$sortWrapper.append(element).append(' ');
-			};
-		};
-		
-		// RANDOMIZE ARRAY
-
-		function arrayShuffle(oldArray){
-			var newArray = oldArray.slice();
-		 	var len = newArray.length;
-			var i = len;
-			while (i--){
-			 	var p = parseInt(Math.random()*len);
-				var t = newArray[i];
-		  		newArray[i] = newArray[p];
-			  	newArray[p] = t;
-		 	};
-			return newArray; 
-		};
-		
-		// SORT
-		
-		$cont.find(config.targetSelector).wrapAll('<div class="mix_sorter"/>');
-		
-		var $sortWrapper = $cont.find('.mix_sorter');
-		
-		if(!config.origSort.length){
-			$sortWrapper.find(config.targetSelector+':visible').each(function(){
-				$(this).wrap('<s/>');
-				config.origSort.push($(this).parent().html().replace(/\s+/g, ''));
-				$(this).unwrap();
-			});
-		};
-		
-		
-		
-		$sortWrapper.empty();
-		
-		if(sortby == 'reset'){
-			$.each(config.startOrder,function(){
-				$sortWrapper.append(this).append(' ');
-			});
-		} else if(sortby == 'default'){
-			$.each(config.origOrder,function(){
-				rebuild(this);
-			});
-		} else if(sortby == 'random'){
-			if(!config.newOrder.length){
-				config.newOrder = arrayShuffle(config.startOrder);
-			};
-			$.each(config.newOrder,function(){
-				$sortWrapper.append(this).append(' ');
-			});	
-		} else if(sortby == 'custom'){
-			$.each(order, function(){
-				rebuild(this);
-			});
-		} else { 
-			// SORT BY ATTRIBUTE
-			
-			if(typeof config.origOrder[0].attr(sortby) === 'undefined'){
-				console.log('No such attribute found. Terminating');
-				return false;
-			};
-			
-			if(!config.newOrder.length){
-				$.each(config.origOrder,function(){
-					config.newOrder.push($(this));
-				});
-				config.newOrder.sort(compare);
-			};
-			$.each(config.newOrder,function(){
-				rebuild(this);
-			});
-			
-		};
-		config.checkSort = [];
-		$sortWrapper.find(config.targetSelector+':visible').each(function(i){
-			var $t = $(this);
-			if(i == 0){
-				
-				// PREVENT COMPARE RETURNING FALSE POSITIVES ON ELEMENTS WITH NO CLASS/ATTRIBUTES
-				
-				$t.attr('data-checksum','1');
-			};
-			$t.wrap('<s/>');
-			config.checkSort.push($t.parent().html().replace(/\s+/g, ''));
-			$t.unwrap();
-		});
-		
-		$cont.find(config.targetSelector).unwrap();
-	};
-	
-	// FIND VENDOR PREFIX
-
-	function prefix(el) {
-	    var prefixes = ["Webkit", "Moz", "O", "ms"];
-	    for (var i = 0; i < prefixes.length; i++){
-	        if (prefixes[i] + "Transition" in el.style){
-	            return prefixes[i];
-	        };
-	    };
-	    return "transition" in el.style ? "" : false;
-	};
-	
-	// REMOVE SPECIFIC STYLES
-	
-	$.fn.removeStyle = function(style){
 		return this.each(function(){
-			var obj = $(this);
-			style = style.replace(/\s+/g, '');
-			var styles = style.split(',');
-			$.each(styles,function(){
+			var el = this,
+				styles = style.split(' ');
 				
-				var search = new RegExp(this.toString() + '[^;]+;?', 'g');
-				obj.attr('style', function(i, style){
-					if(style) return style.replace(search, '');
-			    });
-			});
+			for(var i = 0; i < styles.length; i++){	
+				for(var j = 0; j < 2; j++){
+					var prop = j ? styles[i] : prefix+styles[i];
+					if(
+						el.style[prop] !== undf && 
+						typeof el.style[prop] !== 'unknown' &&
+						el.style[prop].length > 0
+					){
+						el.style[prop] = '';
+					}
+					if(!prefix)break;
+				}
+			}
+			
+			if(el.attributes && el.attributes.style && el.attributes.style !== undf && el.attributes.style.nodeValue === ''){
+				el.attributes.removeNamedItem('style');
+			}
 		});
-    };
-
-	// COMPARE ARRAYS 
-	
-	function compareArr(a,b){
-	    if (a.length != b.length) return false;
-	    for (var i = 0; i < b.length; i++){
-	        if (a[i].compare) { 
-	            if (!a[i].compare(b[i])) return false;
-	        };
-	        if (a[i] !== b[i]) return false;
-	    };
-	    return true;
 	};
-	
-	// BUILD FILTER ARRAY(S)
-	
-	function buildFilterArray(str){
-		// CLEAN FILTER STRING
-		str = str.replace(/\s{2,}/g, ' ');
-		// FOR EACH PEROID SEPERATED CLASS NAME, ADD STRING TO FILTER ARRAY
-		var arr = str.split(' ');
-		// IF ALL, REPLACE WITH MIX_ALL
-		$.each(arr,function(i){
-			if(this == 'all')arr[i] = 'mix_all';
-		});
-		if(arr[0] == "")arr.shift(); 
-		return arr;
-	};
-
 	
 })(jQuery);
