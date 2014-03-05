@@ -484,6 +484,10 @@
 			// UPDATE CONFIG IF DATA RETURNED
 			
 			config = output ? output : config;
+			
+			// RE-APPLY ARGS TO CONFIG INCASE CHANGED FROM onMixStart
+		
+			filter = config.filter;
 		};
 		
 		// SHORT LOCAL VARS
