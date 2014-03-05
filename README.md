@@ -45,7 +45,7 @@ Build your filter controls:
 Build your sort controls:
 
 ```
-<button class="sort" data-filter="my-order:asc">Ascending Order</button>
+<button class="sort" data-sort="my-order:asc">Ascending Order</button>
 <button class="sort" data-sort="my-order:desc">Descending Order</button>
 ```
 > Sorting happens when sort buttons are clicked.
