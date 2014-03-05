@@ -1,11 +1,11 @@
-/**! 
- * MixItUp v2.0.0
+/**!
+ * MixItUp v2.0.1
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
  * @link      https://mixitup.kunkalabs.com
  *
- * @license   Commercial use requires a commercial license. 
+ * @license   Commercial use requires a commercial license.
  *            https://mixitup.kunkalabs.com/licenses/
  *
  *            Non-commercial use permitted under terms of CC-BY-NC license.
@@ -887,14 +887,14 @@
 		
 		_getOrigMixData: function(){
 			var self = this,
-				parentStyle = window.getComputedStyle(self._$parent[0]);
+				parentStyle = !self._suckMode ? window.getComputedStyle(self._$parent[0]) : {boxSizing: ''},
 				parentBS = parentStyle.boxSizing || parentStyle[self._vendor+'BoxSizing'];
 	
 			self._incPadding = (parentBS === 'border-box');
 			
 			self._execAction('_getOrigMixData', 0);
 			
-			self.effects = self._parseEffects();
+			!self._suckMode && (self.effects = self._parseEffects());
 		
 			self._$toHide = self._$hide.filter(':visible');
 			self._$toShow = self._$show.filter(':hidden');
