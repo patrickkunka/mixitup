@@ -91,6 +91,19 @@ MixItUp is free to use in non-commercial projects under the terms of the creativ
 
 For more information see [mixitup.kunkalabs.com/licenses](https://mixitup.kunkalabs.com/licenses)
 
+### Support & Bugs
+
+Support forums are provided at [mixitup.kunkalabs.com/support](https://mixitup.kunkalabs.com/support)
+
+We ask that all general support questions and issues are posted there and that GitHub issues be used *only* for bug-related issues. All non-bug-related issues posted to GitHub will be closed without comment.
+
+- Please be patient while we respond to your questions as we have very limited  resources. The support forum is provided as a courtesy to MixItUp users so that knowledge can be shared – support is not guaranteed.
+- Please be as detailed as possible when posting. If you can include a link to your project, a CodePen or JSFiddle demo, or a even just a code snippet of your setup, it is much more likely your question will be answered quickly and correctly.
+- Do not email KunkaLabs with support questions. All support emails will be ignored.
+- If you think you’ve found a bug we encourage you to submit a GitHub Issue rather than posting in the support forums. This way we can keep bugs tracked efficiently and hopefully fix them swiftly.
+- When submitting a bug report please provide as much details as possible about your development environment, browser and OS, and the expected vs. resulting behaviour. Please also include any console errors that arise.
+- If you can pinpoint the erroneous code even better. Pull requests are always appreciated.
+
 <br/>
 
 -------
