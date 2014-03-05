@@ -564,7 +564,7 @@
 			
 			filterArray = buildFilterArray(filter);
 			
-		} else {
+		} else if ( filter ) {
 			
 			// MULTI DIMENSIONAL FILTERING
 			
