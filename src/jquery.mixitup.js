@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.0.2
+ * MixItUp v2.0.3
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -477,7 +477,7 @@
 					sort: command.sort
 				},
 				update = function($el, filter){
-					multi ?
+					(multi && type == 'filter') ?
 						$el.filter(filter).addClass(self.controls.activeClass) :
 						$el.removeClass(self.controls.activeClass).filter(filter).addClass(self.controls.activeClass);
 				},
@@ -1591,7 +1591,7 @@
 
 			if(!self._mixing){
 				if(self.controls.enable && !self._clicking){
-					self._updateControls(args.command);
+					self._updateControls(args.command, self.controls.toggleFilterButtons);
 				}
 				(self._queue.length < 2) && (self._clicking = false);
 			

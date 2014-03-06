@@ -8,4 +8,7 @@ MixItUp ChangeLog
 - Fixed some IE8 issues.
 
 ## 2.0.2
-- Fixed controls.toggleFilterButtons config option
+- Fixed `controls.toggleFilterButtons` config option
+
+## 2.0.3
+- Fixed `_updateControls()` bug when `controls.toggleFilterButtons` is set to `true`
