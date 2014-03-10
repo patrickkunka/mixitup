@@ -20,7 +20,8 @@ module.exports = function(grunt) {
 					'-W030': true,
 					'-W103': true,
 					'-W004': true,
-					'-W122': true
+					'-W122': true,
+					'-W084': true
 				},
 				src: ['src/*.js']
 			}

@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.0.3
+ * MixItUp v2.0.4
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -181,7 +181,11 @@
 				self._printSort();
 			}
 			
-			self._activeFilter = self.load.filter == 'all' ? self.selectors.target : self.load.filter;
+			self._activeFilter = self.load.filter === 'all' ? 
+				self.selectors.target : 
+				self.load.filter === 'none' ?
+					'' :
+					self.load.filter;
 			
 			self.controls.enable && self._bindHandlers();
 			
@@ -428,13 +432,14 @@
 							self._toggleArray.push(filter);
 						} else {
 							$button.removeClass(self.controls.activeClass);
-						
 							ndx = self._toggleArray.indexOf(filter);
 							self._toggleArray.splice(ndx, 1);
 						}
 						
-						self._toggleString = self._toggleArray.join(seperator);
+						self._toggleArray = $.grep(self._toggleArray,function(n){return(n);});
 						
+						self._toggleString = self._toggleArray.join(seperator);
+
 						self.filter(self._toggleString);
 					}
 				}
@@ -454,11 +459,22 @@
 		 */
 		
 		_buildToggleArray: function(){
-			var self = this;
+			var self = this,
+				activeFilter = self._activeFilter.replace(/\s/g, '');
 			
 			self._execAction('_buildToggleArray', 0, arguments);
 			
-			self._toggleArray = self._activeFilter.replace(/\s/g, '').split(',');
+			if(self.controls.toggleLogic === 'or'){
+				self._toggleArray = activeFilter.split(',');
+			} else {
+				self._toggleArray = activeFilter.split('.');
+				
+				!self._toggleArray[0] && self._toggleArray.shift();
+				
+				for(var i = 0, filter; filter = self._toggleArray[i]; i++){
+					self._toggleArray[i] = '.'+filter;
+				}
+			}
 			
 			self._execAction('_buildToggleArray', 1, arguments);
 		},
@@ -477,7 +493,7 @@
 					sort: command.sort
 				},
 				update = function($el, filter){
-					(multi && type == 'filter') ?
+					(multi && type == 'filter' && !(output.filter === 'none' || output.filter === '')) ?
 						$el.filter(filter).addClass(self.controls.activeClass) :
 						$el.removeClass(self.controls.activeClass).filter(filter).addClass(self.controls.activeClass);
 				},
@@ -762,9 +778,9 @@
 			self._execAction('_buildState', 0);
 			
 			self._state = {
-				activeFilter: self._activeFilter,
+				activeFilter: self._activeFilter === '' ? 'none' : self._activeFilter,
 				activeSort: self._activeSort,
-				fail: !self._$show.length && self._activeFilter !== 'none',
+				fail: !self._$show.length && self._activeFilter !== '',
 				$targets: self._$targets,
 				$show: self._$show,
 				$hide: self._$hide,
@@ -1414,7 +1430,7 @@
 
 				if(arg !== null){	
 					if(typeof arg === 'object' || typeof arg === 'string'){
-						output.command = arg === '' ? 'none' : arg;
+						output.command = arg;
 					} else if(typeof arg === 'boolean'){
 						output.animate = arg;
 					} else if(typeof arg === 'function'){
@@ -1591,8 +1607,10 @@
 
 			if(!self._mixing){
 				if(self.controls.enable && !self._clicking){
+					self.controls.toggleFilterButtons && self._buildToggleArray();
 					self._updateControls(args.command, self.controls.toggleFilterButtons);
 				}
+				
 				(self._queue.length < 2) && (self._clicking = false);
 			
 				delete self.callbacks._user;
@@ -1612,9 +1630,9 @@
 					self._sort();
 				}
 				
-				if(filter){
-					filter = filter == 'all' ? self.selectors.target : filter;
-				
+				if(filter !== undf){
+					filter = (filter === 'all') ? self.selectors.target : filter;
+	
 					self._activeFilter = filter;
 				}
 				
@@ -1645,9 +1663,7 @@
 				if(self.animation.queue && self._queue.length < self.animation.queueLimit){
 					self._queue.push(arguments);
 					
-					if(self.controls.enable && !self._clicking){
-						self._updateControls(args.command);
-					}
+					(self.controls.enable && !self._clicking) && self._updateControls(args.command);
 					
 					self._execAction('multiMixQueue', 1, arguments);
 					

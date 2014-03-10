@@ -12,3 +12,6 @@ MixItUp ChangeLog
 
 ## 2.0.3
 - Fixed `_updateControls()` bug when `controls.toggleFilterButtons` is set to `true`
+
+## 2.0.4
+- Fixed issue with `controls.toggleFilterButtons` where `'none'` was included in toggleArray. Various toggle logic related improvements.
