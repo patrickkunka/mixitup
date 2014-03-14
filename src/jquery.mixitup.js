@@ -774,11 +774,15 @@
 		
 		_buildState: function(){
 			var self = this;
+			var activeFilter;
 			
 			self._execAction('_buildState', 0);
 			
+			activeFilter = self._activeFilter === '' ? 'none' : self._activeFilter;
+
 			self._state = {
-				activeFilter: self._activeFilter === '' ? 'none' : self._activeFilter,
+				activeFilter: activeFilter,
+				nextFilter: activeFilter,
 				activeSort: self._activeSort,
 				fail: !self._$show.length && self._activeFilter !== '',
 				$targets: self._$targets,
@@ -1637,6 +1641,7 @@
 				}
 				
 				self._filter();
+				self._state.nextFilter = self._activeFilter;
 				
 				if(changeLayout){
 					self._newDisplay = (typeof changeLayout === 'string') ? changeLayout : changeLayout.display || self.layout.display;
