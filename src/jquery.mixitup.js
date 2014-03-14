@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.0.4
+ * MixItUp v2.0.5
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -770,14 +770,17 @@
 		/**
 		 * Build State
 		 * @since 2.0.0
+		 * @param {boolean} future
+		 * @return {object} futureState
 		 */
 		
-		_buildState: function(){
-			var self = this;
+		_buildState: function(future){
+			var self = this,
+				state = {};
 			
 			self._execAction('_buildState', 0);
 			
-			self._state = {
+			state = {
 				activeFilter: self._activeFilter === '' ? 'none' : self._activeFilter,
 				activeSort: self._activeSort,
 				fail: !self._$show.length && self._activeFilter !== '',
@@ -791,6 +794,12 @@
 			};
 			
 			self._execAction('_buildState', 1);
+			
+			if(future){
+				return self._execFilter('_buildState', state);
+			} else {
+				self._state = state;
+			}
 		},
 		
 		/**
@@ -843,7 +852,8 @@
 					parent.insertBefore(placeholder, grid);
 					frag.appendChild(grid);
 					parent.replaceChild(grid, placeholder);
-				};
+				},
+				futureState = self._buildState(true);
 				
 			self._execAction('_goMix', 0, arguments);
 				
@@ -854,10 +864,10 @@
 			self._$container.removeClass(self.layout.containerClassFail);
 			
 			if(typeof self.callbacks.onMixStart === 'function'){
-				self.callbacks.onMixStart.call(self._domNode, self._state, self);
+				self.callbacks.onMixStart.call(self._domNode, self._state, futureState, self);
 			}
 			
-			self._$container.trigger('mixStart', [self._state, self]);
+			self._$container.trigger('mixStart', [self._state, futureState, self]);
 			
 			self._getOrigMixData();
 			

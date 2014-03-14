@@ -447,11 +447,13 @@ type: **Function** / default: `null`
 This callback function is called immediately after any MixItUp operation is requested and before animations have begun.
 
 The state object is passed as the first parameter, and the container element is assigned to the “this” keyword.
+
+A futureState object is passed as the second parameter, reflecting the state once the operation as completed.
  
 ```
 $('#Container').mixItUp({
 	callbacks: {
-		onMixStart: function(state){
+		onMixStart: function(state, futureState){
 			alert('Animation starting');
 		}
 	}

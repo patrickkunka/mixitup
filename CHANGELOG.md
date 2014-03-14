@@ -1,6 +1,9 @@
 MixItUp ChangeLog
 =================
 
+## 2.0.5
+- Added a 'futureState' object as the second parameter for the `onMixStart` callback and `'mixStart'` event.
+
 ## 2.0.4
 - Fixed issue with `controls.toggleFilterButtons` where `'none'` was included in toggleArray. Various toggle logic related improvements.
 
