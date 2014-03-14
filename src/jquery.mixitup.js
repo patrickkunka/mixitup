@@ -814,9 +814,13 @@
 				phase2 = function(){
 					self._getInterMixData();
 					
+					var origScrollTop = $(document).scrollTop();
+					var origScrollLeft = $(document).scrollLeft();
 					self._setFinal();
 
 					self._getFinalMixData();
+					$(document).scrollTop(origScrollTop);
+					$(document).scrollLeft(origScrollLeft);
 
 					self._prepTargets();
 					
