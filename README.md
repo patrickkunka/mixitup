@@ -87,9 +87,11 @@ A much prettier version of the full documentation is also available at [mixitup.
 
 ### Licenses
 
-MixItUp is free to use in non-commercial projects under the terms of the creative commons CC-BY-NC license. However, for use in commercial projects and products we require that you purchase a commercial license.
+For use in commercial projects and products we require that you purchase a commercial license.
 
 For more information see [mixitup.kunkalabs.com/licenses](https://mixitup.kunkalabs.com/licenses)
+
+MixItUp is free to use in non-commercial projects under the terms of the creative commons CC-BY-NC license.
 
 ### Support & Bugs
 
