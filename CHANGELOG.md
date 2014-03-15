@@ -1,6 +1,10 @@
 MixItUp ChangeLog
 =================
 
+## 2.0.6
+- Retain scroll position if container height change decreases document height while filtering out targets. 
+- Fixed animation bug when sorting by 'default:desc'.
+
 ## 2.0.5
 - Added a 'futureState' object as the second parameter for the `onMixStart` callback and `'mixStart'` event.
 

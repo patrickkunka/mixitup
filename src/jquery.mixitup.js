@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.0.5
+ * MixItUp v2.0.6
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -649,7 +649,7 @@
 			for(var i = 0; i < order.length; i++){
 				var el = order[i];
 
-				if(self._newSort[0].sortBy == 'default' && self._newSort[0].order == 'desc'){
+				if(self._newSort[0].sortBy == 'default' && self._newSort[0].order == 'desc' && !reset){
 					var firstChild = frag.firstChild;
 					frag.insertBefore(el, firstChild);
 					frag.insertBefore(document.createTextNode(' '), el);
@@ -821,11 +821,17 @@
 					phase2();
 				},
 				phase2 = function(){
+					var scrollTop = window.scrollY,
+						scrollLeft = window.scrollX,
+						windowHeight = window.innerHeight;
+
 					self._getInterMixData();
 					
 					self._setFinal();
 
 					self._getFinalMixData();
+					
+					(scrollTop + windowHeight > window.innerHeight) && window.scrollTo(scrollLeft, scrollTop);
 
 					self._prepTargets();
 					
@@ -895,7 +901,7 @@
 			
 			el.dataset[stage+'PosX'] = el.offsetLeft;
 			el.dataset[stage+'PosY'] = el.offsetTop;
-			
+
 			if(self.animation.animateResizeTargets){
 				elStyle = window.getComputedStyle(el);
 			
@@ -1096,7 +1102,7 @@
 						y: el.dataset.origPosY - el.dataset.interPosY
 					},
 					transformCSS = self._getPrefixedCSS('transform','translate('+translate.x+'px,'+translate.y+'px)');
-						
+
 				$el.css(transformCSS);
 				
 				if(self.animation.animateResizeTargets){		
@@ -1181,7 +1187,7 @@
 						y: el.dataset.finalPosY - el.dataset.interPosY
 					},
 					delay = self._getDelay(i);
-				
+					
 				if(!(
 					el.dataset.finalPosX === el.dataset.origPosX &&
 					el.dataset.finalPosY === el.dataset.origPosY
