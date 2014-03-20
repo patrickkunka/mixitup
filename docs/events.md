@@ -21,7 +21,7 @@ MixItUp containers trigger the following events which may be bound with custom e
 
 Binding events may be preferable to setting single callback functions via the configuration object if conditional behaviour is required or you wish to add and remove event handlers dynamically.
 
-MixItUp events may be bound as follows using jQuery. The state object is passed as the second parameter after the event object, for `mixStart`, a futureState object is passed as the third parameter.
+MixItUp events may be bound as follows using jQuery. The state object is passed as the second parameter after the event object. For `mixStart`, a futureState object is passed as the third parameter.
 
 ```
 $('#Container').on('mixEnd', function(e, state){
