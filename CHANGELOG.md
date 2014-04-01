@@ -1,6 +1,11 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.0
+- Fixed issue preventing clickable controls from controlling multiple instantiations simultaneously.
+- Fixed issue when using insert/append/prepend method on an empty container
+- Added new static API methods for extending $.MixItUp prototype, and hooking actions and filters.
+
 ## 2.0.6
 - Retain scroll position if container height change decreases document height while filtering out targets. 
 - Fixed animation bug when sorting by 'default:desc'.

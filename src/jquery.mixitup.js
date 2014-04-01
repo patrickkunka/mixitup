@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.0.6
+ * MixItUp v2.1.0
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -130,17 +130,89 @@
 	
 	$.MixItUp.prototype = {
 		constructor: $.MixItUp,
+		
+		/* Static Properties
+		---------------------------------------------------------------------- */
+		
 		_instances: {},
-		
-		/* Extensible Actions
-		---------------------------------------------------------------------- */
-		
+		_handled: {
+			_filter: {},
+			_sort: {}
+		},
+		_bound: {
+			_filter: {},
+			_sort: {}
+		},
 		_actions: {},
+		_filters: {},
 		
-		/* Extensible Filters
+		/* Static Methods
 		---------------------------------------------------------------------- */
 		
-		_filters: {},
+		/**
+		 * Extend
+		 * @since 2.1.0
+		 * @param {object} new properties/methods
+		 * @extends {object} prototype
+		 */
+		
+		extend: function(extension){
+			for(var key in extension){
+				$.MixItUp.prototype[key] = extension[key];
+			}
+		},
+		
+		/**
+		 * Add Action
+		 * @since 2.1.0
+		 * @param {string} hook name
+		 * @param {string} namespace
+		 * @param {function} function to execute
+		 * @param {number} priority
+		 * @extends {object} $.MixItUp.prototype._actions
+		 */
+		
+		addAction: function(hook, name, func, priority){
+			$.MixItUp.prototype._addHook('_actions', hook, name, func, priority);
+		},
+		
+		/**
+		 * Add Filter
+		 * @since 2.1.0
+		 * @param {string} hook name
+		 * @param {string} namespace
+		 * @param {function} function to execute
+		 * @param {number} priority
+		 * @extends {object} $.MixItUp.prototype._filters
+		 */
+		
+		addFilter: function(hook, name, func, priority){
+			$.MixItUp.prototype._addHook('_filters', hook, name, func, priority);
+		},
+		
+		/**
+		 * Add Hook
+		 * @since 2.1.0
+		 * @param {string} type of hook
+		 * @param {string} hook name
+		 * @param {function} function to execute
+		 * @param {number} priority
+		 * @extends {object} $.MixItUp.prototype._filters
+		 */
+		
+		_addHook: function(type, hook, name, func, priority){
+			var collection = $.MixItUp.prototype[type],
+				obj = {};
+				
+			priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
+				
+			obj[hook] = {};
+			obj[hook][priority] = {};
+			obj[hook][priority][name] = func;
+
+			$.extend(true, collection, obj);
+		},
+		
 		
 		/* Private Methods
 		---------------------------------------------------------------------- */
@@ -359,7 +431,9 @@
 		 */
 		
 		_bindHandlers: function(){
-			var self = this;
+			var self = this,
+				filters = $.MixItUp.prototype._bound._filter,
+				sorts = $.MixItUp.prototype._bound._sort;
 			
 			self._execAction('_bindHandlers', 0);
 			
@@ -383,6 +457,9 @@
 					self._processClick($(this), 'filter');
 				});
 			}
+
+			filters[self.selectors.filter] = (filters[self.selectors.filter] === undf) ? 1 : filters[self.selectors.filter] + 1;
+			sorts[self.selectors.sort] = (sorts[self.selectors.sort] === undf) ? 1 : sorts[self.selectors.sort] + 1;
 			
 			self._execAction('_bindHandlers', 1);
 		},
@@ -395,7 +472,19 @@
 		 */
 		
 		_processClick: function($button, type){
-			var self = this;
+			var self = this,
+				trackClick = function($button, type, off){
+					var proto = $.MixItUp.prototype;
+						
+					proto._handled['_'+type][self.selectors[type]] = (proto._handled['_'+type][self.selectors[type]] === undf) ? 
+						1 : 
+						proto._handled['_'+type][self.selectors[type]] + 1;
+
+					if(proto._handled['_'+type][self.selectors[type]] === proto._bound['_'+type][self.selectors[type]]){
+						$button[(off ? 'remove' : 'add')+'Class'](self.controls.activeClass);
+						delete proto._handled['_'+type][self.selectors[type]];
+					}
+				};
 			
 			self._execAction('_processClick', 0, arguments);
 			
@@ -407,7 +496,7 @@
 					
 					if(!$button.hasClass(self.controls.activeClass) || sort.indexOf('random') > -1){
 						$(self.selectors.sort).removeClass(self.controls.activeClass);
-						$button.addClass(self.controls.activeClass);
+						trackClick($button, type);
 						self.sort(sort);
 					}
 				}
@@ -420,18 +509,18 @@
 					if(!self.controls.toggleFilterButtons){
 						if(!$button.hasClass(self.controls.activeClass)){
 							$(self.selectors.filter).removeClass(self.controls.activeClass);
-							$button.addClass(self.controls.activeClass);
+							trackClick($button, type);
 							self.filter(filter);
 						}
 					} else {
 						self._buildToggleArray();
 						
 						if(!$button.hasClass(self.controls.activeClass)){
-							$button.addClass(self.controls.activeClass);
+							trackClick($button, type);
 							
 							self._toggleArray.push(filter);
 						} else {
-							$button.removeClass(self.controls.activeClass);
+							trackClick($button, type, true);
 							ndx = self._toggleArray.indexOf(filter);
 							self._toggleArray.splice(ndx, 1);
 						}
@@ -1705,9 +1794,17 @@
 				args = self._parseInsertArgs(arguments),
 				callback = (typeof args.callback === 'function') ? args.callback : null,
 				frag = document.createDocumentFragment(),
-				target = (args.index < self._$targets.length) ? 
-						self._$targets[args.index] :
-						self._$targets[self._$targets.length-1].nextElementSibling;
+				target = (function(){
+					self._refresh();
+					
+					if(self._$targets.length){
+						return (args.index < self._$targets.length || !self._$targets.length) ? 
+							self._$targets[args.index] :
+							self._$targets[self._$targets.length-1].nextElementSibling;
+					} else {
+						return self._$parent[0].children[0];
+					}
+				})();
 						
 			self._execAction('insert', 0, arguments);
 				
@@ -1726,8 +1823,6 @@
 			
 			if(typeof args.multiMix === 'object'){
 				self.multiMix(args.multiMix, callback);
-			} else {
-				self._refresh();
 			}
 		},
 
