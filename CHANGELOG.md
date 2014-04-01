@@ -1,6 +1,9 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.1
+- Fixed issue from 2.0.5 preventing _buildState action hook from modifying state object, affected pagination extension.
+
 ## 2.1.0
 - Fixed issue preventing clickable controls from controlling multiple instantiations simultaneously.
 - Fixed issue when using insert/append/prepend method on an empty container

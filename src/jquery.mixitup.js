@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.1.0
+ * MixItUp v2.1.1
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -882,12 +882,12 @@
 				display: self.layout.display
 			};
 			
-			self._execAction('_buildState', 1);
-			
 			if(future){
 				return self._execFilter('_buildState', state);
 			} else {
 				self._state = state;
+				
+				self._execAction('_buildState', 1);
 			}
 		},
 		
