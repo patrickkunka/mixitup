@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.1.1
+ * MixItUp v2.1.2
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -375,9 +375,10 @@
 		 * Refresh
 		 * @since 2.0.0
 		 * @param {boolean} init
+		 * @param {boolean} force
 		 */
 		
-		_refresh: function(init){
+		_refresh: function(init, force){
 			var self = this;
 				
 			self._execAction('_refresh', 0, arguments);
@@ -387,7 +388,7 @@
 			for(var i = 0;  i < self._$targets.length; i++){
 				var target = self._$targets[i];
 					
-				if(target.dataset === undf){
+				if(target.dataset === undf || force){
 						
 					target.dataset = {};
 					
@@ -1853,7 +1854,7 @@
 		},
 		
 		/**
-		 * getOption
+		 * Get Option
 		 * @since 2.0.0
 		 * @param {string} string
 		 * @return {mixed} value
@@ -1882,10 +1883,9 @@
 		},
 		
 		/**
-		 * setOptions
+		 * Set Options
 		 * @since 2.0.0
 		 * @param {object} config
-		 * @return {object} domNode
 		 */
 		
 		setOptions: function(config){
@@ -1899,7 +1899,7 @@
 		},
 		
 		/**
-		 * getState
+		 * Get State
 		 * @since 2.0.0
 		 * @return {object} state
 		 */
@@ -1911,10 +1911,20 @@
 		},
 		
 		/**
+		 * Force Refresh
+		 * @since 2.1.2
+		 */
+		
+		forceRefresh: function(){
+			var self = this;
+			
+			self._refresh(false, true);
+		},
+		
+		/**
 		 * Destroy
 		 * @since 2.0.0
 		 * @param {boolean} hideAll
-		 * @return {object} domNode
 		 */
 		
 		destroy: function(hideAll){

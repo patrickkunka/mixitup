@@ -1,6 +1,9 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.2
+- Added `forceRefresh` method enabling on-demand re-synthesis of HTML5 data attributes to dataset properties for IE10 and below.
+
 ## 2.1.1
 - Fixed issue from 2.0.5 preventing _buildState action hook from modifying state object, affected pagination extension.
 
