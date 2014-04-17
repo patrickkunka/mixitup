@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.1.2
+ * MixItUp v2.1.3
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -911,17 +911,17 @@
 					phase2();
 				},
 				phase2 = function(){
-					var scrollTop = window.scrollY,
-						scrollLeft = window.scrollX,
-						windowHeight = window.innerHeight;
+					var scrollTop = window.pageYOffset,
+						scrollLeft = window.pageXOffset,
+						docHeight = document.documentElement.scrollHeight;
 
 					self._getInterMixData();
 					
 					self._setFinal();
 
 					self._getFinalMixData();
-					
-					(scrollTop + windowHeight > window.innerHeight) && window.scrollTo(scrollLeft, scrollTop);
+
+					(window.pageYOffset !== scrollTop) && window.scrollTo(scrollLeft, scrollTop);
 
 					self._prepTargets();
 					
@@ -1571,7 +1571,7 @@
 					output.index = arg;
 				} else if(typeof arg === 'object' && arg instanceof $){
 					output.$object = arg;
-				} else if(typeof arg === 'object' && arg instanceof HTMLElement){
+				} else if(typeof arg === 'object' && self._helpers._isElement(arg)){
 					output.$object = $(arg);
 				} else if(typeof arg === 'object' && arg !== null){
 					output.multiMix = arg;
@@ -1640,6 +1640,25 @@
 				return string.replace(/-([a-z])/g, function(g){
 						return g[1].toUpperCase();
 				});
+			},
+			
+			/**
+			 * Is Element
+			 * @since 2.1.3
+			 * @param {object} element to test
+			 * @return {boolean}
+			 */
+			
+			_isElement: function(el){
+				if(window.HTMLElement){
+					return el instanceof HTMLElement;
+				} else {
+					return (
+						el !== null && 
+						el.nodeType === 1 &&
+						el.nodeName === 'string'
+					);
+				}
 			}
 		},
 		

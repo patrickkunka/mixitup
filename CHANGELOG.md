@@ -1,6 +1,10 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.3
+- Fixed scrolling issues when container height reduces document height past current scroll positiong
+- Added _isElement() helper for IE8 to test HTMLElement, fixing _parseInsertArgs bug in IE8
+
 ## 2.1.2
 - Added `forceRefresh` method enabling on-demand re-synthesis of HTML5 data attributes to dataset properties for IE10 and below.
 
