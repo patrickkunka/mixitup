@@ -1,6 +1,10 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.4
+- Made new sorting order available to futureState object during mixStart event
+- Made new display value available to futureState object during mixStart event
+
 ## 2.1.3
 - Fixed scrolling issues when container height reduces document height past current scroll positiong
 - Added _isElement() helper for IE8 to test HTMLElement, fixing _parseInsertArgs bug in IE8

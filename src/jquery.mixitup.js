@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.1.3
+ * MixItUp v2.1.4
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -872,7 +872,7 @@
 			
 			state = {
 				activeFilter: self._activeFilter === '' ? 'none' : self._activeFilter,
-				activeSort: self._activeSort,
+				activeSort: future && self._newSortString ? self._newSortString : self._activeSort,
 				fail: !self._$show.length && self._activeFilter !== '',
 				$targets: self._$targets,
 				$show: self._$show,
@@ -880,7 +880,7 @@
 				totalTargets: self._$targets.length,
 				totalShow: self._$show.length,
 				totalHide: self._$hide.length,
-				display: self.layout.display
+				display: future && self._newDisplay ? self._newDisplay : self.layout.display
 			};
 			
 			if(future){
@@ -901,7 +901,6 @@
 		_goMix: function(animate){
 			var self = this,
 				phase1 = function(){
-					
 					if(self._chrome && (self._chrome === 31)){
 						chromeFix(self._$parent[0]);
 					}
