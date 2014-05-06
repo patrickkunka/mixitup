@@ -8,9 +8,8 @@
     ],
     "authors": [
         {
-            "name": "Patrick Kunka",
-            "email": "patrick@kunkalabs.com",
-            "homepage": "https://www.kunkalabs.com/"
+            "name": "KunkaLabs Limited",
+            "homepage": "https://kunkalabs.com/"
         }
     ],
     "description": "MixItUp is a jQuery plugin providing animated filtering and sorting.",
