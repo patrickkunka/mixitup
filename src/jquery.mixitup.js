@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.1.4
+ * MixItUp v2.1.5
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -841,7 +841,7 @@
 					}
 				};
 			
-			effects.opacity = parse('fade') ? parse('fade',true).val || '0' : '';
+			effects.opacity = parse('fade') ? parse('fade',true).val || '0' : '1';
 			
 			buildTransform('transformIn');
 			
@@ -1509,7 +1509,7 @@
 		
 		_getDelay: function(i){
 			var self = this,
-				n = typeof self.animation.staggerFunction === 'function' ? self.animation.staggerFunction.call(self._domNode, i, self._state) : i,
+				n = typeof self.animation.staggerSequence === 'function' ? self.animation.staggerSequence.call(self._domNode, i, self._state) : i,
 				delay = self.animation.stagger ?  n * self.animation.staggerDuration : 0;
 				
 			return self._execFilter('_getDelay', delay, arguments);

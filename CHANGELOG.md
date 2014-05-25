@@ -1,6 +1,10 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.5
+- Fixed mis-naming issue preventing user-defined staggerSequence function from being called.
+- Fixed issue where filter-in animations broke if 'fade' effect was not present
+
 ## 2.1.4
 - Made new sorting order available to futureState object during mixStart event
 - Made new display value available to futureState object during mixStart event
