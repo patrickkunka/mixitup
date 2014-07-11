@@ -718,7 +718,7 @@
 			var self = this,
 				order = reset ? self._startOrder : self._newOrder,
 				targets = self._$parent[0].querySelectorAll(self.selectors.target),
-				nextSibling = targets[targets.length -1].nextElementSibling,
+				nextSibling = targets.length > 0 ? targets[targets.length -1].nextElementSibling : false,
 				frag = document.createDocumentFragment();
 				
 			self._execAction('_printSort', 0, arguments);
@@ -2029,23 +2029,25 @@
 	 */
 	
 	$.fn.removeStyle = function(style, prefix){
+		var toCamelCase = function (s) { 
+			return s[1].toUpperCase(); 
+		};
 		prefix = prefix ? prefix : '';
 	
 		return this.each(function(){
 			var el = this,
 				styles = style.split(' ');
 				
-			for(var i = 0; i < styles.length; i++){	
-				for(var j = 0; j < 2; j++){
-					var prop = j ? styles[i] : prefix+styles[i];
-					if(
-						el.style[prop] !== undf && 
-						typeof el.style[prop] !== 'unknown' &&
-						el.style[prop].length > 0
-					){
-						el.style[prop] = '';
+			for(var i = 0, prop; prop = styles[i]; i++){	
+				for(var j = 0; j < 3; j++){
+					if (j===1) {
+						prop = prop.replace(/-([a-z])/g, toCamelCase);
+					} else if (j===2) {
+						if(!prefix) continue;
+						prop = prefix+prop;
 					}
-					if(!prefix)break;
+					if(!el.style[prop]) continue;
+					if(el.style[prop].length > 0) el.style[prop] = '';
 				}
 			}
 			
