@@ -718,7 +718,7 @@
 			var self = this,
 				order = reset ? self._startOrder : self._newOrder,
 				targets = self._$parent[0].querySelectorAll(self.selectors.target),
-				nextSibling = targets[targets.length -1].nextElementSibling,
+				nextSibling = targets.length > 0 ? targets[targets.length -1].nextElementSibling : false,
 				frag = document.createDocumentFragment();
 				
 			self._execAction('_printSort', 0, arguments);
