@@ -1,6 +1,23 @@
 {
   "name": "mixitup",
   "version": "2.1.5",
+  "homepage": "https://github.com/patrickkunka/mixitup",
+  "description": "MixItUp - A Filter & Sort Plugin.",
+  "main": "./src/jquery.mixitup.js",
+  "keywords": [
+    "jquery",
+    "filter",
+    "sort",
+    "mixitup"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
   "dependencies": {
     "jquery": ">=1.7"
   }
