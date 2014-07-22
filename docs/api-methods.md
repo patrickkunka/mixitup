@@ -159,7 +159,7 @@ This method is a short-hand for `.mixItUp('multiMix', {sort: sortCommand})`
 <h3 name="method-changeLayout">changeLayout</h3>
 
 ```
-.mixItUp('layoutChange', layoutCommand [,animate] [,callback])
+.mixItUp('changeLayout', layoutCommand [,animate] [,callback])
 ```
 
 Change the layout of the container by changing the value of the CSS “display” property for target elements (e.g. block or inline-block), and/or applying a class to the container.
@@ -173,14 +173,14 @@ Description | A string containing the desired display value for target elements,
 When passed as a string, the layout command sets the value of the CSS “display” property  for target elements:
 
 ```
-$('#Container').mixItUp('layoutChange', 'block');
+$('#Container').mixItUp('changeLayout', 'block');
 ```
 > Change the layout by changing target elements to "display: block"
 
 <br/>
 
 ```
-$('#Container').mixItUp('layoutChange', {
+$('#Container').mixItUp('changeLayout', {
 	display: 'block',
 	containerClass: 'list'
 }, function(state){
