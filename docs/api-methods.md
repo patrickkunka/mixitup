@@ -159,7 +159,7 @@ This method is a short-hand for `.mixItUp('multiMix', {sort: sortCommand})`
 <h3 name="method-changeLayout">changeLayout</h3>
 
 ```
-.mixItUp('changeLayout', layoutCommand [,animate] [,callback])
+.mixItUp('layoutChange', layoutCommand [,animate] [,callback])
 ```
 
 Change the layout of the container by changing the value of the CSS “display” property for target elements (e.g. block or inline-block), and/or applying a class to the container.
