@@ -2049,7 +2049,7 @@
 				}
 			}
 			
-			if(el.attributes && el.attributes.style && el.attributes.style !== undf && el.attributes.style.nodeValue === ''){
+			if(el.attributes && el.attributes.style && el.attributes.style !== undf && el.attributes.style.value === ''){
 				el.attributes.removeNamedItem('style');
 			}
 		});
