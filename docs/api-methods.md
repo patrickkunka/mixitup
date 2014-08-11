@@ -173,14 +173,14 @@ Description | A string containing the desired display value for target elements,
 When passed as a string, the layout command sets the value of the CSS “display” property  for target elements:
 
 ```
-$('#Container').mixItUp('layoutChange', 'block');
+$('#Container').mixItUp('changeLayout', 'block');
 ```
 > Change the layout by changing target elements to "display: block"
 
 <br/>
 
 ```
-$('#Container').mixItUp('layoutChange', {
+$('#Container').mixItUp('changeLayout', {
 	display: 'block',
 	containerClass: 'list'
 }, function(state){
