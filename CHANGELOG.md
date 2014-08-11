@@ -1,6 +1,10 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.6
+- Replace occurences of .nodeValue with .value to remove deprecation warning in latest Chrome
+- Remove miscellaneous trailing whitespace characters
+
 ## 2.1.5
 - Fixed mis-naming issue preventing user-defined staggerSequence function from being called.
 - Fixed issue where filter-in animations broke if 'fade' effect was not present

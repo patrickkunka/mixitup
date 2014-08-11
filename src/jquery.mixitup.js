@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.1.5
+ * MixItUp v2.1.6
  *
  * @copyright Copyright 2014 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -117,7 +117,7 @@
 			_queue: [],
 				
 			_$show: $(),
-			_$hide: $()	
+			_$hide: $()
 		});
 	
 		self._execAction('_constructor', 1);
@@ -365,7 +365,7 @@
 						}
 						return null;
 					}
-				});	
+				});
 			}
 			
 			self._execAction('_platformDetect', 1);
@@ -396,7 +396,7 @@
 						
 						var attr =  target.attributes[j],
 							name = attr.name,
-							val = attr.nodeValue;
+							val = attr.value;
 							
 						if(name.indexOf('data-') > -1){
 							var dataName = self._helpers._camelCase(name.substring(5,name.length));
@@ -590,7 +590,7 @@
 				type = 'filter',
 				$el = null;
 				
-			self._execAction('_updateControls', 0, arguments);	
+			self._execAction('_updateControls', 0, arguments);
 				
 			(command.filter === undf) && (output.filter = self._activeFilter);
 			(command.sort === undf) && (output.sort = self._activeSort);
@@ -613,7 +613,7 @@
 		_filter: function(){
 			var self = this;
 			
-			self._execAction('_filter', 0);	
+			self._execAction('_filter', 0);
 			
 			for(var i = 0; i < self._$targets.length; i++){
 				var $target = $(self._$targets[i]);
@@ -625,7 +625,7 @@
 				}
 			}
 			
-			self._execAction('_filter', 1);	
+			self._execAction('_filter', 1);
 		},
 		
 		/**
@@ -649,7 +649,7 @@
 					return newArray; 
 				};
 				
-			self._execAction('_sort', 0);	
+			self._execAction('_sort', 0);
 			
 			self._startOrder = [];
 			
@@ -675,7 +675,7 @@
 					});
 			}
 			
-			self._execAction('_sort', 1);	
+			self._execAction('_sort', 1);
 		},
 		
 		/**
@@ -1180,7 +1180,7 @@
 					el.style.height = el.dataset.finalHeight+'px';
 					el.style.marginRight = -(el.dataset.finalWidth - el.dataset.interWidth) + (el.dataset.finalMarginRight * 1)+'px';
 					el.style.marginBottom = -(el.dataset.finalHeight - el.dataset.interHeight) + (el.dataset.finalMarginBottom * 1)+'px';
-				}	
+				}
 			}
 
 			for(var i = 0; i < self._$pre.length; i++){
@@ -1194,7 +1194,7 @@
 
 				$el.css(transformCSS);
 				
-				if(self.animation.animateResizeTargets){		
+				if(self.animation.animateResizeTargets){
 					el.style.width = el.dataset.origWidth+'px';
 					el.style.height = el.dataset.origHeight+'px';
 					
@@ -1296,7 +1296,7 @@
 					if(el.dataset.origHeight - el.dataset.finalHeight && el.dataset.finalHeight * 1){
 						el.style.height = el.dataset.finalHeight+'px';
 						el.style.marginBottom = -(el.dataset.finalHeight - el.dataset.interHeight)+(el.dataset.finalMarginBottom * 1) +'px';
-					}	
+					}
 				}
 			}
 			
@@ -1533,7 +1533,7 @@
 			for(var i = 0; i < args.length; i++){
 				var arg = args[i];
 
-				if(arg !== null){	
+				if(arg !== null){
 					if(typeof arg === 'object' || typeof arg === 'string'){
 						output.command = arg;
 					} else if(typeof arg === 'boolean'){
@@ -1682,7 +1682,7 @@
 		 * @param {array} arguments
 		 */
 		
-		filter: function(){	
+		filter: function(){
 			var self = this,
 				args = self._parseMultiMixArgs(arguments);
 
@@ -1721,7 +1721,7 @@
 		 * MultiMix
 		 * @since 2.0.0
 		 * @param {array} arguments
-		 */		
+		 */
 		
 		multiMix: function(){
 			var self = this,
@@ -1806,7 +1806,7 @@
 		 * Insert
 		 * @since 2.0.0
 		 * @param {array} arguments
-		 */		
+		 */
 		
 		insert: function(){
 			var self = this,
@@ -1849,7 +1849,7 @@
 		 * Prepend
 		 * @since 2.0.0
 		 * @param {array} arguments
-		 */		
+		 */
 		
 		prepend: function(){
 			var self = this,
@@ -1876,7 +1876,7 @@
 		 * @since 2.0.0
 		 * @param {string} string
 		 * @return {mixed} value
-		 */		
+		 */
 		
 		getOption: function(string){
 			var self = this,
@@ -2035,7 +2035,7 @@
 			var el = this,
 				styles = style.split(' ');
 				
-			for(var i = 0; i < styles.length; i++){	
+			for(var i = 0; i < styles.length; i++){
 				for(var j = 0; j < 2; j++){
 					var prop = j ? styles[i] : prefix+styles[i];
 					if(
@@ -2049,7 +2049,7 @@
 				}
 			}
 			
-			if(el.attributes && el.attributes.style && el.attributes.style !== undf && el.attributes.style.nodeValue === ''){
+			if(el.attributes && el.attributes.style && el.attributes.style !== undf && el.attributes.style.value === ''){
 				el.attributes.removeNamedItem('style');
 			}
 		});
