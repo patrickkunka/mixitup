@@ -191,7 +191,7 @@ $('#Container').mixItUp('changeLayout', {
 
 <br/>
 
-This method is a short-hand for `.mixItUp('multiMix', {layoutChange: layoutCommand})`
+This method is a short-hand for `.mixItUp('multiMix', {changeLayout: layoutCommand})`
 
 <h3 name="method-multiMix">multiMix</h3>
 
@@ -199,13 +199,13 @@ This method is a short-hand for `.mixItUp('multiMix', {layoutChange: layoutComma
 .mixItUp('multiMix', multiMixObject [,animate] [,callback])
 ```
 
-Perform simultaneous filter, sort, and layoutChange operations.
+Perform simultaneous filter, sort, and changeLayout operations.
 
 Parameters | multiMixObject | animate | callback
 --- | --- | --- | ---
 Type | Object | Boolean | Function
 Default | - | `true` | `null`
-Description | The multiMixObject contains individual properties for the filter, sort and layoutChange methods and their respective commands. Any or all of these properties may be passed with the same syntax as the individual method. | A boolean indicating whether to animate the filtering operation (asynchronously), or perform it instantly (synchronously). | An optional callback function to be called after the filter operation has completed.
+Description | The multiMixObject contains individual properties for the filter, sort and changeLayout methods and their respective commands. Any or all of these properties may be passed with the same syntax as the individual method. | A boolean indicating whether to animate the filtering operation (asynchronously), or perform it instantly (synchronously). | An optional callback function to be called after the filter operation has completed.
 
 ```
 $('#Container').mixItUp('multiMix', {
@@ -216,7 +216,7 @@ $('#Container').mixItUp('multiMix', {
 	}
 });
 ```
-> Perform filter, sort and layoutChange operations in a single animation.
+> Perform filter, sort and changeLayout operations in a single animation.
 
 <h3 name="method-prepend">prepend</h3>
 
@@ -301,7 +301,7 @@ $('#Container').mixItUp('insert', 5, $('<div class="mix category-1"></div>'), {f
 .mixItUp('isMixing')
 ```
 
-This is method returns a boolean and is used to find out if a filter, sort, or layoutChange operation is in progress. It can be useful for custom user-interfaces where queuing is not enabled.
+This is method returns a boolean and is used to find out if a filter, sort, or changeLayout operation is in progress. It can be useful for custom user-interfaces where queuing is not enabled.
 
 ```
 if(!$('#Container').mixItUp('isMixing')){
