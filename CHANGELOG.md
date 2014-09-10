@@ -1,9 +1,15 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.7
+- Fixed removeStyle jQuery method to account for camel-cased style properties in firefox, affecting animateResizeTargets.
+- Replaced all == with ===
+- Ensure there are targets before before calling nextElementSibling in _printSort method
+- Removed some messy whitespace
+
 ## 2.1.6
-- Replace occurences of .nodeValue with .value to remove deprecation warning in latest Chrome
-- Remove miscellaneous trailing whitespace characters
+- Replaced occurences of .nodeValue with .value to remove deprecation warning in latest Chrome
+- Removed miscellaneous trailing whitespace characters
 
 ## 2.1.5
 - Fixed mis-naming issue preventing user-defined staggerSequence function from being called.
