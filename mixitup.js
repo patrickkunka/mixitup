@@ -81,6 +81,11 @@
 				sort: false
 			},
 
+			libraries: {
+				jQuery: null,
+				q: null
+			},
+
 			/* DOM
 			---------------------------------------------------------------------- */
 
@@ -96,7 +101,6 @@
 			/* Private Properties
 			---------------------------------------------------------------------- */
 		
-			_isSuckMode: false,
 			_isMixing: false,
 			_isSorting: false,
 			_isClicking: false,
@@ -128,12 +132,13 @@
 			_newClass: null,
 			_targetsBound: 0,
 			_targetsDone: 0,
+			_userPromise: null,
+			_effects: null,
 			_queue: [],
+			_state: null
 		});
 	
 		self._execAction('_constructor', 1);
-
-		self._init(el, config);
 	};
 	
 	/**
@@ -250,10 +255,13 @@
 				},
 				prefix = getPrefix(testEl);
 
+			MixItUp.prototype._has._promises = typeof Promise !== "undefined" && Promise.toString().indexOf('[native code]') !== -1;
+			MixItUp.prototype._has._transitions = prefix !== false;
 
-			MixItUp.prototype._has._transition = prefix !== false;
+			MixItUp.prototype._is._crapIe = window.atob && self._prefix ? false : true;
+
 			MixItUp.prototype._prefix = prefix;
-			MixItUp.prototype._transition = prefix ? prefix + 'Transition' : 'transition';
+			MixItUp.prototype._transitionProp = prefix ? prefix + 'Transition' : 'transition';
 			MixItUp.prototype._transformProp = prefix ? prefix + 'Transform' : 'transform';
 			MixItUp.prototype._transformRule = prefix ? '-' + prefix + '-transform' : 'transform';
 			
@@ -353,7 +361,7 @@
 			
 			self._id = el.id;
 
-			self.animation.enable = MixItUp.prototype._has._transition;
+			self.animation.enable = MixItUp.prototype._has._transitions;
 
 			self._indexTargets(true);
 
@@ -365,11 +373,11 @@
 
 			self._filter();
 
-			self._goMix(self.animation.enable);
-
 			MixItUp.prototype._instances.push(self); // TODO: better to abstract this to a higher API, along with init
 
 			self._execAction('_init', 1, arguments);
+
+			return self._goMix(self.animation.enable);
 		},
 		
 		/**
@@ -548,11 +556,70 @@
 		/**
 		 * Parse Effects
 		 * @since 2.0.0
-		 * @return {object} effects
+		 * @return {Object} effects
 		 */
 		
-		_parseEffects: function(){
-			var self = this;
+		_parseEffects: function() {
+			var self = this,
+				effects = {
+					opacity: '',
+					transformIn: '',
+					transformOut: ''
+				},
+				parse = function(effect, extract, reverse) {
+					if (self.animation.effects.indexOf(effect) > -1) {
+						if (extract) {
+							var propIndex = self.animation.effects.indexOf(effect+'(');
+
+							if (propIndex > -1) {
+								var str = self.animation.effects.substring(propIndex),
+									match = /\(([^)]+)\)/.exec(str),
+									val = match[1];
+
+									return {val: val};
+							}
+						}
+
+						return true;
+					} else {
+						return false;
+					}
+				},
+				negate = function(value, invert) {
+					if (invert) {
+						return value.charAt(0) === '-' ? value.substr(1, value.length) : '-'+value;
+					} else {
+						return value;
+					}
+				},
+				buildTransform = function(key, invert) {
+					var transforms = [
+						['scale', '.01'],
+						['translateX', '20px'],
+						['translateY', '20px'],
+						['translateZ', '20px'],
+						['rotateX', '90deg'],
+						['rotateY', '90deg'],
+						['rotateZ', '180deg'],
+					];
+					
+					for (var i = 0; i < transforms.length; i++) {
+						var prop = transforms[i][0],
+							def = transforms[i][1],
+							inverted = invert && prop !== 'scale';
+							
+						effects[key] += parse(prop) ? prop+'('+negate(parse(prop, true).val || def, inverted)+') ' : '';
+					}
+				};
+			
+			effects.opacity = parse('fade') ? parse('fade',true).val || '0' : '1';
+			
+			buildTransform('transformIn');
+			
+			self.animation.reverseOut ? buildTransform('transformOut', true) : (effects.transformOut = effects.transformIn);
+		
+			self.animation.stagger = parse('stagger') ? true : false;
+			self.animation.staggerDuration = parseInt(parse('stagger') ? (parse('stagger',true).val ? parse('stagger',true).val : 100) : 100);
 
 			return self._execFilter('_parseEffects', effects);
 		},
@@ -583,11 +650,16 @@
 			var self = this,
 				started = 0,
 				done = 0,
+				resolvePromise = null,
 				checkProgress = function() {
 					done++;
 
 					if (done === started) {
 						self._cleanUp();
+
+						self._isMixing = false;
+
+						resolvePromise && resolvePromise(self._state);
 					}
 				},
 				phase1 = function() {
@@ -597,20 +669,39 @@
 
 				},
 				phase3 = function() {
-					for (var i = 0, target; target = self._toShow[i]; i++) {
+					for (var i = 0, target; target = self._show[i]; i++) {
+						var posIn = {
+								x: target._isShown ? target._startPosData.x - target._interPosData.x : 0,
+								y: target._isShown ? target._startPosData.y - target._interPosData.y : 0
+							},
+							posOut = {
+								x: target._finalPosData.x - target._interPosData.x,
+								y: target._finalPosData.y - target._interPosData.y
+							},
+							toShow = target._isShown ? false : 'show';
+
 						started++;
 
 						target._show();
 
-						target._move(0, 0, true, 'show', i, function() {
+						target._move(posIn, posOut, toShow, i, function() {
 							checkProgress();
 						});
 					}
 
 					for (var i = 0, target; target = self._toHide[i]; i++) {
+						var posIn = {
+								x: target._startPosData.x - target._interPosData.x,
+								y: target._startPosData.y - target._interPosData.y
+							},
+							posOut = {
+								x: target._finalPosData.x - target._interPosData.x,
+								y: target._finalPosData.y - target._interPosData.y
+							};
+
 						started++;
 
-						target._move(0, 0, true, 'hide', i, function() {
+						target._move(0, 0, 'hide', i, function() {
 							this._hide();
 							checkProgress();
 						});
@@ -619,28 +710,42 @@
 				
 			self._execAction('_goMix', 0, arguments);
 
-			self._isMixing = true;
+			!self.animation.duration && (animate = false);
 
-			self._getOrigMixData();
-			self._setInter();
-			self._getInterMixData();
-			self._setFinal();
-			self._getFinalMixData();
+			if (animate && MixItUp.prototype._has._transitions) {
+				self._effects = self._parseEffects();
 
-			requestAnimationFrame(phase3);
+				self._userPromise = new Promise(function(resolve, reject) {
+					resolvePromise = resolve;
+				});
+
+				self._isMixing = true;
+
+				self._getStartMixData();
+				self._setInter();
+				self._getInterMixData();
+				self._setFinal();
+				self._getFinalMixData();
+
+				requestAnimationFrame(phase3);
+			} else {
+				self._cleanUp();
+			}
 			
 			self._execAction('_goMix', 1, arguments);
+
+			return self._userPromise;
 		},
 		
 		/**
-		 * Get Original Mix Data
+		 * Get Start Mix Data
 		 * @since 2.0.0
 		 */
 		
-		_getOrigMixData: function(){
+		_getStartMixData: function(){
 			var self = this;
 			
-			self._execAction('_getOrigMixData', 0);
+			self._execAction('_getStartMixData', 0);
 
 			for (var i = 0, target; target = self._show[i]; i++) {
 				var data = target._getPosData();
@@ -654,7 +759,7 @@
 				target._startPosData = data;
 			}
 			
-			self._execAction('_getOrigMixData', 1);
+			self._execAction('_getStartMixData', 1);
 		},
 		
 		/**
@@ -807,12 +912,31 @@
 		/**
 		 * Parse MultiMix Arguments
 		 * @since 2.0.0
-		 * @param {array} args
-		 * @return {object} output
+		 * @param {Array} args
+		 * @return {Object} output
 		 */
 		
-		_parseMultiMixArgs: function(args){
-			var self = this;
+		_parseMultiMixArgs: function(args) {
+			var self = this,
+				output = {
+					command: null,
+					animate: self.animation.enable,
+					callback: null
+				};
+				
+			for (var i = 0; i < args.length; i++){
+				var arg = args[i];
+
+				if(arg !== null){
+					if(typeof arg === 'object' || typeof arg === 'string'){
+						output.command = arg;
+					} else if(typeof arg === 'boolean'){
+						output.animate = arg;
+					} else if(typeof arg === 'function'){
+						output.callback = arg;
+					}
+				}
+			}
 			
 			return self._execFilter('_parseMultiMixArgs', output, arguments);
 		},
@@ -854,6 +978,13 @@
 		_execFilter: function(methodName, value, args){
 			var self = this;
 			
+			if(!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)){
+				for(var key in self._filters[methodName]){
+					return self._filters[methodName][key].call(self, args);
+				}
+			} else {
+				return value;
+			}
 		},
 		
 		/* Public Methods
@@ -907,11 +1038,42 @@
 		 * MultiMix
 		 * @since 2.0.0
 		 * @param {array} arguments
+		 * @return {Object} promise
 		 */
 		
-		multiMix: function(){
-			var self = this;
+		multiMix: function() {
+			var self = this,
+				args = self._parseMultiMixArgs(arguments),
+				sort = '',
+				filter = '',
+				changeLayout = '';
 
+			self._execAction('multiMix', 0, arguments);
+
+			if (!self._isMixing) {
+
+				delete self.callbacks._user;
+
+				if (args.callback) self.callbacks._user = args.callback;
+
+				sort = args.command.sort;
+				filter = args.command.filter;
+				changeLayout = args.command.changeLayout;
+
+				if (filter !== undf) {
+					filter = (filter === 'all') ? self.selectors.target : filter;
+	
+					self._activeFilter = filter;
+				}
+
+				self._filter();
+
+				self._execAction('multiMix', 1, arguments);
+
+				return self._goMix(args.animate ^ self.animation.enable ? args.animate : self.animation.enable);
+			} else {
+				// queue
+			}
 		},
 		
 		/**
@@ -1093,61 +1255,69 @@
 
 		/**
 		 * _move		 
-		 * @param {Number} x
-		 * @param {Number} y
-		 * @param [{Boolean} animate]
+		 * @param {Object} posIn
+		 * @param {Object} posOut
 		 * @param [{String} hideShow]
 		 * @param [{Number} staggerIndex]
 		 * @param [{Function} callback]
 		 * @since 3.0.0
 		 */
 
-		_move: function(x, y, animate, hideShow, staggerIndex, callback) {
+		_move: function(posIn, posOut, hideShow, staggerIndex, callback) {
 			var self = this,
 				transitionRules = [],
+				transformValues = [],
+				transformString = '',
 				writeRule = function(rule) {
 					var delay = staggerIndex * self._mixer.animation.staggerDelay;
 
 					return rule + ' ' +
 						self._mixer.animation.duration + 'ms ' +
 						self._mixer.animation.staggerDelay + 'ms ' +
-						self._mixer.animation.easing;
+						(rule === 'opacity' ? 'linear' : self._mixer.animation.easing);
 				},
 				applyStyles = function() {
-					if (animate) {
-						transitionRules.push(writeRule(MixItUp.prototype._transformRule, staggerIndex));
+					transformValues = [];
 
-						if (hideShow) {
-							transitionRules.push(writeRule('opacity', staggerIndex));
-						}
+					transitionRules.push(writeRule(MixItUp.prototype._transformRule, staggerIndex));
 
-						self._bind(callback);
-
-						self._transition(transitionRules);
+					if (hideShow) {
+						transitionRules.push(writeRule('opacity', staggerIndex));
 					}
 
-					if (x || y) {
-						self._el.style[MixItUp.prototype.transformProp] = 'translate3d('+x+'px, '+y+', 0)';
-					}
+					self._bind(callback);
+					self._transition(transitionRules);
 
-					if (animate && hideShow === 'hide') {
-						self._el.style.opacity = 0;
-					} else if (animate && hideShow === 'show') {
+					transformValues.push('translateX('+posOut.x+'px)', 'translateY('+posOut.y+'px)');					
+
+					if (hideShow === 'hide') {
+						self._el.style.opacity = self._mixer._effects.opacity;
+
+						transformValues.push(self._mixer._effects.transformOut);
+					} else if (hideShow === 'show') {
 						self._el.style.opacity = 1;
 					}
+
+					transformString = transformValues.join(' ');
+
+					self._el.style[MixItUp.prototype._transformProp] = transformString;
 				};
 
-				if (animate && hideShow === 'hide') {
-					self._el.style.opacity = 1;
-				} else if (animate && hideShow === 'show') {
-					self._el.style.opacity = 0;
-				}
+			transformValues.push('translateX('+posIn.x+'px)', 'translateY('+posOut.y+'px)');				
 
-				if (animate) {
-					requestAnimationFrame(applyStyles);
-				} else {
-					applyStyles();
-				}
+			if (hideShow === 'hide') {
+				self._el.style.opacity = 1;
+			} else if (hideShow === 'show') {
+				self._el.style.opacity = self._mixer._effects.opacity;
+
+				transformValues.push(self._mixer._effects.transformIn);
+			}
+
+			transformString = transformValues.join(' ');
+
+			self._el.style[MixItUp.prototype._transformProp] = transformString;
+
+			requestAnimationFrame(applyStyles);
 		},
 
 		/**
