@@ -1,7 +1,0 @@
-{
-  "name": "mixitup",
-  "version": "2.1.6",
-  "dependencies": {
-    "jquery": ">=1.7"
-  }
-}
