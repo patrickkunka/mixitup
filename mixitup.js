@@ -690,18 +690,9 @@
 					}
 
 					for (var i = 0, target; target = self._toHide[i]; i++) {
-						var posIn = {
-								x: target._startPosData.x - target._interPosData.x,
-								y: target._startPosData.y - target._interPosData.y
-							},
-							posOut = {
-								x: target._finalPosData.x - target._interPosData.x,
-								y: target._finalPosData.y - target._interPosData.y
-							};
-
 						started++;
 
-						target._move(0, 0, 'hide', i, function() {
+						target._move({x: 0, y: 0}, {x: 0, y: 0}, 'hide', i, function() {
 							this._hide();
 							checkProgress();
 						});
@@ -1268,7 +1259,8 @@
 				transitionRules = [],
 				transformValues = [],
 				transformString = '',
-				writeRule = function(rule) {
+				fading = self._mixer._effects.opacity !== undf,
+				writeTransitionRule = function(rule) {
 					var delay = staggerIndex * self._mixer.animation.staggerDelay;
 
 					return rule + ' ' +
@@ -1279,43 +1271,39 @@
 				applyStyles = function() {
 					transformValues = [];
 
-					transitionRules.push(writeRule(MixItUp.prototype._transformRule, staggerIndex));
+					transitionRules.push(writeTransitionRule(MixItUp.prototype._transformRule, staggerIndex));
 
 					if (hideShow) {
-						transitionRules.push(writeRule('opacity', staggerIndex));
+						transitionRules.push(writeTransitionRule('opacity', staggerIndex));
 					}
 
 					self._bind(callback);
 					self._transition(transitionRules);
 
-					transformValues.push('translateX('+posOut.x+'px)', 'translateY('+posOut.y+'px)');					
+					transformValues.push('translate('+posOut.x+'px, '+posOut.y+'px)');					
 
 					if (hideShow === 'hide') {
-						self._el.style.opacity = self._mixer._effects.opacity;
+						fading && (self._el.style.opacity = self._mixer._effects.opacity);
 
 						transformValues.push(self._mixer._effects.transformOut);
 					} else if (hideShow === 'show') {
-						self._el.style.opacity = 1;
+						fading && (self._el.style.opacity = 1);
 					}
 
-					transformString = transformValues.join(' ');
-
-					self._el.style[MixItUp.prototype._transformProp] = transformString;
+					self._el.style[MixItUp.prototype._transformProp] = transformValues.join(' ');
 				};
 
-			transformValues.push('translateX('+posIn.x+'px)', 'translateY('+posOut.y+'px)');				
+			transformValues.push('translate('+posIn.x+'px, '+posIn.y+'px)');				
 
 			if (hideShow === 'hide') {
-				self._el.style.opacity = 1;
+				fading && (self._el.style.opacity = 1);
 			} else if (hideShow === 'show') {
-				self._el.style.opacity = self._mixer._effects.opacity;
+				fading && (self._el.style.opacity = self._mixer._effects.opacity);
 
 				transformValues.push(self._mixer._effects.transformIn);
 			}
 
-			transformString = transformValues.join(' ');
-
-			self._el.style[MixItUp.prototype._transformProp] = transformString;
+			self._el.style[MixItUp.prototype._transformProp] = transformValues.join(' ');
 
 			requestAnimationFrame(applyStyles);
 		},
