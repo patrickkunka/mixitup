@@ -365,6 +365,14 @@
 
 			self._indexTargets(true);
 
+			if (self.load.sort) {
+				self._newSort = self._parseSort(self.load.sort);
+				self._newSortString = self.load.sort;
+				self._activeSort = self.load.sort;
+				self._sort();
+				self._printSort();
+			}
+
 			self._activeFilter = self.load.filter === 'all' ? 
 				self.selectors.target :
 				self.load.filter === 'none' ?
@@ -405,6 +413,8 @@
 				self._dom._parent = self._dom._targets[0].parentElement.isEqualNode(self._dom._container) ?
 					self._dom._container :
 					self._dom._targets[0].parentElement;
+
+				self._origOrder = self._targets;
 			}
 			
 			self._execAction('_indexTargets', 1, arguments);
@@ -506,9 +516,46 @@
 		 */
 		
 		_sort: function(){
-			var self = this;
+			var self = this,
+				arrayShuffle = function(oldArray) {
+					var newArray = oldArray.slice(),
+						len = newArray.length,
+						i = len;
 
+					while (i--) {
+						var p = parseInt(Math.random()*len),
+							t = newArray[i];
+
+						newArray[i] = newArray[p];
+						newArray[p] = t;
+					};
+
+					return newArray; 
+				};
+				
 			self._execAction('_sort', 0);
+			
+			self._startOrder = [];
+			
+			for (var i = 0, target; target = self._targets[i]; i++) {
+				self._startOrder.push(target);
+			}
+			
+			switch(self._newSort[0].sortBy){
+				case 'default':
+					self._newOrder = self._origOrder;
+					break;
+				case 'random':
+					self._newOrder = arrayShuffle(self._startOrder);
+					break;
+				case 'custom':
+					self._newOrder = self._newSort[0].order;
+					break;
+				default:
+					self._newOrder = self._startOrder.concat().sort(function(a, b){
+						return self._compare(a, b);
+					});
+			}
 			
 			self._execAction('_sort', 1);
 		},
@@ -523,7 +570,24 @@
 		 */
 		
 		_compare: function(a, b, depth){
-			
+			depth = depth ? depth : 0;
+		
+			var self = this,
+				order = self._newSort[depth].order,
+				getData = function(target){
+					return target._el.getAttribute('data-'+self._newSort[depth].sortBy) || 0;
+				},
+				attrA = isNaN(getData(a) * 1) ? getData(a).toLowerCase() : getData(a) * 1,
+				attrB = isNaN(getData(b) * 1) ? getData(b).toLowerCase() : getData(b) * 1;
+				
+			if(attrA < attrB)
+				return order === 'asc' ? -1 : 1;
+			if(attrA > attrB)
+				return order === 'asc' ? 1 : -1;
+			if(attrA === attrB && self._newSort.length > depth+1)
+				return self._compare(a, b, depth+1);
+
+			return 0;
 		},
 		
 		/**
@@ -533,9 +597,43 @@
 		 */
 		
 		_printSort: function(reset){
-			var self = this;
-				
+			var self = this,
+				order = reset ? self._startOrder : self._newOrder,
+				targets = self._dom._parent.querySelectorAll(self.selectors.target),
+				nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
+				frag = document.createDocumentFragment();
+
 			self._execAction('_printSort', 0, arguments);
+			
+			for (var i = 0, el; el = targets[i]; i++) {
+				var whiteSpace = el.nextSibling;
+
+				if (el.style.position === 'absolute') continue;
+			
+				if (whiteSpace && whiteSpace.nodeName === '#text') {
+					self._dom._parent.removeChild(whiteSpace);
+				}
+				
+				self._dom._parent.removeChild(el);
+			}
+			
+			for (var i = 0, target; target = order[i]; i++) {
+				var el = target._el;
+
+				if (self._newSort[0].sortBy === 'default' && self._newSort[0].order === 'desc' && !reset) {
+					var firstChild = frag.firstChild;
+
+					frag.insertBefore(el, firstChild);
+					frag.insertBefore(document.createTextNode(' '), el);
+				} else {
+					frag.appendChild(el);
+					frag.appendChild(document.createTextNode(' '));
+				}
+			}
+			
+			nextSibling ? 
+				self._dom._parent.insertBefore(frag, nextSibling) :
+				self._dom._parent.appendChild(frag);
 				
 			self._execAction('_printSort', 1, arguments);
 		},
@@ -547,8 +645,22 @@
 		 * @return {array} newSort
 		 */
 		
-		_parseSort: function(sortString){
-			var self = this;
+		_parseSort: function(sortString) {
+			var self = this,
+				rules = typeof sortString === 'string' ? sortString.split(' ') : [sortString],
+				newSort = [];
+				
+			for (var i = 0; i < rules.length; i++) {
+				var rule = typeof sortString === 'string' ? rules[i].split(':') : ['custom', rules[i]],
+					ruleObj = {
+						sortBy: _helpers._camelCase(rule[0]),
+						order: rule[1] || 'asc'
+					};
+					
+				newSort.push(ruleObj);
+				
+				if (ruleObj.sortBy === 'default' || ruleObj.sortBy === 'random') break;
+			}
 			
 			return self._execFilter('_parseSort', newSort, arguments);
 		},
@@ -649,17 +761,20 @@
 		_goMix: function(animate){
 			var self = this,
 				started = 0,
-				done = 0,
+				finished = 0,
 				resolvePromise = null,
+				done = function() {
+					self._cleanUp();
+
+					self._isMixing = false;
+
+					resolvePromise && resolvePromise(self._state);
+				},
 				checkProgress = function() {
-					done++;
+					finished++;
 
-					if (done === started) {
-						self._cleanUp();
-
-						self._isMixing = false;
-
-						resolvePromise && resolvePromise(self._state);
+					if (finished === started) {
+						done();
 					}
 				},
 				phase1 = function() {
@@ -680,7 +795,13 @@
 							},
 							toShow = target._isShown ? false : 'show';
 
-						started++;
+						if (
+							toShow ||
+							posIn.x !== posOut.x ||
+							posIn.y !== posOut.y
+						) {
+							started++;
+						}
 
 						target._show();
 
@@ -690,10 +811,16 @@
 					}
 
 					for (var i = 0, target; target = self._toHide[i]; i++) {
+						var posIn = {
+								x: target._isShown ? target._startPosData.x - target._interPosData.x : 0,
+								y: target._isShown ? target._startPosData.y - target._interPosData.y : 0
+							};
+
 						started++;
 
-						target._move({x: 0, y: 0}, {x: 0, y: 0}, 'hide', i, function() {
+						target._move(posIn, {x: 0, y: 0}, 'hide', i, function() {
 							this._hide();
+
 							checkProgress();
 						});
 					}
@@ -702,6 +829,10 @@
 			self._execAction('_goMix', 0, arguments);
 
 			!self.animation.duration && (animate = false);
+
+			if (!self._toShow.length && !self._toHide.length && !self._isSorting) {
+				animate = false;			
+			}
 
 			if (animate && MixItUp.prototype._has._transitions) {
 				self._effects = self._parseEffects();
@@ -720,7 +851,7 @@
 
 				requestAnimationFrame(phase3);
 			} else {
-				self._cleanUp();
+				done();
 			}
 			
 			self._execAction('_goMix', 1, arguments);
@@ -805,6 +936,8 @@
 			
 			self._execAction('_setFinal', 0);
 
+			self._isSorting && self._printSort();
+
 			for (var i = 0, target; target = self._toHide[i]; i++) {
 				target._hide();
 			}
@@ -832,6 +965,10 @@
 				var data = target._getPosData();
 
 				target._finalPosData = data;
+			}
+
+			if (self._isSorting) {
+				self._printSort(true);
 			}
 
 			for (var i = 0, target; target = self._toShow[i]; i++) {
@@ -867,24 +1004,14 @@
 				target._isShown = false;
 			}
 
-			self._isMixing = true;
+			if (self._isSorting) {
+				self._printSort();
+
+				self._activeSort = self._newSortString;
+				self._isSorting = false;
+			}
 			
 			self._execAction('_cleanUp', 1);
-		},
-		
-		/**
-		 * Get Prefixed CSS
-		 * @since 2.0.0
-		 * @param {string} property
-		 * @param {string} value
-		 * @param {boolean} prefixValue
-		 * @return {object} styles
-		 */
-		
-		_getPrefixedCSS: function(property, value, prefixValue){
-			var self = this;
-			
-			return self._execFilter('_getPrefixedCSS', styles, arguments);
 		},
 		
 		/**
@@ -1050,6 +1177,14 @@
 				sort = args.command.sort;
 				filter = args.command.filter;
 				changeLayout = args.command.changeLayout;
+
+				if (sort) {
+					self._newSort = self._parseSort(sort);
+					self._newSortString = sort;
+
+					self._isSorting = true;
+					self._sort();
+				}
 
 				if (filter !== undf) {
 					filter = (filter === 'all') ? self.selectors.target : filter;
@@ -1277,7 +1412,14 @@
 						transitionRules.push(writeTransitionRule('opacity', staggerIndex));
 					}
 
-					self._bind(callback);
+					if (
+						hideShow ||
+						posIn.x !== posOut.x ||
+						posIn.y !== posOut.y
+					) {
+						self._bind(callback);
+					}
+
 					self._transition(transitionRules);
 
 					transformValues.push('translate('+posOut.x+'px, '+posOut.y+'px)');					
