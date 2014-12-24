@@ -541,7 +541,7 @@
 				self._startOrder.push(target);
 			}
 			
-			switch(self._newSort[0].sortBy){
+			switch (self._newSort[0].sortBy) {
 				case 'default':
 					self._newOrder = self._origOrder;
 					break;
@@ -556,6 +556,8 @@
 						return self._compare(a, b);
 					});
 			}
+
+			self._targets = self._newOrder;
 			
 			self._execAction('_sort', 1);
 		},
@@ -1522,6 +1524,10 @@
 			self._el.style[MixItUp.prototype._transformProp] = '';
 			self._el.style[MixItUp.prototype._transitionProp] = '';
 			self._el.style.opacity = '';
+
+			self._startPosData = {x: 0, y: 0};
+			self._interPosData = {x: 0, y: 0};
+			self._finalPosData = {x: 0, y: 0};
 		}
 	};
 
