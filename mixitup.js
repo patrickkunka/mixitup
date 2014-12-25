@@ -232,7 +232,7 @@
 			obj[hook][priority] = {};
 			obj[hook][priority][name] = func;
 
-			_helpers._extend(true, collection, obj);
+			_helpers._extend(collection, obj);
 		},
 
 		/**
@@ -380,6 +380,10 @@
 					self.load.filter;
 
 			self._filter();
+
+			self._buildState();
+
+			self._bindHandlers();
 
 			MixItUp.prototype._instances.push(self); // TODO: better to abstract this to a higher API, along with init
 
@@ -747,11 +751,44 @@
 		
 		_buildState: function(future){
 			var self = this,
-				state = {};
+				state = {},
+				targets = [],
+				show = [],
+				hide = [];
 			
 			self._execAction('_buildState', 0);
+
+			for (var i = 0, target; target = self._targets[i]; i++) {
+				targets.push(target._el);
+
+				if (target._isShown) {
+					show.push(target._el);
+				} else {
+					hide.push(target._el);
+				}
+			}
 			
-			self._execAction('_buildState', 1);	
+			state = {
+				activeFilter: self._activeFilter === '' ? 'none' : self._activeFilter,
+				activeSort: future && self._newSortString ? self._newSortString : self._activeSort,
+				hasFailed: !self._show.length && self._activeFilter !== '',
+				targets: targets,
+				show: show,
+				hide: hide,
+				totalTargets: self._targets.length,
+				totalShow: self._show.length,
+				totalHide: self._hide.length,
+				instance: self,
+				display: future && self._newDisplay ? self._newDisplay : self.layout.display
+			};
+			
+			if (future){
+				return self._execFilter('_buildState', state);
+			} else {
+				self._state = state;
+				
+				self._execAction('_buildState', 1);
+			}
 		},
 		
 		/**
@@ -826,7 +863,8 @@
 							checkProgress();
 						});
 					}
-				};
+				},
+				futureState = self._buildState(true);
 				
 			self._execAction('_goMix', 0, arguments);
 
@@ -1012,6 +1050,8 @@
 				self._activeSort = self._newSortString;
 				self._isSorting = false;
 			}
+
+			self._buildState();
 			
 			self._execAction('_cleanUp', 1);
 		},
@@ -1082,9 +1122,15 @@
 		 * @param {array} args
 		 */
 		
-		_execAction: function(methodName, isPost, args){
-			var self = this;
+		_execAction: function(methodName, isPost, args) {
+			var self = this,
+				context = isPost ? 'post' : 'pre';
 
+			if (!self._actions.isEmptyObject && self._actions.hasOwnProperty(methodName)) {
+				for (var key in self._actions[methodName][context]) {
+					self._actions[methodName][context][key].call(self, args);
+				}
+			}
 		},
 		
 		/**
@@ -1098,8 +1144,8 @@
 		_execFilter: function(methodName, value, args){
 			var self = this;
 			
-			if(!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)){
-				for(var key in self._filters[methodName]){
+			if (!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)) {
+				for (var key in self._filters[methodName]) {
 					return self._filters[methodName][key].call(self, args);
 				}
 			} else {
@@ -1309,6 +1355,8 @@
 	var _Target = function() {
 		var self = this;
 
+		self._execAction('_constructor', 0, arguments);
+
 		_helpers._extend(self, {
 			_el: null,
 			_sortString: '',
@@ -1318,6 +1366,8 @@
 			_interPosData: null,
 			_finalPosData: null
 		});
+
+		self._execAction('_constructor', 1, arguments);
 	};
 
 	/**
@@ -1328,6 +1378,85 @@
 	
 	_Target.prototype = {
 		constructor: _Target,
+
+		/* Static Properties
+		---------------------------------------------------------------------- */
+
+		_actions: {},
+		_filters: {},
+
+		/* Static Methods
+		---------------------------------------------------------------------- */
+		
+		/**
+		 * Extend
+		 * @since 3.0.0
+		 * @param {object} new properties/methods
+		 * @extends {object} prototype
+		 */
+		
+		extend: function(extension) {
+			for(var key in extension){
+				_Target.prototype[key] = extension[key];
+			}
+		},
+		
+		/**
+		 * Add Action
+		 * @since 3.0.0
+		 * @param {string} hook name
+		 * @param {string} namespace
+		 * @param {function} function to execute
+		 * @param {number} priority
+		 * @extends {object} $.MixItUp.prototype._actions
+		 */
+		
+		addAction: function(hook, name, func, priority) {
+			_Target.prototype._addHook('_actions', hook, name, func, priority);
+		},
+		
+		/**
+		 * Add Filter
+		 * @since 3.0.0
+		 * @param {string} hook name
+		 * @param {string} namespace
+		 * @param {function} function to execute
+		 * @param {number} priority
+		 * @extends {object} $.MixItUp.prototype._filters
+		 */
+		
+		addFilter: function(hook, name, func, priority) {
+			_Target.prototype._addHook('_filters', hook, name, func, priority);
+		},
+		
+		/**
+		 * Add Hook
+		 * @since 3.0.0
+		 * @param {string} type of hook
+		 * @param {string} hook name
+		 * @param {function} function to execute
+		 * @param {number} priority
+		 * @extends {object} $.MixItUp.prototype._filters
+		 */
+		
+		_addHook: function(type, hook, name, func, priority) {
+			var collection = _Target.prototype[type],
+				obj = {};
+				
+			priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
+				
+			obj[hook] = {};
+			obj[hook][priority] = {};
+			obj[hook][priority][name] = func;
+
+			_helpers._extend(collection, obj);
+		},
+
+		/* Public Properties
+		---------------------------------------------------------------------- */
+
+		_execAction: MixItUp.prototype._execAction,
+		_execFilter: MixItUp.prototype._execFilter,
 
 		/**
 		 * _init
@@ -1524,10 +1653,6 @@
 			self._el.style[MixItUp.prototype._transformProp] = '';
 			self._el.style[MixItUp.prototype._transitionProp] = '';
 			self._el.style.opacity = '';
-
-			self._startPosData = {x: 0, y: 0};
-			self._interPosData = {x: 0, y: 0};
-			self._finalPosData = {x: 0, y: 0};
 		}
 	};
 
@@ -1655,7 +1780,65 @@
 					el.nodeName === 'string'
 				);
 			}
-		}
+		},
+
+		/**
+         * createElement
+         */
+
+        _createElement: function(htmlString) {
+            var frag = document.createDocumentFragment(),
+                temp = document.createElement('div');
+
+            temp.innerHTML = htmlString;
+
+            while (temp.firstChild) {
+                frag.appendChild(temp.firstChild);
+            }
+
+            return frag;
+        },
+
+        /**
+         * throttle
+         */
+
+        _throttle: function(func, wait, options) {
+            var context = null,
+                args = null,
+                result = null,
+                timeout = null,
+                previous = 0,
+                later = function() {
+                    previous = options.leading === false ? 0 : new Date();
+                    timeout = null;
+                    result = func.apply(context, args);
+                };
+
+            options || (options = {});
+            
+            return function() {
+                var now = new Date(),
+                    remaining = null,
+                    args = arguments;
+              
+                if (!previous && options.leading === false) previous = now;
+              
+                remaining = wait - (now - previous);
+                context = this;
+                
+                if (remaining <= 0) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                    previous = now;
+                    result = func.apply(context, args);
+                } else if (!timeout && options.trailing !== false) {
+                    timeout = setTimeout(later, remaining);
+                }
+
+                return result;
+            };
+        }
 	};
 
 	MixItUp.prototype._platformDetect();
@@ -1663,9 +1846,11 @@
 	if (typeof exports === 'object' && typeof module === 'object') {
 		module.exports = MixItUp;
 	} else if (typeof define === 'function' && define.amd) {
-		return MixItUp;
+		define(MixItUp);
 	} else {
 		window.MixItUp = MixItUp;
+		window._mixItUpHelpers = _helpers;
+		window._mixItUpTarget = _Target;
 	}
 	
 })(window);
