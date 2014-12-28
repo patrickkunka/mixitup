@@ -1749,6 +1749,21 @@
             } else
                 el.removeEventListener(type, fn, false);
         },
+
+        /**
+         * index 
+         */
+
+        _index: function(el, selector) {
+            var i = 0;
+
+            while((el = el.previousElementSibling)!== null) {
+                if (!selector || el.matches(selector)) {
+                    ++i;   
+                }
+            }
+            return i;
+        },
 			
 		/**
 		 * CamelCase
