@@ -391,6 +391,8 @@
 						'' :
 						self.load.filter;
 
+				self._effects = self._parseEffects();
+
 				self._filter();
 
 				self._buildState();
