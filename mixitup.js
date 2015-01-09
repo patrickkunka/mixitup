@@ -15,7 +15,7 @@
 (function(window, undf) {
 	'use strict'
 
-	if (!window._MixItUp || typeof window._MixItUp !== 'function') {
+	if (window._MixItUp === undf || typeof window._MixItUp !== 'function') {
 
 		/* _MixItUp Private Core
 		---------------------------------------------------------------------- */
@@ -166,6 +166,12 @@
 			_has: {},
 
 			_instances: {},
+
+			_extensions: {
+				dragndrop: false,
+				multiFilter: false,
+				pagination: false
+			},
 
 			_handled: {_filter: {}, _sort: {}},
 			_bound: {_filter: {}, _sort: {}},
@@ -1872,63 +1878,63 @@
 	        }
 		};
 
+		/* mixItUp Public API
+		---------------------------------------------------------------------- */
+
+		var mixItUp = function(container, config) {
+			var el = null,
+				instance = null,
+				id = '',
+				rand = function(){
+					return ('00000'+(Math.random()*16777216<<0).toString(16)).substr(-6).toUpperCase();
+				};
+
+			switch (typeof container) {
+				case 'string':
+					el = document.querySelectorAll(container)[0];
+
+					break;
+				case 'object':
+					el = container;
+
+					break;
+				default:
+					console.error('[MixItUp] Invalid selector or element.');
+			}
+
+			if (!el.id) {
+				id = 'MixItUp' + rand();
+
+				el.id = id;
+			} else {
+				id = el.id;
+			}
+
+			if (_MixItUp.prototype._instances[id] == undf) {
+				// todo: check that el has been touched by mixitup
+
+				instance = new _MixItUp(el, config);
+
+				instance._init(el, config);
+
+				_MixItUp.prototype._instances[id] = instance;
+			} else if (_MixItUp.prototype._instances[id] instanceof _MixItUp) {
+				instance = _MixItUp.prototype._instances[id];
+
+				// todo: warn if sending config and trying to reconfigure 
+			}
+
+			return instance;
+		};
+
 		_MixItUp.prototype._platformDetect();
+
 		_MixItUp.prototype._helpers = _helpers;
 		_MixItUp.prototype._Target = _Target;
+		_MixItUp.prototype.mixItUp = mixItUp;
 
 		window._MixItUp = _MixItUp;
-	} else if (typeof window._MixItUp === 'function') {
-		var _MixItUp = window.MixItUp;
 	}
-
-	/* mixItUp Public API
-	---------------------------------------------------------------------- */
-
-	var mixItUp = function(container, config) {
-		var el = null,
-			instance = null,
-			id = '',
-			rand = function(){
-				return ('00000'+(Math.random()*16777216<<0).toString(16)).substr(-6).toUpperCase();
-			};
-
-		switch (typeof container) {
-			case 'string':
-				el = document.querySelectorAll(container)[0];
-
-				break;
-			case 'object':
-				el = container;
-
-				break;
-			default:
-				console.error('[MixItUp] Invalid selector or element.');
-		}
-
-		if (!el.id) {
-			id = 'MixItUp' + rand();
-
-			el.id = id;
-		} else {
-			id = el.id;
-		}
-
-		if (_MixItUp.prototype._instances[id] == undf) {
-			// todo: check that el has been touched by mixitup
-
-			instance = new _MixItUp(el, config);
-
-			instance._init(el, config);
-
-			_MixItUp.prototype._instances[id] = instance;
-		} else if (_MixItUp.prototype._instances[id] instanceof _MixItUp) {
-			instance = _MixItUp.prototype._instances[id];
-
-			// todo: warn if sending config and trying to reconfigure 
-		}
-
-		return instance;
-	};
 
 	/* Module Definitions
 	---------------------------------------------------------------------- */
@@ -1939,7 +1945,7 @@
 		define(function() {
 			return mixItUp;
 		});
-	} else if (window) {
+	} else if (window._MixItUp === undf || typeof window._MixItUp !== 'function') {
 		window.mixItUp = mixItUp;
 	}
 })(window);
