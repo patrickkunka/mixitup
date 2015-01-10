@@ -122,7 +122,7 @@
 				_toMove: [],
 
 				_origOrder: [],
-				_startOrder: [],
+				_currentOrder: [],
 				_newOrder: [],
 
 				_activeFilter: null,
@@ -428,7 +428,7 @@
 						self._dom._container :
 						self._dom._targets[0].parentElement;
 
-					self._origOrder = self._targets;
+					self._currentOrder = self._origOrder = self._targets;
 				}
 				
 				self._execAction('_indexTargets', 1, arguments);
@@ -549,10 +549,10 @@
 					
 				self._execAction('_sort', 0);
 				
-				self._startOrder = [];
+				self._currentOrder = [];
 				
 				for (var i = 0, target; target = self._targets[i]; i++) {
-					self._startOrder.push(target);
+					self._currentOrder.push(target);
 				}
 				
 				switch (self._newSort[0].sortBy) {
@@ -560,13 +560,13 @@
 						self._newOrder = self._origOrder;
 						break;
 					case 'random':
-						self._newOrder = arrayShuffle(self._startOrder);
+						self._newOrder = arrayShuffle(self._currentOrder);
 						break;
 					case 'custom':
 						self._newOrder = self._newSort[0].order;
 						break;
 					default:
-						self._newOrder = self._startOrder.concat().sort(function(a, b){
+						self._newOrder = self._currentOrder.concat().sort(function(a, b){
 							return self._compare(a, b);
 						});
 				}
@@ -614,7 +614,7 @@
 			
 			_printSort: function(reset){
 				var self = this,
-					order = reset ? self._startOrder : self._newOrder,
+					order = reset ? self._currentOrder : self._newOrder,
 					targets = self._dom._parent.querySelectorAll(self.selectors.target),
 					nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
 					frag = document.createDocumentFragment();
@@ -1060,6 +1060,8 @@
 					self._printSort();
 
 					self._activeSort = self._newSortString;
+					self._currentOrder = self._newOrder;
+					self._newOrder = [];
 					self._isSorting = false;
 				}
 
@@ -1877,6 +1879,46 @@
 
 	                return result;
 	            };
+	        },
+
+	        /**
+	         * position
+	         * @param {Object} el
+	         * @return {Object} position
+	         */
+
+	        _position: function(el) {
+	            var xPosition = 0,
+	                yPosition = 0;
+	          
+	            while (el) {
+	                xPosition += el.offsetLeft;
+	                yPosition += el.offsetTop;
+	                el = el.offsetParent;
+	            }
+
+	            return { x: xPosition, y: yPosition };
+	        },
+
+	        /**
+	         * closestParent
+	         * @param {Object} el
+	         * @param {String} selector
+	         * @return {Object|null} closestParent
+	         */
+
+	        _closestParent: function(el, selector) {
+	            var parent = el.parentNode;
+	            
+	            while (parent && parent != document.body) {
+	                if (selector && parent.matches(selector)) {
+	                    return parent;
+	                } else {
+	                    parent = parent.parentNode;
+	                }
+	            }
+
+	            return null;
 	        }
 		};
 
