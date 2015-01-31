@@ -2429,7 +2429,7 @@
         define(function() {
             return mixItUp;
         });
-    } else if (window._MixItUp === undf || typeof window._MixItUp !== 'function') {
+    } else if (window.mixItUp === undf || typeof window.mixItUp !== 'function') {
         window.mixItUp = mixItUp;
     }
 })(window);
