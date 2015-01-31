@@ -207,7 +207,7 @@
 
             extend: function(extension) {
                 for (var key in extension) {
-                    if (extension.hasOwnProperty[key]) {
+                    if (extension[key]) {
                         _MixItUp.prototype[key] = extension[key];
                     }
                 }
@@ -2433,4 +2433,3 @@
         window.mixItUp = mixItUp;
     }
 })(window);
-
