@@ -553,6 +553,7 @@
                     ),
                     command = {},
                     filterString = '',
+                    sortString = '',
                     method = '',
                     isTogglingOff = false,
                     i = 0,
@@ -599,9 +600,10 @@
                 // sort
 
                 if (target.matches(self.selectors.sort)) {
+                    sortString = target.getAttribute('data-sort');
                     if (
                         !_h._hasClass(target, self.controls.activeClass) ||
-                        command.sort.indexOf('random') > -1
+                        sortString.indexOf('random') > -1
                     ) {
                         method = 'sort';
 
@@ -610,7 +612,7 @@
                         }
 
                         command = {
-                            sort: target.getAttribute('data-sort')
+                            sort: sortString
                         };
                     } else {
                         return;
