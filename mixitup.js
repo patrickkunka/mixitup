@@ -1129,7 +1129,7 @@
 
             /**
              * goMix
-             * @param {boolean} animate
+             * @param {Boolean} animate
              * @since 2.0.0
              */
 
@@ -1981,10 +1981,13 @@
              * @param [{String} hideShow]
              * @param [{Number} staggerIndex]
              * @param [{Function} callback]
+             * @param [{Number} duration]
              * @since 3.0.0
              */
 
-            _move: function(posIn, posOut, hideShow, staggerIndex, callback) {
+            // TODO: too many args, might need a parse?
+
+            _move: function(posIn, posOut, hideShow, staggerIndex, callback, duration) {
                 var self = this,
                     transitionRules = [],
                     transformValues = [],
@@ -1994,7 +1997,7 @@
                         var delay = staggerIndex * self._mixer.animation.staggerDelay;
 
                         return rule + ' ' +
-                            self._mixer.animation.duration + 'ms ' +
+                            (duration || self._mixer.animation.duration) + 'ms ' +
                             self._mixer.animation.staggerDelay + 'ms ' +
                             (rule === 'opacity' ? 'linear' : self._mixer.animation.easing);
                     },
