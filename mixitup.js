@@ -438,8 +438,7 @@
                     for (var i = 0, el; el = self._dom._targets[i]; i++) {
                         var target = new _Target();
 
-                        target._init(el);
-                        target._mixer = self;
+                        target._init(el, self);
 
                         self._targets.push(target);
                     }
@@ -1483,6 +1482,10 @@
                         output.index = arg;
                     } else if (typeof arg === 'object' && self._h._isElement(arg)){
                         output.collection = [arg];
+                    } else if (typeof arg === 'object' && arg.length) {
+                        output.collection = arg;
+                    } else if (typeof arg === 'object' && arg.childNodes && arg.childNodes.length) {
+                        output.collection = arg.childNodes;
                     } else if (typeof arg === 'object' && arg !== null){
                         output.multiMix = arg;
                     } else if (typeof arg === 'boolean' && !arg){
@@ -1660,13 +1663,14 @@
                     args = self._parseInsertArgs(arguments),
                     callback = (typeof args.callback === 'function') ? args.callback : null,
                     frag = document.createDocumentFragment(),
-                    target = (function() {                      
-                        if (self._dom._targets.length) {
-                            return (args.index < self._dom._targets.length || !self._dom._targets.length) ? 
-                                self._dom._targets[args.index] :
-                                self._dom._targets[self._dom._targets.length - 1].nextElementSibling;
+                    target = null,
+                    nextSibling = (function() {                      
+                        if (self._targets.length) {
+                            return (args.index < self._targets.length || !self._targets.length) ? 
+                                self._targets[args.index]._el :
+                                self._targets[self._targets.length - 1]._el.nextElementSibling;
                         } else {
-                            return self._dom._parent.children[0];
+                            return self._dom._parent.children.length ? self._dom._parent.children[0] : null;
                         }
                     })();
                             
@@ -1676,12 +1680,20 @@
                     for(var i = 0, el; el = args.collection[i]; i++) {
                         frag.appendChild(el);
                         frag.appendChild(document.createTextNode(' '));
+
+                        if (!el.matches(self.selectors.target)) continue;
+
+                        target = new _Target();
+
+                        target._init(el, self);
+
+                        self._targets.splice(args.index, 0, target);
                     }
 
-                    self._dom._parent.insertBefore(frag, target);
+                    self._dom._parent.insertBefore(frag, nextSibling);
                 }
 
-                self._indexTargets();
+                self._currentOrder = self._origOrder = self._targets;
 
                 self._execAction('insert', 1, arguments);
 
@@ -1891,14 +1903,22 @@
             /**
              * _init
              * @since 3.0.0
+             * @param {Object} element
+             * @param {Object} mixer
              */
 
-            _init: function(el) {
+            _init: function(el, mixer) {
                 var self = this;
+
+                self._execAction('_init', 0, arguments);
 
                 self._el = el;
 
+                self._mixer = mixer;
+
                 !!self._el.style.display && (self._isShown = true);
+
+                self._execAction('_init', 1, arguments);
             },
 
             /**
@@ -1911,11 +1931,15 @@
                 var self = this,
                     value = self._el.getAttribute('data-'+attributeName) || '';
 
+                self._execAction('_getSortString', 0, arguments);
+
                 value = isNaN(value * 1) ?
                     value.toLowerCase() :
                     value * 1;
 
                 self._sortString = value;
+
+                self._execAction('_getSortString', 1, arguments);
             },
 
             /**
@@ -1927,7 +1951,11 @@
             _show: function(animate) {
                 var self = this;
 
+                self._execAction('_show', 0, arguments);
+
                 !self._el.style.display && (self._el.style.display = self._mixer.layout.display);
+
+                self._execAction('_show', 1, arguments);
             },
 
             /**
@@ -1939,7 +1967,11 @@
             _hide: function(animate) {
                 var self = this;
 
+                self._execAction('_hide', 0, arguments);
+
                 self._el.style.display = '';
+
+                self._execAction('_hide', 1, arguments);
             },
 
             /**
@@ -1998,6 +2030,8 @@
                         self._el.style[_MixItUp.prototype._transformProp] = transformValues.join(' ');
                     };
 
+                self._execAction('_move', 0, arguments);
+
                 transformValues.push('translate('+posIn.x+'px, '+posIn.y+'px)');                
 
                 if (hideShow === 'hide') {
@@ -2011,6 +2045,8 @@
                 self._el.style[_MixItUp.prototype._transformProp] = transformValues.join(' ');
 
                 requestAnimationFrame(applyStyles);
+
+                self._execAction('_move', 1, arguments);
             },
 
             /**
@@ -2023,7 +2059,11 @@
                 var self = this,
                     transitionString = rules.join(', ');
 
+                self._execAction('_transition', 0, arguments);
+
                 self._el.style[_MixItUp.prototype._transitionProp] = transitionString;
+
+                self._execAction('_transition', 1, arguments);
             },
 
             /**
@@ -2048,7 +2088,11 @@
                         }
                     };
 
+                self._execAction('_bind', 0, arguments);
+
                 _h._on(self._el, eventName, action);
+
+                self._execAction('_bind', 1, arguments);
             },
 
             /**
@@ -2063,6 +2107,8 @@
                         y: self._el.offsetTop
                     };
 
+                self._execAction('_getPosData', 0, arguments);
+
                 if (self._mixer.animation.animateResizeTargets) {
                     styles = window.getComputedStyle(self._el);
 
@@ -2072,7 +2118,7 @@
                     posData.height = el.offsetHeight;
                 }
 
-                return posData;
+                return self._execFilter('_getPosData', posData, arguments);
             },
 
             /**
@@ -2082,9 +2128,13 @@
             _cleanUp: function() {
                 var self = this;
 
+                self._execAction('_cleanUp', 0, arguments);
+
                 self._el.style[_MixItUp.prototype._transformProp] = '';
                 self._el.style[_MixItUp.prototype._transitionProp] = '';
                 self._el.style.opacity = '';
+
+                self._execAction('_cleanUp', 1, arguments);
             }
         };
 
