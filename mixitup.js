@@ -1871,7 +1871,7 @@
 
                 if (args.collection.length) {
                     multiMix.filter.hide = args.collection;
-                } else if (args.index > -1) {
+                } else if (args.index > -1 && self._targets[args.index]) {
                     multiMix.filter.hide = self._targets[args.index]._el;
                 } else if (args.selector) {
                     multiMix.filter.hide = args.selector;
@@ -1891,7 +1891,7 @@
                                     i--;
                                 }
                             }
-                        } else if (args.index > -1) {
+                        } else if (args.index > -1 && self._targets[args.index]) {
                             _h._deleteElement(self._targets[args.index]._el);
 
                             self._targets.splice(args.index, 1);
