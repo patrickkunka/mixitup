@@ -1477,6 +1477,10 @@
 
                 self._buildState();
 
+                if(typeof self.callbacks.onMixEnd === 'function'){
+                    self.callbacks.onMixEnd.call(self._dom._el, self._state, self);
+                }
+
                 self._execAction('_cleanUp', 1);
             },
 
