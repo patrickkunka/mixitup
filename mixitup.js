@@ -860,7 +860,7 @@
 
                 self._execAction('_filter', 0);
 
-                self._show = [];
+                !self._isRemoving && (self._show = []);
                 self._hide = [];
                 self._toShow = [];
                 self._toHide = [];
@@ -1887,7 +1887,7 @@
                     .then(function(state) {
                         if (args.collection.length) {
                             for (i = 0; target = self._targets[i]; i++) {
-                                if (args.collection.indexOf(target) > -1) {
+                                if (args.collection.indexOf(target._el) > -1) {
                                     _h._deleteElement(target._el);
 
                                     self._targets.splice(i, 1);
