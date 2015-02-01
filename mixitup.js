@@ -122,6 +122,7 @@
                 _isChangingLayout: false,
                 _isChangingClass: false,
                 _isChangingDisplay: false,
+                _isRemoving: false,
 
                 _targets: [],
                 _show: [],
@@ -242,7 +243,7 @@
             },
 
             /**
-             * Add Hook
+             * _addHook
              * @since 2.1.0
              * @param {string} type of hook
              * @param {string} hook name
@@ -265,7 +266,7 @@
             },
 
             /**
-             * Platform Detect
+             * _platformDetect
              * @since 2.0.0
              */
             
@@ -818,12 +819,44 @@
             },
 
             /**
-             * Filter (private)
+             * _filter
              * @since 2.0.0
              */
 
             _filter: function(){
-                var self = this;
+                var self = this,
+                    shown = false,
+                    hidden = false,
+                    match = function(target, matchWith, bistable, invert) {
+                        if (
+                            typeof matchWith === 'string' && target._el.matches(matchWith) ||
+                            typeof matchWith === 'object' && target._el === matchWith
+                        ) {
+                            if (!invert) {
+                                self._show.push(target);
+
+                                !target._isShown && self._toShow.push(target);
+                            } else {
+                                self._hide.push(target);
+
+                                target._isShown && self._toHide.push(target);
+                            }
+
+                            if (!bistable) return true;
+                        } else if (bistable) {
+                            if (!invert) {
+                                self._hide.push(target);
+
+                                target._isShown && self._toHide.push(target);
+                            } else {
+                                if (self._isRemoving && !target._isShown) return;
+
+                                self._show.push(target);
+
+                                !target._isShown && self._toShow.push(target);
+                            }
+                        }
+                    };
 
                 self._execAction('_filter', 0);
 
@@ -833,14 +866,47 @@
                 self._toHide = [];
 
                 for (var i = 0, target; target = self._targets[i]; i++) {
-                    if (target._el.matches(self._activeFilter)) {
-                        self._show.push(target);
+                    switch (typeof self._activeFilter) {
+                        case 'string':
+                            match(target, self._activeFilter, true);
+                            
+                            break;
+                        case 'object':
+                            if (_h._isElement(self._activeFilter)) {
+                                match(target, self._activeFilter, true);
+                            } else if (self._activeFilter.show) {
+                                if (typeof self._activeFilter.show === 'string') {
+                                    match(target, self._activeFilter.show, true);
+                                } else if (_h._isElement(self._activeFilter.show)) {
+                                    match(target, self._activeFilter.show, true);
+                                } else if (self._activeFilter.show.length) {
+                                    for (var j = 0, toShow; toShow = self._activeFilter.show[j]; j++) {
+                                        if (match(target, toShow, false)) {
+                                            shown = true;
+                                        }
+                                    }
 
-                        !target._isShown && self._toShow.push(target);
-                    } else {
-                        self._hide.push(target);
+                                    if (!shown) {
+                                        match(target, null, true);
+                                    }
+                                }
+                            } else if (self._activeFilter.hide) {
+                                if (typeof self._activeFilter.hide === 'string') {
+                                    match(target, self._activeFilter.hide, true, true);
+                                } else if (_h._isElement(self._activeFilter.hide)) {
+                                    match(target, self._activeFilter.hide, true, true);
+                                } else if (self._activeFilter.hide.length) {
+                                    for (var k = 0, toHide; toHide = self._activeFilter.hide[k]; k++) {
+                                        if (match(target, toHide, false, true)) {
+                                            hidden = true;
+                                        }
+                                    }
 
-                        target._isShown && self._toHide.push(target);
+                                    if (!hidden) {
+                                        match(target, null, true, true);
+                                    }
+                                }
+                            }
                     }
                 }
 
@@ -1407,6 +1473,8 @@
                     self._isSorting = false;
                 }
 
+                self._isRemoving = false;
+
                 self._buildState();
 
                 self._execAction('_cleanUp', 1);
@@ -1475,27 +1543,71 @@
 
                 // TODO: allow for nodelists, querylists, and possibily jqcollections
 
-                for (var i = 0; i < args.length; i++){
+                for (var i = 0; i < args.length; i++) {
                     var arg = args[i];
 
-                    if (typeof arg === 'number'){
+                    if (typeof arg === 'number') {
                         output.index = arg;
-                    } else if (typeof arg === 'object' && self._h._isElement(arg)){
+                    } else if (typeof arg === 'object' && _h._isElement(arg)) {
                         output.collection = [arg];
-                    } else if (typeof arg === 'object' && arg.length) {
+                    } else if (typeof arg === 'object' && arg !== null && arg.length) {
                         output.collection = arg;
-                    } else if (typeof arg === 'object' && arg.childNodes && arg.childNodes.length) {
+                    } else if (typeof arg === 'object' && arg !== null && arg.childNodes && arg.childNodes.length) {
                         output.collection = arg.childNodes;
-                    } else if (typeof arg === 'object' && arg !== null){
+                    } else if (typeof arg === 'object' && arg !== null) {
                         output.multiMix = arg;
-                    } else if (typeof arg === 'boolean' && !arg){
+                    } else if (typeof arg === 'boolean' && !arg) {
                         output.multiMix = false;
-                    } else if (typeof arg === 'function'){
+                    } else if (typeof arg === 'function') {
                         output.callback = arg;
                     }
                 }
 
                 return self._execFilter('_parseInsertArgs', output, arguments);
+            },
+
+            /**
+             * _parseRemoveArgs
+             * @since 3.0.0
+             * @param {Array} args
+             * @return {Object} output
+             */
+
+            _parseRemoveArgs: function(args) {
+                var self = this,
+                    output = {
+                        index: -1,
+                        selector: '',
+                        collection: [],
+                        callback: null
+                    };
+
+                for (var i = 0; i < args.length; i++) {
+                    var arg = args[i];
+
+                    switch (typeof arg) {
+                        case 'number':
+                            output.index = arg;
+
+                            break;
+                        case 'string':
+                            output.selector = arg;
+
+                            break;
+                        case 'object':
+                            if (arg && arg.length) {
+                                output.collection = arg;
+                            } else if (_h._isElement(arg)) {
+                                output.collection = [arg];
+                            }
+
+                            break;
+                        case 'function':
+                            output.callback = arg;
+                    }
+                }
+
+                return self._execFilter('_parseRemoveArgs', output, arguments);
             },
 
             /**
@@ -1553,7 +1665,7 @@
             },
 
             /**
-             * Is Mixing
+             * isMixing
              * @since 2.0.0
              * @return {boolean}
              */
@@ -1564,7 +1676,7 @@
             },
 
             /**
-             * Filter (public)
+             * filter
              * @since 2.0.0
              * @param {array} arguments
              */
@@ -1574,7 +1686,7 @@
             },
             
             /**
-             * Sort (public)
+             * sort
              * @since 2.0.0
              * @param {array} arguments
              */
@@ -1585,7 +1697,7 @@
             },
 
             /**
-             * Change Layout (public)
+             * changeLayout
              * @since 2.0.0
              * @param {array} arguments
              */
@@ -1596,7 +1708,7 @@
             },
 
             /**
-             * MultiMix
+             * multiMix
              * @since 2.0.0
              * @param {array} arguments
              * @return {Object} promise
@@ -1612,7 +1724,7 @@
                 self._execAction('multiMix', 0, arguments);
 
                 if (!self._isMixing) {
-                    if (self.controls.enable && !self._isClicking) {
+                    if (self.controls.enable && !self._isClicking && !self._isRemoving) {
                         self._dom._filterToggleButtons.length && self._buildToggleArray(); // TODO: what about live toggles?
 
                         self._updateControls(args.command);
@@ -1653,9 +1765,10 @@
             },
 
             /**
-             * Insert
+             * insert
              * @since 2.0.0
-             * @param {array} arguments
+             * @param {Array} arguments
+             * @return {Object} promise
              */
 
             insert: function() {
@@ -1703,29 +1816,110 @@
             },
 
             /**
-             * Prepend
+             * prepend
              * @since 2.0.0
-             * @param {array} arguments
+             * @shorthand self.insert
+             * @param {Array} arguments
+             * @param {Object} promise
              */
 
-            prepend: function(){
-                var self = this;
-
+            prepend: function() {
+                var self = this,
+                    args = self._parseInsertArgs(arguments);
+                
+                return self.insert(0, args.collection, args.multiMix, args.callback);
             },
 
             /**
-             * Append
+             * append
              * @since 2.0.0
+             * @shorthand self.insert
              * @param {array} arguments
              */
 
             append: function(){
-                var self = this;
-
+                var self = this,
+                    args = self._parseInsertArgs(arguments);
+                
+                return self.insert(self._state.totalTargets, args.collection, args.multiMix, args.callback);
             },
 
             /**
-             * Get Option
+             * remove
+             * @since 3.0.0
+             * @param {Array} arguments
+             * @return {Object} promise
+             */
+
+            remove: function() {
+                var self = this,
+                    args = self._parseRemoveArgs(arguments),
+                    activeFilterStart = '',
+                    multiMix = {
+                        filter: {
+                            hide: null
+                        }
+                    },
+                    target = null,
+                    i = -1
+
+                self._execAction('remove', 0, arguments);
+
+                activeFilterStart = self.getState().activeFilter;
+
+                self._isRemoving = true;
+
+                if (args.collection.length) {
+                    multiMix.filter.hide = args.collection;
+                } else if (args.index > -1) {
+                    multiMix.filter.hide = self._targets[args.index]._el;
+                } else if (args.selector) {
+                    multiMix.filter.hide = args.selector;
+                }
+
+                self._execAction('remove', 1, arguments);
+
+                return self.multiMix(multiMix, args.callback)
+                    .then(function(state) {
+                        if (args.collection.length) {
+                            for (i = 0; target = self._targets[i]; i++) {
+                                if (args.collection.indexOf(target) > -1) {
+                                    _h._deleteElement(target._el);
+
+                                    self._targets.splice(i, 1);
+
+                                    i--;
+                                }
+                            }
+                        } else if (args.index > -1) {
+                            _h._deleteElement(self._targets[args.index]._el);
+
+                            self._targets.splice(args.index, 1);
+                        } else if (args.selector) {
+                            for (i = 0; target = self._targets[i]; i++) {
+                                if (target._el.matches(args.selector)) {
+                                    _h._deleteElement(target._el);
+
+                                    self._targets.splice(i, 1);
+
+                                    i--;
+                                }
+                            }
+                        }
+
+                        self._currentOrder = self._origOrder = self._targets;
+
+                        self._activeFilter = activeFilterStart;
+                        self._filter();
+                        
+                        self._buildState();
+
+                        return self._state;
+                    });
+            },
+
+            /**
+             * getOption
              * @since 2.0.0
              * @param {string} string
              * @return {mixed} value
@@ -1737,7 +1931,7 @@
             },
 
             /**
-             * Set Options
+             * setOptions
              * @since 2.0.0
              * @param {object} config
              */
@@ -1751,7 +1945,7 @@
             },
 
             /**
-             * Get State
+             * getState
              * @since 2.0.0
              * @return {object} state
              */
@@ -1763,7 +1957,7 @@
             },
 
             /**
-             * Force Refresh
+             * forceRefresh
              * @since 2.1.2
              */
 
@@ -1774,7 +1968,7 @@
             },
 
             /**
-             * Destroy
+             * destroy
              * @since 2.0.0
              * @param {boolean} hideAll
              */
@@ -1789,7 +1983,7 @@
         };
 
         /**
-         * _Target Constructor
+         * _Target
          * @constructor
          * @since 3.0.0
          */
@@ -1813,7 +2007,7 @@
         };
 
         /**
-         * _Target Prototype
+         * _Target.prototype
          * @prototype
          * @since 3.0.0
          */
@@ -1831,7 +2025,7 @@
             ---------------------------------------------------------------------- */
 
             /**
-             * Extend
+             * extend
              * @since 3.0.0
              * @param {object} new properties/methods
              * @extends {object} prototype
@@ -1844,7 +2038,7 @@
             },
 
             /**
-             * Add Action
+             * addAction
              * @since 3.0.0
              * @param {string} hook name
              * @param {string} method
@@ -1858,7 +2052,7 @@
             },
 
             /**
-             * Add Filter
+             * addFilter
              * @since 3.0.0
              * @param {string} hook name
              * @param {string} method
@@ -1872,7 +2066,7 @@
             },
 
             /**
-             * Add Hook
+             * _addHook
              * @since 3.0.0
              * @param {string} type of hook
              * @param {string} hook name
@@ -1894,7 +2088,7 @@
                 _h._extend(collection, obj);
             },
 
-            /* Public Properties
+            /* Private Properties
             ---------------------------------------------------------------------- */
 
             _execAction: _MixItUp.prototype._execAction,
@@ -2296,6 +2490,16 @@
                 }
 
                 return frag;
+            },
+
+            /**
+             * _deleteElement
+             */
+
+            _deleteElement: function(el) {
+                if (el.parentElement) {
+                    el.parentElement.removeChild(el);
+                }
             },
 
             /**
