@@ -1875,7 +1875,7 @@
                         }
                     },
                     target = null,
-                    i = -1
+                    i = -1;
 
                 self._execAction('remove', 0, arguments);
 
