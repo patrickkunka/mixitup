@@ -469,7 +469,7 @@
                     filters = proto._bound._filter,
                     sorts = proto._bound._sort;
 
-                self._execAction('_bindHandlers', 0);
+                self._execAction('_bindEvents', 0);
 
                 self.handler = function(e) {
                     return self._eventBus(e);
@@ -493,7 +493,7 @@
                 sorts[self.selectors.sort] = (sorts[self.selectors.sort] === undf) ?
                     1 : sorts[self.selectors.sort] + 1;
 
-                self._execAction('_bindHandlers', 1);
+                self._execAction('_bindEvents', 1);
             },
 
             /**
