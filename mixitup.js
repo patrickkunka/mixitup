@@ -1292,8 +1292,12 @@
                 }
 
                 self._userPromise = new Promise(function(resolve, reject) {
-                    resolvePromise = resolve;
+                    resolvePromise = resolve; // TODO: abstract promise API to use q library
                 });
+
+                if (typeof self.callbacks.onMixStart === 'function') {
+                    self.callbacks.onMixStart.call(self._dom._container, self._state, futureState, self);
+                }
 
                 if (animate && _MixItUp.prototype._has._transitions) {
                     self._effects = self._parseEffects();
