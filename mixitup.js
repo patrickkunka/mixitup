@@ -540,17 +540,9 @@
             
             _handleClick: function(e){
                 var self = this,
-                    selectors = [
-                        self.selectors.filter,
-                        self.selectors.sort,
-                        self.selectors.multiMix
-                    ],
-                    selector = selectors.join(','),
-                    target = _h._closestParent(
-                        e.target,
-                        selector,
-                        true
-                    ),
+                    selectors = [],
+                    selector = '',
+                    target = null,
                     command = {},
                     filterString = '',
                     sortString = '',
@@ -579,6 +571,18 @@
                     };
                 
                 self._execAction('_processClick', 0, arguments);
+
+                for (var key in self.selectors) {
+                    selectors.push(self.selectors[key]);
+                }
+
+                selector = selectors.join(',');
+
+                target = _h._closestParent(
+                    e.target,
+                    selector,
+                    true
+                );
 
                 if (!target) return;
 
@@ -704,9 +708,11 @@
                     }
                 }
 
-                trackClick(target, method, isTogglingOff);
+                if (method) {
+                    trackClick(target, method, isTogglingOff);
 
-                self.multiMix(command);
+                    self.multiMix(command);
+                }
 
                 self._execAction('_processClick', 1, arguments);
             },
