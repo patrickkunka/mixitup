@@ -412,6 +412,8 @@
             _cacheDom: function(el) {
                 var self = this;
 
+                self._execAction('_cacheDom', 0, arguments);
+
                 self._dom._body = document.getElementsByTagName('body')[0];
                 self._dom._container = el;
                 self._dom._parent = el;
@@ -419,6 +421,8 @@
                 self._dom._filterButtons = document.querySelectorAll(self.selectors.filter);
                 self._dom._filterToggleButtons = document.querySelectorAll(self.selectors.filterToggle);
                 self._dom._multiMixButtons = document.querySelectorAll(self.selectors.multiMix);
+
+                self._execAction('_cacheDom', 1, arguments);
             },
 
             /**
