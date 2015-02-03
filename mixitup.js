@@ -148,7 +148,8 @@
             _userPromise: null,
             _effects: null,
             _queue: [],
-            _state: null
+            _state: null,
+            _vendor: ''
         });
 
         self._execAction('_constructor', 1);
@@ -277,6 +278,8 @@
                     return 'transition' in el.style ? '' : false;
                 },
                 prefix = getPrefix(testEl);
+
+            self._vendor = prefix;
 
             _MixItUp.prototype._has._promises = typeof Promise !== "undefined" && Promise.toString().indexOf('[native code]') !== -1;
             _MixItUp.prototype._has._transitions = prefix !== false;
@@ -1206,6 +1209,9 @@
                 started = 0,
                 finished = 0,
                 resolvePromise = null,
+                scrollTop = -1,
+                scrollLeft = -1,
+                docHeight = -1,
                 done = function() {
                     self._cleanUp();
 
@@ -1220,13 +1226,12 @@
                         done();
                     }
                 },
-                phase1 = function() {
-
+                getDocumentState = function() {
+                    scrollTop = window.pageYOffset;
+                    scrollLeft = window.pageXOffset;
+                    docHeight = document.documentElement.scrollHeight;
                 },
-                phase2 = function() {
-
-                },
-                phase3 = function() {
+                performMix = function() {
                     var target = null,
                         posIn = {},
                         posOut = {},
@@ -1272,6 +1277,14 @@
 
                         target._move(posIn, {x: 0, y: 0}, 'hide', i, checkProgress);
                     }
+
+                    if (self.animation.animateResizeContainer) {
+                        self._dom._parent.style[_MixItUp.prototype._transitionProp] = 'height ' + self.animation.duration + 'ms ease';
+                        
+                        requestAnimationFrame(function() {
+                            self._dom._parent.style.height = self._newHeight + 'px';
+                        });
+                    }
                 },
                 futureState = self._buildState(true);
                 
@@ -1298,11 +1311,20 @@
 
                 self._getStartMixData();
                 self._setInter();
+
+                getDocumentState();
+
                 self._getInterMixData();
                 self._setFinal();
                 self._getFinalMixData();
 
-                requestAnimationFrame(phase3);
+                (window.pageYOffset !== scrollTop) && window.scrollTo(scrollLeft, scrollTop);
+
+                if (self.animation.animateResizeContainer) {
+                    self._dom._parent.style.height = self._startHeight+'px';
+                }
+
+                requestAnimationFrame(performMix);
             } else {
                 done();
             }
@@ -1319,9 +1341,13 @@
 
         _getStartMixData: function(){
             var self = this,
+                parentStyle = window.getComputedStyle(self._dom._parent),
                 target = null,
                 data = {},
-                i = -1;
+                i = -1,
+                boxSizing = parentStyle.boxSizing || parentStyle[self._vendor+'BoxSizing'];
+    
+            self._incPadding = (boxSizing === 'border-box');
 
             self._execAction('_getStartMixData', 0);
 
@@ -1336,6 +1362,14 @@
 
                 target._startPosData = data;
             }
+
+            self._startHeight = self._incPadding ? 
+                self._dom._parent.offsetHeight :
+                self._dom._parent.offsetHeight - 
+                    parseFloat(parentStyle.paddingTop) - 
+                    parseFloat(parentStyle.paddingBottom) -
+                    parseFloat(parentStyle.borderTop) -
+                    parseFloat(parentStyle.borderBottom);
 
             self._execAction('_getStartMixData', 1);
         },
@@ -1429,6 +1463,14 @@
                 target._finalPosData = data;
             }
 
+            self._newHeight = self._incPadding ? 
+                self._dom._parent.offsetHeight :
+                self._dom._parent.offsetHeight - 
+                    parseFloat(parentStyle.paddingTop) - 
+                    parseFloat(parentStyle.paddingBottom) -
+                    parseFloat(parentStyle.borderTop) -
+                    parseFloat(parentStyle.borderBottom);
+
             if (self._isSorting) {
                 self._printSort(true);
             }
@@ -1478,6 +1520,9 @@
                 self._newOrder = [];
                 self._isSorting = false;
             }
+
+            self._dom._parent.style[_MixItUp.prototype._transitionProp] = '';
+            self._dom._parent.style.height = '';
 
             self._isRemoving = false;
 
