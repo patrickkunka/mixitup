@@ -1,5 +1,5 @@
 /**!
- * _MixItUp v3.0.0-beta
+ * MixItUp v3.0.0-beta
  *
  * @copyright Copyright 2014-2015 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -20,11 +20,12 @@
         _Target = null,
         _h = null;
 
-    /* _MixItUp Private Core
+    /* _MixItUp Core
     ---------------------------------------------------------------------- */
 
     /**
-     * _MixItUp Constructor Function
+     * _MixItUp
+     * @since 2.0.0
      * @constructor
      */
 
@@ -155,7 +156,9 @@
     };
 
     /**
-     * _MixItUp Prototype
+     * _MixItUp.prototype
+     * @since 2.0.0
+     * @prototype
      * @override
      */
 
@@ -188,11 +191,11 @@
         _actions: {},
         _filters: {},
         
-        /* Static Methods
+        /* Public Static Methods
         ---------------------------------------------------------------------- */
 
         /**
-         * Extend
+         * extend
          * @since 2.1.0
          * @param {object} new properties/methods
          * @extends {object} prototype
@@ -207,7 +210,7 @@
         },
 
         /**
-         * Add Action
+         * addAction
          * @since 2.1.0
          * @param {string} hook name
          * @param {string} method
@@ -221,7 +224,7 @@
         },
 
         /**
-         * Add Filter
+         * addFilter
          * @since 2.1.0
          * @param {string} hook name
          * @param {string} method
@@ -233,6 +236,9 @@
         addFilter: function(hook, name, func, priority) {
             _MixItUp.prototype._addHook('_filters', hook, name, func, priority);
         },
+
+        /* Private Static Methods
+        ---------------------------------------------------------------------- */
 
         /**
          * _addHook
@@ -918,7 +924,7 @@
         },
 
         /**
-         * Sort (private)
+         * _sort
          * @since 2.0.0
          */
 
@@ -970,12 +976,13 @@
         },
 
         /**
-         * Compare Algorithm
+         * _compare
+         * @algorithm
          * @since 2.0.0
-         * @param {string|number} a
-         * @param {string|number} b
-         * @param {number} depth (recursion)
-         * @return {number}
+         * @param {String|Number} a
+         * @param {String|Number} b
+         * @param {Number} depth (recursion)
+         * @return {Number}
          */
 
         _compare: function(a, b, depth){
@@ -1000,9 +1007,9 @@
         },
 
         /**
-         * Print Sort
+         * _printSort
          * @since 2.0.0
-         * @param {boolean} reset
+         * @param {Boolean} reset
          */
 
         _printSort: function(reset){
@@ -1051,10 +1058,10 @@
         },
 
         /**
-         * Parse Sort
+         * _parseSort
          * @since 2.0.0
-         * @param {string} sortString
-         * @return {array} newSort
+         * @param {String} sortString
+         * @return {Array} newSort
          */
 
         _parseSort: function(sortString) {
@@ -1078,7 +1085,7 @@
         },
 
         /**
-         * Parse Effects
+         * _parseEffects
          * @since 2.0.0
          * @return {Object} effects
          */
@@ -1149,10 +1156,10 @@
         },
 
         /**
-         * Build State
+         * _buildState
          * @since 2.0.0
-         * @param {boolean} future
-         * @return {object} futureState
+         * @param {Boolean} future
+         * @return [{Object}] futureState
          */
 
         _buildState: function(future){
@@ -1198,7 +1205,7 @@
         },
 
         /**
-         * goMix
+         * _goMix
          * @param {Boolean} animate
          * @since 2.0.0
          */
@@ -1366,7 +1373,7 @@
         },
 
         /**
-         * Get Start Mix Data
+         * _getStartMixData
          * @since 2.0.0
          */
 
@@ -1406,7 +1413,7 @@
         },
 
         /**
-         * Set Intermediate Positions
+         * _setInter
          * @since 2.0.0
          */
 
@@ -1428,7 +1435,7 @@
         },
 
         /**
-         * Get Intermediate Mix Data
+         * _getInterMixData
          * @since 2.0.0
          */
 
@@ -1456,7 +1463,7 @@
         },
 
         /**
-         * Set Final Positions
+         * _setFinal
          * @since 2.0.0
          */
 
@@ -1475,7 +1482,7 @@
         },
 
         /**
-         * Get Final Mix Data
+         * _getFinalMixData
          * @since 2.0.0
          */
 
@@ -1529,7 +1536,7 @@
         },
 
         /**
-         * Clean Up
+         * _cleanUp
          * @since 2.0.0
          */
 
@@ -1586,10 +1593,10 @@
         },
 
         /**
-         * Get Delay
+         * _getDelay
          * @since 2.0.0
-         * @param {number} i
-         * @return {number} delay
+         * @param {Number} i
+         * @return {Number} delay
          */
 
         _getDelay: function(i){
@@ -1599,7 +1606,7 @@
         },
 
         /**
-         * Parse MultiMix Arguments
+         * _parseMultiMixArgs
          * @since 2.0.0
          * @param {Array} args
          * @return {Object} output
@@ -1631,10 +1638,10 @@
         },
 
         /**
-         * Parse Insert Arguments
+         * _parseInsertArgs
          * @since 2.0.0
-         * @param {array} args
-         * @return {object} output
+         * @param {Array} args
+         * @return {Object} output
          */
 
         _parseInsertArgs: function(args){
@@ -1716,11 +1723,11 @@
         },
 
         /**
-         * Execute Action
+         * _execAction
          * @since 2.0.0
-         * @param {string} methodName
-         * @param {boolean} isPost
-         * @param {array} args
+         * @param {String} methodName
+         * @param {Boolean} isPost
+         * @param {Array} args
          */
 
         _execAction: function(methodName, isPost, args) {
@@ -1735,11 +1742,12 @@
         },
 
         /**
-         * Execute Filter
+         * _execFilter
          * @since 2.0.0
-         * @param {string} methodName
-         * @param {mixed} value
-         * @return {mixed} value
+         * @param {String} methodName
+         * @param {Mixed} value
+         * @param {Array} args
+         * @return {Mixed} value
          */
 
         _execFilter: function(methodName, value, args){
@@ -1772,7 +1780,7 @@
         /**
          * isMixing
          * @since 2.0.0
-         * @return {boolean}
+         * @return {Boolean}
          */
 
         isMixing: function(){
@@ -1783,7 +1791,7 @@
         /**
          * filter
          * @since 2.0.0
-         * @param {array} arguments
+         * @param {Array} arguments
          */
 
         filter: function(){
@@ -1793,7 +1801,7 @@
         /**
          * sort
          * @since 2.0.0
-         * @param {array} arguments
+         * @param {Array} arguments
          */
         
         sort: function(){
@@ -1804,7 +1812,7 @@
         /**
          * changeLayout
          * @since 2.0.0
-         * @param {array} arguments
+         * @param {Array} arguments
          */
 
         changeLayout: function(){
@@ -1815,7 +1823,7 @@
         /**
          * multiMix
          * @since 2.0.0
-         * @param {array} arguments
+         * @param {Array} arguments
          * @return {Object} promise
          */
 
@@ -2036,8 +2044,8 @@
         /**
          * getOption
          * @since 2.0.0
-         * @param {string} string
-         * @return {mixed} value
+         * @param {String} string
+         * @return {Mixed} value
          */
 
         getOption: function(string){
@@ -2048,7 +2056,7 @@
         /**
          * setOptions
          * @since 2.0.0
-         * @param {object} config
+         * @param {Object} config
          */
 
         setOptions: function(config){
@@ -2062,7 +2070,7 @@
         /**
          * getState
          * @since 2.0.0
-         * @return {object} state
+         * @return {Object} state
          */
 
         getState: function(){
@@ -2085,7 +2093,7 @@
         /**
          * destroy
          * @since 2.0.0
-         * @param {boolean} hideAll
+         * @param {Boolean} hideAll
          */
 
         destroy: function(hideAll){
@@ -2096,6 +2104,9 @@
             self._execAction('destroy', 1, arguments);
         }
     };
+
+    /* _Target Core
+    ---------------------------------------------------------------------- */
 
     /**
      * _Target
@@ -2136,14 +2147,14 @@
         _actions: {},
         _filters: {},
 
-        /* Static Methods
+        /* Public Static Methods
         ---------------------------------------------------------------------- */
 
         /**
          * extend
          * @since 3.0.0
-         * @param {object} new properties/methods
-         * @extends {object} prototype
+         * @param {Object} new properties/methods
+         * @extends {Object} prototype
          */
 
         extend: function(extension) {
@@ -2155,11 +2166,11 @@
         /**
          * addAction
          * @since 3.0.0
-         * @param {string} hook name
-         * @param {string} method
-         * @param {function} function to execute
-         * @param {number} priority
-         * @extends {object} _MixItUp.prototype._actions
+         * @param {String} hook name
+         * @param {String} method
+         * @param {Function} function to execute
+         * @param {Number} priority
+         * @extends {Object} _MixItUp.prototype._actions
          */
 
         addAction: function(hook, name, func, priority) {
@@ -2180,14 +2191,17 @@
             _Target.prototype._addHook('_filters', hook, name, func, priority);
         },
 
+        /* Private Static Methods
+        ---------------------------------------------------------------------- */
+
         /**
          * _addHook
          * @since 3.0.0
-         * @param {string} type of hook
-         * @param {string} hook name
-         * @param {function} function to execute
-         * @param {number} priority
-         * @extends {object} _MixItUp.prototype._filters
+         * @param {String} type of hook
+         * @param {String} hook name
+         * @param {Function} function to execute
+         * @param {Number} priority
+         * @extends {Object} _MixItUp.prototype._filters
          */
 
         _addHook: function(type, hook, name, func, priority) {
@@ -2203,11 +2217,22 @@
             _h._extend(collection, obj);
         },
 
-        /* Private Properties
-        ---------------------------------------------------------------------- */
+        /**
+         * _execAction
+         * @alias _MixItUp.prototype._execAction
+         */
 
         _execAction: _MixItUp.prototype._execAction,
+
+        /**
+         * _execFilter
+         * @alias _MixItUp.prototype._execAction
+         */
+
         _execFilter: _MixItUp.prototype._execFilter,
+
+        /* Private Instance Methods
+        ---------------------------------------------------------------------- */
 
         /**
          * _init
@@ -2479,7 +2504,7 @@
         }
     };
 
-    /* Helpers
+    /* Helper Library
     ---------------------------------------------------------------------- */
 
     _h = {
@@ -2487,6 +2512,8 @@
         /**
          * _hasClass
          * @since 3.0.0
+         * @param {Object} el
+         * @param {String} cls
          */
 
         _hasClass: function(el, cls) {
@@ -2496,6 +2523,8 @@
         /**
          * _addClass
          * @since 3.0.0
+         * @param {Object} el
+         * @param {String} cls
          */
 
         _addClass: function(el, cls) {
@@ -2505,6 +2534,8 @@
         /**
          * _removeClass
          * @since 3.0.0
+         * @param {Object} el
+         * @param {String} cls
          */
 
         _removeClass: function(el, cls) {
@@ -2517,6 +2548,9 @@
         /**
          * _extend
          * @since 3.0.0
+         * @param {Object} destination
+         * @param {Object} source
+         * @return {Object} extended
          */
 
         _extend: function(destination, source) {
@@ -2544,6 +2578,10 @@
         /**
          * _on
          * @since 3.0.0
+         * @param {Object} el
+         * @param {String} type
+         * @param {Function} fn
+         * @param {Boolean} useCapture
          */
 
         _on: function(el, type, fn, useCapture) {
@@ -2560,6 +2598,9 @@
         /**
          * _off
          * @since 3.0.0
+         * @param {Object} el
+         * @param {String} type
+         * @param {Function} fn
          */
 
         _off: function(el, type, fn) {
@@ -2574,6 +2615,9 @@
 
         /**
          * _index 
+         * @since 3.0.0
+         * @param {Object} el
+         * @param {String} selector
          */
 
         _index: function(el, selector) {
@@ -2603,8 +2647,8 @@
         /**
          * _isElement
          * @since 2.1.3
-         * @param {object} element to test
-         * @return {boolean}
+         * @param {Object} element to test
+         * @return {Boolean}
          */
 
         _isElement: function(el){
@@ -2621,6 +2665,8 @@
 
         /**
          * _createElement
+         * @since 3.0.0
+         * @param {String} htmlString
          */
 
         _createElement: function(htmlString) {
@@ -2638,6 +2684,8 @@
 
         /**
          * _deleteElement
+         * @since 3.0.0
+         * @param {Object} el
          */
 
         _deleteElement: function(el) {
@@ -2648,6 +2696,10 @@
 
         /**
          * _throttle
+         * @since 3.0.0
+         * @param {Function} func
+         * @param {Number} wait
+         * @param {Object} options
          */
 
         _throttle: function(func, wait, options) {
@@ -2689,6 +2741,7 @@
 
         /**
          * _position
+         * @since 3.0.0
          * @param {Object} el
          * @return {Object} position
          */
@@ -2708,6 +2761,7 @@
 
         /**
          * _closestParent
+         * @since 3.0.0
          * @param {Object} el
          * @param {String} selector
          * @param {Boolean} includeSelf
@@ -2735,6 +2789,7 @@
 
         /**
          * _forEach
+         * @since 3.0.0
          * @param {Array} items
          * @param {Function} callback(item)
          */
@@ -2747,6 +2802,7 @@
 
         /**
          * _clean
+         * @since 3.0.0
          * @param {Array} originalArray
          * @return {Array} cleanArray
          */
@@ -2770,6 +2826,7 @@
 
     /**
      * mixItUp
+     * @since 3.0.0
      * @param {Object} container
      * @param {Object} configuration
      * @param {Object} extensions
