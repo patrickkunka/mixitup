@@ -1481,6 +1481,7 @@
 
         _getFinalMixData: function(){
             var self = this,
+                parentStyle = window.getComputedStyle(self._dom._parent),
                 target = null,
                 data = {},
                 i = -1;
