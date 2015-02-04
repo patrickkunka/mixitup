@@ -15,8 +15,8 @@
 (function(window, undf) {
     'use strict';
 
-    var _MixItUp = null,
-        mixItUp = null,
+    var mixItUp = null,
+        _MixItUp = null,
         _Target = null,
         _h = null;
 
@@ -92,9 +92,10 @@
             },
 
             libraries: {
-                jQuery: null,
                 q: null
             },
+
+            extensions: null,
 
             /* DOM
             ---------------------------------------------------------------------- */
@@ -279,7 +280,7 @@
 
             self._vendor = prefix;
 
-            _MixItUp.prototype._has._promises = typeof Promise !== "undefined" && Promise.toString().indexOf('[native code]') !== -1;
+            _MixItUp.prototype._has._promises = typeof Promise !== 'undefined' && Promise.toString().indexOf('[native code]') !== -1;
             _MixItUp.prototype._has._transitions = prefix !== false;
             _MixItUp.prototype._is._crapIe = window.atob && self._prefix ? false : true;
             _MixItUp.prototype._prefix = prefix;
@@ -1206,6 +1207,7 @@
             var self = this,
                 started = 0,
                 finished = 0,
+                defered = null,
                 resolvePromise = null,
                 scrollTop = -1,
                 scrollLeft = -1,
@@ -1317,9 +1319,17 @@
                 animate = false;            
             }
 
-            self._userPromise = new Promise(function(resolve, reject) {
-                resolvePromise = resolve; // TODO: abstract promise API to use q library
-            });
+            if (_MixItUp.prototype._has._promises) {
+                self._userPromise = new Promise(function(resolve, reject) {
+                    resolvePromise = resolve;
+                });
+            } else if (self.libraries.q && typeof self.libraries.q === 'function') {
+                defered = self.libraries.q.defer();
+                self._userPromise = defered.promise;
+                resolvePromise = defered.resolve;
+            } else {
+                console.warn('[MixItUp] WARNING: No available Promises implementations were found.');
+            }
 
             if (typeof self.callbacks.onMixStart === 'function') {
                 self.callbacks.onMixStart.call(self._dom._container, self._state, futureState, self);
@@ -2764,7 +2774,7 @@
      * @param {Object} extensions
      */
 
-    mixItUp = function(container, config, extensions) {
+    mixItUp = function(container, config) {
         var el = null,
             instance = null,
             id = '',
@@ -2772,9 +2782,11 @@
                 return ('00000'+(Math.random()*16777216<<0).toString(16)).substr(-6).toUpperCase();
             };
 
-        if (extensions && typeof extensions === 'object' && extensions.length) {
-            for (var i = 0, extend; extend = extensions[i]; i++) {
-                _MixItUp = extend(_MixItUp);
+        if (config.extensions && typeof config.extensions === 'object') {
+            console.log(config.extensions);
+
+            for (var name in config.extensions) {
+                config.extensions[name](_MixItUp);
             }
         }
 
