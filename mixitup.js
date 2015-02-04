@@ -118,8 +118,6 @@
             _isClicking: false,
             _isLoading: true,
             _isChangingLayout: false,
-            _isChangingClass: false,
-            _isChangingDisplay: false,
             _isRemoving: false,
 
             _targets: [],
@@ -142,7 +140,7 @@
             _newHeight: null,
             _incPadding: true,
             _newDisplay: null,
-            _newClass: null,
+            _newContainerClass: null,
             _targetsBound: 0,
             _targetsDone: 0,
             _userPromise: null,
@@ -1254,6 +1252,24 @@
                         },
                         toShow = target._isShown ? false : 'show';
 
+                        if (self.animation.animateResizeTargets) {
+                            posIn.width = target._startPosData.width;
+                            posIn.height = target._startPosData.height;
+
+                            if (target._startPosData.width - target._finalPosData.width) {
+                                posIn.marginRight = -(target._startPosData.width - target._interPosData.width) + (target._startPosData.marginRight * 1);
+                            }
+
+                            if (target._startPosData.height - target._finalPosData.height) {
+                                posIn.marginBottom = -(target._startPosData.height - target._interPosData.height) + (target._startPosData.marginBottom * 1);
+                            }
+
+                            posOut.width = target._finalPosData.width;
+                            posOut.height = target._finalPosData.height;
+                            posOut.marginRight = -(target._finalPosData.width - target._interPosData.width) + (target._finalPosData.marginRight * 1);
+                            posOut.marginBottom = -(target._finalPosData.height - target._interPosData.height) + (target._finalPosData.marginBottom * 1);
+                        }
+
                         if (
                             toShow ||
                             posIn.x !== posOut.x ||
@@ -1285,6 +1301,11 @@
                             self._dom._parent.style.height = self._newHeight + 'px';
                         });
                     }
+
+                    if (self._isChangingLayout) {
+                        _h._removeClass(self._dom._container, self.layout.containerClass);
+                        _h._addClass(self._dom._container, self._newContainerClass);
+                    }
                 },
                 futureState = self._buildState(true);
                 
@@ -1292,7 +1313,7 @@
 
             !self.animation.duration && (animate = false);
 
-            if (!self._toShow.length && !self._toHide.length && !self._isSorting) {
+            if (!self._toShow.length && !self._toHide.length && !self._isSorting && !self._isChangingLayout) {
                 animate = false;            
             }
 
@@ -1386,6 +1407,11 @@
 
             for (var i = 0, target; target = self._toShow[i]; i++) {
                 target._show();
+            }
+
+            if (self._isChangingLayout) {
+                _h._removeClass(self._dom._container, self.layout.containerClass);
+                _h._addClass(self._dom._container, self._newContainerClass);
             }
 
             self._execAction('_setInter', 1);
@@ -1483,6 +1509,11 @@
                 target._show();
             }
 
+            if (self._isChangingLayout && self.animation.animateChangeLayout) {
+                _h._removeClass(self._dom._container, self._newContainerClass);
+                _h._addClass(self._dom._container, self.layout.containerClass);
+            }
+
             self._execAction('_getFinalMixData', 1);
         },
 
@@ -1524,11 +1555,19 @@
             self._dom._parent.style[_MixItUp.prototype._transitionProp] = '';
             self._dom._parent.style.height = '';
 
+            if (self._isChangingLayout) {
+                _h._removeClass(self._dom._container, self.layout.containerClass);
+                _h._addClass(self._dom._container, self._newContainerClass);
+
+                self.layout.containerClass = self._newContainerClass;
+                self._isChangingLayout = false;
+            }
+
             self._isRemoving = false;
 
             self._buildState();
 
-            if(typeof self.callbacks.onMixEnd === 'function'){
+            if (typeof self.callbacks.onMixEnd === 'function') {
                 self.callbacks.onMixEnd.call(self._dom._el, self._state, self);
             }
 
@@ -1795,7 +1834,7 @@
                 filter = args.command.filter;
                 changeLayout = args.command.changeLayout;
 
-                if (sort) {
+                if (sort !== undf) {
                     self._newSort = self._parseSort(sort);
                     self._newSortString = sort;
 
@@ -1810,6 +1849,16 @@
                 }
 
                 self._filter();
+
+                if (changeLayout !== undf) {
+                    self._newContainerClass = typeof changeLayout === 'string' ? changeLayout : '';
+
+                    if (
+                        self._newContainerClass !== self.layout.containerClass
+                    ) {
+                        self._isChangingLayout = true;
+                    }
+                }
 
                 self._execAction('multiMix', 1, arguments);
 
@@ -2259,6 +2308,12 @@
                         transitionRules.push(writeTransitionRule('opacity', staggerIndex));
                     }
 
+                    if (self._mixer.animation.animateResizeTargets && self._finalPosData && self._finalPosData.isShown) {
+                        transitionRules.push(writeTransitionRule('width', staggerIndex));
+                        transitionRules.push(writeTransitionRule('height', staggerIndex));
+                        transitionRules.push(writeTransitionRule('margin', staggerIndex));
+                    }
+
                     if (
                         hideShow ||
                         posIn.x !== posOut.x ||
@@ -2270,6 +2325,13 @@
                     self._transition(transitionRules);
 
                     transformValues.push('translate('+posOut.x+'px, '+posOut.y+'px)');
+
+                    if (self._mixer.animation.animateResizeTargets && self._finalPosData && self._finalPosData.isShown) {
+                        self._el.style.width = posOut.width+'px';
+                        self._el.style.height = posOut.height+'px';
+                        self._el.style.marginRight = posOut.marginRight+'px';
+                        self._el.style.marginBottom = posOut.marginBottom+'px';
+                    }   
 
                     if (hideShow === 'hide') {
                         fading && (self._el.style.opacity = self._mixer._effects.opacity);
@@ -2284,7 +2346,14 @@
 
             self._execAction('_move', 0, arguments);
 
-            transformValues.push('translate('+posIn.x+'px, '+posIn.y+'px)');                
+            transformValues.push('translate('+posIn.x+'px, '+posIn.y+'px)'); 
+
+            if (!hideShow && self._mixer.animation.animateResizeTargets) {
+                self._el.style.width = posIn.width+'px';
+                self._el.style.height = posIn.height+'px';
+                self._el.style.marginRight = posIn.marginRight+'px';
+                self._el.style.marginBottom = posIn.marginBottom+'px';
+            }               
 
             if (hideShow === 'hide') {
                 fading && (self._el.style.opacity = 1);
@@ -2354,9 +2423,11 @@
 
         _getPosData: function() {
             var self = this,
+                styles = {},
                 posData = {
                     x: self._el.offsetLeft,
-                    y: self._el.offsetTop
+                    y: self._el.offsetTop,
+                    isShown: !!self._el.style.display
                 };
 
             self._execAction('_getPosData', 0, arguments);
@@ -2364,10 +2435,10 @@
             if (self._mixer.animation.animateResizeTargets) {
                 styles = window.getComputedStyle(self._el);
 
-                posData.marginBottom = parseInt(styles.marginBottom);
-                posData.marginRight = parseInt(styles.marginRight);
-                posData.width = el.offsetWidth;
-                posData.height = el.offsetHeight;
+                posData.marginBottom = parseFloat(styles.marginBottom);
+                posData.marginRight = parseFloat(styles.marginRight);
+                posData.width = self._el.offsetWidth;
+                posData.height = self._el.offsetHeight;
             }
 
             return self._execFilter('_getPosData', posData, arguments);
@@ -2385,6 +2456,13 @@
             self._el.style[_MixItUp.prototype._transformProp] = '';
             self._el.style[_MixItUp.prototype._transitionProp] = '';
             self._el.style.opacity = '';
+
+            if (self._mixer.animation.animateResizeTargets) {
+                self._el.style.width = '';
+                self._el.style.height = '';
+                self._el.style.marginRight = '';
+                self._el.style.marginBottom = '';
+            }
 
             self._execAction('_cleanUp', 1, arguments);
         }
