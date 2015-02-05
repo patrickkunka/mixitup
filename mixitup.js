@@ -832,88 +832,78 @@
 
         _filter: function(){
             var self = this,
-                shown = false,
-                hidden = false,
-                match = function(target, matchWith, bistable, invert) {
-                    if (
-                        typeof matchWith === 'string' && target._dom._el.matches(matchWith) ||
-                        typeof matchWith === 'object' && target._dom._el === matchWith
-                    ) {
-                        if (!invert) {
-                            self._show.push(target);
+                evaluate = function(condition, target) {
+                    if (condition) {
+                        self._show.push(target);
 
-                            !target._isShown && self._toShow.push(target);
-                        } else {
-                            self._hide.push(target);
+                        !target._isShown && self._toShow.push(target);
+                    } else {
+                        self._hide.push(target);
 
-                            target._isShown && self._toHide.push(target);
-                        }
-
-                        if (!bistable) return true;
-                    } else if (bistable) {
-                        if (!invert) {
-                            self._hide.push(target);
-
-                            target._isShown && self._toHide.push(target);
-                        } else {
-                            if (self._isRemoving && !target._isShown) return;
-
-                            (self._show.indexOf(target)) < 0 && self._show.push(target);
-
-                            !target._isShown && self._toShow.push(target);
-                        }
+                        target._isShown && self._toHide.push(target);
                     }
                 };
 
             self._execAction('_filter', 0);
 
-            !self._isRemoving && (self._show = []);
+            console.log(self._isRemoving);
+
+            self._show = [];
             self._hide = [];
             self._toShow = [];
             self._toHide = [];
 
             for (var i = 0, target; target = self._targets[i]; i++) {
-                switch (typeof self._activeFilter) {
-                    case 'string':
-                        match(target, self._activeFilter, true);
-                        
-                        break;
-                    case 'object':
-                        if (_h._isElement(self._activeFilter)) {
-                            match(target, self._activeFilter, true);
-                        } else if (self._activeFilter.show) {
-                            if (typeof self._activeFilter.show === 'string') {
-                                match(target, self._activeFilter.show, true);
-                            } else if (_h._isElement(self._activeFilter.show)) {
-                                match(target, self._activeFilter.show, true);
-                            } else if (self._activeFilter.show.length) {
-                                for (var j = 0, toShow; toShow = self._activeFilter.show[j]; j++) {
-                                    if (match(target, toShow, false)) {
-                                        shown = true;
-                                    }
-                                }
 
-                                if (!shown) {
-                                    match(target, null, true);
-                                }
-                            }
-                        } else if (self._activeFilter.hide) {
-                            if (typeof self._activeFilter.hide === 'string') {
-                                match(target, self._activeFilter.hide, true, true);
-                            } else if (_h._isElement(self._activeFilter.hide)) {
-                                match(target, self._activeFilter.hide, true, true);
-                            } else if (self._activeFilter.hide.length) {
-                                for (var k = 0, toHide; toHide = self._activeFilter.hide[k]; k++) {
-                                    if (match(target, toHide, false, true)) {
-                                        hidden = true;
-                                    }
-                                }
+                // show via selector
 
-                                if (!hidden) {
-                                    match(target, null, true, true);
-                                }
-                            }
-                        }
+                if (typeof self._activeFilter === 'string') {
+                    evaluate(target._dom._el.matches(self._activeFilter), target);
+                } 
+
+                // show via element
+
+                else if (
+                    typeof self._activeFilter === 'object' &&
+                    _h._isElement(self._activeFilter)
+                ) {
+                    evaluate(target._dom._el === self._activeFilter, target);
+                }
+
+                // show via collection
+
+                else if (
+                    typeof self._activeFilter === 'object' &&
+                    self._activeFilter.length
+                ) {
+                    evaluate(self._activeFilter.indexOf(target) > -1, target);
+                }
+
+                // hide via selector
+
+                else if (
+                    typeof self._activeFilter === 'object' &&
+                    typeof self._activeFilter.hide === 'string'
+                ) {
+                    evaluate(!target._dom._el.matches(self._activeFilter.hide), target);
+                } 
+
+                // hide via element
+
+                else if (
+                    typeof self._activeFilter.hide === 'object' &&
+                    _h._isElement(self._activeFilter.hide)
+                ) {
+                    evaluate(target._dom._el !== self._activeFilter.hide, target);
+                }
+
+                // hide via collection
+
+                else if (
+                    typeof self._activeFilter.hide === 'object' &&
+                    self._activeFilter.hide.length
+                ) {
+                    evaluate(self._activeFilter.indexOf(target) < 0, target);
                 }
             }
 
@@ -1472,7 +1462,7 @@
             self._execAction('_setFinal', 0);
 
             self._isSorting && self._printSort();
-
+            
             for (var i = 0, target; target = self._toHide[i]; i++) {
                 target._hide();
             }
@@ -2140,7 +2130,6 @@
         self._execAction('_constructor', 0, arguments);
 
         _h._extend(self, {
-            _el: null,
             _sortString: '',
             _mixer: null,
             _callback: null,
