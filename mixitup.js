@@ -70,6 +70,7 @@
                 onMixBusy: null,
                 onMixEnd: null,
                 onMixFail: null,
+                onMixClick: null,
                 _user: null
             },
 
@@ -198,8 +199,8 @@
         /**
          * extend
          * @since 2.1.0
-         * @param {object} new properties/methods
-         * @extends {object} prototype
+         * @param {Object} new properties/methods
+         * @extends {Object} prototype
          */
 
         extend: function(extension) {
@@ -213,11 +214,11 @@
         /**
          * addAction
          * @since 2.1.0
-         * @param {string} hook name
-         * @param {string} method
-         * @param {function} function to execute
-         * @param {number} priority
-         * @extends {object} $._MixItUp.prototype._actions
+         * @param {String} hook name
+         * @param {String} name
+         * @param {Function} func
+         * @param {Number} priority
+         * @extends {Object} $._MixItUp.prototype._actions
          */
 
         addAction: function(hook, name, func, priority) {
@@ -227,15 +228,14 @@
         /**
          * addFilter
          * @since 2.1.0
-         * @param {string} hook name
-         * @param {string} method
-         * @param {function} function to execute
-         * @param {number} priority
-         * @extends {object} $._MixItUp.prototype._filters
+         * @param {String} hook
+         * @param {String} name
+         * @param {Function} func
+         * @extends {Object} $._MixItUp.prototype._filters
          */
 
-        addFilter: function(hook, name, func, priority) {
-            _MixItUp.prototype._addHook('_filters', hook, name, func, priority);
+        addFilter: function(hook, name, func) {
+            _MixItUp.prototype._addHook('_filters', hook, name, func);
         },
 
         /* Private Static Methods
@@ -244,11 +244,11 @@
         /**
          * _addHook
          * @since 2.1.0
-         * @param {string} type of hook
-         * @param {string} hook name
-         * @param {function} function to execute
-         * @param {number} priority
-         * @extends {object} $._MixItUp.prototype._filters
+         * @param {String} type of hook
+         * @param {String} hook name
+         * @param {Function} function to execute
+         * @param {Number} priority
+         * @extends {Object} $._MixItUp.prototype._filters
          */
 
         _addHook: function(type, hook, name, func, priority) {
@@ -572,6 +572,10 @@
                 };
             
             self._execAction('_handleClick', 0, arguments);
+
+            if (typeof self.callbacks.onMixClick === 'function') {
+                self.callbacks.onMixClick.call(self._dom._container, self._state, self);
+            }
 
             for (var key in self.selectors) {
                 selectors.push(self.selectors[key]);
@@ -1741,8 +1745,8 @@
             var self = this;
             
             if (!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)) {
-                for (var key in self._filters[methodName]) {
-                    return self._filters[methodName][key].call(self, args);
+                for (var key in self._filters[methodName].pre) {
+                    return self._filters[methodName].pre[key].call(self, value, args);
                 }
             } else {
                 return value;
@@ -2196,12 +2200,11 @@
          * @param {string} hook name
          * @param {string} method
          * @param {function} function to execute
-         * @param {number} priority
          * @extends {object} _MixItUp.prototype._filters
          */
 
-        addFilter: function(hook, name, func, priority) {
-            _Target.prototype._addHook('_filters', hook, name, func, priority);
+        addFilter: function(hook, name, func) {
+            _Target.prototype._addHook('_filters', hook, name, func);
         },
 
         /* Private Static Methods
@@ -2213,7 +2216,7 @@
          * @param {String} type of hook
          * @param {String} hook name
          * @param {Function} function to execute
-         * @param {Number} priority
+         * @param [{Number}] priority
          * @extends {Object} _MixItUp.prototype._filters
          */
 
