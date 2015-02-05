@@ -905,7 +905,7 @@
                     typeof self._activeFilter.hide === 'object' &&
                     self._activeFilter.hide.length
                 ) {
-                    evaluate(self._activeFilter.indexOf(target) < 0, target);
+                    evaluate(self._activeFilter.hide.indexOf(target) < 0, target);
                 }
             }
 
