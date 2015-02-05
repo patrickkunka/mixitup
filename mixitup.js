@@ -1201,8 +1201,6 @@
 
         _goMix: function(animate){
             var self = this,
-                started = [],
-                finished = 0,
                 defered = null,
                 resolvePromise = null,
                 scrollTop = -1,
@@ -1216,11 +1214,11 @@
                     resolvePromise && resolvePromise(self._state);
                 },
                 checkProgress = function() {
-                    finished++;  
+                    self._targetsDone++;
 
-                    if (finished === started.length) {
+                    if (self._targetsBound === self._targetsDone) {
                         done();
-                    }
+                    }                    
                 },
                 getDocumentState = function() {
                     scrollTop = window.pageYOffset;
@@ -1232,6 +1230,7 @@
                         posIn = {},
                         posOut = {},
                         toShow = false,
+                        resize = self.animation.animateResizeTargets,
                         i = -1,
                         doneHide = function() {
                             this._hide();
@@ -1256,24 +1255,20 @@
 
                             if (target._startPosData.width - target._finalPosData.width) {
                                 posIn.marginRight = -(target._startPosData.width - target._interPosData.width) + (target._startPosData.marginRight * 1);
+                            } else {
+                                posIn.marginRight = target._startPosData.marginRight;
                             }
 
                             if (target._startPosData.height - target._finalPosData.height) {
                                 posIn.marginBottom = -(target._startPosData.height - target._interPosData.height) + (target._startPosData.marginBottom * 1);
+                            } else {
+                                posIn.marginBottom = target._startPosData.marginBottom;
                             }
 
                             posOut.width = target._finalPosData.width;
                             posOut.height = target._finalPosData.height;
                             posOut.marginRight = -(target._finalPosData.width - target._interPosData.width) + (target._finalPosData.marginRight * 1);
                             posOut.marginBottom = -(target._finalPosData.height - target._interPosData.height) + (target._finalPosData.marginBottom * 1);
-                        }
-
-                        if (
-                            toShow ||
-                            posIn.x !== posOut.x ||
-                            posIn.y !== posOut.y
-                        ) {
-                            started.push(target);
                         }
 
                         target._show();
@@ -1286,10 +1281,6 @@
                             x: target._isShown ? target._startPosData.x - target._interPosData.x : 0,
                             y: target._isShown ? target._startPosData.y - target._interPosData.y : 0
                         };
-
-                        if (started.indexOf(target) < 0) {
-                            started.push(target);
-                        }
 
                         target._move(posIn, {x: 0, y: 0}, 'hide', i, checkProgress);
                     }
@@ -1537,6 +1528,9 @@
                 i = -1;
 
             self._execAction('_cleanUp', 0);
+
+            self._targetsBound = 0;
+            self._targetsDone = 0;
 
             for (i = 0; target = self._show[i]; i++) {
                 target._cleanUp();
@@ -2140,6 +2134,7 @@
             _finalPosData: null,
             _isShown: false,
             _isBound: false,
+            _isExcluded: false,
 
             _dom: {
                 _el: null
@@ -2360,6 +2355,7 @@
                 transitionRules = [],
                 transformValues = [],
                 transformString = '',
+                resize = self._mixer.animation.animateResizeTargets,
                 fading = self._mixer._effects.opacity !== undf,
                 writeTransitionRule = function(rule) {
                     var delay = staggerIndex * self._mixer.animation.staggerDelay;
@@ -2385,12 +2381,21 @@
                     }
 
                     if (
-                        hideShow ||
-                        posIn.x !== posOut.x ||
-                        posIn.y !== posOut.y
+                        !self._isBound &&
+                        (
+                            hideShow ||
+                            posIn.x !== posOut.x ||
+                            posIn.y !== posOut.y ||
+                            resize && (posIn.width !== posOut.width) ||
+                            resize && (posIn.height !== posOut.height) ||
+                            resize && (posIn.marginRight !== posOut.marginRight) ||
+                            resize && (posIn.marginTop !== posOut.marginTop)
+                        )
                     ) {
                         self._isBound = true;
                         self._callback = callback;
+
+                        !self._isExcluded && self._mixer._targetsBound++;
                     }
 
                     self._transition(transitionRules);
@@ -2465,7 +2470,8 @@
 
         _handleTransitionEnd: function(e) {
             var self = this,
-                propName = e.propertyName;
+                propName = e.propertyName,
+                resize = self._mixer.animation.animateResizeTargets;
 
             self._execAction('_handleTransitionEnd', 0, arguments);
 
@@ -2474,7 +2480,10 @@
                 e.target.matches(self._mixer.selectors.target) &&
                 (
                     propName.indexOf('transform') > -1 ||
-                    propName.indexOf('opacity') > -1
+                    propName.indexOf('opacity') > -1 ||
+                    resize && propName.indexOf('height') > -1 ||
+                    resize && propName.indexOf('width') > -1 ||
+                    resize && propName.indexOf('margin') > -1
                 )
             ) {
                 self._callback.call(self);
