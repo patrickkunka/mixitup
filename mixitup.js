@@ -425,7 +425,7 @@
             self._dom._allButtons = self._dom._filterButtons
                     .concat(self._dom._sortButtons)
                     .concat(self._dom._filterToggleButtons)
-                    .concat(self._dom._multiMixButtons)
+                    .concat(self._dom._multiMixButtons);
 
             self._execAction('_cacheDom', 1, arguments);
         },
@@ -571,7 +571,7 @@
                     }
                 };
             
-            self._execAction('_processClick', 0, arguments);
+            self._execAction('_handleClick', 0, arguments);
 
             for (var key in self.selectors) {
                 selectors.push(self.selectors[key]);
@@ -595,7 +595,7 @@
                     self.callbacks.onMixBusy.call(self._dom._container, self._state, self);
                 }
 
-                self._execAction('_processClickBusy', 1, arguments);
+                self._execAction('_handleClickBusy', 1, arguments);
 
                 return;
             }
@@ -715,7 +715,7 @@
                 self.multiMix(command);
             }
 
-            self._execAction('_processClick', 1, arguments);
+            self._execAction('_handleClick', 1, arguments);
         },
 
         /**
@@ -845,8 +845,6 @@
                 };
 
             self._execAction('_filter', 0);
-
-            console.log(self._isRemoving);
 
             self._show = [];
             self._hide = [];
@@ -2107,7 +2105,7 @@
 
             if (self._dom._container.id.indexOf('MixItUp') > -1) { // TODO: use a regex 
                 self._dom._container.id = '';
-            };
+            }
 
             delete _MixItUp.prototype._instances[self.id];
 
