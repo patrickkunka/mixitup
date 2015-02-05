@@ -836,11 +836,15 @@
 
         _filter: function(){
             var self = this,
-                evaluate = function(condition, target) {
+                evaluate = function(condition, target, isRemoving) {
                     if (condition) {
-                        self._show.push(target);
+                        if (isRemoving && typeof self._state.activeFilter === 'string') {
+                            evaluate(target._dom._el.matches(self._state.activeFilter), target);
+                        } else {
+                            self._show.push(target);
 
-                        !target._isShown && self._toShow.push(target);
+                            !target._isShown && self._toShow.push(target);
+                        }
                     } else {
                         self._hide.push(target);
 
@@ -887,7 +891,7 @@
                     typeof self._activeFilter === 'object' &&
                     typeof self._activeFilter.hide === 'string'
                 ) {
-                    evaluate(!target._dom._el.matches(self._activeFilter.hide), target);
+                    evaluate(!target._dom._el.matches(self._activeFilter.hide), target, true);
                 } 
 
                 // hide via element
@@ -896,7 +900,7 @@
                     typeof self._activeFilter.hide === 'object' &&
                     _h._isElement(self._activeFilter.hide)
                 ) {
-                    evaluate(target._dom._el !== self._activeFilter.hide, target);
+                    evaluate(target._dom._el !== self._activeFilter.hide, target, true);
                 }
 
                 // hide via collection
@@ -905,7 +909,7 @@
                     typeof self._activeFilter.hide === 'object' &&
                     self._activeFilter.hide.length
                 ) {
-                    evaluate(self._activeFilter.hide.indexOf(target._dom._el) < 0, target);
+                    evaluate(self._activeFilter.hide.indexOf(target._dom._el) < 0, target, true);
                 }
             }
 
