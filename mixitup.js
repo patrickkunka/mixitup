@@ -218,7 +218,7 @@
          * @param {String} name
          * @param {Function} func
          * @param {Number} priority
-         * @extends {Object} $._MixItUp.prototype._actions
+         * @extends {Object} _MixItUp.prototype._actions
          */
 
         addAction: function(hook, name, func, priority) {
@@ -231,7 +231,7 @@
          * @param {String} hook
          * @param {String} name
          * @param {Function} func
-         * @extends {Object} $._MixItUp.prototype._filters
+         * @extends {Object} _MixItUp.prototype._filters
          */
 
         addFilter: function(hook, name, func) {
@@ -248,7 +248,7 @@
          * @param {String} hook name
          * @param {Function} function to execute
          * @param {Number} priority
-         * @extends {Object} $._MixItUp.prototype._filters
+         * @extends {Object} _MixItUp.prototype._filters
          */
 
         _addHook: function(type, hook, name, func, priority) {
@@ -535,7 +535,7 @@
         /**
          * _handleClick
          * @since 3.0.0
-         * @param {object} $button
+         * @param {object} button
          * @param {string} type
          */
         
@@ -1211,9 +1211,9 @@
                 scrollLeft = -1,
                 docHeight = -1,
                 done = function() {
-                    self._cleanUp();
-
                     self._isMixing = false;
+
+                    self._cleanUp();
 
                     resolvePromise && resolvePromise(self._state);
                 },
@@ -1327,6 +1327,12 @@
             if (typeof self.callbacks.onMixStart === 'function') {
                 self.callbacks.onMixStart.call(self._dom._container, self._state, futureState, self);
             }
+
+            _h._trigger(self._dom._container, 'mixStart', {
+                state: self._state,
+                futureState: futureState,
+                instance: self
+            });
 
             if (animate && _MixItUp.prototype._has._transitions) {
                 self._effects = self._parseEffects();
@@ -1576,6 +1582,18 @@
 
             if (typeof self.callbacks.onMixEnd === 'function') {
                 self.callbacks.onMixEnd.call(self._dom._el, self._state, self);
+            }
+
+            _h._trigger(self._dom._container, 'mixEnd', {
+                state: self._state,
+                instance: self
+            });
+
+            if (self._queue.length) {
+                self._execAction('_queue', 0);
+                
+                self.multiMix(self._queue[0][0], self._queue[0][1], self._queue[0][2]);
+                self._queue.splice(0, 1);
             }
 
             self._execAction('_cleanUp', 1);
@@ -1872,7 +1890,24 @@
 
                 return self._goMix(args.animate ^ self.animation.enable ? args.animate : self.animation.enable);
             } else {
-                // queue
+                if (self.animation.queue && self._queue.length < self.animation.queueLimit) {
+                    self._queue.push(arguments);
+                    
+                    (self.controls.enable && !self._isClicking) && self._updateControls(args.command);
+                    
+                    self._execAction('multiMixQueue', 1, arguments);
+                } else {
+                    if (typeof self.callbacks.onMixBusy === 'function') {
+                        self.callbacks.onMixBusy.call(self._dom._container, self._state, self);
+                    }
+
+                    _h._trigger(self._dom._container, 'mixBusy', {
+                        state: self._state,
+                        instance: self
+                    });
+                    
+                    self._execAction('multiMixBusy', 1, arguments);
+                }
             }
         },
 
@@ -2719,6 +2754,19 @@
                 el[type+fn] = null;
             } else
                 el.removeEventListener(type, fn, false);
+        },
+
+        /**
+         * _trigger
+         * @param {Object} element
+         * @param {String} eventName
+         * @param {Object} data
+         */
+
+        _trigger: function(el, eventName, data) {
+            var event = new CustomEvent(eventName, {detail: data}); // TODO: needs IE Polyfill
+
+            el.dispatchEvent(event);
         },
 
         /**
