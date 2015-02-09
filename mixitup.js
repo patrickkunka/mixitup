@@ -543,7 +543,7 @@
             var self = this,
                 selectors = [],
                 selector = '',
-                toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '';
+                toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '',
                 target = null,
                 command = {},
                 filterString = '',
@@ -1150,7 +1150,7 @@
             self.animation.reverseOut ? buildTransform('transformOut', true) : (effects.transformOut = effects.transformIn);
 
             self.animation.stagger = parse('stagger') ? true : false;
-            self._staggerDuration = parseInt(parse('stagger') ? (parse('stagger',true).val ? parse('stagger', true).val : 100) : 100);
+            self._staggerDuration = parseInt(parse('stagger') ? (parse('stagger',true).val ? parse('stagger', true).val : 100) : 0);
 
             return self._execFilter('_parseEffects', effects);
         },
@@ -1222,7 +1222,8 @@
 
                     self._cleanUp();
 
-                    resolvePromise && resolvePromise(self._state);
+                    self._userPromise.resolve(self._state);
+                    self._userPromise.isResolved = true;
                 },
                 checkProgress = function() {
                     self._targetsDone++;
@@ -1319,16 +1320,11 @@
                 animate = false;            
             }
 
-            if (_MixItUp.prototype._has._promises) {
-                self._userPromise = new Promise(function(resolve, reject) {
-                    resolvePromise = resolve;
-                });
-            } else if (self.libraries.q && typeof self.libraries.q === 'function') {
-                defered = self.libraries.q.defer();
-                self._userPromise = defered.promise;
-                resolvePromise = defered.resolve;
-            } else {
-                console.warn('[MixItUp] WARNING: No available Promises implementations were found.');
+            if (
+                !self._userPromise ||
+                self._userPromise.isResolved
+            ) {
+                self._userPromise = _h._getPromise();
             }
 
             if (typeof self.callbacks.onMixStart === 'function') {
@@ -1368,7 +1364,7 @@
             
             self._execAction('_goMix', 1, arguments);
 
-            return self._userPromise;
+            return self._userPromise.promise;
         },
 
         /**
@@ -1542,6 +1538,7 @@
         _cleanUp: function(){
             var self = this,
                 target = null,
+                firstInQueue = null,
                 i = -1;
 
             self._execAction('_cleanUp', 0);
@@ -1599,8 +1596,11 @@
             if (self._queue.length) {
                 self._execAction('_queue', 0);
                 
-                self.multiMix(self._queue[0][0], self._queue[0][1], self._queue[0][2]);
-                self._queue.splice(0, 1);
+                firstInQueue = self._queue.shift();
+
+                self._userPromise = firstInQueue[3];
+
+                self.multiMix(firstInQueue[0], firstInQueue[1], firstInQueue[2]);
             }
 
             self._execAction('_cleanUp', 1);
@@ -1907,15 +1907,20 @@
 
                 return self._goMix(args.animate ^ self.animation.enable ? args.animate : self.animation.enable);
             } else {
-                if (self.animation.queue && self._queue.length < self.animation.queueLimit) {
-                    self._queue.push(arguments);
+                self._userPromise = _h._getPromise();
 
-                    // TODO: must return a promise!
+                if (self.animation.queue && self._queue.length < self.animation.queueLimit) {
+                    arguments[3] = self._userPromise;
+
+                    self._queue.push(arguments);
                     
                     (self.controls.enable && !self._isClicking) && self._updateControls(args.command);
                     
                     self._execAction('multiMixQueue', 1, arguments);
                 } else {
+                    self._userPromise.resolve(self._state); // TODO: include warning that was busy in state?
+                    self._userPromise.isResolved = true;
+
                     if (typeof self.callbacks.onMixBusy === 'function') {
                         self.callbacks.onMixBusy.call(self._dom._container, self._state, self);
                     }
@@ -1927,6 +1932,8 @@
                     
                     self._execAction('multiMixBusy', 1, arguments);
                 }
+
+                return self._userPromise.promise;
             }
         },
 
@@ -1973,9 +1980,7 @@
                     self._targets.splice(args.index, 0, target);
                 }
 
-                if (nextSibling.parentElement === self._dom._parent) {
-                    self._dom._parent.insertBefore(frag, nextSibling);
-                }
+                self._dom._parent.insertBefore(frag, nextSibling);
             }
 
             self._currentOrder = self._origOrder = self._targets;
@@ -2087,7 +2092,8 @@
 
             self._execAction('remove', 1, arguments);
 
-            return self.multiMix(multiMix, args.callback).then(cleanUp); // TODO: use a normal callback here for browser support!
+            return self.multiMix(multiMix, args.callback)
+                .then(cleanUp); // TODO: use a normal callback here for browser support!
         },
 
         /**
@@ -3001,6 +3007,38 @@
             }
 
             return cleanArray;
+        },
+
+        /**
+         * _getPromise
+         * @return {Object} promiseWrapper
+         */
+
+        _getPromise: function() {
+            var promise = {
+                promise: null,
+                resolve: null,
+                reject: null,
+                isResolved: false
+            };
+
+            if (_MixItUp.prototype._has._promises) {
+                promise.promise = new Promise(function(resolve, reject) {
+                    promise.resolve = resolve;
+                    promise.reject = reject;
+                });
+            } else if (self.libraries.q && typeof self.libraries.q === 'function') {
+                defered = self.libraries.q.defer();
+                promise.promise = defered.promise;
+                promise.resolve = defered.resolve;
+                promise.reject = defered.reject;
+            } else {
+                console.warn('[MixItUp] WARNING: No available Promises implementations were found.');
+
+                return null;
+            }
+
+            return promise;
         }
 
     };
