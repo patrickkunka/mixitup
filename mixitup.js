@@ -51,7 +51,6 @@
                 enable: true,
                 effects: 'fade scale',
                 duration: 600,
-                staggerDelay: 0,
                 easing: 'ease',
                 perspectiveDistance: '3000',
                 perspectiveOrigin: '50% 50%',
@@ -140,6 +139,7 @@
             _toggleString: '',
             _activeSort: 'default:asc',
             _newSort: null,
+            _staggerDuration: 0,
             _startHeight: null,
             _newHeight: null,
             _incPadding: true,
@@ -543,6 +543,7 @@
             var self = this,
                 selectors = [],
                 selector = '',
+                toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '';
                 target = null,
                 command = {},
                 filterString = '',
@@ -676,6 +677,8 @@
                 for (i = 0; button = self._dom._multiMixButtons[i]; i++) {
                     _h._removeClass(button, self.controls.activeClass);
                 }
+
+                self._toggleString = self._toggleArray.join(seperator);
 
                 command = {
                     filter: self._toggleString
@@ -836,6 +839,7 @@
 
         _filter: function(){
             var self = this,
+                condition = false,
                 evaluate = function(condition, target, isRemoving) {
                     if (condition) {
                         if (isRemoving && typeof self._state.activeFilter === 'string') {
@@ -864,7 +868,10 @@
                 // show via selector
 
                 if (typeof self._activeFilter === 'string') {
-                    evaluate(target._dom._el.matches(self._activeFilter), target);
+                    condition = self._activeFilter === '' ? 
+                        false : target._dom._el.matches(self._activeFilter);
+
+                    evaluate(condition, target);
                 } 
 
                 // show via element
@@ -1143,7 +1150,7 @@
             self.animation.reverseOut ? buildTransform('transformOut', true) : (effects.transformOut = effects.transformIn);
 
             self.animation.stagger = parse('stagger') ? true : false;
-            self.animation.staggerDuration = parseInt(parse('stagger') ? (parse('stagger',true).val ? parse('stagger',true).val : 100) : 100);
+            self._staggerDuration = parseInt(parse('stagger') ? (parse('stagger',true).val ? parse('stagger', true).val : 100) : 100);
 
             return self._execFilter('_parseEffects', effects);
         },
@@ -1798,22 +1805,31 @@
         /**
          * filter
          * @since 2.0.0
+         * @shorthand self.multiMix
          * @param {Array} arguments
          */
 
         filter: function(){
-            var self = this;
+            var self = this,
+                args = self._parseMultiMixArgs(arguments);
+
+            self._isClicking && (self._toggleString = '');
+            
+            self.multiMix({filter: args.command}, args.animate, args.callback);
         },
         
         /**
          * sort
          * @since 2.0.0
+         * @shorthand self.multiMix
          * @param {Array} arguments
          */
         
         sort: function(){
-            var self = this;
+            var self = this,
+                args = self._parseMultiMixArgs(arguments);
 
+            self.multiMix({sort: args.command}, args.animate, args.callback);
         },
 
         /**
@@ -2397,12 +2413,15 @@
                 resize = self._mixer.animation.animateResizeTargets,
                 fading = self._mixer._effects.opacity !== undf,
                 writeTransitionRule = function(rule) {
-                    var delay = staggerIndex * self._mixer.animation.staggerDelay;
+                    var delay = staggerIndex * self._mixer._staggerDuration,
+                        output = '';
 
-                    return rule + ' ' +
+                    output = rule + ' ' +
                         (duration || self._mixer.animation.duration) + 'ms ' +
-                        self._mixer.animation.staggerDelay + 'ms ' +
+                        delay + 'ms ' +
                         (rule === 'opacity' ? 'linear' : self._mixer.animation.easing);
+
+                    return output;
                 },
                 applyStyles = function() {
                     transformValues = [];
