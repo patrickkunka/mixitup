@@ -1799,7 +1799,8 @@
 
         isMixing: function(){
             var self = this;
-            
+
+            return self._isMixing;
         },
 
         /**
@@ -1908,6 +1909,8 @@
             } else {
                 if (self.animation.queue && self._queue.length < self.animation.queueLimit) {
                     self._queue.push(arguments);
+
+                    // TODO: must return a promise!
                     
                     (self.controls.enable && !self._isClicking) && self._updateControls(args.command);
                     
@@ -1949,6 +1952,8 @@
                         return self._dom._parent.children.length ? self._dom._parent.children[0] : null;
                     }
                 })();
+
+            // TODO: insert and remove must be queuable independently of their multimix calls
                         
             self._execAction('insert', 0, arguments);
 
@@ -1966,7 +1971,9 @@
                     self._targets.splice(args.index, 0, target);
                 }
 
-                self._dom._parent.insertBefore(frag, nextSibling);
+                if (nextSibling.parentElement === self._dom._parent) {
+                    self._dom._parent.insertBefore(frag, nextSibling);
+                }
             }
 
             self._currentOrder = self._origOrder = self._targets;
