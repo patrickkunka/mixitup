@@ -1954,6 +1954,8 @@
                 })();
 
             // TODO: insert and remove must be queuable independently of their multimix calls
+
+            // TODO: throw error if user attempts to insert element that is already a target
                         
             self._execAction('insert', 0, arguments);
 
