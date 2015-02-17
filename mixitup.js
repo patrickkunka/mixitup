@@ -275,6 +275,8 @@
                 vendorsTrans = ['Webkit', 'Moz', 'O', 'ms'],
                 vendorsRAF = ['webkit', 'moz'],
                 getPrefix = function(el){
+                    if ('transition' in el.style) return '';
+
                     for (var i = 0; i < vendorsTrans.length; i++) {
                         if (vendorsTrans[i] + 'Transition' in el.style) {
                             return vendorsTrans[i].toLowerCase();
