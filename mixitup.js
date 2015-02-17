@@ -1326,7 +1326,7 @@
                 !self._userPromise ||
                 self._userPromise.isResolved
             ) {
-                self._userPromise = _h._getPromise();
+                self._userPromise = _h._getPromise(self.libraries);
             }
 
             if (typeof self.callbacks.onMixStart === 'function') {
@@ -1909,7 +1909,7 @@
 
                 return self._goMix(args.animate ^ self.animation.enable ? args.animate : self.animation.enable);
             } else {
-                self._userPromise = _h._getPromise();
+                self._userPromise = _h._getPromise(self.libraries);
 
                 if (self.animation.queue && self._queue.length < self.animation.queueLimit) {
                     arguments[3] = self._userPromise;
@@ -3013,10 +3013,11 @@
 
         /**
          * _getPromise
+         * @return {Object} libraries
          * @return {Object} promiseWrapper
          */
 
-        _getPromise: function() {
+        _getPromise: function(libraries) {
             var promise = {
                 promise: null,
                 resolve: null,
@@ -3029,8 +3030,8 @@
                     promise.resolve = resolve;
                     promise.reject = reject;
                 });
-            } else if (self.libraries.q && typeof self.libraries.q === 'function') {
-                defered = self.libraries.q.defer();
+            } else if (libraries.q && typeof libraries.q === 'function') {
+                var defered = libraries.q.defer();
                 promise.promise = defered.promise;
                 promise.resolve = defered.resolve;
                 promise.reject = defered.reject;
