@@ -296,8 +296,6 @@
             _MixItUp.prototype._transitionProp = prefix ? prefix + 'Transition' : 'transition';
             _MixItUp.prototype._transformProp = prefix ? prefix + 'Transform' : 'transform';
             _MixItUp.prototype._transformRule = prefix ? '-' + prefix + '-transform' : 'transform';
-
-            console.log(Promise.toString());
             
             /* Polyfills
             ---------------------------------------------------------------------- */
