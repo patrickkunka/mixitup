@@ -170,7 +170,6 @@
         /* Static Properties
         ---------------------------------------------------------------------- */
 
-        _prefix: '',
         _transformProp: 'transform',
         _transformRule: 'transform',
         _transitionProp: 'transition',
@@ -274,28 +273,28 @@
                 testEl = document.createElement('div'),
                 vendorsTrans = ['Webkit', 'Moz', 'O', 'ms'],
                 vendorsRAF = ['webkit', 'moz'],
-                getPrefix = function(el){
-                    if ('transition' in el.style) return '';
+                getPrefix = function(el, property){
+                    if (property.toLowerCase() in el.style) return '';
 
                     for (var i = 0; i < vendorsTrans.length; i++) {
-                        if (vendorsTrans[i] + 'Transition' in el.style) {
+                        if (vendorsTrans[i] + property in el.style) {
                             return vendorsTrans[i].toLowerCase();
                         }
                     }
 
-                    return 'transition' in el.style ? '' : false;
+                    return false;
                 },
-                prefix = getPrefix(testEl);
+                transitionPrefix = getPrefix(testEl, 'Transition'),
+                transformPrefix = getPrefix(testEl, 'Transform');
 
-            self._vendor = prefix;
+            self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a sepeterate test
 
             _MixItUp.prototype._has._promises = typeof Promise === 'function';
-            _MixItUp.prototype._has._transitions = prefix !== false;
-            _MixItUp.prototype._is._crapIe = window.atob && self._prefix ? false : true;
-            _MixItUp.prototype._prefix = prefix;
-            _MixItUp.prototype._transitionProp = prefix ? prefix + 'Transition' : 'transition';
-            _MixItUp.prototype._transformProp = prefix ? prefix + 'Transform' : 'transform';
-            _MixItUp.prototype._transformRule = prefix ? '-' + prefix + '-transform' : 'transform';
+            _MixItUp.prototype._has._transitions = transitionPrefix !== false;
+            _MixItUp.prototype._is._crapIe = window.atob ? false : true;
+            _MixItUp.prototype._transitionProp = transitionPrefix ? transitionPrefix + 'Transition' : 'transition';
+            _MixItUp.prototype._transformProp = transformPrefix ? transformPrefix + 'Transform' : 'transform';
+            _MixItUp.prototype._transformRule = transformPrefix ? '-' + transformPrefix + '-transform' : 'transform';
             
             /* Polyfills
             ---------------------------------------------------------------------- */
@@ -2616,7 +2615,7 @@
 
         _bindEvents: function() {
             var self = this,
-                transitionEndEvent = self._mixer._prefix === 'webkit' ?
+                transitionEndEvent = self._mixer._transitionPrefix === 'webkit' ?
                     'webkitTransitionEnd' :
                     'transitionend';
 
