@@ -289,13 +289,15 @@
 
             self._vendor = prefix;
 
-            _MixItUp.prototype._has._promises = typeof Promise !== 'undefined' && Promise.toString().indexOf('[native code]') !== -1;
+            _MixItUp.prototype._has._promises = typeof Promise === 'function';
             _MixItUp.prototype._has._transitions = prefix !== false;
             _MixItUp.prototype._is._crapIe = window.atob && self._prefix ? false : true;
             _MixItUp.prototype._prefix = prefix;
             _MixItUp.prototype._transitionProp = prefix ? prefix + 'Transition' : 'transition';
             _MixItUp.prototype._transformProp = prefix ? prefix + 'Transform' : 'transform';
             _MixItUp.prototype._transformRule = prefix ? '-' + prefix + '-transform' : 'transform';
+
+            console.log(Promise.toString());
             
             /* Polyfills
             ---------------------------------------------------------------------- */
