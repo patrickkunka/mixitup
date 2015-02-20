@@ -2799,7 +2799,14 @@
          */
 
         _trigger: function(el, eventName, data) {
-            var event = new CustomEvent(eventName, {detail: data}); // TODO: needs IE Polyfill
+            var event = null;
+
+            if (window.CustomEvent) {
+                event = new CustomEvent(eventName, {detail: data});
+            } else {
+                event = document.createEvent('CustomEvent');
+                event.initCustomEvent(eventName, true, true, data);
+            }
 
             el.dispatchEvent(event);
         },
