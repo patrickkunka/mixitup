@@ -2801,7 +2801,7 @@
         _trigger: function(el, eventName, data) {
             var event = null;
 
-            if (window.CustomEvent) {
+            if (typeof window.CustomEvent === 'function') {
                 event = new CustomEvent(eventName, {detail: data});
             } else {
                 event = document.createEvent('CustomEvent');
