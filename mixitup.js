@@ -441,7 +441,7 @@
                 
             self._execAction('_indexTargets', 0, arguments);
 
-            self._dom._targets = self._dom._container.querySelectorAll(self.selectors.target);
+            self._dom._targets = _h._children(self._dom._container, self.selectors.target); // TODO: allow querying of all descendants via config option, allowing for nested parent
 
             self._targets = [];
             
@@ -1016,7 +1016,7 @@
         _printSort: function(reset){
             var self = this,
                 order = reset ? self._currentOrder : self._newOrder,
-                targets = self._dom._parent.querySelectorAll(self.selectors.target),
+                targets = _h._children(self._dom._parent, self.selectors.target),
                 nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
                 frag = document.createDocumentFragment(),
                 target = null,
@@ -2963,16 +2963,18 @@
          * @param {Object} el
          * @param {String} selector
          * @param {Boolean} includeSelf
+         * @param {Number} range
          */
 
-        _closestParent: function(el, selector, includeSelf) {
-            var parent = el.parentNode;
+        _closestParent: function(el, selector, includeSelf, range) {
+            var parent = el.parentNode,
+                depth = range || true;
 
             if (includeSelf && el.matches(selector)) {
                 return el;
             }
 
-            while (parent && parent != document.body) {
+            while (depth && parent && parent != document.body) {
                 if (parent.matches && parent.matches(selector)) {
                     return parent;
                 } else if (parent.parentNode) {
@@ -2980,9 +2982,41 @@
                 } else {
                     return null;
                 }
+
+                if (range) {
+                    depth--;
+                }
             }
 
             return null;
+        },
+
+        /**
+         * _children
+         * @since 3.0.0
+         * @param {Object} el
+         * @param {String} selector
+         */
+
+        _children: function(el, selector) {
+            var children = [],
+                tempId = '';
+
+            if (el) {
+                if (!el.id) {
+                    tempId = 'Temp'+this.random();
+
+                    el.id = tempId;
+                }
+
+                children = document.querySelectorAll('#' + el.id + ' > '+selector);
+
+                if (tempId) {
+                    el.removeAttribute('id');
+                }
+            }
+            
+            return children;
         },
 
         /**
