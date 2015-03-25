@@ -451,6 +451,8 @@
 
                     target._init(el, self);
 
+                    target._finalPosData = target._getPosData();
+
                     self._targets.push(target);
                 }
 
@@ -2641,6 +2643,8 @@
                 posData = {
                     x: self._dom._el.offsetLeft,
                     y: self._dom._el.offsetTop,
+                    width: self._dom._el.offsetWidth,
+                    height: self._dom._el.offsetHeight,
                     isShown: !!self._dom._el.style.display
                 };
 
@@ -2651,8 +2655,6 @@
 
                 posData.marginBottom = parseFloat(styles.marginBottom);
                 posData.marginRight = parseFloat(styles.marginRight);
-                posData.width = self._dom._el.offsetWidth;
-                posData.height = self._dom._el.offsetHeight;
             }
 
             return self._execFilter('_getPosData', posData, arguments);
@@ -2893,47 +2895,29 @@
         },
 
         /**
-         * _throttle
+         * _debounce
          * @since 3.0.0
          * @param {Function} func
          * @param {Number} wait
-         * @param {Object} options
+         * @param {Boolean} immediate
          */
 
-        _throttle: function(func, wait, options) {
-            var context = null,
-                args = null,
-                result = null,
-                timeout = null,
-                previous = 0,
-                later = function() {
-                    previous = options.leading === false ? 0 : new Date();
-                    timeout = null;
-                    result = func.apply(context, args);
-                };
+        _debounce: function(func, wait, immediate) {
+            var timeout;
 
-            options || (options = {});
-            
             return function() {
-                var now = new Date(),
-                    remaining = null,
-                    args = arguments;
-              
-                if (!previous && options.leading === false) previous = now;
-              
-                remaining = wait - (now - previous);
-                context = this;
-                
-                if (remaining <= 0) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                    previous = now;
-                    result = func.apply(context, args);
-                } else if (!timeout && options.trailing !== false) {
-                    timeout = setTimeout(later, remaining);
-                }
+                var context = this, 
+                    args = arguments,
+                    later = function() {
+                        timeout = null;
+                        if (!immediate) func.apply(context, args);
+                    },
+                    callNow = immediate && !timeout;
 
-                return result;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+
+                if (callNow) func.apply(context, args);
             };
         },
 
@@ -2955,6 +2939,23 @@
             }
 
             return { x: xPosition, y: yPosition };
+        },
+
+        /**
+         * _getHypotenuse
+         * @since 3.0.0
+         * @param {Object} node1
+         * @return {Object} node2
+         * @return {Number} hypotenuse
+         */
+
+        _getHypotenuse: function(node1, node2) {
+            var distanceX = node1.x - node2.x,
+                distanceY = node1.y - node2.y,
+                distanceX = distanceX < 0 ? distanceX * -1 : distanceX,
+                distanceY = distanceY < 0 ? distanceY * -1 : distanceY;
+
+            return Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
         },
 
         /**
