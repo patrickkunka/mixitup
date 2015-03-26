@@ -2924,18 +2924,18 @@
         /**
          * _position
          * @since 3.0.0
-         * @param {Object} el
+         * @param {Object} element
          * @return {Object} position
          */
 
-        _position: function(el) {
+        _position: function(element) {
             var xPosition = 0,
                 yPosition = 0;
           
-            while (el) {
-                xPosition += el.offsetLeft;
-                yPosition += el.offsetTop;
-                el = el.offsetParent;
+            while (element) {
+                xPosition += (element.offsetLeft - element.scrollLeft);
+                yPosition += (element.offsetTop - element.scrollTop);
+                element = element.offsetParent;
             }
 
             return { x: xPosition, y: yPosition };
