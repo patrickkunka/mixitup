@@ -2928,17 +2928,35 @@
          * @return {Object} position
          */
 
+        /**
+         * position
+         * @param {Object} element
+         * @return {Object} position
+         */
+
         _position: function(element) {
             var xPosition = 0,
-                yPosition = 0;
-          
+                yPosition = 0,
+                offsetParent = element;
+                
             while (element) {
-                xPosition += (element.offsetLeft - element.scrollLeft);
-                yPosition += (element.offsetTop - element.scrollTop);
-                element = element.offsetParent;
+                xPosition -= element.scrollLeft;
+                yPosition -= element.scrollTop;
+
+                if (element === offsetParent) {
+                    xPosition += element.offsetLeft;
+                    yPosition += element.offsetTop;
+
+                    offsetParent = element.offsetParent;
+                }
+
+                element = element.parentElement;
             }
 
-            return { x: xPosition, y: yPosition };
+            return {
+                x: xPosition,
+                y: yPosition
+            };
         },
 
         /**
