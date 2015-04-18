@@ -12,12 +12,13 @@
  *            http://creativecommons.org/licenses/by-nc/3.0/
  */
 
-(function(window, undf) {
+(function(window, document, undf) {
     'use strict';
 
     var mixItUp = null,
         _MixItUp = null,
         _Target = null,
+        _doc = null,
         _h = null;
 
     /* _MixItUp Core
@@ -95,6 +96,8 @@
             libraries: {
                 q: null
             },
+
+            document: null,
 
             extensions: null,
 
@@ -287,7 +290,7 @@
                 transitionPrefix = getPrefix(testEl, 'Transition'),
                 transformPrefix = getPrefix(testEl, 'Transform');
 
-            self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a sepeterate test
+            self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a seperate test
 
             _MixItUp.prototype._has._promises = typeof Promise === 'function';
             _MixItUp.prototype._has._transitions = transitionPrefix !== false;
@@ -340,7 +343,7 @@
                     ElementPrototype.webkitMatchesSelector ||
                     function (selector) {
                         var node = this,
-                            nodes = (node.parentNode || node.document).querySelectorAll(selector),
+                            nodes = (node.parentNode || node._doc).querySelectorAll(selector),
                             i = -1;
                  
                         while (nodes[++i] && nodes[i] != node) {
@@ -416,13 +419,13 @@
 
             self._execAction('_cacheDom', 0, arguments);
 
-            self._dom._body = document.getElementsByTagName('body')[0];
+            self._dom._body = _doc.getElementsByTagName('body')[0];
             self._dom._container = el;
             self._dom._parent = el;
-            self._dom._sortButtons = Array.prototype.slice.call(document.querySelectorAll(self.selectors.sort));
-            self._dom._filterButtons = Array.prototype.slice.call(document.querySelectorAll(self.selectors.filter));
-            self._dom._filterToggleButtons = Array.prototype.slice.call(document.querySelectorAll(self.selectors.filterToggle));
-            self._dom._multiMixButtons = Array.prototype.slice.call(document.querySelectorAll(self.selectors.multiMix));
+            self._dom._sortButtons = Array.prototype.slice.call(_doc.querySelectorAll(self.selectors.sort));
+            self._dom._filterButtons = Array.prototype.slice.call(_doc.querySelectorAll(self.selectors.filter));
+            self._dom._filterToggleButtons = Array.prototype.slice.call(_doc.querySelectorAll(self.selectors.filterToggle));
+            self._dom._multiMixButtons = Array.prototype.slice.call(_doc.querySelectorAll(self.selectors.multiMix));
             self._dom._allButtons = self._dom._filterButtons
                     .concat(self._dom._sortButtons)
                     .concat(self._dom._filterToggleButtons)
@@ -812,7 +815,7 @@
                     var activeButton = null;
 
                     if (self.controls.live) {
-                        activeButton = document
+                        activeButton = _doc
                             .querySelector(self.selectors.filterToggle+'[data-filter="'+selector+'"]');
                     } else {
                         for (var k = 0, filterToggleButton; filterToggleButton = self._dom._filterToggleButtons[k]; k++) {
@@ -1020,7 +1023,7 @@
                 order = reset ? self._currentOrder : self._newOrder,
                 targets = _h._children(self._dom._parent, self.selectors.target),
                 nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
-                frag = document.createDocumentFragment(),
+                frag = _doc.createDocumentFragment(),
                 target = null,
                 el = null,
                 i = -1;
@@ -1046,10 +1049,10 @@
                     var firstChild = frag.firstChild;
 
                     frag.insertBefore(el, firstChild);
-                    frag.insertBefore(document.createTextNode(' '), el);
+                    frag.insertBefore(_doc.createTextNode(' '), el);
                 } else {
                     frag.appendChild(el);
-                    frag.appendChild(document.createTextNode(' '));
+                    frag.appendChild(_doc.createTextNode(' '));
                 }
             }
 
@@ -1238,7 +1241,7 @@
                 getDocumentState = function() {
                     scrollTop = window.pageYOffset;
                     scrollLeft = window.pageXOffset;
-                    docHeight = document.documentElement.scrollHeight;
+                    docHeight = _doc.documentElement.scrollHeight;
                 },
                 performMix = function() {
                     var target = null,
@@ -1733,6 +1736,8 @@
                         break;
                     case 'function':
                         output.callback = arg;
+
+                        break;
                 }
             }
 
@@ -1951,7 +1956,7 @@
             var self = this,
                 args = self._parseInsertArgs(arguments),
                 callback = (typeof args.callback === 'function') ? args.callback : null,
-                frag = document.createDocumentFragment(),
+                frag = _doc.createDocumentFragment(),
                 target = null,
                 nextSibling = (function() {                      
                     if (self._targets.length) {
@@ -1972,7 +1977,7 @@
             if (args.collection) {
                 for(var i = 0, el; el = args.collection[i]; i++) {
                     frag.appendChild(el);
-                    frag.appendChild(document.createTextNode(' '));
+                    frag.appendChild(_doc.createTextNode(' '));
 
                     if (!el.matches(self.selectors.target)) continue;
 
@@ -2806,7 +2811,7 @@
             if (typeof window.CustomEvent === 'function') {
                 event = new CustomEvent(eventName, {detail: data});
             } else {
-                event = document.createEvent('CustomEvent');
+                event = _doc.createEvent('CustomEvent');
                 event.initCustomEvent(eventName, true, true, data);
             }
 
@@ -2838,8 +2843,8 @@
          * @return {string}
          */
 
-        _camelCase: function(string){
-            return string.replace(/-([a-z])/g, function(g){
+        _camelCase: function(string) {
+            return string.replace(/-([a-z])/g, function(g) {
                     return g[1].toUpperCase();
             });
         },
@@ -2851,9 +2856,18 @@
          * @return {Boolean}
          */
 
-        _isElement: function(el){
-            if(window.HTMLElement){
-                return el instanceof HTMLElement;
+        _isElement: function(el) {
+            if (
+                window.HTMLElement &&
+                el instanceof HTMLElement
+            ) {
+                return true;
+            } else if (
+                _doc.defaultView &&
+                _doc.defaultView.HTMLElement &&
+                el instanceof _doc.defaultView.HTMLElement
+            ) {
+                return true;
             } else {
                 return (
                     el !== null && 
@@ -2870,8 +2884,8 @@
          */
 
         _createElement: function(htmlString) {
-            var frag = document.createDocumentFragment(),
-                temp = document.createElement('div');
+            var frag = _doc.createDocumentFragment(),
+                temp = _doc.createElement('div');
 
             temp.innerHTML = htmlString;
 
@@ -2993,7 +3007,7 @@
                 return el;
             }
 
-            while (depth && parent && parent != document.body) {
+            while (depth && parent && parent != _doc.body) {
                 if (parent.matches && parent.matches(selector)) {
                     return parent;
                 } else if (parent.parentNode) {
@@ -3028,7 +3042,7 @@
                     el.id = tempId;
                 }
 
-                children = document.querySelectorAll('#' + el.id + ' > '+selector);
+                children = _doc.querySelectorAll('#' + el.id + ' > '+selector);
 
                 if (tempId) {
                     el.removeAttribute('id');
@@ -3113,15 +3127,18 @@
      * @since 3.0.0
      * @param {Object|String} container
      * @param [{Object}] configuration
+     * @param [{Object}] doc
      */
 
-    mixItUp = function(container, config) {
+    mixItUp = function(container, config, doc) {
         var el = null,
             instance = null,
             id = '',
             rand = function(){
                 return ('00000'+(Math.random()*16777216<<0).toString(16)).substr(-6).toUpperCase();
             };
+
+        _doc = doc || document;
 
         if (config.extensions && typeof config.extensions === 'object') {
             for (var name in config.extensions) {
@@ -3131,7 +3148,7 @@
 
         switch (typeof container) {
             case 'string':
-                el = document.querySelectorAll(container)[0];
+                el = _doc.querySelectorAll(container)[0];
 
                 break;
             case 'object':
@@ -3165,7 +3182,7 @@
         } else if (_MixItUp.prototype._instances[id] instanceof _MixItUp) {
             instance = _MixItUp.prototype._instances[id];
 
-            // todo: warn if sending config and trying to reconfigure 
+            // todo: warn if sending config and trying to reconfigure - mixitup 3 will resuse existing instance
         }
 
         return instance;
@@ -3190,4 +3207,4 @@
     } else if (window.mixItUp === undf || typeof window.mixItUp !== 'function') {
         window.mixItUp = mixItUp;
     }
-})(window);
+})(window, document);
