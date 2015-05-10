@@ -1201,7 +1201,7 @@
                 display: future && self._newDisplay ? self._newDisplay : self.layout.display
             };
 
-            if (future){
+            if (future) {
                 return self._execFilter('_buildState', state);
             } else {
                 self._state = state;
@@ -2938,12 +2938,6 @@
         /**
          * _position
          * @since 3.0.0
-         * @param {Object} element
-         * @return {Object} position
-         */
-
-        /**
-         * position
          * @param {Object} element
          * @return {Object} position
          */
