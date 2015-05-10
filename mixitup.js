@@ -3113,15 +3113,17 @@
 
     };
 
-    /* mixItUp Public API
+    /* mixItUp Factory
     ---------------------------------------------------------------------- */
 
     /**
      * mixItUp
      * @since 3.0.0
+     * @factory
      * @param {Object|String} container
      * @param [{Object}] configuration
      * @param [{Object}] doc
+     * @return {Object}
      */
 
     mixItUp = function(container, config, doc) {
