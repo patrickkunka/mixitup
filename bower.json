@@ -1,6 +1,6 @@
 {
   "name": "mixitup",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "main": "src/jquery.mixitup.js",
   "dependencies": {
     "jquery": ">=1.7"

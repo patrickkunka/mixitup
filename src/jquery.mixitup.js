@@ -1,7 +1,7 @@
 /**!
- * MixItUp v2.1.7
+ * MixItUp v2.1.8
  *
- * @copyright Copyright 2014 KunkaLabs Limited.
+ * @copyright Copyright 2015 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
  * @link      https://mixitup.kunkalabs.com
  *
@@ -583,9 +583,11 @@
 					sort: command.sort
 				},
 				update = function($el, filter){
-					(multi && type === 'filter' && !(output.filter === 'none' || output.filter === '')) ?
-						$el.filter(filter).addClass(self.controls.activeClass) :
-						$el.removeClass(self.controls.activeClass).filter(filter).addClass(self.controls.activeClass);
+					try {
+						(multi && type === 'filter' && !(output.filter === 'none' || output.filter === '')) ?
+								$el.filter(filter).addClass(self.controls.activeClass) :
+								$el.removeClass(self.controls.activeClass).filter(filter).addClass(self.controls.activeClass);
+					} catch(e) {}
 				},
 				type = 'filter',
 				$el = null;
@@ -992,7 +994,12 @@
 			el.dataset[stage+'PosY'] = el.offsetTop;
 
 			if(self.animation.animateResizeTargets){
-				elStyle = window.getComputedStyle(el);
+				elStyle = !self._suckMode ? 
+					window.getComputedStyle(el) : 
+					{
+						marginBottom: '',
+						marginRight: ''
+					};
 			
 				el.dataset[stage+'MarginBottom'] = parseInt(elStyle.marginBottom);
 				el.dataset[stage+'MarginRight'] = parseInt(elStyle.marginRight);
@@ -1946,7 +1953,9 @@
 		 */
 		
 		destroy: function(hideAll){
-			var self = this;
+			var self = this,
+				filters = $.MixItUp.prototype._bound._filter,
+				sorts = $.MixItUp.prototype._bound._sort;
 			
 			self._execAction('destroy', 0, arguments);
 		
@@ -1964,7 +1973,19 @@
 			}
 			
 			self._execAction('destroy', 1, arguments);
-			
+
+			if(filters[self.selectors.filter] && filters[self.selectors.filter] > 1) {
+				filters[self.selectors.filter]--;
+			} else if(filters[self.selectors.filter] === 1) {
+				delete filters[self.selectors.filter];
+			}
+
+			if(sorts[self.selectors.sort] && sorts[self.selectors.sort] > 1) {
+				sorts[self.selectors.sort]--;
+			} else if(sorts[self.selectors.sort] === 1) {
+				delete sorts[self.selectors.sort];
+			}
+
 			delete $.MixItUp.prototype._instances[self._id];
 		}
 		

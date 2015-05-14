@@ -1,6 +1,10 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.8
+- Fixed issue where bound handlers are not removed from prototype when destroying a MixItUp instance
+- Wrapped _updateControls .filter() call in a try/catch to prevent jQuery syntax errors crashing MixItUp when complex slectors are passed via the API
+
 ## 2.1.7
 - Fixed removeStyle jQuery method to account for camel-cased style properties in firefox, affecting animateResizeTargets.
 - Replaced all == with ===
