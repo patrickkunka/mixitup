@@ -1673,8 +1673,6 @@
                     callback: null
                 };
 
-            // TODO: allow for nodelists, querylists, and possibily jqcollections
-
             for (var i = 0; i < args.length; i++) {
                 var arg = args[i];
 
@@ -1685,7 +1683,7 @@
                 } else if (typeof arg === 'object' && arg !== null && arg.length) {
                     output.collection = arg;
                 } else if (typeof arg === 'object' && arg !== null && arg.childNodes && arg.childNodes.length) {
-                    output.collection = arg.childNodes;
+                    output.collection = Array.prototype.slice.call(arg.childNodes);
                 } else if (typeof arg === 'object' && arg !== null) {
                     output.multiMix = arg;
                 } else if (typeof arg === 'boolean' && !arg) {
@@ -1693,6 +1691,10 @@
                 } else if (typeof arg === 'function') {
                     output.callback = arg;
                 }
+            }
+
+            if (!output.collection.length) {
+                throw new Error('[mixitup] No elements were passed to insert');
             }
 
             return self._execFilter('_parseInsertArgs', output, arguments);
@@ -1966,7 +1968,9 @@
                     } else {
                         return self._dom._parent.children.length ? self._dom._parent.children[0] : null;
                     }
-                })();
+                })(),
+                el = null,
+                i = -1;
 
             // TODO: insert and remove must be queuable independently of their multimix calls
 
@@ -1975,11 +1979,11 @@
             self._execAction('insert', 0, arguments);
 
             if (args.collection) {
-                for(var i = 0, el; el = args.collection[i]; i++) {
+                for (i = 0; el = args.collection[i]; i++) {                    
                     frag.appendChild(el);
                     frag.appendChild(_doc.createTextNode(' '));
 
-                    if (!el.matches(self.selectors.target)) continue;
+                    if (!_h._isElement(el) || !el.matches(self.selectors.target)) continue;
 
                     target = new _Target();
 
