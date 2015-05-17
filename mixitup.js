@@ -1832,6 +1832,7 @@
          * @since 2.0.0
          * @shorthand self.multiMix
          * @param {Array} arguments
+         * @return {Promise} -> {State}
          */
 
         filter: function(){
@@ -1840,7 +1841,7 @@
 
             self._isClicking && (self._toggleString = '');
             
-            self.multiMix({filter: args.command}, args.animate, args.callback);
+            return self.multiMix({filter: args.command}, args.animate, args.callback);
         },
         
         /**
@@ -1848,13 +1849,14 @@
          * @since 2.0.0
          * @shorthand self.multiMix
          * @param {Array} arguments
+         * @return {Promise} -> {State}
          */
         
         sort: function(){
             var self = this,
                 args = self._parseMultiMixArgs(arguments);
 
-            self.multiMix({sort: args.command}, args.animate, args.callback);
+            return self.multiMix({sort: args.command}, args.animate, args.callback);
         },
 
         /**
@@ -1872,7 +1874,7 @@
          * multiMix
          * @since 2.0.0
          * @param {Array} arguments
-         * @return {Object} promise
+         * @return {Promise} -> {State}
          */
 
         multiMix: function() {
