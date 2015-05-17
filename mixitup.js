@@ -979,6 +979,12 @@
                     });
             }
 
+            if (_h._isEqualArray(self._newOrder, self._currentOrder)) {
+                self._isSorting = false; 
+
+                // TODO: what if the sort changes are off screen i.e. pagination?
+            }
+
             self._targets = self._newOrder;
 
             self._execAction('_sort', 1);
@@ -2926,6 +2932,25 @@
             if (el.parentElement) {
                 el.parentElement.removeChild(el);
             }
+        },
+
+        /**
+         * _isEqualArray
+         * @since 3.0.0
+         * @param {Array} a
+         * @param {Array} b
+         */
+
+        _isEqualArray: function(a, b) {
+            var i = a.length;
+
+            if (i !== b.length) return false;
+
+            while (i--) {
+                if (a[i] !== b[i]) return false;
+            }
+            
+            return true;
         },
 
         /**
