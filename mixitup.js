@@ -934,7 +934,7 @@
          * @since 2.0.0
          */
 
-        _sort: function(){
+        _sort: function() {
             var self = this,
                 arrayShuffle = function(oldArray) {
                     var newArray = oldArray.slice(),
@@ -963,12 +963,15 @@
             switch (self._newSort[0].sortBy) {
                 case 'default':
                     self._newOrder = self._origOrder;
+
                     break;
                 case 'random':
                     self._newOrder = arrayShuffle(self._currentOrder);
+
                     break;
                 case 'custom':
                     self._newOrder = self._newSort[0].order;
+
                     break;
                 default:
                     self._newOrder = self._currentOrder.concat().sort(function(a, b){
@@ -993,11 +996,22 @@
 
         _compare: function(a, b, depth){
             depth = depth ? depth : 0;
-        
+
             var self = this,
                 order = self._newSort[depth].order,
                 getData = function(target){
-                    return target._dom._el.getAttribute('data-'+self._newSort[depth].sortBy) || 0;
+                    var value = target._dom._el.getAttribute('data-' + self._newSort[depth].sortBy);
+
+                    if (value === null) {
+                        self._isSorting = false;
+
+                        throw new Error(
+                            '[mixitup] Attribute "data-' +
+                            self._newSort[depth].sortBy) +
+                            '" was not present on one or more target elements';
+                    }
+
+                    return value || 0;
                 },
                 attrA = isNaN(getData(a) * 1) ? getData(a).toLowerCase() : getData(a) * 1,
                 attrB = isNaN(getData(b) * 1) ? getData(b).toLowerCase() : getData(b) * 1;
