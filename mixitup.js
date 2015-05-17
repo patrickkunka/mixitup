@@ -1006,7 +1006,7 @@
                         self._isSorting = false;
 
                         throw new Error(
-                            '[mixitup] Attribute "data-' +
+                            '[MixItUp] The attribute "data-' +
                             self._newSort[depth].sortBy) +
                             '" was not present on one or more target elements';
                     }
@@ -1708,7 +1708,7 @@
             }
 
             if (!output.collection.length) {
-                throw new Error('[mixitup] No elements were passed to insert');
+                throw new Error('[MixItUp] No elements were passed to "insert"');
             }
 
             return self._execFilter('_parseInsertArgs', output, arguments);
@@ -3121,7 +3121,7 @@
                 promise.resolve = defered.resolve;
                 promise.reject = defered.reject;
             } else {
-                console.warn('[MixItUp] WARNING: No available Promises implementations were found.');
+                console.warn('[MixItUp] WARNING: No available Promises implementations were found');
 
                 return null;
             }
@@ -3172,9 +3172,7 @@
         }
 
         if (!el) {
-            console.error('[MixItUp] Invalid selector or element.');
-
-            return;
+            throw new Error('[MixItUp] Invalid selector or element');            
         }
 
         if (!el.id) {
