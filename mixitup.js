@@ -935,22 +935,7 @@
          */
 
         _sort: function() {
-            var self = this,
-                arrayShuffle = function(oldArray) {
-                    var newArray = oldArray.slice(),
-                        len = newArray.length,
-                        i = len;
-
-                    while (i--) {
-                        var p = parseInt(Math.random()*len),
-                            t = newArray[i];
-
-                        newArray[i] = newArray[p];
-                        newArray[p] = t;
-                    }
-
-                    return newArray; 
-                };
+            var self = this;
 
             self._execAction('_sort', 0);
 
@@ -962,11 +947,15 @@
 
             switch (self._newSort[0].sortBy) {
                 case 'default':
-                    self._newOrder = self._origOrder;
+                    self._newOrder = self._origOrder.slice();
+
+                    if (self._newSort[0].order === 'desc') {
+                        self._newOrder.reverse();
+                    }
 
                     break;
                 case 'random':
-                    self._newOrder = arrayShuffle(self._currentOrder);
+                    self._newOrder = _h._arrayShuffle(self._currentOrder);
 
                     break;
                 case 'custom':
@@ -974,12 +963,16 @@
 
                     break;
                 default:
-                    self._newOrder = self._currentOrder.concat().sort(function(a, b){
-                        return self._compare(a, b);
-                    });
+                    self._newOrder = self._currentOrder
+                        .slice()
+                        .sort(function(a, b){
+                            return self._compare(a, b);
+                        });
             }
 
-            if (_h._isEqualArray(self._newOrder, self._currentOrder)) {
+            if (
+                _h._isEqualArray(self._newOrder, self._currentOrder)
+            ) {
                 self._isSorting = false; 
 
                 // TODO: what if the sort changes are off screen i.e. pagination?
@@ -1035,8 +1028,8 @@
                 return order === 'asc' ? -1 : 1;
             if (attrA > attrB)
                 return order === 'asc' ? 1 : -1;
-            if (attrA === attrB && self._newSort.length > depth+1)
-                return self._compare(a, b, depth+1);
+            if (attrA === attrB && self._newSort.length > depth + 1)
+                return self._compare(a, b, depth + 1);
 
             return 0;
         },
@@ -1074,15 +1067,8 @@
             for (i = 0; target = order[i]; i++) {
                 el = target._dom._el;
 
-                if (self._newSort[0].sortBy === 'default' && self._newSort[0].order === 'desc' && !reset) {
-                    var firstChild = frag.firstChild;
-
-                    frag.insertBefore(el, firstChild);
-                    frag.insertBefore(_doc.createTextNode(' '), el);
-                } else {
-                    frag.appendChild(el);
-                    frag.appendChild(_doc.createTextNode(' '));
-                }
+                frag.appendChild(el);
+                frag.appendChild(_doc.createTextNode(' '));
             }
 
             nextSibling ? 
@@ -1922,8 +1908,10 @@
                     self._newSort = self._parseSort(sort);
                     self._newSortString = sort;
 
-                    self._isSorting = true;
-                    self._sort();
+                    if (sort !== self._activeSort || sort === 'random') {
+                        self._isSorting = true;
+                        self._sort();
+                    }
                 }
 
                 if (filter !== undf) {
@@ -2960,6 +2948,30 @@
             }
             
             return true;
+        },
+
+        /**
+         * _arrayShuffle
+         * @since 2.0.0
+         * arrayShuffle
+         * @param {Array} oldArray
+         * @return {Array}
+         */
+
+        _arrayShuffle: function(oldArray) {
+            var newArray = oldArray.slice(),
+                len = newArray.length,
+                i = len;
+
+            while (i--) {
+                var p = parseInt(Math.random() * len),
+                    t = newArray[i];
+
+                newArray[i] = newArray[p];
+                newArray[p] = t;
+            }
+
+            return newArray; 
         },
 
         /**
