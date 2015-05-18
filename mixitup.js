@@ -1005,6 +1005,7 @@
 
             var self = this,
                 order = self._newSort[depth].order,
+                isString = false,
                 getData = function(target){
                     var value = target._dom._el.getAttribute('data-' + self._newSort[depth].sortBy);
 
@@ -1019,14 +1020,22 @@
 
                     return value || 0;
                 },
-                attrA = isNaN(getData(a) * 1) ? getData(a).toLowerCase() : getData(a) * 1,
-                attrB = isNaN(getData(b) * 1) ? getData(b).toLowerCase() : getData(b) * 1;
+                attrA = getData(a),
+                attrB = getData(b);
+
+            if (isNaN(attrA * 1) || isNaN(attrB * 1)) {
+                attrA = attrA.toLowerCase();
+                attrB = attrB.toLowerCase();
+            } else {
+                attrA = attrA * 1;
+                attrB = attrB * 1;
+            }
                 
-            if(attrA < attrB)
+            if (attrA < attrB)
                 return order === 'asc' ? -1 : 1;
-            if(attrA > attrB)
+            if (attrA > attrB)
                 return order === 'asc' ? 1 : -1;
-            if(attrA === attrB && self._newSort.length > depth+1)
+            if (attrA === attrB && self._newSort.length > depth+1)
                 return self._compare(a, b, depth+1);
 
             return 0;
