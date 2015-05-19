@@ -3203,7 +3203,7 @@
 
         _doc = doc || document;
 
-        if (config.extensions && typeof config.extensions === 'object') {
+        if (config && typeof config.extensions === 'object') {
             for (var name in config.extensions) {
                 config.extensions[name](_MixItUp);
             }
