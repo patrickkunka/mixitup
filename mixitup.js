@@ -920,6 +920,7 @@
 
                 else if (
                     typeof self._activeFilter.hide === 'object' &&
+                    self._activeFilter.hide !== null &&
                     self._activeFilter.hide.length
                 ) {
                     evaluate(self._activeFilter.hide.indexOf(target._dom._el) < 0, target, true);
