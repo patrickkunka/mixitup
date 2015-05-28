@@ -23,7 +23,7 @@ A typical MixItUp workflow looks like this:
 
 Build your container:
 
-```
+```html
 <div id="Container">
 	<div class="mix category-1" data-my-order="1"> ... </div>
 	<div class="mix category-1" data-my-order="2"> ... </div>
@@ -35,7 +35,7 @@ Build your container:
 
 Build your filter controls:
 
-```
+```html
 <button class="filter" data-filter=".category-1">Category 1</button>
 <button class="filter" data-filter=".category-2">Category 2</button>
 ```
@@ -44,7 +44,7 @@ Build your filter controls:
 
 Build your sort controls:
 
-```
+```html
 <button class="sort" data-sort="my-order:asc">Ascending Order</button>
 <button class="sort" data-sort="my-order:desc">Descending Order</button>
 ```
@@ -53,7 +53,7 @@ Build your sort controls:
 #### CSS
 
 Hide target elements:
-```
+```css
 #Container .mix{
 	display: none;
 }
@@ -64,21 +64,21 @@ Hide target elements:
 
 Instantiate MixItUp on your container using jQuery:
 
-```
+```javascript
 $(function(){
-	$('#Container').mixItUp();	
+	$('#Container').mixItUp();
 });
 ```
 > Using our container's ID, we can instantiate MixItUp with the jQuery method `.mixItUp()`
 
 ### Full Documentation
 
-1. [Configuration Object](docs/configuration-object.md)                                                     
+1. [Configuration Object](docs/configuration-object.md)
 1. [API Methods](docs/api-methods.md)
 1. [State Object](docs/state-object.md)
-1. [Events](docs/events.md)                                                                                 
+1. [Events](docs/events.md)
 1. [Version 1 Migration Guide](docs/version-1-migration.md)
-                                                                                                            
+
 A much prettier version of the full documentation is also available at [mixitup.kunkalabs.com/docs](https://mixitup.kunkalabs.com/docs)
 
 ### ChangeLog
