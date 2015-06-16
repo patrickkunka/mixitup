@@ -1499,7 +1499,7 @@
 			var self = this,
 				styles = {};
 		
-			for(i = 0; i < 2; i++){
+			for(var i = 0; i < 2; i++){
 				var prefix = i === 0 ? self._prefix : '';
 				prefixValue ? styles[prefix+property] = prefix+value : styles[prefix+property] = value;
 			}
