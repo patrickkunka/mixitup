@@ -2,6 +2,9 @@
   "name": "mixitup",
   "version": "2.1.9",
   "main": "src/jquery.mixitup.js",
+  "ignore": [
+    "Gruntfile.js"
+  ],
   "dependencies": {
     "jquery": ">=1.7"
   }
