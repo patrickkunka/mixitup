@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.1.8
+ * MixItUp v2.1.9
  *
  * @copyright Copyright 2015 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1497,10 +1497,12 @@
 		
 		_getPrefixedCSS: function(property, value, prefixValue){
 			var self = this,
-				styles = {};
+				styles = {},
+				prefix = '',
+				i = -1;
 		
 			for(i = 0; i < 2; i++){
-				var prefix = i === 0 ? self._prefix : '';
+				prefix = i === 0 ? self._prefix : '';
 				prefixValue ? styles[prefix+property] = prefix+value : styles[prefix+property] = value;
 			}
 			

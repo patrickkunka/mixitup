@@ -1,6 +1,9 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.9
+- Fixed accidental global declaration of `i` in one loop.
+
 ## 2.1.8
 - Fixed issue where bound handlers are not removed from prototype when destroying a MixItUp instance
 - Wrapped _updateControls .filter() call in a try/catch to prevent jQuery syntax errors crashing MixItUp when complex selectors are passed via the API
