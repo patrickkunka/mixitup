@@ -3044,9 +3044,10 @@
 
         _getHypotenuse: function(node1, node2) {
             var distanceX = node1.x - node2.x,
-                distanceY = node1.y - node2.y,
-                distanceX = distanceX < 0 ? distanceX * -1 : distanceX,
-                distanceY = distanceY < 0 ? distanceY * -1 : distanceY;
+                distanceY = node1.y - node2.y;
+
+            distanceX = distanceX < 0 ? distanceX * -1 : distanceX,
+            distanceY = distanceY < 0 ? distanceY * -1 : distanceY;
 
             return Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
         },
@@ -3242,6 +3243,10 @@
             _MixItUp.prototype._instances[id] = instance;
         } else if (_MixItUp.prototype._instances[id] instanceof _MixItUp) {
             instance = _MixItUp.prototype._instances[id];
+
+            if (config) {
+                console.warn('[MixItUp] This element already has an active instance. Config will be ignored.');
+            }
 
             // todo: warn if sending config and trying to reconfigure - mixitup 3 will resuse existing instance
         }
