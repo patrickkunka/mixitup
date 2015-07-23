@@ -3247,8 +3247,6 @@
             if (config) {
                 console.warn('[MixItUp] This element already has an active instance. Config will be ignored.');
             }
-
-            // todo: warn if sending config and trying to reconfigure - mixitup 3 will resuse existing instance
         }
 
         return instance;
