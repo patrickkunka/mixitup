@@ -1686,6 +1686,8 @@
                     index: 0,
                     collection: [],
                     multiMix: {filter: self._state.activeFilter},
+                    position: '',
+                    sibling: null,
                     callback: null
                 };
 
@@ -1694,12 +1696,20 @@
 
                 if (typeof arg === 'number') {
                     output.index = arg;
+                } if (typeof arg === 'string') {
+                    output.position = arg;
                 } else if (typeof arg === 'object' && _h._isElement(arg)) {
-                    output.collection = [arg];
+                    !output.collection.length ?
+                        (output.collection = [arg]) :
+                        (output.sibling = arg);
                 } else if (typeof arg === 'object' && arg !== null && arg.length) {
-                    output.collection = arg;
+                    !output.collection.length ?
+                        (output.collection = arg) :
+                        output.sibling = arg[0];
                 } else if (typeof arg === 'object' && arg !== null && arg.childNodes && arg.childNodes.length) {
-                    output.collection = Array.prototype.slice.call(arg.childNodes);
+                        !output.collection.length ?
+                            output.collection = Array.prototype.slice.call(arg.childNodes) :
+                            output.sibling = arg.childNodes[0];
                 } else if (typeof arg === 'object' && arg !== null) {
                     output.multiMix = arg;
                 } else if (typeof arg === 'boolean' && !arg) {
@@ -1808,7 +1818,7 @@
         /**
          * init
          * @since 3.0.0
-         * @return {Object} promise --> {Object} state
+         * @return {Promise} --> {Object} state
          */
 
         init: function() {
@@ -1971,7 +1981,7 @@
          * insert
          * @since 2.0.0
          * @param {Array} arguments
-         * @return {Object} promise
+         * @return {Promise}
          */
 
         insert: function() {
@@ -1980,7 +1990,15 @@
                 callback = (typeof args.callback === 'function') ? args.callback : null,
                 frag = _doc.createDocumentFragment(),
                 target = null,
-                nextSibling = (function() {                      
+                nextSibling = (function() { 
+                    if (args.position === 'before') {
+                        return args.sibling;
+                    }
+
+                    if (args.position === 'after') {
+                        return args.sibling.nextElementSibling || null;
+                    }
+
                     if (self._targets.length) {
                         return (args.index < self._targets.length || !self._targets.length) ? 
                             self._targets[args.index]._dom._el :
@@ -2025,11 +2043,41 @@
         },
 
         /**
+         * insertBefore
+         * @since 3.0.0
+         * @shorthand self.insert
+         * @param {Array} arguments
+         * @return {Promise}
+         */
+
+        insertBefore: function() {
+            var self = this,
+                args = self._parseInsertArgs(arguments);
+            
+            return self.insert(0, args.collection, args.multiMix, 'before', args.sibling, args.callback);
+        },
+
+        /**
+         * insertAfter
+         * @since 3.0.0
+         * @shorthand self.insert
+         * @param {Array} arguments
+         * @return {Promise}
+         */
+
+        insertAfter: function() {
+            var self = this,
+                args = self._parseInsertArgs(arguments);
+            
+            return self.insert(0, args.collection, args.multiMix, 'after', args.sibling, args.callback);
+        },
+
+        /**
          * prepend
          * @since 2.0.0
          * @shorthand self.insert
          * @param {Array} arguments
-         * @param {Object} promise
+         * @return {Promise}
          */
 
         prepend: function() {
@@ -2044,6 +2092,7 @@
          * @since 2.0.0
          * @shorthand self.insert
          * @param {array} arguments
+         * @return {Promise}
          */
 
         append: function(){
@@ -2057,7 +2106,7 @@
          * remove
          * @since 3.0.0
          * @param {Array} arguments
-         * @return {Object} promise
+         * @return {Promise}
          */
 
         remove: function() {
