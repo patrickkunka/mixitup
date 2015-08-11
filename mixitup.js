@@ -2892,29 +2892,24 @@
          * @since 3.0.0
          * @param {Object} destination
          * @param {Object} source
-         * @return {Object} extended
          */
 
         _extend: function(destination, source) {
-            var copy = function(destination, source) {
-                for (var property in source) {
-                    if (
-                        typeof source[property] === "object" && 
-                        source[property] !== null &&
-                        typeof source[property].length === 'undefined'
-                    ) {
-                        destination[property] = destination[property] || {};
+            var property = '';
 
-                        copy(destination[property], source[property]);
-                    } else {
-                        destination[property] = source[property];
-                    }
+            for (property in source) {
+                if (
+                    typeof source[property] === "object" && 
+                    source[property] !== null &&
+                    typeof source[property].length === 'undefined'
+                ) {
+                    destination[property] = destination[property] || {};
+
+                    copy(destination[property], source[property]);
+                } else {
+                    destination[property] = source[property];
                 }
-            };
-
-            copy(destination, source);
-
-            return destination;
+            }
         },
 
         /**
@@ -3368,6 +3363,20 @@
                 return value;
             }
         }
+
+        /**
+         * _randomHexKey
+         * @return {String}
+         */
+
+        _randomHexKey: function() {
+            return (
+                '00000' +
+                (Math.random() * 16777216 << 0).toString(16)
+            )
+                .substr(-6)
+                .toUpperCase();
+        }
     };
 
     /* mixItUp Factory
@@ -3387,14 +3396,13 @@
         var el = null,
             instance = null,
             id = '',
-            rand = function(){
-                return ('00000'+(Math.random()*16777216<<0).toString(16)).substr(-6).toUpperCase();
-            };
+            name = '',
+            rand = _h._randomHexKey();
 
         _doc = doc || document;
 
         if (config && typeof config.extensions === 'object') {
-            for (var name in config.extensions) {
+            for (name in config.extensions) {
                 config.extensions[name](_MixItUp);
             }
         }
