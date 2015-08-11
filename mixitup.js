@@ -423,9 +423,9 @@
             self._dom._filterToggleButtons = Array.prototype.slice.call(_doc.querySelectorAll(self.selectors.filterToggle));
             self._dom._multiMixButtons = Array.prototype.slice.call(_doc.querySelectorAll(self.selectors.multiMix));
             self._dom._allButtons = self._dom._filterButtons
-                    .concat(self._dom._sortButtons)
-                    .concat(self._dom._filterToggleButtons)
-                    .concat(self._dom._multiMixButtons);
+                .concat(self._dom._sortButtons)
+                .concat(self._dom._filterToggleButtons)
+                .concat(self._dom._multiMixButtons);
 
             self._execAction('_cacheDom', 1, arguments);
         },
@@ -1266,7 +1266,7 @@
          * @return [{Object}] futureState
          */
 
-        _buildState: function(future){
+        _buildState: function(future) {
             var self = this,
                 state = {},
                 targets = [],
@@ -1316,7 +1316,7 @@
          * @since 2.0.0
          */
 
-        _goMix: function(animate){
+        _goMix: function(animate) {
             var self = this,
                 defered = null,
                 resolvePromise = null,
@@ -1478,7 +1478,7 @@
          * @since 2.0.0
          */
 
-        _getStartMixData: function(){
+        _getStartMixData: function() {
             var self = this,
                 parentStyle = window.getComputedStyle(self._dom._parent),
                 target = null,
@@ -1518,7 +1518,7 @@
          * @since 2.0.0
          */
 
-        _setInter: function(){
+        _setInter: function() {
             var self = this;
 
             self._execAction('_setInter', 0);
@@ -1540,7 +1540,7 @@
          * @since 2.0.0
          */
 
-        _getInterMixData: function(){
+        _getInterMixData: function() {
             var self = this,
                 target = null,
                 data = {},
@@ -1568,7 +1568,7 @@
          * @since 2.0.0
          */
 
-        _setFinal: function(){
+        _setFinal: function() {
             var self = this;
 
             self._execAction('_setFinal', 0);
@@ -1587,7 +1587,7 @@
          * @since 2.0.0
          */
 
-        _getFinalMixData: function(){
+        _getFinalMixData: function() {
             var self = this,
                 parentStyle = window.getComputedStyle(self._dom._parent),
                 target = null,
@@ -1641,7 +1641,7 @@
          * @since 2.0.0
          */
 
-        _cleanUp: function(){
+        _cleanUp: function() {
             var self = this,
                 target = null,
                 firstInQueue = null,
@@ -1719,7 +1719,7 @@
          * @return {Number} delay
          */
 
-        _getDelay: function(i){
+        _getDelay: function(i) {
             var self = this;
 
             return self._execFilter('_getDelay', delay, arguments);
@@ -1764,7 +1764,7 @@
          * @return {Object} output
          */
 
-        _parseInsertArgs: function(args){
+        _parseInsertArgs: function(args) {
             var self = this,
                 output = {
                     index: 0,
@@ -1884,7 +1884,7 @@
          * @return {Mixed} value
          */
 
-        _execFilter: function(methodName, value, args){
+        _execFilter: function(methodName, value, args) {
             var self = this;
             
             if (!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)) {
@@ -1917,7 +1917,7 @@
          * @return {Boolean}
          */
 
-        isMixing: function(){
+        isMixing: function() {
             var self = this;
 
             return self._isMixing;
@@ -1931,7 +1931,7 @@
          * @return {Promise} -> {State}
          */
 
-        filter: function(){
+        filter: function() {
             var self = this,
                 args = self._parseMultiMixArgs(arguments);
 
@@ -1948,7 +1948,7 @@
          * @return {Promise} -> {State}
          */
         
-        sort: function(){
+        sort: function() {
             var self = this,
                 args = self._parseMultiMixArgs(arguments);
 
@@ -1961,7 +1961,7 @@
          * @param {Array} arguments
          */
 
-        changeLayout: function(){
+        changeLayout: function() {
             var self = this;
 
         },
@@ -2179,7 +2179,7 @@
          * @return {Promise}
          */
 
-        append: function(){
+        append: function() {
             var self = this,
                 args = self._parseInsertArgs(arguments);
             
@@ -2268,7 +2268,7 @@
          * @return {Mixed} value
          */
 
-        getOption: function(string){
+        getOption: function(string) {
             var self = this;
 
         },
@@ -2279,7 +2279,7 @@
          * @param {Object} config
          */
 
-        setOptions: function(config){
+        setOptions: function(config) {
             var self = this;
 
             self._execAction('setOptions', 0, arguments);
@@ -2293,7 +2293,7 @@
          * @return {Object} state
          */
 
-        getState: function(){
+        getState: function() {
             var self = this;
 
             return self._execFilter('getState', self._state, self);
@@ -2304,7 +2304,7 @@
          * @since 2.1.2
          */
 
-        forceRefresh: function(){
+        forceRefresh: function() {
             var self = this;
 
             self._indexTargets();
@@ -2316,7 +2316,7 @@
          * @param {Boolean} hideAll
          */
 
-        destroy: function(hideAll){
+        destroy: function(hideAll) {
             var self = this,
                 target = null,
                 button = null,
