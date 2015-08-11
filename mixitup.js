@@ -97,6 +97,10 @@
                 q: null
             },
 
+            debug: {
+                enable: true
+            },
+
             document: null,
 
             extensions: null,
@@ -267,28 +271,18 @@
         },
 
         /**
-         * _platformDetect
+         * _featureDetect
          * @since 2.0.0
          */
         
-        _platformDetect: function() {
+        _featureDetect: function() {
             var self = this,
                 testEl = document.createElement('div'),
                 vendorsTrans = ['Webkit', 'Moz', 'O', 'ms'],
                 vendorsRAF = ['webkit', 'moz'],
-                getPrefix = function(el, property){
-                    if (property.toLowerCase() in el.style) return '';
-
-                    for (var i = 0; i < vendorsTrans.length; i++) {
-                        if (vendorsTrans[i] + property in el.style) {
-                            return vendorsTrans[i].toLowerCase();
-                        }
-                    }
-
-                    return false;
-                },
-                transitionPrefix = getPrefix(testEl, 'Transition'),
-                transformPrefix = getPrefix(testEl, 'Transform');
+                transitionPrefix = _h._getPrefix(testEl, 'Transition', vendorsTrans),
+                transformPrefix = getPrefix(testEl, 'Transform', vendorsTrans),
+                i = -1;
 
             self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a seperate test
 
@@ -306,8 +300,8 @@
              * window.requestAnimationFrame
              */
 
-            for(var x = 0; x < vendorsRAF.length && !window.requestAnimationFrame; x++){
-                window.requestAnimationFrame = window[vendorsRAF[x]+'RequestAnimationFrame'];
+            for (i = 0; i < vendorsRAF.length && !window.requestAnimationFrame; i++){
+                window.requestAnimationFrame = window[vendorsRAF[i]+'RequestAnimationFrame'];
             }
 
             /**
@@ -323,8 +317,10 @@
                             if (el.nodeType ===1) {
                                 return el;
                             }
+
                             el = el.nextSibling;
                         }
+
                         return null;
                     }
                 });
@@ -352,7 +348,7 @@
                     };
             })(Element.prototype);
             
-            self._execAction('_platformDetect', 1);
+            self._execAction('_featureDetect', 1);
         },
 
         /* Private Methods
@@ -440,7 +436,10 @@
          */
 
         _indexTargets: function(){
-            var self = this;
+            var self = this,
+                target = null,
+                el = null,
+                i = -1;
                 
             self._execAction('_indexTargets', 0, arguments);
 
@@ -449,8 +448,8 @@
             self._targets = [];
             
             if (self._dom._targets.length) {
-                for (var i = 0, el; el = self._dom._targets[i]; i++) {
-                    var target = new _Target();
+                for (i = 0; el = self._dom._targets[i]; i++) {
+                    target = new _Target();
 
                     target._init(el, self);
 
@@ -478,7 +477,9 @@
             var self = this,
                 proto = _MixItUp.prototype,
                 filters = proto._bound._filter,
-                sorts = proto._bound._sort;
+                sorts = proto._bound._sort,
+                button = null,
+                i = -1;
 
             self._execAction('_bindEvents', 0);
 
@@ -489,7 +490,7 @@
             if (self.controls.live) {
                 _h._on(window, 'click', self._handler);
             } else {
-                for (var i = 0, button; button = self._dom._allButtons[i]; i++) {
+                for (i = 0; button = self._dom._allButtons[i]; i++) {
                     _h._on(button, 'click', self._handler);
                 }
             }
@@ -509,13 +510,15 @@
          */
 
         _unbindEvents: function() {
-            var self = this;
+            var self = this,
+                button = null,
+                i = -1;
 
             self._execAction('_unbindEvents', 0);
 
             _h._off(window, 'click', self._handler);
 
-            for (var i = 0, button; button = self._dom._allButtons[i]; i++) {
+            for (i = 0; button = self._dom._allButtons[i]; i++) {
                 _h._on(button, 'click', self._handler);
             }
 
@@ -556,27 +559,9 @@
                 sortString = '',
                 method = '',
                 isTogglingOff = false,
-                i = 0,
                 button = null,
-                trackClick = function(button, method, isTogglingOff) {
-                    var proto = _MixItUp.prototype,
-                        selector = self.selectors[method];
-
-                    method = '_'+method;
-
-                    proto._handled[method][selector] = (proto._handled[method][selector] === undf) ?
-                        1 :
-                        proto._handled[method][selector] + 1;
-
-                    if (
-                        proto._handled[method][selector] ===
-                        proto._bound[method][selector]
-                    ) {
-                        _h[(isTogglingOff ? '_remove' : '_add') + 'Class'](button, self.controls.activeClass);
-
-                        delete proto._handled[method][selector];
-                    }
-                };
+                key = '',
+                i = -1;
             
             self._execAction('_handleClick', 0, arguments);
 
@@ -584,7 +569,7 @@
                 self.callbacks.onMixClick.call(self._dom._container, self._state, self);
             }
 
-            for (var key in self.selectors) {
+            for (key in self.selectors) {
                 selectors.push(self.selectors[key]);
             }
 
@@ -723,7 +708,7 @@
             }
 
             if (method) {
-                trackClick(target, method, isTogglingOff);
+                self._trackClick(target, method, isTogglingOff);
 
                 self.multiMix(command);
             }
@@ -732,13 +717,44 @@
         },
 
         /**
+         * _trackClick
+         * @since 3.0.0
+         * @param {Element} button
+         * @param {String} method
+         * @param {Boolean} isTogglingOff
+         */
+
+        _trackClick: function(button, method, isTogglingOff) {
+            var self = this,
+                proto = _MixItUp.prototype,
+                selector = self.selectors[method];
+
+            method = '_'+method;
+
+            proto._handled[method][selector] = (proto._handled[method][selector] === undf) ?
+                1 :
+                proto._handled[method][selector] + 1;
+
+            if (
+                proto._handled[method][selector] ===
+                proto._bound[method][selector]
+            ) {
+                _h[(isTogglingOff ? '_remove' : '_add') + 'Class'](button, self.controls.activeClass);
+
+                delete proto._handled[method][selector];
+            }
+        };
+
+        /**
          * _buildToggleArray
          * @since 2.0.0
          */
 
-        _buildToggleArray: function(){
+        _buildToggleArray: function() {
             var self = this,
-                activeFilter = self._activeFilter.replace(/\s/g, '');
+                activeFilter = self._activeFilter.replace(/\s/g, ''),
+                filter = '',
+                i = -1;
 
             self._execAction('_buildToggleArray', 0, arguments);
 
@@ -749,7 +765,7 @@
             
                 !self._toggleArray[0] && self._toggleArray.shift();
             
-                for (var i = 0, filter; filter = self._toggleArray[i]; i++) {
+                for (i = 0; filter = self._toggleArray[i]; i++) {
                     self._toggleArray[i] = '.'+filter;
                 }
             }
@@ -760,20 +776,22 @@
         /**
          * _updateControls
          * @since 2.0.0
-         * @param {object} command
-         * @param {boolean} multi
+         * @param {Object} command
          */
 
-        _updateControls: function(command){
+        _updateControls: function(command) {
             var self = this,
                 output = {
                     filter: command.filter,
                     sort: command.sort
                 },
+                filterToggleButton = null,
+                activeButton = null,
                 button = null,
-                i = 0,
-                j = 0,
-                selector = '';
+                selector = '',
+                i = -1,
+                j = -1,
+                k = -1;
                 
             self._execAction('_updateControls', 0, arguments);
 
@@ -784,7 +802,7 @@
             for (i = 0; button = self._dom._sortButtons[i]; i++) {
                 _h._removeClass(button, self.controls.activeClass);
 
-                if (button.matches('[data-sort="'+output.sort+'"]')) {
+                if (button.matches('[data-sort="' + output.sort + '"]')) {
                     _h._addClass(button, self.controls.activeClass);
                 }
             }
@@ -797,8 +815,8 @@
                 _h._removeClass(button, self.controls.activeClass);
 
                 if (
-                    button.matches('[data-sort="'+output.sort+'"]') &&
-                    button.matches('[data-filter="'+output.filter+'"]')
+                    button.matches('[data-sort="' + output.sort + '"]') &&
+                    button.matches('[data-filter="' + output.filter + '"]')
                 ) {
                     _h._addClass(button, self.controls.activeClass);
                 }
@@ -812,14 +830,14 @@
                 }
 
                 for (j = 0; selector = self._toggleArray[j]; j++) {
-                    var activeButton = null;
+                    activeButton = null;
 
                     if (self.controls.live) {
                         activeButton = _doc
-                            .querySelector(self.selectors.filterToggle+'[data-filter="'+selector+'"]');
+                            .querySelector(self.selectors.filterToggle + '[data-filter="' + selector + '"]');
                     } else {
-                        for (var k = 0, filterToggleButton; filterToggleButton = self._dom._filterToggleButtons[k]; k++) {
-                            if (filterToggleButton.matches('[data-filter="'+selector+'"]')) {
+                        for (k = 0; filterToggleButton = self._dom._filterToggleButtons[k]; k++) {
+                            if (filterToggleButton.matches('[data-filter="' + selector + '"]')) {
                                 activeButton = filterToggleButton;
                             }
                         }
@@ -829,7 +847,7 @@
                 }
             } else {
                 for (i = 0; button = self._dom._filterButtons[i]; i++) {
-                    if (button.matches('[data-filter="'+output.filter+'"]')) {
+                    if (button.matches('[data-filter="' + output.filter + '"]')) {
                         _h._addClass(button, self.controls.activeClass);
                     }
                 }
@@ -846,21 +864,8 @@
         _filter: function(){
             var self = this,
                 condition = false,
-                evaluate = function(condition, target, isRemoving) {
-                    if (condition) {
-                        if (isRemoving && typeof self._state.activeFilter === 'string') {
-                            evaluate(target._dom._el.matches(self._state.activeFilter), target);
-                        } else {
-                            self._show.push(target);
-
-                            !target._isShown && self._toShow.push(target);
-                        }
-                    } else {
-                        self._hide.push(target);
-
-                        target._isShown && self._toHide.push(target);
-                    }
-                };
+                target = null,
+                i = -1;
 
             self._execAction('_filter', 0);
 
@@ -869,7 +874,7 @@
             self._toShow = [];
             self._toHide = [];
 
-            for (var i = 0, target; target = self._targets[i]; i++) {
+            for (i = 0; target = self._targets[i]; i++) {
 
                 // show via selector
 
@@ -877,7 +882,7 @@
                     condition = self._activeFilter === '' ? 
                         false : target._dom._el.matches(self._activeFilter);
 
-                    evaluate(condition, target);
+                    self._evaluateHideShow(condition, target);
                 } 
 
                 // show via element
@@ -886,7 +891,7 @@
                     typeof self._activeFilter === 'object' &&
                     _h._isElement(self._activeFilter)
                 ) {
-                    evaluate(target._dom._el === self._activeFilter, target);
+                    self._evaluateHideShow(target._dom._el === self._activeFilter, target);
                 }
 
                 // show via collection
@@ -895,7 +900,7 @@
                     typeof self._activeFilter === 'object' &&
                     self._activeFilter.length
                 ) {
-                    evaluate(self._activeFilter.indexOf(target._dom._el) > -1, target);
+                    self._evaluateHideShow(self._activeFilter.indexOf(target._dom._el) > -1, target);
                 }
 
                 // hide via selector
@@ -904,7 +909,7 @@
                     typeof self._activeFilter === 'object' &&
                     typeof self._activeFilter.hide === 'string'
                 ) {
-                    evaluate(!target._dom._el.matches(self._activeFilter.hide), target, true);
+                    self._evaluateHideShow(!target._dom._el.matches(self._activeFilter.hide), target, true);
                 } 
 
                 // hide via element
@@ -913,7 +918,7 @@
                     typeof self._activeFilter.hide === 'object' &&
                     _h._isElement(self._activeFilter.hide)
                 ) {
-                    evaluate(target._dom._el !== self._activeFilter.hide, target, true);
+                    self._evaluateHideShow(target._dom._el !== self._activeFilter.hide, target, true);
                 }
 
                 // hide via collection
@@ -923,11 +928,37 @@
                     self._activeFilter.hide !== null &&
                     self._activeFilter.hide.length
                 ) {
-                    evaluate(self._activeFilter.hide.indexOf(target._dom._el) < 0, target, true);
+                    self._evaluateHideShow(self._activeFilter.hide.indexOf(target._dom._el) < 0, target, true);
                 }
             }
 
             self._execAction('_filter', 1);
+        },
+
+        /**
+         * _self._evaluateHideShow
+         * @since 3.0.0
+         * @param {Boolean} condition
+         * @param {Element} target
+         * @param {Boolean} isRemoving
+         */
+
+        _evaluateHideShow: function(condition, target, isRemoving) {
+            var self = this;
+
+            if (condition) {
+                if (isRemoving && typeof self._state.activeFilter === 'string') {
+                    self._evaluateHideShow(target._dom._el.matches(self._state.activeFilter), target);
+                } else {
+                    self._show.push(target);
+
+                    !target._isShown && self._toShow.push(target);
+                }
+            } else {
+                self._hide.push(target);
+
+                target._isShown && self._toHide.push(target);
+            }
         },
 
         /**
@@ -936,13 +967,15 @@
          */
 
         _sort: function() {
-            var self = this;
+            var self = this,
+                target = null,
+                i = -1;
 
             self._execAction('_sort', 0);
 
             self._currentOrder = [];
 
-            for (var i = 0, target; target = self._targets[i]; i++) {
+            for (i = 0; target = self._targets[i]; i++) {
                 self._currentOrder.push(target);
             }
 
@@ -1000,22 +1033,8 @@
             var self = this,
                 order = self._newSort[depth].order,
                 isString = false,
-                getData = function(target){
-                    var value = target._dom._el.getAttribute('data-' + self._newSort[depth].sortBy);
-
-                    if (value === null) {
-                        self._isSorting = false;
-
-                        throw new Error(
-                            '[MixItUp] The attribute "data-' +
-                            self._newSort[depth].sortBy) +
-                            '" was not present on one or more target elements';
-                    }
-
-                    return value || 0;
-                },
-                attrA = getData(a),
-                attrB = getData(b);
+                attrA = self._getAttributeValue(a),
+                attrB = self._getAttributeValue(b);
 
             if (isNaN(attrA * 1) || isNaN(attrB * 1)) {
                 attrA = attrA.toLowerCase();
@@ -1036,25 +1055,51 @@
         },
 
         /**
+         * _getAttributeValue
+         * @since 3.0.0
+         * @param {Element} target
+         * @return {String|Number}
+         */
+
+        _getAttributeValue: function(target) {
+            var self = this,
+                value = target._dom._el.getAttribute('data-' + self._newSort[depth].sortBy);
+
+            if (value === null) {
+                if (_h._canReportErrors(self) {
+                    self._isSorting = false;
+
+                    throw new Error(
+                        '[MixItUp] The attribute "data-' +
+                        self._newSort[depth].sortBy) +
+                        '" was not present on one or more target elements';
+                }
+            }
+
+            return value || 0;
+        };
+
+        /**
          * _printSort
          * @since 2.0.0
          * @param {Boolean} reset
          */
 
-        _printSort: function(reset){
+        _printSort: function(reset) {
             var self = this,
                 order = reset ? self._currentOrder : self._newOrder,
                 targets = _h._children(self._dom._parent, self.selectors.target),
                 nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
                 frag = _doc.createDocumentFragment(),
                 target = null,
+                whiteSpace = null,
                 el = null,
                 i = -1;
 
             self._execAction('_printSort', 0, arguments);
 
             for (i = 0; el = targets[i]; i++) {
-                var whiteSpace = el.nextSibling;
+                whiteSpace = el.nextSibling;
 
                 if (el.style.position === 'absolute') continue;
 
@@ -1083,15 +1128,17 @@
          * _parseSort
          * @since 2.0.0
          * @param {String} sortString
-         * @return {Array} newSort
+         * @return {String[]} newSort
          */
 
         _parseSort: function(sortString) {
             var self = this,
                 rules = typeof sortString === 'string' ? sortString.split(' ') : [sortString],
-                newSort = [];
+                newSort = [],
+                rule = [],
+                i = -1;
 
-            for (var i = 0; i < rules.length; i++) {
+            for (i = 0; i < rules.length; i++) {
                 var rule = typeof sortString === 'string' ? rules[i].split(':') : ['custom', rules[i]],
                     ruleObj = {
                         sortBy: _h._camelCase(rule[0]),
@@ -1115,66 +1162,101 @@
         _parseEffects: function() {
             var self = this,
                 effects = {
-                    opacity: '',
-                    transformIn: '',
-                    transformOut: ''
-                },
-                parse = function(effect, extract, reverse) {
-                    if (self.animation.effects.indexOf(effect) > -1) {
-                        if (extract) {
-                            var propIndex = self.animation.effects.indexOf(effect+'(');
-
-                            if (propIndex > -1) {
-                                var str = self.animation.effects.substring(propIndex),
-                                    match = /\(([^)]+)\)/.exec(str),
-                                    val = match[1];
-
-                                    return {val: val};
-                            }
-                        }
-
-                        return true;
-                    } else {
-                        return false;
-                    }
-                },
-                negate = function(value, invert) {
-                    if (invert) {
-                        return value.charAt(0) === '-' ? value.substr(1, value.length) : '-'+value;
-                    } else {
-                        return value;
-                    }
-                },
-                buildTransform = function(key, invert) {
-                    var transforms = [
-                        ['scale', '.01'],
-                        ['translateX', '20px'],
-                        ['translateY', '20px'],
-                        ['translateZ', '20px'],
-                        ['rotateX', '90deg'],
-                        ['rotateY', '90deg'],
-                        ['rotateZ', '180deg']
-                    ];
-                    
-                    for (var i = 0; i < transforms.length; i++) {
-                        var prop = transforms[i][0],
-                            def = transforms[i][1],
-                            inverted = invert && prop !== 'scale';
-                            
-                        effects[key] += parse(prop) ? prop+'('+negate(parse(prop, true).val || def, inverted)+') ' : '';
-                    }
+                    opacity: parse('fade') ? parse('fade',true).val || '0' : '1',
+                    transformIn: self._buildTransformString(),
+                    transformOut: self.animation.reserveOut ? self._buildTransformStrings(true) : effects.transformIn
                 };
 
-            effects.opacity = parse('fade') ? parse('fade',true).val || '0' : '1';
-
-            buildTransform('transformIn');
-
-            self.animation.reverseOut ? buildTransform('transformOut', true) : (effects.transformOut = effects.transformIn);
-
             self.animation.stagger = parse('stagger') ? true : false;
-            self._staggerDuration = parseInt(parse('stagger') ? (parse('stagger',true).val ? parse('stagger', true).val : 100) : 0);
+
+            self._staggerDuration = parseInt(
+                parse('stagger') ?
+                    (
+                        parse('stagger', true).val ?
+                            parse('stagger', true).val :
+                            100
+                    ) :
+                    0
+            );
 
             return self._execFilter('_parseEffects', effects);
+        },
+
+        /**
+         * _buildTransformString
+         * @since 3.0.0
+         * @param {Boolean} invert
+         * @return {String}
+         */
+
+        _buildTransformString = function(invert) {
+            var self = this,
+                transforms = [ // TODO: move these to the constructor as defaults
+                    ['scale', '.01'],
+                    ['translateX', '20px'],
+                    ['translateY', '20px'],
+                    ['translateZ', '20px'],
+                    ['rotateX', '90deg'],
+                    ['rotateY', '90deg'],
+                    ['rotateZ', '180deg']
+                ],
+                prop = '',
+                def = '',
+                transformString = '';
+                inverted = false,
+                i = -1;
+            
+            for (i = 0; i < transforms.length; i++) {
+                prop = transforms[i][0];
+                def = transforms[i][1];
+                inverted = invert && prop !== 'scale';
+                    
+                transformString +=
+                    self._parseEffect(prop) ?
+                        (
+                            prop +
+                            '(' +
+                            _h._negateValue(self._parseEffect(prop, true).val || def, inverted) +
+                            ') '
+                        ) :
+                        '';
+            }
+
+            return transformString;
+        };
+
+        /**
+         * _parseEffect
+         * @since 2.0.0
+         * @param {String} effect
+         * @param {Boolean} extract
+         * @return {Object|Boolean}
+         */
+
+        _parseEffect: function(effect, extract) {
+            var self = this,
+                propIndex = -1,
+                str = '',
+                match = [],
+                valu = '';
+
+            if (self.animation.effects.indexOf(effect) > -1) {
+                if (extract) {
+                    propIndex = self.animation.effects.indexOf(effect + '(');
+
+                    if (propIndex > -1) {
+                        str = self.animation.effects.substring(propIndex);
+                        match = /\(([^)]+)\)/.exec(str);
+                        val = match[1];
+
+                        return {val: val};
+                    }
+                }
+
+                return true;
+            } else {
+                return false;
+            }
         },
 
         /**
@@ -1189,11 +1271,13 @@
                 state = {},
                 targets = [],
                 show = [],
-                hide = [];
+                hide = [],
+                target = null,
+                i = -1;
 
             self._execAction('_buildState', 0);
 
-            for (var i = 0, target; target = self._targets[i]; i++) {
+            for (i = 0; target = self._targets[i]; i++) {
                 targets.push(target._dom._el);
 
                 if (target._isShown) {
@@ -1719,7 +1803,7 @@
                 }
             }
 
-            if (!output.collection.length) {
+            if (!output.collection.length && _h._canReportErrors(self)) {
                 throw new Error('[MixItUp] No elements were passed to "insert"');
             }
 
@@ -3197,6 +3281,7 @@
 
         /**
          * _getPromise
+         * @since 3.0.0
          * @return {Object} libraries
          * @return {Object} promiseWrapper
          */
@@ -3226,8 +3311,63 @@
             }
 
             return promise;
-        }
+        },
 
+        /**
+         * _canReportErrors
+         * @since 3.0.0
+         * @param [{Object}] config
+         * @return {Boolean}
+         */
+
+        _canReportErrors: function(config) {
+            if (!config || config && !config.debug) {
+                return true;
+            } else if (config && config.debug && config.debug.enable === false) {
+                return false;
+            }
+        },
+
+        /**
+         * _getPrefix
+         * @since 2.0.0
+         * @param {Element} el,
+         * @param {String} property
+         * @param {String[]} vendors
+         * @return {String | Boolean}
+         */
+
+        _getPrefix = function(el, property, vendors) {
+            var i = -1,
+                prefix = '';
+
+            if (property.toLowerCase() in el.style) return '';
+
+            for (i = 0; prefix = vendors[i]; i++) {
+                if (prefix + property in el.style) {
+                    return prefix.toLowerCase();
+                }
+            }
+
+            return false;
+        },
+
+        /**
+         * _negateValue
+         * @param {String} value
+         * @param {Boolean} invert
+         * @return {String}
+         */
+
+        _negateValue: function(value, invert) {
+            if (invert) {
+                return value.charAt(0) === '-' ?
+                    value.substr(1, value.length) :
+                    '-' + value;
+            } else {
+                return value;
+            }
+        }
     };
 
     /* mixItUp Factory
@@ -3270,7 +3410,7 @@
                 break;
         }
 
-        if (!el) {
+        if (!el && _h._canReportErrors(config)) {
             throw new Error('[MixItUp] Invalid selector or element');            
         }
 
@@ -3293,7 +3433,7 @@
         } else if (_MixItUp.prototype._instances[id] instanceof _MixItUp) {
             instance = _MixItUp.prototype._instances[id];
 
-            if (config) {
+            if (config && _h._canReportErrors(config)) {
                 console.warn('[MixItUp] This element already has an active instance. Config will be ignored.');
             }
         }
@@ -3301,7 +3441,7 @@
         return instance;
     };
 
-    _MixItUp.prototype._platformDetect();
+    _MixItUp.prototype._featureDetect();
 
     _MixItUp.prototype._Target = _Target;
     _MixItUp.prototype._h = _h;
