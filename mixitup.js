@@ -181,6 +181,16 @@
         _transformRule: 'transform',
         _transitionProp: 'transition',
 
+        _transformDefaults: [
+            ['scale', '.01'],
+            ['translateX', '20px'],
+            ['translateY', '20px'],
+            ['translateZ', '20px'],
+            ['rotateX', '90deg'],
+            ['rotateY', '90deg'],
+            ['rotateZ', '180deg']
+        ],
+
         _is: {},
         _has: {},
 
@@ -206,7 +216,6 @@
          * extend
          * @since 2.1.0
          * @param {Object} new properties/methods
-         * @extends {Object} prototype
          */
 
         extend: function(extension) {
@@ -281,7 +290,7 @@
                 vendorsTrans = ['Webkit', 'Moz', 'O', 'ms'],
                 vendorsRAF = ['webkit', 'moz'],
                 transitionPrefix = _h._getPrefix(testEl, 'Transition', vendorsTrans),
-                transformPrefix = getPrefix(testEl, 'Transform', vendorsTrans),
+                transformPrefix = _h._getPrefix(testEl, 'Transform', vendorsTrans),
                 i = -1;
 
             self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a seperate test
@@ -743,7 +752,7 @@
 
                 delete proto._handled[method][selector];
             }
-        };
+        },
 
         /**
          * _buildToggleArray
@@ -936,7 +945,7 @@
         },
 
         /**
-         * _self._evaluateHideShow
+         * _evaluateHideShow
          * @since 3.0.0
          * @param {Boolean} condition
          * @param {Element} target
@@ -1066,7 +1075,7 @@
                 value = target._dom._el.getAttribute('data-' + self._newSort[depth].sortBy);
 
             if (value === null) {
-                if (_h._canReportErrors(self) {
+                if (_h._canReportErrors(self)) {
                     self._isSorting = false;
 
                     throw new Error(
@@ -1077,7 +1086,7 @@
             }
 
             return value || 0;
-        };
+        },
 
         /**
          * _printSort
@@ -1135,15 +1144,16 @@
             var self = this,
                 rules = typeof sortString === 'string' ? sortString.split(' ') : [sortString],
                 newSort = [],
+                ruleObj = null,
                 rule = [],
                 i = -1;
 
             for (i = 0; i < rules.length; i++) {
-                var rule = typeof sortString === 'string' ? rules[i].split(':') : ['custom', rules[i]],
-                    ruleObj = {
-                        sortBy: _h._camelCase(rule[0]),
-                        order: rule[1] || 'asc'
-                    };
+                rule = typeof sortString === 'string' ? rules[i].split(':') : ['custom', rules[i]];
+                ruleObj = {
+                    sortBy: _h._camelCase(rule[0]),
+                    order: rule[1] || 'asc'
+                };
 
                 newSort.push(ruleObj);
 
@@ -1161,19 +1171,23 @@
 
         _parseEffects: function() {
             var self = this,
-                effects = {
-                    opacity: parse('fade') ? parse('fade',true).val || '0' : '1',
-                    transformIn: self._buildTransformString(),
-                    transformOut: self.animation.reserveOut ? self._buildTransformStrings(true) : effects.transformIn
-                };
+                effects = {};
 
-            self.animation.stagger = parse('stagger') ? true : false;
+            effects.opacity = self._parseEffect('fade') ?
+                (self._parseEffect('fade',true).val || '0') :
+                '1';
+            effects.transformIn = self._buildTransformString();
+            effects.transformOut = self.animation.reserveOut ?
+                self._buildTransformStrings(true) :
+                effects.transformIn;
+
+            self.animation.stagger = self._parseEffect('stagger') ? true : false;
 
             self._staggerDuration = parseInt(
-                parse('stagger') ?
+                self._parseEffect('stagger') ?
                     (
-                        parse('stagger', true).val ?
-                            parse('stagger', true).val :
+                        self._parseEffect('stagger', true).val ?
+                            self._parseEffect('stagger', true).val :
                             100
                     ) :
                     0
@@ -1189,26 +1203,18 @@
          * @return {String}
          */
 
-        _buildTransformString = function(invert) {
+        _buildTransformString: function(invert) {
             var self = this,
-                transforms = [ // TODO: move these to the constructor as defaults
-                    ['scale', '.01'],
-                    ['translateX', '20px'],
-                    ['translateY', '20px'],
-                    ['translateZ', '20px'],
-                    ['rotateX', '90deg'],
-                    ['rotateY', '90deg'],
-                    ['rotateZ', '180deg']
-                ],
                 prop = '',
                 def = '',
-                transformString = '';
+                transform = null,
+                transformString = '',
                 inverted = false,
                 i = -1;
             
-            for (i = 0; i < transforms.length; i++) {
-                prop = transforms[i][0];
-                def = transforms[i][1];
+            for (i = 0; transform = _MixItUp.prototype._transformDefaults[i]; i++) {
+                prop = transform[0];
+                def = transform[1];
                 inverted = invert && prop !== 'scale';
                     
                 transformString +=
@@ -1223,7 +1229,7 @@
             }
 
             return transformString;
-        };
+        },
 
         /**
          * _parseEffect
@@ -1391,7 +1397,13 @@
 
                         target._show();
 
-                        target._move(posIn, posOut, toShow, i, checkProgress);
+                        target._move({
+                            posIn: posIn,
+                            posOut: posOut,
+                            hideOrShow: toShow,
+                            staggerIndex: i,
+                            callback: checkProgress
+                        });
                     }
 
                     for (i = 0; target = self._toHide[i]; i++) {
@@ -1400,7 +1412,13 @@
                             y: target._isShown ? target._startPosData.y - target._interPosData.y : 0
                         };
 
-                        target._move(posIn, {x: 0, y: 0}, 'hide', i, checkProgress);
+                        target._move({
+                            posIn: posIn,
+                            posOut: {x: 0, y: 0},
+                            hideOrShow: 'hide',
+                            staggerIndex: i,
+                            callback: checkProgress
+                        });
                     }
 
                     if (self.animation.animateResizeContainer) {
@@ -2574,123 +2592,239 @@
 
         /**
          * _move         
-         * @param {Object} posIn
-         * @param {Object} posOut
-         * @param [{String} hideShow]
-         * @param [{Number} staggerIndex]
-         * @param [{Function} callback]
-         * @param [{Number} duration]
+         * @param {Object} options
          * @since 3.0.0
          */
 
-        // TODO: too many args, might need a parse?
-
-        _move: function(posIn, posOut, hideShow, staggerIndex, callback, duration) {
-            var self = this,
-                transitionRules = [],
-                transformValues = [],
-                transformString = '',
-                resize = self._mixer.animation.animateResizeTargets,
-                fading = self._mixer._effects.opacity !== undf,
-                writeTransitionRule = function(rule) {
-                    var delay = staggerIndex * self._mixer._staggerDuration,
-                        output = '';
-
-                    output = rule + ' ' +
-                        (duration || self._mixer.animation.duration) + 'ms ' +
-                        delay + 'ms ' +
-                        (rule === 'opacity' ? 'linear' : self._mixer.animation.easing);
-
-                    return output;
-                },
-                applyStyles = function() {
-                    transformValues = [];
-
-                    transitionRules.push(writeTransitionRule(_MixItUp.prototype._transformRule, staggerIndex));
-
-                    if (hideShow) {
-                        transitionRules.push(writeTransitionRule('opacity', staggerIndex));
-                    }
-
-                    if (self._mixer.animation.animateResizeTargets && self._finalPosData && self._finalPosData.isShown) {
-                        transitionRules.push(writeTransitionRule('width', staggerIndex));
-                        transitionRules.push(writeTransitionRule('height', staggerIndex));
-                        transitionRules.push(writeTransitionRule('margin', staggerIndex));
-                    }
-
-                    if (
-                        !self._isBound &&
-                        (
-                            hideShow ||
-                            posIn.x !== posOut.x ||
-                            posIn.y !== posOut.y ||
-                            resize && (posIn.width !== posOut.width) ||
-                            resize && (posIn.height !== posOut.height) ||
-                            resize && (posIn.marginRight !== posOut.marginRight) ||
-                            resize && (posIn.marginTop !== posOut.marginTop)
-                        )
-                    ) {
-                        self._isBound = true;
-                        self._callback = callback;
-
-                        !self._isExcluded && self._mixer._targetsBound++;
-                    }
-
-                    self._transition(transitionRules);
-
-                    transformValues.push('translate('+posOut.x+'px, '+posOut.y+'px)');
-
-                    if (self._mixer.animation.animateResizeTargets && self._finalPosData && self._finalPosData.isShown) {
-                        self._dom._el.style.width = posOut.width+'px';
-                        self._dom._el.style.height = posOut.height+'px';
-                        self._dom._el.style.marginRight = posOut.marginRight+'px';
-                        self._dom._el.style.marginBottom = posOut.marginBottom+'px';
-                    }   
-
-                    if (hideShow === 'hide') {
-                        fading && (self._dom._el.style.opacity = self._mixer._effects.opacity);
-
-                        transformValues.push(self._mixer._effects.transformOut);
-                    } else if (hideShow === 'show') {
-                        fading && (self._dom._el.style.opacity = 1);
-                    }
-
-                    self._dom._el.style[_MixItUp.prototype._transformProp] = transformValues.join(' ');
-                };
+        _move: function(options) {
+            var self = this;
 
             self._execAction('_move', 0, arguments);
 
-            transformValues.push('translate('+posIn.x+'px, '+posIn.y+'px)'); 
+            self._applyStylesIn({
+                posIn: options.posIn,
+                hideOrShow: options.hideOrShow
+            });
 
-            if (!hideShow && self._mixer.animation.animateResizeTargets) {
-                self._dom._el.style.width = posIn.width+'px';
-                self._dom._el.style.height = posIn.height+'px';
-                self._dom._el.style.marginRight = posIn.marginRight+'px';
-                self._dom._el.style.marginBottom = posIn.marginBottom+'px';
-            }               
-
-            if (hideShow === 'hide') {
-                fading && (self._dom._el.style.opacity = 1);
-            } else if (hideShow === 'show') {
-                fading && (self._dom._el.style.opacity = self._mixer._effects.opacity);
-
-                transformValues.push(self._mixer._effects.transformIn);
-            }
-
-            self._dom._el.style[_MixItUp.prototype._transformProp] = transformValues.join(' ');
-
-            requestAnimationFrame(applyStyles);
+            requestAnimationFrame(function() {
+                self._applyStylesOut({
+                    posIn: options.posIn,
+                    posOut: options.posOut,
+                    hideOrShow: options.hideOrShow,
+                    staggerIndex: options.staggerIndex,
+                    duration: options.duration,
+                    callback: options.callback
+                });
+            });
 
             self._execAction('_move', 1, arguments);
         },
 
         /**
-         * _transition
+         * _applyStylesIn
+         * @param {Object} options
+         *
+         * Applies starting styles to a target element
+         * before any transition is applied
+         */
+
+        _applyStylesIn: function(options) {
+            var self = this,
+                isFading = self._mixer._effects.opacity !== undf,
+                transformValues = [];
+
+            transformValues.push('translate(' + options.posIn.x + 'px, ' + options.posIn.y + 'px)'); 
+
+            if (!options.hideOrShow && self._mixer.animation.animateResizeTargets) {
+                self._dom._el.style.width        = options.posIn.width + 'px';
+                self._dom._el.style.height       = options.posIn.height + 'px';
+                self._dom._el.style.marginRight  = options.posIn.marginRight + 'px';
+                self._dom._el.style.marginBottom = options.posIn.marginBottom + 'px';
+            }
+
+            switch (options.hideOrShow) {
+                case 'hide':
+                    isFading && (self._dom._el.style.opacity = 1);
+
+                    break;
+                case 'show':
+                    isFading && (self._dom._el.style.opacity = self._mixer._effects.opacity);
+
+                    transformValues.push(self._mixer._effects.transformIn);
+            }
+
+            self._dom._el.style[_MixItUp.prototype._transformProp] = transformValues.join(' ');
+        },
+
+        /**
+         * _applyStylesOut
+         * @param {Object} options
+         *
+         * Applies a transition and the corresponding styles to
+         * transition towards
+         */
+
+        _applyStylesOut: function(options) {
+            var self            = this,
+                transitionRules = [],
+                transformValues = [],
+                isResizing      = self._mixer.animation.animateResizeTargets,
+                isFading        = self._mixer._effects.opacity !== undf;
+
+            // Build the transition rules
+
+            transitionRules.push(self._writeTransitionRule(
+                _MixItUp.prototype._transformRule,
+                options.staggerIndex
+            ));
+
+            if (options.hideOrShow) {
+                transitionRules.push(self._writeTransitionRule(
+                    'opacity',
+                    options.staggerIndex,
+                    options.duration
+                ));
+            }
+
+            if (self._mixer.animation.animateResizeTargets && self._finalPosData && self._finalPosData.isShown) {
+                transitionRules.push(self._writeTransitionRule(
+                    'width',
+                    options.staggerIndex,
+                    options.duration
+                ));
+
+                transitionRules.push(self._writeTransitionRule(
+                    'height',
+                    options.staggerIndex,
+                    options.duration
+                ));
+
+                transitionRules.push(self._writeTransitionRule(
+                    'margin',
+                    options.staggerIndex,
+                    options.duration
+                ));
+            }
+
+            // Bind transitionEnd
+
+            if (
+                self._willTransition(options)
+            ) {
+                // If the target will transition in some fasion,
+                // assign a callback function
+
+                self._callback = options.callback;
+
+                // As long as the target is not excluded, increment
+                // the total number of targets bound
+
+                !self._isExcluded && self._mixer._targetsBound++;
+
+                // Tag the target as bound to differentiate from transitionEnd
+                // events that may come from stylesheet driven effects 
+
+                self._isBound = true;
+            }
+
+            // Apply the transition
+
+            self._applyTransition(transitionRules);
+
+            // Apply width, height and margin negation
+
+            if (self._mixer.animation.animateResizeTargets && self._finalPosData && self._finalPosData.isShown) {
+                self._dom._el.style.width        = options.posOut.width + 'px';
+                self._dom._el.style.height       = options.posOut.height+ 'px';
+                self._dom._el.style.marginRight  = options.posOut.marginRight + 'px';
+                self._dom._el.style.marginBottom = options.posOut.marginBottom + 'px';
+            }
+
+            // Apply fade
+
+            switch (options.hideOrShow) {
+                case 'hide':
+                    isFading && (self._dom._el.style.opacity = self._mixer._effects.opacity);
+
+                    transformValues.push(self._mixer._effects.transformOut);
+
+                    break;
+                case 'show':
+                    isFading && (self._dom._el.style.opacity = 1);
+            }
+
+            // Apply transforms
+
+            transformValues.push('translate(' + options.posOut.x + 'px, ' + options.posOut.y + 'px)');
+
+            self._dom._el.style[_MixItUp.prototype._transformProp] = transformValues.join(' ');
+        },
+
+        /**
+         * _willTransition
+         * @param {Object} options
+         * @return {Boolean}
+         *
+         * Determines if a target element will transition in
+         * some fasion and therefore requires binding of
+         * transitionEnd
+         */
+
+        _willTransition: function(options) {
+            var self = this,
+                canResize = self._mixer.animation.animateResizeTargets;
+
+            // Check if opacity and/or translate will change
+
+            if (
+                options.hideOrShow ||
+                options.posIn.x !== options.posOut.x ||
+                options.posIn.y !== options.posOut.y
+            ) {
+                return true;
+            } else if (canResize) {
+                // Check if width, height or margins will change
+
+                return (
+                    options.posIn.width !== options.posOut.width ||
+                    options.posIn.height !== options.posOut.height ||
+                    options.posIn.marginRight !== options.posOut.marginRight ||
+                    options.posIn.marginTop !== options.posOut.marginTop
+                );
+            }
+        },
+
+        /**
+         * _writeTransitionRule
+         * @param {String} rule
+         * @param {Number} staggerIndex
+         * @param [{Number}] duration
+         * @return {String}
+         *
+         * Combines the name of a rule with duration and delay values
+         * to produce a valid transition value
+         */
+
+        _writeTransitionRule: function(rule, staggerIndex, duration) {
+            var self = this,
+                delay = staggerIndex * self._mixer._staggerDuration,
+                output = '';
+
+            output = rule + ' ' +
+                (duration || self._mixer.animation.duration) + 'ms ' +
+                delay + 'ms ' +
+                (rule === 'opacity' ? 'linear' : self._mixer.animation.easing);
+
+            return output;
+        },
+
+        /**
+         * _applyTransition
          * @param {Array} rules
          * @since 3.0.0
          */
 
-        _transition: function(rules) {
+        _applyTransition: function(rules) {
             var self = this,
                 transitionString = rules.join(', ');
 
@@ -2709,7 +2843,7 @@
         _handleTransitionEnd: function(e) {
             var self = this,
                 propName = e.propertyName,
-                resize = self._mixer.animation.animateResizeTargets;
+                isResizing = self._mixer.animation.animateResizeTargets;
 
             self._execAction('_handleTransitionEnd', 0, arguments);
 
@@ -2719,9 +2853,9 @@
                 (
                     propName.indexOf('transform') > -1 ||
                     propName.indexOf('opacity') > -1 ||
-                    resize && propName.indexOf('height') > -1 ||
-                    resize && propName.indexOf('width') > -1 ||
-                    resize && propName.indexOf('margin') > -1
+                    isResizing && propName.indexOf('height') > -1 ||
+                    isResizing && propName.indexOf('width') > -1 ||
+                    isResizing && propName.indexOf('margin') > -1
                 )
             ) {
                 self._callback.call(self);
@@ -2905,7 +3039,7 @@
                 ) {
                     destination[property] = destination[property] || {};
 
-                    copy(destination[property], source[property]);
+                    this._extend(destination[property], source[property]);
                 } else {
                     destination[property] = source[property];
                 }
@@ -3332,7 +3466,7 @@
          * @return {String | Boolean}
          */
 
-        _getPrefix = function(el, property, vendors) {
+        _getPrefix: function(el, property, vendors) {
             var i = -1,
                 prefix = '';
 
@@ -3362,7 +3496,7 @@
             } else {
                 return value;
             }
-        }
+        },
 
         /**
          * _randomHexKey
