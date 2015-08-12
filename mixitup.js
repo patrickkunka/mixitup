@@ -1851,7 +1851,7 @@
                     collection: [],
                     callback: null
                 },
-                args = null,
+                arg = null,
                 i = -1;
 
             for (i = 0; i < args.length; i++) {
