@@ -1537,11 +1537,13 @@
          */
 
         _setInter: function() {
-            var self = this;
+            var self = this,
+                target = null,
+                i = -1;
 
             self._execAction('_setInter', 0);
 
-            for (var i = 0, target; target = self._toShow[i]; i++) {
+            for (i = 0; target = self._toShow[i]; i++) {
                 target._show();
             }
 
@@ -1587,13 +1589,15 @@
          */
 
         _setFinal: function() {
-            var self = this;
+            var self = this,
+                target = null,
+                i = -1;
 
             self._execAction('_setFinal', 0);
 
             self._isSorting && self._printSort();
             
-            for (var i = 0, target; target = self._toHide[i]; i++) {
+            for (i = 0; target = self._toHide[i]; i++) {
                 target._hide();
             }
 
@@ -1756,10 +1760,12 @@
                     command: null,
                     animate: self.animation.enable,
                     callback: null
-                };
+                },
+                arg = null,
+                i = -1;
 
-            for (var i = 0; i < args.length; i++){
-                var arg = args[i];
+            for (i = 0; i < args.length; i++){
+                arg = args[i];
 
                 if(arg !== null){
                     if(typeof arg === 'object' || typeof arg === 'string'){
@@ -1791,10 +1797,12 @@
                     position: '',
                     sibling: null,
                     callback: null
-                };
+                },
+                arg = null,
+                i = -1;
 
-            for (var i = 0; i < args.length; i++) {
-                var arg = args[i];
+            for (i = 0; i < args.length; i++) {
+                arg = args[i];
 
                 if (typeof arg === 'number') {
                     output.index = arg;
@@ -1842,10 +1850,12 @@
                     selector: '',
                     collection: [],
                     callback: null
-                };
+                },
+                args = null,
+                i = -1;
 
-            for (var i = 0; i < args.length; i++) {
-                var arg = args[i];
+            for (i = 0; i < args.length; i++) {
+                arg = args[i];
 
                 switch (typeof arg) {
                     case 'number':
@@ -1884,10 +1894,11 @@
 
         _execAction: function(methodName, isPost, args) {
             var self = this,
+                key = '',
                 context = isPost ? 'post' : 'pre';
 
             if (!self._actions.isEmptyObject && self._actions.hasOwnProperty(methodName)) {
-                for (var key in self._actions[methodName][context]) {
+                for (key in self._actions[methodName][context]) {
                     self._actions[methodName][context][key].call(self, args);
                 }
             }
@@ -1903,15 +1914,56 @@
          */
 
         _execFilter: function(methodName, value, args) {
-            var self = this;
+            var self = this,
+                key = '';
             
             if (!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)) {
-                for (var key in self._filters[methodName].pre) {
+                for (key in self._filters[methodName].pre) {
                     return self._filters[methodName].pre[key].call(self, value, args);
                 }
             } else {
                 return value;
             }
+        },
+
+        /**
+         * _deferMix
+         * @since 3.0.0
+         * @param {Mixed[]} args
+         * @param {Object} parsedArgs
+         * @return {Promise} -> {State}
+         */
+
+        _deferMix: function(args, parsedArgs) {
+            var self = this;
+
+            self._userPromise = _h._getPromise(self.libraries);
+
+            if (self.animation.queue && self._queue.length < self.animation.queueLimit) {
+                args[3] = self._userPromise;
+
+                self._queue.push(args);
+                
+                (self.controls.enable && !self._isClicking) && self._updateControls(parsedArgs.command);
+                
+                self._execAction('multiMixQueue', 1, args);
+            } else {
+                self._userPromise.resolve(self._state); // TODO: include warning that was busy in state?
+                self._userPromise.isResolved = true;
+
+                if (typeof self.callbacks.onMixBusy === 'function') {
+                    self.callbacks.onMixBusy.call(self._dom._container, self._state, self);
+                }
+
+                _h._trigger(self._dom._container, 'mixBusy', {
+                    state: self._state,
+                    instance: self
+                });
+                
+                self._execAction('multiMixBusy', 1, args);
+            }
+
+            return self._userPromise.promise;
         },
 
         /* Public Methods
@@ -1976,33 +2028,36 @@
         /**
          * changeLayout
          * @since 2.0.0
-         * @param {Array} arguments
+         * @shorthand self.multiMix
+         * @param {Mixed[]} arguments
+         * @return {Promise} -> {State}
          */
 
         changeLayout: function() {
             var self = this;
 
+            // TODO: map to multiMix
         },
 
         /**
          * multiMix
          * @since 2.0.0
-         * @param {Array} arguments
+         * @param {Mixed[]} arguments
          * @return {Promise} -> {State}
          */
 
         multiMix: function() {
             var self = this,
                 args = self._parseMultiMixArgs(arguments),
-                sort = '',
-                filter = '',
-                changeLayout = '';
+                sort = args.command.sort,
+                filter = args.command.filter,
+                changeLayout = args.command.changeLayout;
 
             self._execAction('multiMix', 0, arguments);
 
             if (!self._isMixing) {
                 if (self.controls.enable && !self._isClicking && !self._isRemoving) {
-                    self._dom._filterToggleButtons.length && self._buildToggleArray(); // TODO: what about live toggles?
+                    self._dom._filterToggleButtons.length && self._buildToggleArray(); // TODO: what about "live" toggles?
 
                     self._updateControls(args.command);
                 }
@@ -2012,10 +2067,6 @@
                 delete self.callbacks._user;
 
                 if (args.callback) self.callbacks._user = args.callback;
-
-                sort = args.command.sort;
-                filter = args.command.filter;
-                changeLayout = args.command.changeLayout;
 
                 if (sort !== undf) {
                     self._newSort = self._parseSort(sort);
@@ -2049,33 +2100,7 @@
 
                 return self._goMix(args.animate ^ self.animation.enable ? args.animate : self.animation.enable);
             } else {
-                self._userPromise = _h._getPromise(self.libraries);
-
-                if (self.animation.queue && self._queue.length < self.animation.queueLimit) {
-                    arguments[3] = self._userPromise;
-
-                    self._queue.push(arguments);
-                    
-                    (self.controls.enable && !self._isClicking) && self._updateControls(args.command);
-                    
-                    self._execAction('multiMixQueue', 1, arguments);
-                } else {
-                    self._userPromise.resolve(self._state); // TODO: include warning that was busy in state?
-                    self._userPromise.isResolved = true;
-
-                    if (typeof self.callbacks.onMixBusy === 'function') {
-                        self.callbacks.onMixBusy.call(self._dom._container, self._state, self);
-                    }
-
-                    _h._trigger(self._dom._container, 'mixBusy', {
-                        state: self._state,
-                        instance: self
-                    });
-                    
-                    self._execAction('multiMixBusy', 1, arguments);
-                }
-
-                return self._userPromise.promise;
+                return self._deferMix(arguments);
             }
         },
 
@@ -2420,10 +2445,14 @@
          * @since 3.0.0
          * @param {Object} new properties/methods
          * @extends {Object} prototype
+         *
+         * Shallow extend a target with new methods
          */
 
         extend: function(extension) {
-            for(var key in extension){
+            var key = '';
+
+            for(key in extension){
                 _Target.prototype[key] = extension[key];
             }
         },
@@ -2436,6 +2465,8 @@
          * @param {Function} function to execute
          * @param {Number} priority
          * @extends {Object} _MixItUp.prototype._actions
+         *
+         * Register a named action hook on the Target prototype
          */
 
         addAction: function(hook, name, func, priority) {
@@ -2449,6 +2480,8 @@
          * @param {string} method
          * @param {function} function to execute
          * @extends {object} _MixItUp.prototype._filters
+         *
+         * Register a named filter hook on the Target prototype
          */
 
         addFilter: function(hook, name, func) {
@@ -2466,6 +2499,8 @@
          * @param {Function} function to execute
          * @param [{Number}] priority
          * @extends {Object} _MixItUp.prototype._filters
+         *
+         * Add a hook to the Target prototype
          */
 
         _addHook: function(type, hook, name, func, priority) {
@@ -2503,6 +2538,8 @@
          * @since 3.0.0
          * @param {Object} element
          * @param {Object} mixer
+         *
+         * Initialize a newly instantiated Target
          */
 
         _init: function(el, mixer) {
@@ -2525,6 +2562,8 @@
          * cacheDom
          * @since 3.0.0
          * @param {Object} element
+         *
+         * Cache any DOM elements from the target context inwards
          */
 
         _cacheDom: function(el) {
