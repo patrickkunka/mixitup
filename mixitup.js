@@ -152,6 +152,8 @@
             _incPadding: true,
             _newDisplay: null,
             _newContainerClass: null,
+            _targetsMoved: 0,
+            _targetsImmovable: 0,
             _targetsBound: 0,
             _targetsDone: 0,
             _userPromise: null,
@@ -1329,19 +1331,11 @@
                 scrollTop = -1,
                 scrollLeft = -1,
                 docHeight = -1,
-                done = function() {
-                    self._isMixing = false;
-
-                    self._cleanUp();
-
-                    self._userPromise.resolve(self._state);
-                    self._userPromise.isResolved = true;
-                },
                 checkProgress = function() {
                     self._targetsDone++;
 
                     if (self._targetsBound === self._targetsDone) {
-                        done();
+                        self._cleanUp();
                     }                    
                 },
                 getDocumentState = function() {
@@ -1483,7 +1477,7 @@
 
                 requestAnimationFrame(performMix);
             } else {
-                done();
+                self._cleanUp();
             }
             
             self._execAction('_goMix', 1, arguments);
@@ -1669,8 +1663,12 @@
                 firstInQueue = null,
                 i = -1;
 
+            self._isMixing = false;
+
             self._execAction('_cleanUp', 0);
 
+            self._targetsMoved = 0;
+            self._targetsImmovable = 0;
             self._targetsBound = 0;
             self._targetsDone = 0;
 
@@ -1730,6 +1728,9 @@
 
                 self.multiMix(firstInQueue[0], firstInQueue[1], firstInQueue[2]);
             }
+
+            self._userPromise.resolve(self._state);
+            self._userPromise.isResolved = true;
 
             self._execAction('_cleanUp', 1);
         },
@@ -2100,7 +2101,7 @@
 
                 return self._goMix(args.animate ^ self.animation.enable ? args.animate : self.animation.enable);
             } else {
-                return self._deferMix(arguments);
+                return self._deferMix(arguments, args);
             }
         },
 
@@ -2640,6 +2641,10 @@
 
             self._execAction('_move', 0, arguments);
 
+            if (!self._isExcluded) {
+                self._mixer._targetsMoved++;
+            }
+ 
             self._applyStylesIn({
                 posIn: options.posIn,
                 hideOrShow: options.hideOrShow
@@ -2745,26 +2750,37 @@
                 ));
             }
 
-            // Bind transitionEnd
+            // Based on the data we have, if the element will
+            // not transition in any way, abort here
 
-            if (
-                self._willTransition(options)
-            ) {
-                // If the target will transition in some fasion,
-                // assign a callback function
+            if (!self._willTransition(options)) {
+                self._mixer._targetsImmovable++;
+                
+                if (self._mixer._targetsMoved === self._mixer._targetsImmovable) {
+                    // If the total targets moved is equal to the
+                    // number of immovable targets, the operation
+                    // should be considered finished
 
-                self._callback = options.callback;
+                    self._mixer._cleanUp();
+                }
 
-                // As long as the target is not excluded, increment
-                // the total number of targets bound
-
-                !self._isExcluded && self._mixer._targetsBound++;
-
-                // Tag the target as bound to differentiate from transitionEnd
-                // events that may come from stylesheet driven effects 
-
-                self._isBound = true;
+                return;
             }
+            
+            // If the target will transition in some fasion,
+            // assign a callback function
+
+            self._callback = options.callback;
+
+            // As long as the target is not excluded, increment
+            // the total number of targets bound
+
+            !self._isExcluded && self._mixer._targetsBound++;
+
+            // Tag the target as bound to differentiate from transitionEnd
+            // events that may come from stylesheet driven effects 
+
+            self._isBound = true;
 
             // Apply the transition
 
