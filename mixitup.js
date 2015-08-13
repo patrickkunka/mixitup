@@ -2038,15 +2038,31 @@
         ---------------------------------------------------------------------- */
 
         /**
-         * init
+         * show
          * @since 3.0.0
-         * @return {Promise} --> {Object} state
+         * @return {Promise} --> {State}
          */
 
-        init: function() {
+        show: function() {
             var self = this;
 
-            return self._goMix(self.animation.enable);
+            if (self._activeFilter !== self.selectors.target) {
+                return self.filter('all');
+            } else {
+                return self._goMix(self.animation.enable);
+            }
+        },
+
+        /**
+         * hide
+         * @since 3.0.0
+         * @return {Promise} --> {State}
+         */
+
+        hide: function() {
+            var self = this;
+
+            return self.filter('none');
         },
 
         /**
@@ -3717,11 +3733,11 @@
      * mixItUp
      * @since 3.0.0
      * @factory
-     * @param {Object|String} container
+     * @param {Element|Element[]|String} container
      * @param [{Object}] configuration
      * @param [{Object}] foreignDoc
      * @param [{Boolean}] returnCollection
-     * @return {Object}
+     * @return {MixItUp}
      */
 
     mixItUp = function(container, config, foreignDoc, returnCollection) {
@@ -3793,6 +3809,20 @@
             return instances[0];
         }
     };
+
+    /**
+     * mixItUp.prototype.all
+     * @since 3.0.0
+     * @factory
+     * @param {Element|Element[]|String} container
+     * @param [{Object}] configuration
+     * @param [{Object}] foreignDoc
+     * @return {Collection}
+     *
+     * Returns a collection of one or more instances 
+     * that can be operated on simultaneously, similar
+     * to a jQuery collection
+     */
 
     mixItUp.prototype.all = function(container, config, foreignDoc) {
         var self = this;
