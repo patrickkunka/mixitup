@@ -218,6 +218,8 @@
          * extend
          * @since 2.1.0
          * @param {Object} new properties/methods
+         *
+         * Shallow extend the _MixItUp prototype with new methods
          */
 
         extend: function(extension) {
@@ -236,6 +238,8 @@
          * @param {Function} func
          * @param {Number} priority
          * @extends {Object} _MixItUp.prototype._actions
+         *
+         * Register a named action hook on the _MixItUp prototype
          */
 
         addAction: function(hook, name, func, priority) {
@@ -249,6 +253,8 @@
          * @param {String} name
          * @param {Function} func
          * @extends {Object} _MixItUp.prototype._filters
+         *
+         * Register a named action hook on the _MixItUp prototype
          */
 
         addFilter: function(hook, name, func) {
@@ -266,6 +272,8 @@
          * @param {Function} function to execute
          * @param {Number} priority
          * @extends {Object} _MixItUp.prototype._filters
+         *
+         * Add a hook to the _MixItUp prototype
          */
 
         _addHook: function(type, hook, name, func, priority) {
@@ -284,6 +292,8 @@
         /**
          * _featureDetect
          * @since 2.0.0
+         *
+         * Performs all neccessary feature detection on evalulation
          */
         
         _featureDetect: function() {
@@ -419,6 +429,8 @@
         /**
          * _cacheDom
          * @since 3.0.0
+         *
+         * Cache references of all neccessary DOM elements
          */
 
         _cacheDom: function(el) {
@@ -444,6 +456,9 @@
         /**
          * _indexTargets
          * @since 3.0.0
+         *
+         * Index matching children of the container, and
+         * instantiate _Target instances for each one
          */
 
         _indexTargets: function(){
@@ -557,6 +572,9 @@
          * @since 3.0.0
          * @param {object} button
          * @param {string} type
+         *
+         * Determines the type of operation needed and the
+         * appropriate parameters when a button is clicked
          */
         
         _handleClick: function(e){
@@ -759,6 +777,8 @@
         /**
          * _buildToggleArray
          * @since 2.0.0
+         *
+         * Combines the selectors of toggled buttons into an array
          */
 
         _buildToggleArray: function() {
@@ -788,6 +808,9 @@
          * _updateControls
          * @since 2.0.0
          * @param {Object} command
+         *
+         * Updates buttons to their active/deactive state based
+         * on the current state of the instance
          */
 
         _updateControls: function(command) {
@@ -1019,8 +1042,6 @@
                 _h._isEqualArray(self._newOrder, self._currentOrder)
             ) {
                 self._isSorting = false; 
-
-                // TODO: what if the sort changes are off screen i.e. pagination?
             }
 
             self._targets = self._newOrder;
@@ -1070,6 +1091,8 @@
          * @since 3.0.0
          * @param {Element} target
          * @return {String|Number}
+         *
+         * Reads the values of sort attributes
          */
 
         _getAttributeValue: function(target) {
@@ -1078,14 +1101,19 @@
 
             if (value === null) {
                 if (_h._canReportErrors(self)) {
-                    self._isSorting = false;
+                    // Encourage users to assign values to all
+                    // targets to avoid erroneous sorting when
+                    // types are mixed
 
-                    throw new Error(
+                    console.warn(
                         '[MixItUp] The attribute "data-' +
-                        self._newSort[depth].sortBy) +
-                        '" was not present on one or more target elements';
+                        self._newSort[depth].sortBy +
+                        '" was not present on one or more target elements'
+                    );
                 }
             }
+
+            // If an attribute is not present, return 0 as a safety value
 
             return value || 0;
         },
@@ -1093,12 +1121,16 @@
         /**
          * _printSort
          * @since 2.0.0
-         * @param {Boolean} reset
+         * @param {Boolean} isResetting
+         *
+         * Inserts elements into the DOM in the appropriate
+         * order using a document fragment for minimal
+         * DOM thrashing
          */
 
-        _printSort: function(reset) {
+        _printSort: function(isResetting) {
             var self = this,
-                order = reset ? self._currentOrder : self._newOrder,
+                order = isResetting ? self._currentOrder : self._newOrder,
                 targets = _h._children(self._dom._parent, self.selectors.target),
                 nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
                 frag = _doc.createDocumentFragment(),
@@ -1110,6 +1142,8 @@
             self._execAction('_printSort', 0, arguments);
 
             for (i = 0; el = targets[i]; i++) {
+                // Empty the container
+
                 whiteSpace = el.nextSibling;
 
                 if (el.style.position === 'absolute') continue;
@@ -1122,11 +1156,16 @@
             }
 
             for (i = 0; target = order[i]; i++) {
+                // Add targets into a document fragment
+
                 el = target._dom._el;
 
                 frag.appendChild(el);
                 frag.appendChild(_doc.createTextNode(' '));
             }
+
+            // Insert the document fragment into the container
+            // before any other non-target elements
 
             nextSibling ? 
                 self._dom._parent.insertBefore(frag, nextSibling) :
@@ -1139,7 +1178,10 @@
          * _parseSort
          * @since 2.0.0
          * @param {String} sortString
-         * @return {String[]} newSort
+         * @return {String[]}
+         *
+         * Parse user-defined sort strings into useable values
+         * or "rules"
          */
 
         _parseSort: function(sortString) {
@@ -1168,7 +1210,9 @@
         /**
          * _parseEffects
          * @since 2.0.0
-         * @return {Object} effects
+         * @return {Object}
+         *
+         * Parse the user-defined effects string into useable values
          */
 
         _parseEffects: function() {
@@ -1320,128 +1364,44 @@
 
         /**
          * _goMix
-         * @param {Boolean} animate
+         * @param {Boolean} shouldAnimate
          * @since 2.0.0
          */
 
-        _goMix: function(animate) {
+        _goMix: function(shouldAnimate) {
             var self = this,
                 defered = null,
                 resolvePromise = null,
                 scrollTop = -1,
                 scrollLeft = -1,
                 docHeight = -1,
-                checkProgress = function() {
-                    self._targetsDone++;
-
-                    if (self._targetsBound === self._targetsDone) {
-                        self._cleanUp();
-                    }                    
-                },
-                getDocumentState = function() {
-                    scrollTop = window.pageYOffset;
-                    scrollLeft = window.pageXOffset;
-                    docHeight = _doc.documentElement.scrollHeight;
-                },
-                performMix = function() {
-                    var target = null,
-                        posIn = {},
-                        posOut = {},
-                        toShow = false,
-                        resize = self.animation.animateResizeTargets,
-                        i = -1,
-                        doneHide = function() {
-                            this._hide();
-
-                            checkProgress();
-                        };
-
-                    for (i = 0; target = self._show[i]; i++) {
-                        posIn = {
-                            x: target._isShown ? target._startPosData.x - target._interPosData.x : 0,
-                            y: target._isShown ? target._startPosData.y - target._interPosData.y : 0
-                        },
-                        posOut = {
-                            x: target._finalPosData.x - target._interPosData.x,
-                            y: target._finalPosData.y - target._interPosData.y
-                        },
-                        toShow = target._isShown ? false : 'show';
-
-                        if (self.animation.animateResizeTargets) {
-                            posIn.width = target._startPosData.width;
-                            posIn.height = target._startPosData.height;
-
-                            if (target._startPosData.width - target._finalPosData.width) {
-                                posIn.marginRight = -(target._startPosData.width - target._interPosData.width) + (target._startPosData.marginRight * 1);
-                            } else {
-                                posIn.marginRight = target._startPosData.marginRight;
-                            }
-
-                            if (target._startPosData.height - target._finalPosData.height) {
-                                posIn.marginBottom = -(target._startPosData.height - target._interPosData.height) + (target._startPosData.marginBottom * 1);
-                            } else {
-                                posIn.marginBottom = target._startPosData.marginBottom;
-                            }
-
-                            posOut.width = target._finalPosData.width;
-                            posOut.height = target._finalPosData.height;
-                            posOut.marginRight = -(target._finalPosData.width - target._interPosData.width) + (target._finalPosData.marginRight * 1);
-                            posOut.marginBottom = -(target._finalPosData.height - target._interPosData.height) + (target._finalPosData.marginBottom * 1);
-                        }
-
-                        target._show();
-
-                        target._move({
-                            posIn: posIn,
-                            posOut: posOut,
-                            hideOrShow: toShow,
-                            staggerIndex: i,
-                            callback: checkProgress
-                        });
-                    }
-
-                    for (i = 0; target = self._toHide[i]; i++) {
-                        posIn = {
-                            x: target._isShown ? target._startPosData.x - target._interPosData.x : 0,
-                            y: target._isShown ? target._startPosData.y - target._interPosData.y : 0
-                        };
-
-                        target._move({
-                            posIn: posIn,
-                            posOut: {x: 0, y: 0},
-                            hideOrShow: 'hide',
-                            staggerIndex: i,
-                            callback: checkProgress
-                        });
-                    }
-
-                    if (self.animation.animateResizeContainer) {
-                        self._dom._parent.style[_MixItUp.prototype._transitionProp] = 'height ' + self.animation.duration + 'ms ease';
-                        
-                        requestAnimationFrame(function() {
-                            self._dom._parent.style.height = self._newHeight + 'px';
-                        });
-                    }
-
-                    if (self._isChangingLayout) {
-                        _h._removeClass(self._dom._container, self.layout.containerClass);
-                        _h._addClass(self._dom._container, self._newContainerClass);
-                    }
-                },
                 futureState = self._buildState(true);
                 
             self._execAction('_goMix', 0, arguments);
 
-            !self.animation.duration && (animate = false);
+            // If the animation duration is set to 0ms,
+            // then abort animation
 
-            if (!self._toShow.length && !self._toHide.length && !self._isSorting && !self._isChangingLayout) {
-                animate = false;            
+            !self.animation.duration && (shouldAnimate = false);
+
+            if (
+                !self._toShow.length &&
+                !self._toHide.length &&
+                !self._isSorting &&
+                !self._isChangingLayout
+            ) {
+                // If nothing to show or hide, and not sorting or
+                // changing layout, then abort
+
+                shouldAnimate = false;            
             }
 
             if (
                 !self._userPromise ||
                 self._userPromise.isResolved
             ) {
+                // If no promise exists, then assign one
+
                 self._userPromise = _h._getPromise(self.libraries);
             }
 
@@ -1455,7 +1415,10 @@
                 instance: self
             });
 
-            if (animate && _MixItUp.prototype._has._transitions) {
+            if (shouldAnimate && _MixItUp.prototype._has._transitions) {
+                // If we should animate and the platform supports
+                // transitions, go for it
+
                 self._effects = self._parseEffects();
 
                 self._isMixing = true;
@@ -1463,7 +1426,7 @@
                 self._getStartMixData();
                 self._setInter();
 
-                getDocumentState();
+                _h._getDocumentState();
 
                 self._getInterMixData();
                 self._setFinal();
@@ -1475,8 +1438,10 @@
                     self._dom._parent.style.height = self._startHeight+'px';
                 }
 
-                requestAnimationFrame(performMix);
+                requestAnimationFrame(_h._bind(self, self._moveTargets));
             } else {
+                // Abort
+
                 self._cleanUp();
             }
             
@@ -1650,6 +1615,107 @@
             }
 
             self._execAction('_getFinalMixData', 1);
+        },
+
+        /**
+         * _moveTargets
+         * @since 3.0.0
+         */
+
+        _moveTargets: function() {
+            var self = this,
+                target = null,
+                posIn = {},
+                posOut = {},
+                toShow = false,
+                i = -1;
+
+            for (i = 0; target = self._show[i]; i++) {
+                posIn = {
+                    x: target._isShown ? target._startPosData.x - target._interPosData.x : 0,
+                    y: target._isShown ? target._startPosData.y - target._interPosData.y : 0
+                },
+                posOut = {
+                    x: target._finalPosData.x - target._interPosData.x,
+                    y: target._finalPosData.y - target._interPosData.y
+                },
+                toShow = target._isShown ? false : 'show';
+
+                if (self.animation.animateResizeTargets) {
+                    posIn.width = target._startPosData.width;
+                    posIn.height = target._startPosData.height;
+
+                    if (target._startPosData.width - target._finalPosData.width) {
+                        posIn.marginRight = -(target._startPosData.width - target._interPosData.width) + (target._startPosData.marginRight * 1);
+                    } else {
+                        posIn.marginRight = target._startPosData.marginRight;
+                    }
+
+                    if (target._startPosData.height - target._finalPosData.height) {
+                        posIn.marginBottom = -(target._startPosData.height - target._interPosData.height) + (target._startPosData.marginBottom * 1);
+                    } else {
+                        posIn.marginBottom = target._startPosData.marginBottom;
+                    }
+
+                    posOut.width = target._finalPosData.width;
+                    posOut.height = target._finalPosData.height;
+                    posOut.marginRight = -(target._finalPosData.width - target._interPosData.width) + (target._finalPosData.marginRight * 1);
+                    posOut.marginBottom = -(target._finalPosData.height - target._interPosData.height) + (target._finalPosData.marginBottom * 1);
+                }
+
+                target._show();
+
+                target._move({
+                    posIn: posIn,
+                    posOut: posOut,
+                    hideOrShow: toShow,
+                    staggerIndex: i,
+                    callback: _h._bind(self, self._checkProgress)
+                });
+            }
+
+            for (i = 0; target = self._toHide[i]; i++) {
+                posIn = {
+                    x: target._isShown ? target._startPosData.x - target._interPosData.x : 0,
+                    y: target._isShown ? target._startPosData.y - target._interPosData.y : 0
+                };
+
+                target._move({
+                    posIn: posIn,
+                    posOut: {x: 0, y: 0},
+                    hideOrShow: 'hide',
+                    staggerIndex: i,
+                    callback: _h._bind(self, self._checkProgress)
+                });
+            }
+
+            if (self.animation.animateResizeContainer) {
+                self._dom._parent.style[_MixItUp.prototype._transitionProp] = 'height ' + self.animation.duration + 'ms ease';
+                
+                requestAnimationFrame(function() {
+                    self._dom._parent.style.height = self._newHeight + 'px';
+                });
+            }
+
+            if (self._isChangingLayout) {
+                _h._removeClass(self._dom._container, self.layout.containerClass);
+                _h._addClass(self._dom._container, self._newContainerClass);
+            }
+        },
+
+        /**
+         * _checkProgress
+         * @since 2.0.0
+         */
+
+        _checkProgress: function() {
+            var self = this;
+
+            self._targetsDone++;
+
+            if (self._targetsBound === self._targetsDone) {
+                self._cleanUp();
+            }                    
         },
 
         /**
@@ -2447,7 +2513,7 @@
          * @param {Object} new properties/methods
          * @extends {Object} prototype
          *
-         * Shallow extend a target with new methods
+         * Shallow extend the _Target prototype with new methods
          */
 
         extend: function(extension) {
@@ -2467,7 +2533,7 @@
          * @param {Number} priority
          * @extends {Object} _MixItUp.prototype._actions
          *
-         * Register a named action hook on the Target prototype
+         * Register a named action hook on the _Target prototype
          */
 
         addAction: function(hook, name, func, priority) {
@@ -2482,7 +2548,7 @@
          * @param {function} function to execute
          * @extends {object} _MixItUp.prototype._filters
          *
-         * Register a named filter hook on the Target prototype
+         * Register a named filter hook on the _Target prototype
          */
 
         addFilter: function(hook, name, func) {
@@ -2501,7 +2567,7 @@
          * @param [{Number}] priority
          * @extends {Object} _MixItUp.prototype._filters
          *
-         * Add a hook to the Target prototype
+         * Add a hook to the _Target prototype
          */
 
         _addHook: function(type, hook, name, func, priority) {
@@ -2898,7 +2964,7 @@
         _handleTransitionEnd: function(e) {
             var self = this,
                 propName = e.propertyName,
-                isResizing = self._mixer.animation.animateResizeTargets;
+                canResize = self._mixer.animation.animateResizeTargets;
 
             self._execAction('_handleTransitionEnd', 0, arguments);
 
@@ -2908,9 +2974,9 @@
                 (
                     propName.indexOf('transform') > -1 ||
                     propName.indexOf('opacity') > -1 ||
-                    isResizing && propName.indexOf('height') > -1 ||
-                    isResizing && propName.indexOf('width') > -1 ||
-                    isResizing && propName.indexOf('margin') > -1
+                    canResize && propName.indexOf('height') > -1 ||
+                    canResize && propName.indexOf('width') > -1 ||
+                    canResize && propName.indexOf('margin') > -1
                 )
             ) {
                 self._callback.call(self);
@@ -3565,6 +3631,33 @@
             )
                 .substr(-6)
                 .toUpperCase();
+        },
+
+        /**
+         * _getDocumentState
+         * @since 3.0.0
+         * @return {Object}
+         */
+
+        _getDocumentState: function() {
+            return {
+                scrollTop: window.pageYOffset,
+                scrollLeft: window.pageXOffset,
+                docHeight: _doc.documentElement.scrollHeight
+            };
+        },
+
+        /**
+         * _bind
+         * @param {Object} obj
+         * @param {Function} fn
+         * @return {Function}
+         */
+
+        _bind: function(obj, fn) {
+            return function() {
+                return fn.apply(obj, arguments);
+            }
         }
     };
 
