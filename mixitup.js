@@ -3719,11 +3719,12 @@
      * @factory
      * @param {Object|String} container
      * @param [{Object}] configuration
-     * @param [{Object}] doc
+     * @param [{Object}] foreignDoc
+     * @param [{Boolean}] returnCollection
      * @return {Object}
      */
 
-    mixItUp = function(container, config, _doc) {
+    mixItUp = function(container, config, foreignDoc, returnCollection) {
         var el = null,
             instance = null,
             instances = [],
@@ -3733,7 +3734,7 @@
             elements = [],
             i = -1;
 
-        doc = _doc || document;
+        doc = foreignDoc || document;
 
         if (config && typeof config.extensions === 'object') {
             for (name in config.extensions) {
@@ -3786,19 +3787,35 @@
             instances.push(instance);
         }
 
-         if (instances.length > 1) {
+        if (returnCollection) {
             return new Collection(instances);
         } else {
             return instances[0];
         }
     };
 
-    MixItUp.prototype._featureDetect();
+    mixItUp.prototype.all = function(container, config, foreignDoc) {
+        var self = this;
+
+        return self.constructor(container, config, foreignDoc, true);
+    };
+
+    /* Encapsulation
+    ---------------------------------------------------------------------- */
+
+    // Encapsulate shared objects in the MixItUp prototype for transportation
 
     MixItUp.prototype.Target = Target;
     MixItUp.prototype._h = _h;
 
+    // Encapulate the MixItUp constructor in the mixItUp factory for transportation
+
     mixItUp.prototype.MixItUp = MixItUp;
+
+    /* Start up
+    ---------------------------------------------------------------------- */
+
+    MixItUp.prototype._featureDetect();
 
     /* Module Definitions
     ---------------------------------------------------------------------- */
