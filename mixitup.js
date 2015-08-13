@@ -15,11 +15,12 @@
 (function(window, document, undf) {
     'use strict';
 
-    var mixItUp = null,
-        _MixItUp = null,
-        _Target = null,
-        _doc = null,
-        _h = null;
+    var mixItUp     = null,
+        _Collection = null,
+        _MixItUp    = null,
+        _Target     = null,
+        _doc        = null,
+        _h          = null;
 
     /* _MixItUp Core
     ---------------------------------------------------------------------- */
@@ -3101,6 +3102,50 @@
         }
     };
 
+    /* _Collection
+    ---------------------------------------------------------------------- */
+
+    _Collection = function(instances) {
+        var propKey = '',
+            instance = null,
+            i = -1;
+
+        for (i = 0; instance = instances[i]; i++) {
+            this[i] = instance;
+        }
+
+        this.length = instances.length;
+    };
+
+    _Collection.prototype = {
+        constructor: _Collection,
+
+        mixItUp: function(methodName) {
+            var self = this,
+                instance = null,
+                args = Array.prototype.slice.call(arguments),
+                tasks = [],
+                q = null,
+                i = -1;
+
+            args.shift();
+
+            for (i = 0; instance = self[i]; i++) {
+                if (!q && instance.libraries.q) {
+                    q = instance.libraries.q;
+                }
+
+                tasks.push(instance[methodName].apply(instance, args));
+            }
+
+            if (q) {
+                return q.all(tasks);
+            } else if (_MixItUp.prototype._has._promises) {
+                return Promise.all(tasks);
+            }
+        }
+    };
+
     /* Helper Library
     ---------------------------------------------------------------------- */
 
@@ -3677,9 +3722,12 @@
     mixItUp = function(container, config, doc) {
         var el = null,
             instance = null,
+            instances = [],
             id = '',
             name = '',
-            rand = _h._randomHexKey();
+            rand = _h._randomHexKey(),
+            elements = [],
+            i = -1;
 
         _doc = doc || document;
 
@@ -3689,46 +3737,56 @@
             }
         }
 
-        switch (typeof container) {
-            case 'string':
-                el = _doc.querySelectorAll(container)[0];
-
-                break;
-            case 'object':
-                el = container;
-
-                break;
-        }
-
-        if (!el && _h._canReportErrors(config)) {
+        if (!container && _h._canReportErrors(config)) {
             throw new Error('[MixItUp] Invalid selector or element');            
         }
 
-        if (!el.id) {
-            id = 'MixItUp' + rand();
+        switch (typeof container) {
+            case 'string':
+                elements = _doc.querySelectorAll(container);
 
-            el.id = id;
-        } else {
-            id = el.id;
+                break;
+            case 'object':
+                if (_h._isElement(container)) {
+                    elements = [container];
+                } else if (container.length) {
+                    elements = container;
+                }
+
+                break;
         }
 
-        if (_MixItUp.prototype._instances[id] === undf) {
-            // todo: check that el has been touched by mixitup
+        for (i = 0; el = elements[i]; i++) {
+            if (!el.id) {
+                id = 'MixItUp' + rand();
 
-            instance = new _MixItUp(el, config);
-
-            instance._init(el, config);
-
-            _MixItUp.prototype._instances[id] = instance;
-        } else if (_MixItUp.prototype._instances[id] instanceof _MixItUp) {
-            instance = _MixItUp.prototype._instances[id];
-
-            if (config && _h._canReportErrors(config)) {
-                console.warn('[MixItUp] This element already has an active instance. Config will be ignored.');
+                el.id = id;
+            } else {
+                id = el.id;
             }
+
+            if (_MixItUp.prototype._instances[id] === undf) {
+                instance = new _MixItUp(el, config);
+
+                instance._init(el, config);
+
+                _MixItUp.prototype._instances[id] = instance;
+            } else if (_MixItUp.prototype._instances[id] instanceof _MixItUp) {
+                instance = _MixItUp.prototype._instances[id];
+
+                if (config && _h._canReportErrors(config)) {
+                    console.warn('[MixItUp] This element already has an active instance. Config will be ignored.');
+                }
+            }
+
+            instances.push(instance);
         }
 
-        return instance;
+         if (instances.length > 1) {
+            return new _Collection(instances);
+        } else {
+            return instances[0];
+        }
     };
 
     _MixItUp.prototype._featureDetect();
