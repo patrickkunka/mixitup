@@ -1291,7 +1291,7 @@
                 propIndex = -1,
                 str = '',
                 match = [],
-                valu = '';
+                val = '';
 
             if (self.animation.effects.indexOf(effect) > -1) {
                 if (extract) {
@@ -3546,7 +3546,7 @@
 
             if (el) {
                 if (!el.id) {
-                    tempId = 'Temp'+this.random();
+                    tempId = 'Temp'+this.randomHexKey();
 
                     el.id = tempId;
                 }
@@ -3779,7 +3779,7 @@
 
         for (i = 0; el = elements[i]; i++) {
             if (!el.id) {
-                id = 'MixItUp' + rand();
+                id = 'MixItUp' + _h.randomHexKey();
 
                 el.id = id;
             } else {
