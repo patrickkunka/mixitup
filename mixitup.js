@@ -2912,6 +2912,12 @@
             var self = this,
                 canResize = self._mixer.animation.animateResizeTargets;
 
+            if (!self._mixer._dom.container.offsetParent) {
+                console.warn('[MixItUp] WARNING: The requested operation will occur instantly and syncronously as the MixItUp container is not visible');
+
+                return false;
+            }
+
             // Check if opacity and/or translate will change
 
             if (
@@ -3019,7 +3025,6 @@
             switch (e.type) {
                 case 'webkitTransitionEnd':
                 case 'transitionend':
-
                     self._handleTransitionEnd(e);
             }
 
