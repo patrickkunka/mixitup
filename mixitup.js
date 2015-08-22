@@ -1381,9 +1381,15 @@
             self._execAction('_goMix', 0, arguments);
 
             // If the animation duration is set to 0ms,
+            // Or the container is hidden
             // then abort animation
 
-            !self.animation.duration && (shouldAnimate = false);
+            if (
+                !self.animation.duration ||
+                !self._dom.container.offsetParent
+            ) {
+                shouldAnimate = false;
+            }
 
             if (
                 !self._toShow.length &&
@@ -2913,7 +2919,8 @@
                 canResize = self._mixer.animation.animateResizeTargets;
 
             if (!self._mixer._dom.container.offsetParent) {
-                console.warn('[MixItUp] WARNING: The requested operation will occur instantly and syncronously as the MixItUp container is not visible');
+                // If the container is not visible, the transitionEnd
+                // event will not occur and MixItUp will hang
 
                 return false;
             }
