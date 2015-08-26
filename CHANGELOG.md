@@ -4,6 +4,7 @@ MixItUp ChangeLog
 ## 2.1.10
 - Fixed accidental global declaration of `unBrake` in the _cleanUp method
 - Force ES5 "Strict Mode"
+- Re-added package.json "version" parameter, as required by grunt bump task during build
 
 ## 2.1.9
 - Fixed accidental global declaration of `i` in one loop.
