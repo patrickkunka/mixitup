@@ -1,6 +1,10 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.10
+- Fixed accidental global declaration of `unBrake` in the _cleanUp method
+- Force ES5 "Strict Mode"
+
 ## 2.1.9
 - Fixed accidental global declaration of `i` in one loop.
 

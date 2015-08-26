@@ -1,5 +1,5 @@
 /**!
- * MixItUp v2.1.9
+ * MixItUp v2.1.10
  *
  * @copyright Copyright 2015 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -13,6 +13,7 @@
  */
 
 (function($, undf){
+	'use strict';
 	
 	/**
 	 * MixItUp Constructor Function
@@ -1395,7 +1396,9 @@
 		
 		_cleanUp: function(){
 			var self = this,
-				targetStyles = self.animation.animateResizeTargets ? 'transform opacity width height margin-bottom margin-right' : 'transform opacity';
+				targetStyles = self.animation.animateResizeTargets ? 
+					'transform opacity width height margin-bottom margin-right' :
+					'transform opacity',
 				unBrake = function(){
 					self._$targets.removeStyle('transition', self._prefix);
 				};
