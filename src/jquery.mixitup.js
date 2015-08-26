@@ -1396,9 +1396,9 @@
 		_cleanUp: function(){
 			var self = this,
 				targetStyles = self.animation.animateResizeTargets ? 'transform opacity width height margin-bottom margin-right' : 'transform opacity';
-				unBrake = function(){
-					self._$targets.removeStyle('transition', self._prefix);
-				};
+			var unBrake = function(){
+				self._$targets.removeStyle('transition', self._prefix);
+			};
 				
 			self._execAction('_cleanUp', 0);
 			
