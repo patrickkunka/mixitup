@@ -1224,8 +1224,8 @@
                 (self._parseEffect('fade',true).val || '0') :
                 '1';
             effects.transformIn = self._buildTransformString();
-            effects.transformOut = self.animation.reserveOut ?
-                self._buildTransformStrings(true) :
+            effects.transformOut = self.animation.reverseOut ?
+                self._buildTransformString(true) :
                 effects.transformIn;
 
             self.animation.stagger = self._parseEffect('stagger') ? true : false;
@@ -2391,7 +2391,9 @@
             self._execAction('remove', 1, arguments);
 
             return self.multiMix(multiMix, args.callback)
-                .then(cleanUp); // TODO: use a normal callback here for browser support!
+                .then(function() {                    
+                    cleanUp();
+                }); // TODO: use a normal callback here for browser support!
         },
 
         /**
