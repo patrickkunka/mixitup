@@ -62,7 +62,8 @@
                 animateResizeContainer: true,
                 animateResizeTargets: false,
                 staggerSequence: false,
-                reverseOut: false
+                reverseOut: false,
+                nudgeOut: true,
             },
 
             callbacks: {
@@ -1648,6 +1649,10 @@
                 },
                 toShow = target._isShown ? false : 'show';
 
+                if (toShow && !self.animation.nudgeOut) {
+                    posIn = posOut;
+                }
+
                 if (self.animation.animateResizeTargets) {
                     posIn.width = target._startPosData.width;
                     posIn.height = target._startPosData.height;
@@ -1670,7 +1675,7 @@
                     posOut.marginBottom = -(target._finalPosData.height - target._interPosData.height) + (target._finalPosData.marginBottom * 1);
                 }
 
-                target._show();
+                target._show();                
 
                 target._move({
                     posIn: posIn,
@@ -1689,7 +1694,7 @@
 
                 target._move({
                     posIn: posIn,
-                    posOut: {x: 0, y: 0},
+                    posOut: self.animation.nudgeOut ? {x: 0, y: 0} : posIn,
                     hideOrShow: 'hide',
                     staggerIndex: i,
                     callback: _h.bind(self, self._checkProgress)
@@ -2768,7 +2773,7 @@
                 isFading = self._mixer._effects.opacity !== undf,
                 transformValues = [];
 
-            transformValues.push('translate(' + options.posIn.x + 'px, ' + options.posIn.y + 'px)'); 
+            transformValues.push('translate(' + options.posIn.x + 'px, ' + options.posIn.y + 'px)');
 
             if (!options.hideOrShow && self._mixer.animation.animateResizeTargets) {
                 self._dom.el.style.width        = options.posIn.width + 'px';
@@ -2821,7 +2826,11 @@
                 ));
             }
 
-            if (self._mixer.animation.animateResizeTargets && self._finalPosData && self._finalPosData.isShown) {
+            if (
+                self._mixer.animation.animateResizeTargets &&
+                self._finalPosData &&
+                self._finalPosData.isShown
+            ) {
                 transitionRules.push(self._writeTransitionRule(
                     'width',
                     options.staggerIndex,
@@ -2879,11 +2888,23 @@
 
             // Apply width, height and margin negation
 
-            if (self._mixer.animation.animateResizeTargets && self._finalPosData && self._finalPosData.isShown) {
+            if (
+                self._mixer.animation.animateResizeTargets &&
+                self._finalPosData &&
+                self._finalPosData.isShown
+            ) {
                 self._dom.el.style.width        = options.posOut.width + 'px';
                 self._dom.el.style.height       = options.posOut.height+ 'px';
                 self._dom.el.style.marginRight  = options.posOut.marginRight + 'px';
                 self._dom.el.style.marginBottom = options.posOut.marginBottom + 'px';
+            }
+
+            if (!self._mixer.animation.nudgeOut && options.hideOrShow === 'hide') {
+                // If we're not nudging, the translation should be
+                // applied before any other transforms to prevent
+                // lateral movement
+
+                transformValues.push('translate(' + options.posOut.x + 'px, ' + options.posOut.y + 'px)');
             }
 
             // Apply fade
@@ -2899,9 +2920,17 @@
                     isFading && (self._dom.el.style.opacity = 1);
             }
 
-            // Apply transforms
+            if (
+                self._mixer.animation.nudgeOut ||
+                (!self._mixer.animation.nudgeOut && options.hideOrShow !== 'hide')
+            ) {
+                // Opposite of above - apply translate after
+                // other transform
 
-            transformValues.push('translate(' + options.posOut.x + 'px, ' + options.posOut.y + 'px)');
+                transformValues.push('translate(' + options.posOut.x + 'px, ' + options.posOut.y + 'px)');
+            }
+
+            // Apply transforms
 
             self._dom.el.style[MixItUp.prototype._transformProp] = transformValues.join(' ');
         },
