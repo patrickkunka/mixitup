@@ -149,8 +149,10 @@
             _activeSort: 'default:asc',
             _newSort: null,
             _staggerDuration: 0,
-            _startHeight: null,
-            _newHeight: null,
+            _startHeight: 0,
+            _startWidth: 0,
+            _newHeight: 0,
+            _newWidth: 0,
             _incPadding: true,
             _newDisplay: null,
             _newContainerClass: null,
@@ -1443,7 +1445,8 @@
                 (window.pageYOffset !== scrollTop) && window.scrollTo(scrollLeft, scrollTop);
 
                 if (self.animation.animateResizeContainer) {
-                    self._dom.parent.style.height = self._startHeight+'px';
+                    self._dom.parent.style.height = self._startHeight + 'px';
+                    self._dom.parent.style.width = self._startWidth + 'px';
                 }
 
                 requestAnimationFrame(_h.bind(self, self._moveTargets));
@@ -1494,6 +1497,14 @@
                     parseFloat(parentStyle.paddingBottom) -
                     parseFloat(parentStyle.borderTop) -
                     parseFloat(parentStyle.borderBottom);
+
+            self._startWidth = self._incPadding ? 
+                self._dom.parent.offsetWidth :
+                self._dom.parent.offsetWidth - 
+                    parseFloat(parentStyle.paddingLeft) - 
+                    parseFloat(parentStyle.paddingRight) -
+                    parseFloat(parentStyle.borderLeft) -
+                    parseFloat(parentStyle.borderRight);
 
             self._execAction('_getStartMixData', 1);
         },
@@ -1605,6 +1616,14 @@
                     parseFloat(parentStyle.borderTop) -
                     parseFloat(parentStyle.borderBottom);
 
+            self._newWidth = self._incPadding ? 
+                self._dom.parent.offsetWidth :
+                self._dom.parent.offsetWidth - 
+                    parseFloat(parentStyle.paddingLeft) - 
+                    parseFloat(parentStyle.paddingRight) -
+                    parseFloat(parentStyle.borderLeft) -
+                    parseFloat(parentStyle.borderRight);
+
             if (self._isSorting) {
                 self._printSort(true);
             }
@@ -1702,10 +1721,13 @@
             }
 
             if (self.animation.animateResizeContainer) {
-                self._dom.parent.style[MixItUp.prototype._transitionProp] = 'height ' + self.animation.duration + 'ms ease';
+                self._dom.parent.style[MixItUp.prototype._transitionProp] =
+                    'height ' + self.animation.duration + 'ms ease, ' +
+                    'width ' + self.animation.duration + 'ms ease, ';
                 
                 requestAnimationFrame(function() {
                     self._dom.parent.style.height = self._newHeight + 'px';
+                    self._dom.parent.style.width = self._newWidth + 'px';
                 });
             }
 
@@ -1773,8 +1795,11 @@
                 self._isSorting = false;
             }
 
-            self._dom.parent.style[MixItUp.prototype._transitionProp] = '';
-            self._dom.parent.style.height = '';
+            if (self.animation.animateResizeContainer) {
+                self._dom.parent.style[MixItUp.prototype._transitionProp] = '';
+                self._dom.parent.style.height = '';
+                self._dom.parent.style.width = '';
+            }
 
             if (self._isChangingLayout) {
                 _h.removeClass(self._dom.container, self.layout.containerClass);
