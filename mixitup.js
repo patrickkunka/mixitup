@@ -15,14 +15,16 @@
 (function(window, document, undf) {
     'use strict';
 
-    var mixItUp     = null,
-        Collection  = null,
+    var Collection  = null,
+        Operation   = null,
         MixItUp     = null,
+        mixItUp     = null,
         Target      = null,
+        State       = null,
         doc         = null,
         _h          = null;
 
-    /* MixItUp Core
+    /* MixItUp
     ---------------------------------------------------------------------- */
 
     /**
@@ -30,6 +32,8 @@
      * @since 2.0.0
      * @constructor
      */
+
+    // TODO: should this be called a Mixer?
 
     MixItUp = function() {
         var self = this;
@@ -2511,7 +2515,7 @@
         }
     };
 
-    /* Target Core
+    /* Target
     ---------------------------------------------------------------------- */
 
     /**
@@ -3230,6 +3234,46 @@
         }
     };
 
+    /* Operation
+    ---------------------------------------------------------------------- */
+
+    /**
+     * Operation
+     * @since 3.0.0
+     * @constructor
+     */
+
+    Operation = function() {
+        this.filter = '',
+        this.sort = '',
+        this.changeLayout = null,
+        this.insert = null,
+        this.remove = null
+    },
+
+    /* State
+    ---------------------------------------------------------------------- */
+
+    /**
+     * State
+     * @since 3.0.0
+     * @constructor
+     */
+
+    State = function() {
+        this.activeFilter   = '',
+        this.activeSort     = '',
+        this.display        = '',
+        this.hasFailed      = false,
+        this.targets        = null,
+        this.show           = null,
+        this.hide           = null,
+        this.instance       = null
+        this.totalTargets   = -1,
+        this.totalShow      = -1,
+        this.totalHide      = -1
+    };
+
     /* Helper Library
     ---------------------------------------------------------------------- */
 
@@ -3907,6 +3951,8 @@
     MixItUp.prototype._h = _h;
 
     // Encapulate the MixItUp constructor in the mixItUp factory for transportation
+
+    // TODO: Why not stick everything in the factory?
 
     mixItUp.prototype.MixItUp = MixItUp;
 
