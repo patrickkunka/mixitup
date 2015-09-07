@@ -1393,7 +1393,7 @@
 
             if (
                 !self.animation.duration ||
-                !self._dom.container.offsetParent
+                !_h.isVisible(self._dom.container)
             ) {
                 shouldAnimate = false;
             }
@@ -2978,7 +2978,7 @@
             var self = this,
                 canResize = self._mixer.animation.animateResizeTargets;
 
-            if (!self._mixer._dom.container.offsetParent) {
+            if (!_h.isVisible(self._mixer._dom.container)) {
                 // If the container is not visible, the transitionEnd
                 // event will not occur and MixItUp will hang
 
@@ -3835,7 +3835,27 @@
             return function() {
                 return fn.apply(obj, arguments);
             }
-        }
+        },
+
+        /**
+         * isVisible
+         * @param {Element} el
+         * @return {Boolean}
+         */
+
+        isVisible: function(el) {
+            var position = null;
+
+            if (el.offsetParent) return true;
+
+            position = window.getComputedStyle(el).position;
+
+            if (position.fixed) return true;
+
+            // TODO: do additonal checks on opacity, visiblity etc
+
+            return false;
+        },
     };
 
     /* mixItUp Factory
