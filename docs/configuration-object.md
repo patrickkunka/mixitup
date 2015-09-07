@@ -55,7 +55,7 @@ The configuration object is organized into several nested object literals of rel
 		staggerSequence: false,
 		reverseOut: false
 	},
-	
+
 	callbacks: {
 		onMixLoad: false,
 		onMixStart: false,
@@ -63,15 +63,17 @@ The configuration object is organized into several nested object literals of rel
 		onMixFail: false,
 		onMixBusy: false
 	},
-	
+
 	controls: {
 		enable: true,
 		live: false,
 		toggleFilterButtons: false,
 		toggleLogic: 'or',
-		activeClass: 'active'
+		activeClass: 'active',
+		preventEventPropagation: false,
+		preventEventDefault: false
 	},
-	
+
 	layout: {
 		display: 'inline-block',
 		containerClass: '',
@@ -82,7 +84,7 @@ The configuration object is organized into several nested object literals of rel
 		filter: 'all',
 		sort: false
 	},
-	
+
 	selectors: {
 		target: '.mix',
 		filter: '.filter',
@@ -130,6 +132,8 @@ This group contains properties related to MixItUp's clickable (non-api) user-int
 1. [toggleFilterButtons](#controlstogglefilterbuttons)
 1. [toggleLogic](#controlstogglelogic)
 1. [activeClass](#controlsactiveclass)
+1. [preventEventPropagation](#controlspreventeventpropagation)
+1. [preventEventDefault](#controlspreventeventdefault)
 
 ### layout
 
@@ -165,7 +169,7 @@ Enable or disable MixItUp animations. If false, all operations will happen insta
 ```
 $('#Container').mixItUp({
 	animation: {
-		enable: false		
+		enable: false
 	}
 });
 ```
@@ -176,13 +180,13 @@ $('#Container').mixItUp({
 ```
 $('#Container').mixItUp({
 	animation: {
-		enable: false		
+		enable: false
 	},
 	callbacks: {
 		onMixLoad: function(){
 			$(this).mixItUp('setOptions', {
 				animation: {
-					enable: true	
+					enable: true
 				},
 			});
 		}
@@ -289,7 +293,7 @@ Enable queuing for all operations received while an another operation is in prog
 ```
 $('#Container').mixItUp({
 	animation: {
-		queue: false		
+		queue: false
 	}
 });
 ```
@@ -316,7 +320,7 @@ type: **Boolean** / default: `false`
 
 A boolean indicating whether or not to attempt transitioning of target elements during layout change operations.
 
-Depending on the differences in styling between layouts this may produce undesirable results and is therefore disabled by default. 
+Depending on the differences in styling between layouts this may produce undesirable results and is therefore disabled by default.
 
 ```
 $('#Container').mixItUp({
@@ -363,7 +367,7 @@ $('#Container').mixItUp({
 ```
 > Animate changes to the width and height of target elements
 
-As the flex-box specification is not yet fully implemented across all browsers, this feature should be considered experimental. 
+As the flex-box specification is not yet fully implemented across all browsers, this feature should be considered experimental.
 
 This feature requires additional calculations which may adversely affect performance on slower devices and is therefore disabled by default.
 
@@ -449,7 +453,7 @@ This callback function is called immediately after any MixItUp operation is requ
 The state object is passed as the first parameter, and the container element is assigned to the “this” keyword.
 
 A futureState object is passed as the second parameter, reflecting the state once the operation as completed.
- 
+
 ```
 $('#Container').mixItUp({
 	callbacks: {
@@ -619,6 +623,45 @@ $('#Container').mixItUp({
 });
 ```
 > Change the active class to 'on'
+
+<br/>
+
+<h3 name='controls-preventEventPropagation'>controls.preventEventPropagation</h3>
+
+type: **Boolean** / default: `false`
+
+Prevents event propagation after the first sorting, in case you have a menu with filters being the parent a filter that
+includes all of his children. If you don't set it to true, when you filter by a children, the filter occurs, then the 
+event propagates to the parent and the elements are re-filtered, reverting the more specialized filter.
+See: https://mixitup.kunkalabs.com/support/topic/event-propagation-on-menu-ends-in-bad-filtering/
+
+```
+$('#Container').mixItUp({
+	controls: {
+		preventEventPropagation: true
+	}
+});
+```
+> Prevent click event propagation to parent elements after MixItUp is ran.
+
+<br/>
+
+<h3 name='controls-preventEventDefault'>controls.preventEventDefault</h3>
+
+type: **Boolean** / default: `false`
+
+Prevents the default event when you click a filter. This is used for example if your filter is an <a> tag and you don't
+want the browser to make the "go" action. 
+This is the case of Drupal where menus must have a valid URL (if you are using a menu to build the filters).
+
+```
+$('#Container').mixItUp({
+	controls: {
+		preventEventDefault: true
+	}
+});
+```
+> Prevents the default action triggered by click event after MixItUp is ran.
 
 <br/>
 <hr/>
