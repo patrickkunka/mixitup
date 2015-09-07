@@ -3844,18 +3844,25 @@
          */
 
         isVisible: function(el) {
-            var position = null;
+            var position = '';
 
             if (el.offsetParent) return true;
 
             position = window.getComputedStyle(el).position;
 
-            if (position.fixed) return true;
+            if (
+                position === 'fixed' &&
+                visiblity !== 'hidden' &&
+                opacity !== '0'
+            ) {
+                // Fixed elements report no offsetParent,
+                // but may still be invisible
 
-            // TODO: do additonal checks on opacity, visiblity etc
+                return true;
+            }
 
             return false;
-        },
+        }
     };
 
     /* mixItUp Factory
