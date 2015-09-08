@@ -3844,16 +3844,16 @@
          */
 
         isVisible: function(el) {
-            var position = '';
+            var styles = null;
 
             if (el.offsetParent) return true;
 
-            position = window.getComputedStyle(el).position;
+            styles = window.getComputedStyle(el);
 
             if (
-                position === 'fixed' &&
-                visiblity !== 'hidden' &&
-                opacity !== '0'
+                styles.position === 'fixed' &&
+                styles.visibility !== 'hidden' &&
+                styles.opacity !== '0'
             ) {
                 // Fixed elements report no offsetParent,
                 // but may still be invisible
