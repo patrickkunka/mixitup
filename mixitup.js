@@ -16,6 +16,7 @@
     'use strict';
 
     var Collection  = null,
+        prototype   = null,
         Operation   = null,
         MixItUp     = null,
         mixItUp     = null,
@@ -23,6 +24,757 @@
         State       = null,
         doc         = null,
         _h          = null;
+
+    /* Helper Library
+    ---------------------------------------------------------------------- */
+
+    _h = {
+
+        /**
+         * hasClass
+         * @since 3.0.0
+         * @param {Object} el
+         * @param {String} cls
+         */
+
+        hasClass: function(el, cls) {
+            return el.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+        },
+
+        /**
+         * addClass
+         * @since 3.0.0
+         * @param {Object} el
+         * @param {String} cls
+         */
+
+        addClass: function(el, cls) {
+            if (!this.hasClass(el, cls)) el.className += el.className ? ' ' + cls : cls;
+        },
+
+        /**
+         * removeClass
+         * @since 3.0.0
+         * @param {Object} el
+         * @param {String} cls
+         */
+
+        removeClass: function(el, cls) {
+            if (this.hasClass(el, cls)) {
+                var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+
+                el.className = el.className.replace(reg, ' ').trim();
+            }
+        },
+
+        /**
+         * extend
+         * @since 3.0.0
+         * @param {Object} destination
+         * @param {Object} source
+         */
+
+        extend: function(destination, source) {
+            var property = '';
+
+            for (property in source) {
+                if (
+                    typeof source[property] === 'object' &&
+                    source[property] !== null &&
+                    typeof source[property].length === 'undefined'
+                ) {
+                    destination[property] = destination[property] || {};
+
+                    this.extend(destination[property], source[property]);
+                } else {
+                    destination[property] = source[property];
+                }
+            }
+        },
+
+        /**
+         * on
+         * @since 3.0.0
+         * @param {Object} el
+         * @param {String} type
+         * @param {Function} fn
+         * @param {Boolean} useCapture
+         */
+
+        on: function(el, type, fn, useCapture) {
+            if (!el) return;
+
+            if (el.attachEvent) {
+                el['e' + type + fn] = fn;
+
+                el[type + fn] = function() {
+                    el['e' + type + fn](window.event);
+                };
+
+                el.attachEvent('on' + type, el[type + fn]);
+            } else {
+                el.addEventListener(type, fn, useCapture);
+            }
+        },
+
+        /**
+         * off
+         * @since 3.0.0
+         * @param {Object} el
+         * @param {String} type
+         * @param {Function} fn
+         */
+
+        off: function(el, type, fn) {
+            if (!el) return;
+
+            if (el.detachEvent) {
+                el.detachEvent('on' + type, el[type + fn]);
+                el[type + fn] = null;
+            } else {
+                el.removeEventListener(type, fn, false);
+            }
+        },
+
+        /**
+         * trigger
+         * @param {Object} element
+         * @param {String} eventName
+         * @param {Object} data
+         */
+
+        trigger: function(el, eventName, data) {
+            var event = null;
+
+            if (typeof window.CustomEvent === 'function') {
+                event = new CustomEvent(eventName, {
+                    detail: data
+                });
+            } else {
+                event = doc.createEvent('CustomEvent');
+                event.initCustomEvent(eventName, true, true, data);
+            }
+
+            el.dispatchEvent(event);
+        },
+
+        /**
+         * index
+         * @since 3.0.0
+         * @param {Object} el
+         * @param {String} selector
+         */
+
+        index: function(el, selector) {
+            var i = 0;
+
+            while ((el = el.previousElementSibling) !== null) {
+                if (!selector || el.matches(selector)) {
+                    ++i;
+                }
+            }
+
+            return i;
+        },
+
+        /**
+         * camelCase
+         * @since 2.0.0
+         * @param {string}
+         * @return {string}
+         */
+
+        camelCase: function(string) {
+            return string.replace(/-([a-z])/g, function(g) {
+                return g[1].toUpperCase();
+            });
+        },
+
+        /**
+         * isElement
+         * @since 2.1.3
+         * @param {Object} element to test
+         * @return {Boolean}
+         */
+
+        isElement: function(el) {
+            if (
+                window.HTMLElement &&
+                el instanceof HTMLElement
+            ) {
+                return true;
+            } else if (
+                doc.defaultView &&
+                doc.defaultView.HTMLElement &&
+                el instanceof doc.defaultView.HTMLElement
+            ) {
+                return true;
+            } else {
+                return (
+                    el !== null &&
+                    el.nodeType === 1 &&
+                    el.nodeName === 'string'
+                );
+            }
+        },
+
+        /**
+         * createElement
+         * @since 3.0.0
+         * @param {String} htmlString
+         */
+
+        createElement: function(htmlString) {
+            var frag = doc.createDocumentFragment(),
+                temp = doc.createElement('div');
+
+            temp.innerHTML = htmlString;
+
+            while (temp.firstChild) {
+                frag.appendChild(temp.firstChild);
+            }
+
+            return frag;
+        },
+
+        /**
+         * deleteElement
+         * @since 3.0.0
+         * @param {Object} el
+         */
+
+        deleteElement: function(el) {
+            if (el.parentElement) {
+                el.parentElement.removeChild(el);
+            }
+        },
+
+        /**
+         * isEqualArray
+         * @since 3.0.0
+         * @param {Array} a
+         * @param {Array} b
+         */
+
+        isEqualArray: function(a, b) {
+            var i = a.length;
+
+            if (i !== b.length) return false;
+
+            while (i--) {
+                if (a[i] !== b[i]) return false;
+            }
+
+            return true;
+        },
+
+        /**
+         * arrayShuffle
+         * @since 2.0.0
+         * arrayShuffle
+         * @param {Array} oldArray
+         * @return {Array}
+         */
+
+        arrayShuffle: function(oldArray) {
+            var newArray = oldArray.slice(),
+                len = newArray.length,
+                i = len,
+                p = -1,
+                t = [];
+
+            while (i--) {
+                p = parseInt(Math.random() * len);
+                t = newArray[i];
+
+                newArray[i] = newArray[p];
+                newArray[p] = t;
+            }
+
+            return newArray;
+        },
+
+        /**
+         * debounce
+         * @since 3.0.0
+         * @param {Function} func
+         * @param {Number} wait
+         * @param {Boolean} immediate
+         */
+
+        debounce: function(func, wait, immediate) {
+            var timeout;
+
+            return function() {
+                var context = this,
+                    args = arguments,
+                    later = function() {
+                        timeout = null;
+
+                        if (!immediate) {
+                            func.apply(context, args);
+                        }
+                    },
+                    callNow = immediate && !timeout;
+
+                clearTimeout(timeout);
+
+                timeout = setTimeout(later, wait);
+
+                if (callNow) func.apply(context, args);
+            };
+        },
+
+        /**
+         * position
+         * @since 3.0.0
+         * @param {Object} element
+         * @return {Object} position
+         */
+
+        position: function(element) {
+            var xPosition = 0,
+                yPosition = 0,
+                offsetParent = element;
+
+            while (element) {
+                xPosition -= element.scrollLeft;
+                yPosition -= element.scrollTop;
+
+                if (element === offsetParent) {
+                    xPosition += element.offsetLeft;
+                    yPosition += element.offsetTop;
+
+                    offsetParent = element.offsetParent;
+                }
+
+                element = element.parentElement;
+            }
+
+            return {
+                x: xPosition,
+                y: yPosition
+            };
+        },
+
+        /**
+         * getHypotenuse
+         * @since 3.0.0
+         * @param {Object} node1
+         * @return {Object} node2
+         * @return {Number} hypotenuse
+         */
+
+        getHypotenuse: function(node1, node2) {
+            var distanceX = node1.x - node2.x,
+                distanceY = node1.y - node2.y;
+
+            distanceX = distanceX < 0 ? distanceX * -1 : distanceX,
+            distanceY = distanceY < 0 ? distanceY * -1 : distanceY;
+
+            return Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+        },
+
+        /**
+         * closestParent
+         * @since 3.0.0
+         * @param {Object} el
+         * @param {String} selector
+         * @param {Boolean} includeSelf
+         * @param {Number} range
+         */
+
+        closestParent: function(el, selector, includeSelf, range) {
+            var parent = el.parentNode,
+                depth = range || true;
+
+            if (includeSelf && el.matches(selector)) {
+                return el;
+            }
+
+            while (depth && parent && parent != doc.body) {
+                if (parent.matches && parent.matches(selector)) {
+                    return parent;
+                } else if (parent.parentNode) {
+                    parent = parent.parentNode;
+                } else {
+                    return null;
+                }
+
+                if (range) {
+                    depth--;
+                }
+            }
+
+            return null;
+        },
+
+        /**
+         * children
+         * @since 3.0.0
+         * @param {Object} el
+         * @param {String} selector
+         */
+
+        children: function(el, selector) {
+            var children = [],
+                tempId = '';
+
+            if (el) {
+                if (!el.id) {
+                    tempId = 'Temp' + this.randomHexKey();
+
+                    el.id = tempId;
+                }
+
+                children = doc.querySelectorAll('#' + el.id + ' > ' + selector);
+
+                if (tempId) {
+                    el.removeAttribute('id');
+                }
+            }
+
+            return children;
+        },
+
+        /**
+         * forEach
+         * @since 3.0.0
+         * @param {Array} items
+         * @param {Function} callback(item)
+         */
+
+        forEach: function(items, callback) {
+            var i = -1,
+                item = null;
+
+            for (i = 0; item = items[i]; i++) {
+                (typeof callback === 'function') && callback.call(this, item);
+            }
+        },
+
+        /**
+         * clean
+         * @since 3.0.0
+         * @param {Array} originalArray
+         * @return {Array} cleanArray
+         */
+
+        clean: function(originalArray) {
+            var cleanArray = [],
+                i = -1;
+
+            for (i = 0; i < originalArray.length; i++) {
+                if (originalArray[i]) {
+                    cleanArray.push(originalArray[i]);
+                }
+            }
+
+            return cleanArray;
+        },
+
+        /**
+         * getPromise
+         * @since 3.0.0
+         * @return {Object} libraries
+         * @return {Object} promiseWrapper
+         */
+
+        getPromise: function(libraries) {
+            var promise = {
+                    promise: null,
+                    resolve: null,
+                    reject: null,
+                    isResolved: false
+                },
+                defered = null;
+
+            if (MixItUp.prototype._has._promises) {
+                promise.promise = new Promise(function(resolve, reject) {
+                    promise.resolve = resolve;
+                    promise.reject = reject;
+                });
+            } else if (libraries.q && typeof libraries.q === 'function') {
+                defered = libraries.q.defer();
+
+                promise.promise = defered.promise;
+                promise.resolve = defered.resolve;
+                promise.reject = defered.reject;
+            } else {
+                console.warn('[MixItUp] WARNING: No available Promises implementations were found');
+
+                return null;
+            }
+
+            return promise;
+        },
+
+        /**
+         * canReportErrors
+         * @since 3.0.0
+         * @param [{Object}] config
+         * @return {Boolean}
+         */
+
+        canReportErrors: function(config) {
+            if (!config || config && !config.debug) {
+                return true;
+            } else if (config && config.debug && config.debug.enable === false) {
+                return false;
+            }
+        },
+
+        /**
+         * getPrefix
+         * @since 2.0.0
+         * @param {Element} el,
+         * @param {String} property
+         * @param {String[]} vendors
+         * @return {String | Boolean}
+         */
+
+        getPrefix: function(el, property, vendors) {
+            var i = -1,
+                prefix = '';
+
+            if (property.toLowerCase() in el.style) return '';
+
+            for (i = 0; prefix = vendors[i]; i++) {
+                if (prefix + property in el.style) {
+                    return prefix.toLowerCase();
+                }
+            }
+
+            return false;
+        },
+
+        /**
+         * negateValue
+         * @param {String} value
+         * @param {Boolean} invert
+         * @return {String}
+         */
+
+        negateValue: function(value, invert) {
+            if (invert) {
+                return value.charAt(0) === '-' ?
+                    value.substr(1, value.length) :
+                    '-' + value;
+            } else {
+                return value;
+            }
+        },
+
+        /**
+         * randomHexKey
+         * @return {String}
+         */
+
+        randomHexKey: function() {
+            return (
+                '00000' +
+                (Math.random() * 16777216 << 0).toString(16)
+            )
+                .substr(-6)
+                .toUpperCase();
+        },
+
+        /**
+         * getDocumentState
+         * @since 3.0.0
+         * @return {Object}
+         */
+
+        getDocumentState: function() {
+            return {
+                scrollTop: window.pageYOffset,
+                scrollLeft: window.pageXOffset,
+                docHeight: doc.documentElement.scrollHeight
+            };
+        },
+
+        /**
+         * bind
+         * @param {Object} obj
+         * @param {Function} fn
+         * @return {Function}
+         */
+
+        bind: function(obj, fn) {
+            return function() {
+                return fn.apply(obj, arguments);
+            };
+        },
+
+        /**
+         * isVisible
+         * @param {Element} el
+         * @return {Boolean}
+         */
+
+        isVisible: function(el) {
+            var styles = null;
+
+            if (el.offsetParent) return true;
+
+            styles = window.getComputedStyle(el);
+
+            if (
+                styles.position === 'fixed' &&
+                styles.visibility !== 'hidden' &&
+                styles.opacity !== '0'
+            ) {
+                // Fixed elements report no offsetParent,
+                // but may still be invisible
+
+                return true;
+            }
+
+            return false;
+        },
+
+        /**
+         * seal
+         * @param {Object} obj
+         */
+
+        seal: function(obj) {
+            if (typeof Object.seal === 'function') {
+                Object.seal(obj);
+            }
+        }
+    }; 
+
+    /* prototype
+    ---------------------------------------------------------------------- */
+
+    prototype = {
+        /* Public Static Methods
+        ---------------------------------------------------------------------- */
+
+        /**
+         * extend
+         * @since 2.1.0
+         * @param {Object} new properties/methods
+         *
+         * Shallow extend the prototype with new methods
+         */
+
+        extend: function(extension) {
+            var key = '',
+                self = this;
+
+            for (key in extension) {
+                if (extension[key]) {
+                    this[key] = extension[key];
+                }
+            }
+        },
+
+        /**
+         * addAction
+         * @since 2.1.0
+         * @param {String} hook name
+         * @param {String} name
+         * @param {Function} func
+         * @param {Number} priority
+         * @extends {Object} MixItUp.prototype._actions
+         *
+         * Register a named action hook on the prototype
+         */
+
+        addAction: function(hook, name, func, priority) {
+            this._addHook('_actions', hook, name, func, priority);
+        },
+
+        /**
+         * addFilter
+         * @since 2.1.0
+         * @param {String} hook
+         * @param {String} name
+         * @param {Function} func
+         * @extends {Object} MixItUp.prototype._filters
+         *
+         * Register a named action hook on the prototype
+         */
+
+        addFilter: function(hook, name, func) {
+            this._addHook('_filters', hook, name, func);
+        },
+
+        /* Private Static Methods
+        ---------------------------------------------------------------------- */
+
+        /**
+         * _addHook
+         * @since 2.1.0
+         * @param {String} type of hook
+         * @param {String} hook name
+         * @param {Function} function to execute
+         * @param {Number} priority
+         * @extends {Object} MixItUp.prototype._filters
+         *
+         * Add a hook to the MixItUp prototype
+         */
+
+        _addHook: function(type, hook, name, func, priority) {
+            var collection = this[type],
+                obj = {};
+
+            priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
+
+            obj[hook] = {};
+            obj[hook][priority] = {};
+            obj[hook][priority][name] = func;
+
+            _h.extend(collection, obj);
+        },
+
+        /* Private Instance Methods
+        ---------------------------------------------------------------------- */
+
+        /**
+         * _execAction
+         * @since 2.0.0
+         * @param {String} methodName
+         * @param {Boolean} isPost
+         * @param {Array} args
+         */
+
+        _execAction: function(methodName, isPost, args) {
+            var self = this,
+                key = '',
+                context = isPost ? 'post' : 'pre';
+
+            if (!self._actions.isEmptyObject && self._actions.hasOwnProperty(methodName)) {
+                for (key in self._actions[methodName][context]) {
+                    self._actions[methodName][context][key].call(self, args);
+                }
+            }
+        },
+
+        /**
+         * _execFilter
+         * @since 2.0.0
+         * @param {String} methodName
+         * @param {Mixed} value
+         * @param {Array} args
+         * @return {Mixed} value
+         */
+
+        _execFilter: function(methodName, value, args) {
+            var self = this,
+                key = '';
+
+            if (!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)) {
+                for (key in self._filters[methodName].pre) {
+                    return self._filters[methodName].pre[key].call(self, value, args);
+                }
+            } else {
+                return value;
+            }
+        }
+    };
 
     /* MixItUp
     ---------------------------------------------------------------------- */
@@ -178,14 +930,19 @@
      * MixItUp.prototype
      * @since 2.0.0
      * @prototype
-     * @override
+     * @extends prototype
      */
 
-    MixItUp.prototype = {
+    MixItUp.prototype = Object.create(prototype);
+
+    _h.extend(MixItUp.prototype, {
         constructor: MixItUp,
 
         /* Static Properties
         ---------------------------------------------------------------------- */
+
+        _actions: {},
+        _filters: {},
 
         _transformProp: 'transform',
         _transformRule: 'transform',
@@ -214,87 +971,6 @@
         _bound: {
             _filter: {},
             _sort: {}
-        },
-
-        _actions: {},
-        _filters: {},
-
-        /* Public Static Methods
-        ---------------------------------------------------------------------- */
-
-        /**
-         * extend
-         * @since 2.1.0
-         * @param {Object} new properties/methods
-         *
-         * Shallow extend the MixItUp prototype with new methods
-         */
-
-        extend: function(extension) {
-            for (var key in extension) {
-                if (extension[key]) {
-                    MixItUp.prototype[key] = extension[key];
-                }
-            }
-        },
-
-        /**
-         * addAction
-         * @since 2.1.0
-         * @param {String} hook name
-         * @param {String} name
-         * @param {Function} func
-         * @param {Number} priority
-         * @extends {Object} MixItUp.prototype._actions
-         *
-         * Register a named action hook on the MixItUp prototype
-         */
-
-        addAction: function(hook, name, func, priority) {
-            MixItUp.prototype._addHook('_actions', hook, name, func, priority);
-        },
-
-        /**
-         * addFilter
-         * @since 2.1.0
-         * @param {String} hook
-         * @param {String} name
-         * @param {Function} func
-         * @extends {Object} MixItUp.prototype._filters
-         *
-         * Register a named action hook on the MixItUp prototype
-         */
-
-        addFilter: function(hook, name, func) {
-            MixItUp.prototype._addHook('_filters', hook, name, func);
-        },
-
-        /* Private Static Methods
-        ---------------------------------------------------------------------- */
-
-        /**
-         * _addHook
-         * @since 2.1.0
-         * @param {String} type of hook
-         * @param {String} hook name
-         * @param {Function} function to execute
-         * @param {Number} priority
-         * @extends {Object} MixItUp.prototype._filters
-         *
-         * Add a hook to the MixItUp prototype
-         */
-
-        _addHook: function(type, hook, name, func, priority) {
-            var collection = MixItUp.prototype[type],
-                obj = {};
-
-            priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
-
-            obj[hook] = {};
-            obj[hook][priority] = {};
-            obj[hook][priority][name] = func;
-
-            _h.extend(collection, obj);
         },
 
         /**
@@ -2034,48 +2710,6 @@
         },
 
         /**
-         * _execAction
-         * @since 2.0.0
-         * @param {String} methodName
-         * @param {Boolean} isPost
-         * @param {Array} args
-         */
-
-        _execAction: function(methodName, isPost, args) {
-            var self = this,
-                key = '',
-                context = isPost ? 'post' : 'pre';
-
-            if (!self._actions.isEmptyObject && self._actions.hasOwnProperty(methodName)) {
-                for (key in self._actions[methodName][context]) {
-                    self._actions[methodName][context][key].call(self, args);
-                }
-            }
-        },
-
-        /**
-         * _execFilter
-         * @since 2.0.0
-         * @param {String} methodName
-         * @param {Mixed} value
-         * @param {Array} args
-         * @return {Mixed} value
-         */
-
-        _execFilter: function(methodName, value, args) {
-            var self = this,
-                key = '';
-
-            if (!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)) {
-                for (key in self._filters[methodName].pre) {
-                    return self._filters[methodName].pre[key].call(self, value, args);
-                }
-            } else {
-                return value;
-            }
-        },
-
-        /**
          * _deferMix
          * @since 3.0.0
          * @param {Mixed[]} args
@@ -2206,6 +2840,21 @@
             var self = this;
 
             // TODO: map to multiMix
+        },
+
+        /**
+         * getOperation
+         * @since 3.0.0
+         * @param {Mixed[]} arguments
+         * @return {Operation}
+         */
+
+        getOperation: function() {
+            var self = this,
+                args = self._parseMultiMixArgs(arguments),
+                operation = new Operation();
+
+            console.log(operation);
         },
 
         /**
@@ -2568,7 +3217,7 @@
 
             self._execAction('destroy', 1, arguments);
         }
-    };
+    });
 
     /* Target
     ---------------------------------------------------------------------- */
@@ -2609,107 +3258,13 @@
      * @since 3.0.0
      */
 
-    Target.prototype = {
-        constructor: Target,
+    Target.prototype = Object.create(prototype);
 
-        /* Static Properties
-        ---------------------------------------------------------------------- */
+    _h.extend(Target.prototype, {
+        constructor: Target,
 
         _actions: {},
         _filters: {},
-
-        /* Public Static Methods
-        ---------------------------------------------------------------------- */
-
-        /**
-         * extend
-         * @since 3.0.0
-         * @param {Object} new properties/methods
-         * @extends {Object} prototype
-         *
-         * Shallow extend the Target prototype with new methods
-         */
-
-        extend: function(extension) {
-            var key = '';
-
-            for (key in extension) {
-                Target.prototype[key] = extension[key];
-            }
-        },
-
-        /**
-         * addAction
-         * @since 3.0.0
-         * @param {String} hook name
-         * @param {String} method
-         * @param {Function} function to execute
-         * @param {Number} priority
-         * @extends {Object} MixItUp.prototype._actions
-         *
-         * Register a named action hook on the Target prototype
-         */
-
-        addAction: function(hook, name, func, priority) {
-            Target.prototype._addHook('_actions', hook, name, func, priority);
-        },
-
-        /**
-         * addFilter
-         * @since 3.0.0
-         * @param {string} hook name
-         * @param {string} method
-         * @param {function} function to execute
-         * @extends {object} MixItUp.prototype._filters
-         *
-         * Register a named filter hook on the Target prototype
-         */
-
-        addFilter: function(hook, name, func) {
-            Target.prototype._addHook('_filters', hook, name, func);
-        },
-
-        /* Private Static Methods
-        ---------------------------------------------------------------------- */
-
-        /**
-         * _addHook
-         * @since 3.0.0
-         * @param {String} type of hook
-         * @param {String} hook name
-         * @param {Function} function to execute
-         * @param [{Number}] priority
-         * @extends {Object} MixItUp.prototype._filters
-         *
-         * Add a hook to the Target prototype
-         */
-
-        _addHook: function(type, hook, name, func, priority) {
-            var collection = Target.prototype[type],
-                obj = {};
-
-            priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
-
-            obj[hook] = {};
-            obj[hook][priority] = {};
-            obj[hook][priority][name] = func;
-
-            _h.extend(collection, obj);
-        },
-
-        /**
-         * _execAction
-         * @alias MixItUp.prototype._execAction
-         */
-
-        _execAction: MixItUp.prototype._execAction,
-
-        /**
-         * _execFilter
-         * @alias MixItUp.prototype._execAction
-         */
-
-        _execFilter: MixItUp.prototype._execFilter,
 
         /* Private Instance Methods
         ---------------------------------------------------------------------- */
@@ -3243,7 +3798,7 @@
 
             self._execAction('_cleanUp', 1, arguments);
         }
-    };
+    });
 
     /* Collection
     ---------------------------------------------------------------------- */
@@ -3296,15 +3851,50 @@
      * Operation
      * @since 3.0.0
      * @constructor
+     *
+     * Operation objects contain all data neccessary to describe
+     * to the full lifecycle of any individual MixItUp operation
      */
 
     Operation = function() {
-        this.filter = '';
-        this.sort = '';
-        this.changeLayout = null;
-        this.insert = null;
-        this.remove = null;
-    },
+        this._execAction('_constructor', 0);
+
+        this.filter             = '';
+        this.sort               = '';
+        this.changeLayout       = null;
+        this.insert             = null;
+        this.remove             = null;
+        this.targetPosData      = [];
+        
+        this.startState         = null;
+        this.endState           = null;
+        
+        this.show               = [];
+        this.hide               = [];
+        this.toShow             = [];
+        this.toHide             = [];
+        this.toMove             = [];
+        this.origOrder          = [];
+        this.newOrder           = [];
+        this.newSort            = null;
+        this.startHeight        = 0;
+        this.startWidth         = 0;
+        this.newHeight          = 0;
+        this.newWidth           = 0;
+        this.newDisplay         = null;
+        this.newContainerClass  = null;
+
+        this._execAction('_constructor', 1);
+
+        _h.seal(this);
+    };
+
+    Operation.prototype = Object.create(prototype);
+
+    _h.extend(Operation.prototype, {
+        _actions: {},
+        _filters: {}
+    });
 
     /* State
     ---------------------------------------------------------------------- */
@@ -3316,6 +3906,8 @@
      */
 
     State = function() {
+        this._execAction('_constructor', 0);
+
         this.activeFilter   = '';
         this.activeSort     = '';
         this.display        = '';
@@ -3327,616 +3919,18 @@
         this.totalTargets   = -1;
         this.totalShow      = -1;
         this.totalHide      = -1;
+
+        this._execAction('_constructor', 1);
+
+        _h.seal(this);
     };
 
-    /* Helper Library
-    ---------------------------------------------------------------------- */
-
-    _h = {
-
-        /**
-         * hasClass
-         * @since 3.0.0
-         * @param {Object} el
-         * @param {String} cls
-         */
-
-        hasClass: function(el, cls) {
-            return el.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
-        },
-
-        /**
-         * addClass
-         * @since 3.0.0
-         * @param {Object} el
-         * @param {String} cls
-         */
-
-        addClass: function(el, cls) {
-            if (!this.hasClass(el, cls)) el.className += el.className ? ' ' + cls : cls;
-        },
-
-        /**
-         * removeClass
-         * @since 3.0.0
-         * @param {Object} el
-         * @param {String} cls
-         */
-
-        removeClass: function(el, cls) {
-            if (this.hasClass(el, cls)) {
-                var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
-
-                el.className = el.className.replace(reg, ' ').trim();
-            }
-        },
-
-        /**
-         * extend
-         * @since 3.0.0
-         * @param {Object} destination
-         * @param {Object} source
-         */
-
-        extend: function(destination, source) {
-            var property = '';
-
-            for (property in source) {
-                if (
-                    typeof source[property] === 'object' &&
-                    source[property] !== null &&
-                    typeof source[property].length === 'undefined'
-                ) {
-                    destination[property] = destination[property] || {};
-
-                    this.extend(destination[property], source[property]);
-                } else {
-                    destination[property] = source[property];
-                }
-            }
-        },
-
-        /**
-         * on
-         * @since 3.0.0
-         * @param {Object} el
-         * @param {String} type
-         * @param {Function} fn
-         * @param {Boolean} useCapture
-         */
-
-        on: function(el, type, fn, useCapture) {
-            if (!el) return;
-
-            if (el.attachEvent) {
-                el['e' + type + fn] = fn;
-
-                el[type + fn] = function() {
-                    el['e' + type + fn](window.event);
-                };
-
-                el.attachEvent('on' + type, el[type + fn]);
-            } else {
-                el.addEventListener(type, fn, useCapture);
-            }
-        },
-
-        /**
-         * off
-         * @since 3.0.0
-         * @param {Object} el
-         * @param {String} type
-         * @param {Function} fn
-         */
-
-        off: function(el, type, fn) {
-            if (!el) return;
-
-            if (el.detachEvent) {
-                el.detachEvent('on' + type, el[type + fn]);
-                el[type + fn] = null;
-            } else {
-                el.removeEventListener(type, fn, false);
-            }
-        },
-
-        /**
-         * trigger
-         * @param {Object} element
-         * @param {String} eventName
-         * @param {Object} data
-         */
-
-        trigger: function(el, eventName, data) {
-            var event = null;
-
-            if (typeof window.CustomEvent === 'function') {
-                event = new CustomEvent(eventName, {
-                    detail: data
-                });
-            } else {
-                event = doc.createEvent('CustomEvent');
-                event.initCustomEvent(eventName, true, true, data);
-            }
-
-            el.dispatchEvent(event);
-        },
-
-        /**
-         * index
-         * @since 3.0.0
-         * @param {Object} el
-         * @param {String} selector
-         */
-
-        index: function(el, selector) {
-            var i = 0;
-
-            while ((el = el.previousElementSibling) !== null) {
-                if (!selector || el.matches(selector)) {
-                    ++i;
-                }
-            }
-
-            return i;
-        },
-
-        /**
-         * camelCase
-         * @since 2.0.0
-         * @param {string}
-         * @return {string}
-         */
-
-        camelCase: function(string) {
-            return string.replace(/-([a-z])/g, function(g) {
-                return g[1].toUpperCase();
-            });
-        },
-
-        /**
-         * isElement
-         * @since 2.1.3
-         * @param {Object} element to test
-         * @return {Boolean}
-         */
-
-        isElement: function(el) {
-            if (
-                window.HTMLElement &&
-                el instanceof HTMLElement
-            ) {
-                return true;
-            } else if (
-                doc.defaultView &&
-                doc.defaultView.HTMLElement &&
-                el instanceof doc.defaultView.HTMLElement
-            ) {
-                return true;
-            } else {
-                return (
-                    el !== null &&
-                    el.nodeType === 1 &&
-                    el.nodeName === 'string'
-                );
-            }
-        },
-
-        /**
-         * createElement
-         * @since 3.0.0
-         * @param {String} htmlString
-         */
-
-        createElement: function(htmlString) {
-            var frag = doc.createDocumentFragment(),
-                temp = doc.createElement('div');
-
-            temp.innerHTML = htmlString;
-
-            while (temp.firstChild) {
-                frag.appendChild(temp.firstChild);
-            }
-
-            return frag;
-        },
-
-        /**
-         * deleteElement
-         * @since 3.0.0
-         * @param {Object} el
-         */
-
-        deleteElement: function(el) {
-            if (el.parentElement) {
-                el.parentElement.removeChild(el);
-            }
-        },
-
-        /**
-         * isEqualArray
-         * @since 3.0.0
-         * @param {Array} a
-         * @param {Array} b
-         */
-
-        isEqualArray: function(a, b) {
-            var i = a.length;
-
-            if (i !== b.length) return false;
-
-            while (i--) {
-                if (a[i] !== b[i]) return false;
-            }
-
-            return true;
-        },
-
-        /**
-         * arrayShuffle
-         * @since 2.0.0
-         * arrayShuffle
-         * @param {Array} oldArray
-         * @return {Array}
-         */
-
-        arrayShuffle: function(oldArray) {
-            var newArray = oldArray.slice(),
-                len = newArray.length,
-                i = len,
-                p = -1,
-                t = [];
-
-            while (i--) {
-                p = parseInt(Math.random() * len);
-                t = newArray[i];
-
-                newArray[i] = newArray[p];
-                newArray[p] = t;
-            }
-
-            return newArray;
-        },
-
-        /**
-         * debounce
-         * @since 3.0.0
-         * @param {Function} func
-         * @param {Number} wait
-         * @param {Boolean} immediate
-         */
-
-        debounce: function(func, wait, immediate) {
-            var timeout;
-
-            return function() {
-                var context = this,
-                    args = arguments,
-                    later = function() {
-                        timeout = null;
-
-                        if (!immediate) {
-                            func.apply(context, args);
-                        }
-                    },
-                    callNow = immediate && !timeout;
-
-                clearTimeout(timeout);
-
-                timeout = setTimeout(later, wait);
-
-                if (callNow) func.apply(context, args);
-            };
-        },
-
-        /**
-         * position
-         * @since 3.0.0
-         * @param {Object} element
-         * @return {Object} position
-         */
-
-        position: function(element) {
-            var xPosition = 0,
-                yPosition = 0,
-                offsetParent = element;
-
-            while (element) {
-                xPosition -= element.scrollLeft;
-                yPosition -= element.scrollTop;
-
-                if (element === offsetParent) {
-                    xPosition += element.offsetLeft;
-                    yPosition += element.offsetTop;
-
-                    offsetParent = element.offsetParent;
-                }
-
-                element = element.parentElement;
-            }
-
-            return {
-                x: xPosition,
-                y: yPosition
-            };
-        },
-
-        /**
-         * getHypotenuse
-         * @since 3.0.0
-         * @param {Object} node1
-         * @return {Object} node2
-         * @return {Number} hypotenuse
-         */
-
-        getHypotenuse: function(node1, node2) {
-            var distanceX = node1.x - node2.x,
-                distanceY = node1.y - node2.y;
-
-            distanceX = distanceX < 0 ? distanceX * -1 : distanceX,
-            distanceY = distanceY < 0 ? distanceY * -1 : distanceY;
-
-            return Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
-        },
-
-        /**
-         * closestParent
-         * @since 3.0.0
-         * @param {Object} el
-         * @param {String} selector
-         * @param {Boolean} includeSelf
-         * @param {Number} range
-         */
-
-        closestParent: function(el, selector, includeSelf, range) {
-            var parent = el.parentNode,
-                depth = range || true;
-
-            if (includeSelf && el.matches(selector)) {
-                return el;
-            }
-
-            while (depth && parent && parent != doc.body) {
-                if (parent.matches && parent.matches(selector)) {
-                    return parent;
-                } else if (parent.parentNode) {
-                    parent = parent.parentNode;
-                } else {
-                    return null;
-                }
-
-                if (range) {
-                    depth--;
-                }
-            }
-
-            return null;
-        },
-
-        /**
-         * children
-         * @since 3.0.0
-         * @param {Object} el
-         * @param {String} selector
-         */
-
-        children: function(el, selector) {
-            var children = [],
-                tempId = '';
-
-            if (el) {
-                if (!el.id) {
-                    tempId = 'Temp' + this.randomHexKey();
-
-                    el.id = tempId;
-                }
-
-                children = doc.querySelectorAll('#' + el.id + ' > ' + selector);
-
-                if (tempId) {
-                    el.removeAttribute('id');
-                }
-            }
-
-            return children;
-        },
-
-        /**
-         * forEach
-         * @since 3.0.0
-         * @param {Array} items
-         * @param {Function} callback(item)
-         */
-
-        forEach: function(items, callback) {
-            var i = -1,
-                item = null;
-
-            for (i = 0; item = items[i]; i++) {
-                (typeof callback === 'function') && callback.call(this, item);
-            }
-        },
-
-        /**
-         * clean
-         * @since 3.0.0
-         * @param {Array} originalArray
-         * @return {Array} cleanArray
-         */
-
-        clean: function(originalArray) {
-            var cleanArray = [],
-                i = -1;
-
-            for (i = 0; i < originalArray.length; i++) {
-                if (originalArray[i]) {
-                    cleanArray.push(originalArray[i]);
-                }
-            }
-
-            return cleanArray;
-        },
-
-        /**
-         * getPromise
-         * @since 3.0.0
-         * @return {Object} libraries
-         * @return {Object} promiseWrapper
-         */
-
-        getPromise: function(libraries) {
-            var promise = {
-                    promise: null,
-                    resolve: null,
-                    reject: null,
-                    isResolved: false
-                },
-                defered = null;
-
-            if (MixItUp.prototype._has._promises) {
-                promise.promise = new Promise(function(resolve, reject) {
-                    promise.resolve = resolve;
-                    promise.reject = reject;
-                });
-            } else if (libraries.q && typeof libraries.q === 'function') {
-                defered = libraries.q.defer();
-
-                promise.promise = defered.promise;
-                promise.resolve = defered.resolve;
-                promise.reject = defered.reject;
-            } else {
-                console.warn('[MixItUp] WARNING: No available Promises implementations were found');
-
-                return null;
-            }
-
-            return promise;
-        },
-
-        /**
-         * canReportErrors
-         * @since 3.0.0
-         * @param [{Object}] config
-         * @return {Boolean}
-         */
-
-        canReportErrors: function(config) {
-            if (!config || config && !config.debug) {
-                return true;
-            } else if (config && config.debug && config.debug.enable === false) {
-                return false;
-            }
-        },
-
-        /**
-         * getPrefix
-         * @since 2.0.0
-         * @param {Element} el,
-         * @param {String} property
-         * @param {String[]} vendors
-         * @return {String | Boolean}
-         */
-
-        getPrefix: function(el, property, vendors) {
-            var i = -1,
-                prefix = '';
-
-            if (property.toLowerCase() in el.style) return '';
-
-            for (i = 0; prefix = vendors[i]; i++) {
-                if (prefix + property in el.style) {
-                    return prefix.toLowerCase();
-                }
-            }
-
-            return false;
-        },
-
-        /**
-         * negateValue
-         * @param {String} value
-         * @param {Boolean} invert
-         * @return {String}
-         */
-
-        negateValue: function(value, invert) {
-            if (invert) {
-                return value.charAt(0) === '-' ?
-                    value.substr(1, value.length) :
-                    '-' + value;
-            } else {
-                return value;
-            }
-        },
-
-        /**
-         * randomHexKey
-         * @return {String}
-         */
-
-        randomHexKey: function() {
-            return (
-                '00000' +
-                (Math.random() * 16777216 << 0).toString(16)
-            )
-                .substr(-6)
-                .toUpperCase();
-        },
-
-        /**
-         * getDocumentState
-         * @since 3.0.0
-         * @return {Object}
-         */
-
-        getDocumentState: function() {
-            return {
-                scrollTop: window.pageYOffset,
-                scrollLeft: window.pageXOffset,
-                docHeight: doc.documentElement.scrollHeight
-            };
-        },
-
-        /**
-         * bind
-         * @param {Object} obj
-         * @param {Function} fn
-         * @return {Function}
-         */
-
-        bind: function(obj, fn) {
-            return function() {
-                return fn.apply(obj, arguments);
-            };
-        },
-
-        /**
-         * isVisible
-         * @param {Element} el
-         * @return {Boolean}
-         */
-
-        isVisible: function(el) {
-            var styles = null;
-
-            if (el.offsetParent) return true;
-
-            styles = window.getComputedStyle(el);
-
-            if (
-                styles.position === 'fixed' &&
-                styles.visibility !== 'hidden' &&
-                styles.opacity !== '0'
-            ) {
-                // Fixed elements report no offsetParent,
-                // but may still be invisible
-
-                return true;
-            }
-
-            return false;
-        }
-    };
+    State.prototype = Object.create(prototype);
+
+    _h.extend(State.prototype, {
+        _actions: {},
+        _filters: {}
+    });
 
     /* mixItUp Factory
     ---------------------------------------------------------------------- */
@@ -4050,7 +4044,9 @@
 
     // Encapsulate shared objects in the MixItUp prototype for transportation
 
+    MixItUp.prototype.Operation = Operation;
     MixItUp.prototype.Target = Target;
+    MixItUp.prototype.State = State;
     MixItUp.prototype._h = _h;
 
     // Encapulate the MixItUp constructor in the mixItUp factory for transportation
