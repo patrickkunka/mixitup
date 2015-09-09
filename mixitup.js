@@ -1380,9 +1380,7 @@
             var self = this,
                 defered = null,
                 resolvePromise = null,
-                scrollTop = -1,
-                scrollLeft = -1,
-                docHeight = -1,
+                docState = null,
                 futureState = self._buildState(true);
                 
             self._execAction('_goMix', 0, arguments);
@@ -1440,13 +1438,15 @@
                 self._getStartMixData();
                 self._setInter();
 
-                _h.getDocumentState();
+                docState = _h.getDocumentState();
 
                 self._getInterMixData();
                 self._setFinal();
                 self._getFinalMixData();
 
-                (window.pageYOffset !== scrollTop) && window.scrollTo(scrollLeft, scrollTop);
+                if (window.pageYOffset !== docState.scrollTop) {
+                    window.scrollTo(docState.scrollLeft, docState.scrollTop);
+                }
 
                 if (self.animation.animateResizeContainer) {
                     self._dom.parent.style.height = self._startHeight + 'px';
@@ -3244,11 +3244,11 @@
      */
 
     Operation = function() {
-        this.filter = '',
-        this.sort = '',
-        this.changeLayout = null,
-        this.insert = null,
-        this.remove = null
+        this.filter = '';
+        this.sort = '';
+        this.changeLayout = null;
+        this.insert = null;
+        this.remove = null;
     },
 
     /* State
@@ -3261,17 +3261,17 @@
      */
 
     State = function() {
-        this.activeFilter   = '',
-        this.activeSort     = '',
-        this.display        = '',
-        this.hasFailed      = false,
-        this.targets        = null,
-        this.show           = null,
-        this.hide           = null,
-        this.instance       = null
-        this.totalTargets   = -1,
-        this.totalShow      = -1,
-        this.totalHide      = -1
+        this.activeFilter   = '';
+        this.activeSort     = '';
+        this.display        = '';
+        this.hasFailed      = false;
+        this.targets        = null;
+        this.show           = null;
+        this.hide           = null;
+        this.instance       = null;
+        this.totalTargets   = -1;
+        this.totalShow      = -1;
+        this.totalHide      = -1;
     };
 
     /* Helper Library
@@ -3834,7 +3834,7 @@
         bind: function(obj, fn) {
             return function() {
                 return fn.apply(obj, arguments);
-            }
+            };
         },
 
         /**
