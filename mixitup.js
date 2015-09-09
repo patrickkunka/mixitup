@@ -4008,8 +4008,8 @@
                 instance = MixItUp.prototype._instances[id];
 
                 if (config && _h.canReportErrors(config)) {
-                    console.warn('
-                        [MixItUp] This element already has an active instance.' +
+                    console.warn(
+                        '[MixItUp] This element already has an active instance.' +
                         'Config will be ignored.'
                     );
                 }
