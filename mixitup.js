@@ -902,8 +902,9 @@
             _activeFilter: null,
             _toggleArray: [],
             _toggleString: '',
-            _activeSort: 'default:asc',
+            _activeSortString: 'default:asc',
             _newSort: null,
+            _newSortString: '',
             _staggerDuration: 0,
             _startHeight: 0,
             _startWidth: 0,
@@ -1090,7 +1091,7 @@
             if (self.load.sort) {
                 self._newSort = self._parseSort(self.load.sort);
                 self._newSortString = self.load.sort;
-                self._activeSort = self.load.sort;
+                self._activeSortString = self.load.sort;
                 self._sort();
                 self._printSort();
             }
@@ -1109,7 +1110,7 @@
 
             self._updateControls({
                 filter: self._activeFilter,
-                sort: self._activeSort
+                sort: self._activeSortString
             });
 
             self._effects = self._parseEffects();
@@ -1535,7 +1536,7 @@
             self._execAction('_updateControls', 0, arguments);
 
             (command.filter === undf) && (output.filter = self._activeFilter);
-            (command.sort === undf) && (output.sort = self._activeSort);
+            (command.sort === undf) && (output.sort = self._activeSortString);
             (output.filter === self.selectors.target) && (output.filter = 'all');
 
             for (i = 0; button = self._dom.sortButtons[i]; i++) {
@@ -1598,15 +1599,73 @@
         /**
          * _filter
          * @since 2.0.0
+         * @param [{Operation}] operation
          */
 
-        _filter: function() {
+        _filter: function(operation) {
             var self = this,
                 condition = false,
                 target = null,
                 i = -1;
 
             self._execAction('_filter', 0);
+
+            // New code:
+
+            if (operation) {
+                for (i = 0; target = self._targets[i]; i++) {
+                    if (typeof operation.startFilter === 'string') {
+                        // show via selector
+
+                        condition = operation.startFilter === '' ?
+                            false : target._dom.el.matches(operation.startFilter);
+
+                        self._evaluateHideShow(condition, target, false, operation);
+                    } else if (
+                        typeof operation.startFilter === 'object' &&
+                        _h.isElement(operation.startFilter)
+                    ) {
+                        // show via element
+
+                        self._evaluateHideShow(target._dom.el === operation.startFilter, target, false, operation);
+                    } else if (
+                        typeof operation.startFilter === 'object' &&
+                        operation.startFilter.length
+                    ) {
+                        // show via collection
+
+                        self._evaluateHideShow(operation.startFilter.indexOf(target._dom.el) > -1, target, false, operation);
+                    } else if (
+                        typeof operation.startFilter === 'object' &&
+                        typeof operation.startFilter.hide === 'string'
+                    ) {
+                        // hide via selector
+
+                        self._evaluateHideShow(!target._dom.el.matches(operation.startFilter.hide), target, true, operation);
+                    } else if (
+                        typeof operation.startFilter.hide === 'object' &&
+                        _h.isElement(operation.startFilter.hide)
+                    ) {
+                        // hide via element
+
+                        self._evaluateHideShow(target._dom.el !== operation.startFilter.hide, target, true, operation);
+                    } else if (
+                        typeof operation.startFilter.hide === 'object' &&
+                        operation.startFilter.hide !== null &&
+                        operation.startFilter.hide.length
+                    ) {
+                        // hide via collection
+
+                        self._evaluateHideShow(operation.startFilter.hide.indexOf(target._dom.el) < 0, target, true, operation);
+                    }
+                }
+
+                self._execAction('_filter', 1);
+
+                return;
+            }
+
+            // Old code:
 
             self._show = [];
             self._hide = [];
@@ -1669,10 +1728,29 @@
          * @param {Boolean} condition
          * @param {Element} target
          * @param {Boolean} isRemoving
+         * @param [{Operation}] operation
          */
 
-        _evaluateHideShow: function(condition, target, isRemoving) {
+        _evaluateHideShow: function(condition, target, isRemoving, operation) {
             var self = this;
+
+            if (operation) {
+                if (condition) {
+                    if (isRemoving && typeof operation.startFilter === 'string') {
+                        self._evaluateHideShow(target._dom.el.matches(operation.startFilter), target, false, operation);
+                    } else {
+                        operation.show.push(target);
+
+                        !target._isShown && operation.toShow.push(target);
+                    }
+                } else {
+                    operation.hide.push(target);
+
+                    target._isShown && operation.toHide.push(target);
+                }
+
+                return;
+            }
 
             if (condition) {
                 if (isRemoving && typeof self._state.activeFilter === 'string') {
@@ -1692,14 +1770,60 @@
         /**
          * _sort
          * @since 2.0.0
+         * @param [{Operation}] operation
          */
 
-        _sort: function() {
+        _sort: function(operation) {
             var self = this,
                 target = null,
                 i = -1;
 
             self._execAction('_sort', 0);
+
+            // New code:
+
+            if (operation) {
+                operation.startOrder = [];
+
+                for (i = 0; target = self._targets[i]; i++) {
+                    operation.currentOrder.push(target);
+                }
+
+                switch (operation.newSort[0].sortBy) {
+                    case 'default':
+                        operation.newOrder = self._origOrder.slice();
+
+                        if (operation.newSort[0].order === 'desc') {
+                            operation.newOrder.reverse();
+                        }
+
+                        break;
+                    case 'random':
+                        operation.newOrder = _h.arrayShuffle(operation.startOrder);
+
+                        break;
+                    case 'custom':
+                        operation.newOrder = operation.newSort[0].order;
+
+                        break;
+                    default:
+                        operation.newOrder = operation.startOrder
+                            .slice()
+                            .sort(function(a, b) {
+                                return self._compare(a, b, operation.newSort);
+                            });
+                }
+
+                if (_h.isEqualArray(operation.newOrder, operation.startOrder)) {
+                    operation.willSort = false;
+                }
+
+                self._execAction('_sort', 1);
+
+                return;
+            }
+
+            // Old code:
 
             self._currentOrder = [];
 
@@ -1750,17 +1874,19 @@
          * @param {String|Number} a
          * @param {String|Number} b
          * @param {Number} depth (recursion)
+         * @param {ParsedSort} sort
          * @return {Number}
          */
 
-        _compare: function(a, b, depth) {
+        _compare: function(a, b, depth, sort) {
             depth = depth ? depth : 0;
+            sort = sort ? sort : self._newSort;
 
             var self = this,
-                order = self._newSort[depth].order,
+                order = sort[depth].order,
                 isString = false,
-                attrA = self._getAttributeValue(a),
-                attrB = self._getAttributeValue(b);
+                attrA = self._getAttributeValue(a, depth, sort),
+                attrB = self._getAttributeValue(b, depth, sort);
 
             if (isNaN(attrA * 1) || isNaN(attrB * 1)) {
                 attrA = attrA.toLowerCase();
@@ -1778,8 +1904,8 @@
                 return order === 'asc' ? 1 : -1;
             }
 
-            if (attrA === attrB && self._newSort.length > depth + 1) {
-                return self._compare(a, b, depth + 1);
+            if (attrA === attrB && sort.length > depth + 1) {
+                return self._compare(a, b, depth + 1, sort);
             }
 
             return 0;
@@ -1789,14 +1915,19 @@
          * _getAttributeValue
          * @since 3.0.0
          * @param {Element} target
+         * @param [{ParsedSort}] sort
          * @return {String|Number}
          *
          * Reads the values of sort attributes
          */
 
-        _getAttributeValue: function(target) {
+        _getAttributeValue: function(target, depth, sort) {
             var self = this,
-                value = target._dom.el.getAttribute('data-' + self._newSort[depth].sortBy);
+                value = '';
+
+            sort = sort ? sort : self._newSort;
+
+            value = target._dom.el.getAttribute('data-' + sort[depth].sortBy);
 
             if (value === null) {
                 if (_h.canReportErrors(self)) {
@@ -2044,7 +2175,7 @@
 
             state = {
                 activeFilter: self._activeFilter === '' ? 'none' : self._activeFilter,
-                activeSort: future && self._newSortString ? self._newSortString : self._activeSort,
+                activeSort: future && self._newSortString ? self._newSortString : self._activeSortString,
                 hasFailed: !self._show.length && self._activeFilter !== '',
                 targets: targets,
                 show: show,
@@ -2068,10 +2199,11 @@
         /**
          * _goMix
          * @param {Boolean} shouldAnimate
+         * @param [{Operation}] operation
          * @since 2.0.0
          */
 
-        _goMix: function(shouldAnimate) {
+        _goMix: function(shouldAnimate, operation) {
             var self = this,
                 defered = null,
                 resolvePromise = null,
@@ -2503,7 +2635,7 @@
             if (self._isSorting) {
                 self._printSort();
 
-                self._activeSort = self._newSortString;
+                self._activeSortString = self._newSortString;
                 self._currentOrder = self._newOrder;
                 self._newOrder = [];
                 self._isSorting = false;
@@ -2851,10 +2983,72 @@
 
         getOperation: function() {
             var self = this,
-                args = self._parseMultiMixArgs(arguments),
+                command = self._parseMultiMixArgs(arguments).command,
+                sortCommand = command.sort,
+                filterCommand = command.filter,
+                changeLayoutCommand = command.changeLayout,
                 operation = new Operation();
 
-            console.log(operation);
+            self._execAction('getOperation', 0, arguments);
+
+            operation.command = command;
+
+            if (sortCommand !== undf) {
+                operation.newSort = self._parseSort(sortCommand);
+                operation.newSortString = sortCommand;
+
+                if (sortCommand !== self._activeSortString || sortCommand === 'random') {
+                    operation.willSort = true;
+
+                    self._sort(operation);
+                }
+            }
+
+            if (filterCommand !== undf) {
+                filterCommand = (filterCommand === 'all') ?
+                    self.selectors.target : filterCommand;
+            }
+
+            // TODO: we need a definite object for filter operations,
+            // which accomodates selectors, elements, hide vs show etc.
+
+            // TODO: insert/remove ops would be represented here too.
+            // All others would be extended in via hooks
+
+            operation.startFilter = self._activeFilter;
+            operation.newFilter = filterCommand || self._activeFilter;
+
+            self._filter(operation);
+
+            if (changeLayoutCommand !== undf) {
+                operation.newContainerClass = typeof changeLayoutCommand === 'string' ?
+                    changeLayoutCommand : '';
+
+                // NB: Looks like I decided layout changes can
+                // only be done via class names in v3,.. probably a good thing.
+
+                if (
+                    operation.newContainerClass !== self.layout.containerClass
+                ) {
+                    operation.willChangeLayout = true;
+                }
+            }
+
+            // Run the operation through the equivalent to a goMix to populate
+            // all position data
+
+            operation.effects = self._parseEffects();
+
+            self._getStartMixData(operation);
+            self._setInter(operation);
+
+            self._getInterMixData(operation);
+            self._setFinal(operation);
+            self._getFinalMixData(operation);
+
+            // The above 5 methods need modifying to make them functional
+
+            return self._execFilter('getOperation', operation, arguments);
         },
 
         /**
@@ -2892,7 +3086,7 @@
                     self._newSort = self._parseSort(sort);
                     self._newSortString = sort;
 
-                    if (sort !== self._activeSort || sort === 'random') {
+                    if (sort !== self._activeSortString || sort === 'random') {
                         self._isSorting = true;
                         self._sort();
                     }
@@ -3859,24 +4053,27 @@
     Operation = function() {
         this._execAction('_constructor', 0);
 
-        this.filter             = '';
-        this.sort               = '';
-        this.changeLayout       = null;
-        this.insert             = null;
-        this.remove             = null;
+        this.command            = null;
         this.targetPosData      = [];
         
         this.startState         = null;
         this.endState           = null;
+
+        this.willSort           = false;
+        this.willChangeLayout   = false;
         
+        this.effects            = null;
         this.show               = [];
         this.hide               = [];
         this.toShow             = [];
         this.toHide             = [];
         this.toMove             = [];
-        this.origOrder          = [];
+        this.startOrder         = [];
         this.newOrder           = [];
         this.newSort            = null;
+        this.newSortString      = '';
+        this.startFilter        = null;
+        this.newFilter          = null;
         this.startHeight        = 0;
         this.startWidth         = 0;
         this.newHeight          = 0;
