@@ -1074,7 +1074,8 @@
          */
 
         _init: function(el, config) {
-            var self = this;
+            var self = this,
+                operation = null;
 
             self._execAction('_init', 0, arguments);
 
@@ -1087,14 +1088,6 @@
             self.animation.enable = self.animation.enable && MixItUp.prototype._has._transitions;
 
             self._indexTargets(true);
-
-            if (self.load.sort) {
-                self._newSort = self._parseSort(self.load.sort);
-                self._newSortString = self.load.sort;
-                self._activeSortString = self.load.sort;
-                self._sort();
-                self._printSort();
-            }
 
             self._activeFilter = self.load.filter === 'all' ?
                 self.selectors.target :
@@ -1115,7 +1108,13 @@
 
             self._effects = self._parseEffects();
 
-            self._filter();
+            self.getOperation({
+                filter: self.load.filter,
+                sort: self.load.sort        
+            });
+
+            // TODo: apply operation to active values? or what?
+
             self._buildState();
             self._bindEvents();
 
@@ -1599,7 +1598,7 @@
         /**
          * _filter
          * @since 2.0.0
-         * @param [{Operation}] operation
+         * @param {Operation} operation
          */
 
         _filter: function(operation) {
@@ -1608,118 +1607,56 @@
                 target = null,
                 i = -1;
 
-            self._execAction('_filter', 0);
-
-            // New code:
-
-            if (operation) {
-                for (i = 0; target = self._targets[i]; i++) {
-                    if (typeof operation.startFilter === 'string') {
-                        // show via selector
-
-                        condition = operation.startFilter === '' ?
-                            false : target._dom.el.matches(operation.startFilter);
-
-                        self._evaluateHideShow(condition, target, false, operation);
-                    } else if (
-                        typeof operation.startFilter === 'object' &&
-                        _h.isElement(operation.startFilter)
-                    ) {
-                        // show via element
-
-                        self._evaluateHideShow(target._dom.el === operation.startFilter, target, false, operation);
-                    } else if (
-                        typeof operation.startFilter === 'object' &&
-                        operation.startFilter.length
-                    ) {
-                        // show via collection
-
-                        self._evaluateHideShow(operation.startFilter.indexOf(target._dom.el) > -1, target, false, operation);
-                    } else if (
-                        typeof operation.startFilter === 'object' &&
-                        typeof operation.startFilter.hide === 'string'
-                    ) {
-                        // hide via selector
-
-                        self._evaluateHideShow(!target._dom.el.matches(operation.startFilter.hide), target, true, operation);
-                    } else if (
-                        typeof operation.startFilter.hide === 'object' &&
-                        _h.isElement(operation.startFilter.hide)
-                    ) {
-                        // hide via element
-
-                        self._evaluateHideShow(target._dom.el !== operation.startFilter.hide, target, true, operation);
-                    } else if (
-                        typeof operation.startFilter.hide === 'object' &&
-                        operation.startFilter.hide !== null &&
-                        operation.startFilter.hide.length
-                    ) {
-                        // hide via collection
-
-                        self._evaluateHideShow(operation.startFilter.hide.indexOf(target._dom.el) < 0, target, true, operation);
-                    }
-                }
-
-                self._execAction('_filter', 1);
-
-                return;
-            }
-
-            // Old code:
-
-            self._show = [];
-            self._hide = [];
-            self._toShow = [];
-            self._toHide = [];
+            self._execAction('_filter', 0, arguments);
 
             for (i = 0; target = self._targets[i]; i++) {
-                if (typeof self._activeFilter === 'string') {
+                if (typeof operation.startFilter === 'string') {
                     // show via selector
 
-                    condition = self._activeFilter === '' ?
-                        false : target._dom.el.matches(self._activeFilter);
+                    condition = operation.startFilter === '' ?
+                        false : target._dom.el.matches(operation.startFilter);
 
-                    self._evaluateHideShow(condition, target);
+                    self._evaluateHideShow(condition, target, false, operation);
                 } else if (
-                    typeof self._activeFilter === 'object' &&
-                    _h.isElement(self._activeFilter)
+                    typeof operation.startFilter === 'object' &&
+                    _h.isElement(operation.startFilter)
                 ) {
                     // show via element
 
-                    self._evaluateHideShow(target._dom.el === self._activeFilter, target);
+                    self._evaluateHideShow(target._dom.el === operation.startFilter, target, false, operation);
                 } else if (
-                    typeof self._activeFilter === 'object' &&
-                    self._activeFilter.length
+                    typeof operation.startFilter === 'object' &&
+                    operation.startFilter.length
                 ) {
                     // show via collection
 
-                    self._evaluateHideShow(self._activeFilter.indexOf(target._dom.el) > -1, target);
+                    self._evaluateHideShow(operation.startFilter.indexOf(target._dom.el) > -1, target, false, operation);
                 } else if (
-                    typeof self._activeFilter === 'object' &&
-                    typeof self._activeFilter.hide === 'string'
+                    typeof operation.startFilter === 'object' &&
+                    typeof operation.startFilter.hide === 'string'
                 ) {
                     // hide via selector
 
-                    self._evaluateHideShow(!target._dom.el.matches(self._activeFilter.hide), target, true);
+                    self._evaluateHideShow(!target._dom.el.matches(operation.startFilter.hide), target, true, operation);
                 } else if (
-                    typeof self._activeFilter.hide === 'object' &&
-                    _h.isElement(self._activeFilter.hide)
+                    typeof operation.startFilter.hide === 'object' &&
+                    _h.isElement(operation.startFilter.hide)
                 ) {
                     // hide via element
 
-                    self._evaluateHideShow(target._dom.el !== self._activeFilter.hide, target, true);
+                    self._evaluateHideShow(target._dom.el !== operation.startFilter.hide, target, true, operation);
                 } else if (
-                    typeof self._activeFilter.hide === 'object' &&
-                    self._activeFilter.hide !== null &&
-                    self._activeFilter.hide.length
+                    typeof operation.startFilter.hide === 'object' &&
+                    operation.startFilter.hide !== null &&
+                    operation.startFilter.hide.length
                 ) {
                     // hide via collection
 
-                    self._evaluateHideShow(self._activeFilter.hide.indexOf(target._dom.el) < 0, target, true);
+                    self._evaluateHideShow(operation.startFilter.hide.indexOf(target._dom.el) < 0, target, true, operation);
                 }
             }
 
-            self._execAction('_filter', 1);
+            self._execAction('_filter', 1, arguments);
         },
 
         /**
@@ -1728,7 +1665,7 @@
          * @param {Boolean} condition
          * @param {Element} target
          * @param {Boolean} isRemoving
-         * @param [{Operation}] operation
+         * @param {Operation} operation
          */
 
         _evaluateHideShow: function(condition, target, isRemoving, operation) {
@@ -1770,7 +1707,7 @@
         /**
          * _sort
          * @since 2.0.0
-         * @param [{Operation}] operation
+         * @param {Operation} operation
          */
 
         _sort: function(operation) {
@@ -1780,89 +1717,40 @@
 
             self._execAction('_sort', 0);
 
-            // New code:
-
-            if (operation) {
-                operation.startOrder = [];
-
-                for (i = 0; target = self._targets[i]; i++) {
-                    operation.currentOrder.push(target);
-                }
-
-                switch (operation.newSort[0].sortBy) {
-                    case 'default':
-                        operation.newOrder = self._origOrder.slice();
-
-                        if (operation.newSort[0].order === 'desc') {
-                            operation.newOrder.reverse();
-                        }
-
-                        break;
-                    case 'random':
-                        operation.newOrder = _h.arrayShuffle(operation.startOrder);
-
-                        break;
-                    case 'custom':
-                        operation.newOrder = operation.newSort[0].order;
-
-                        break;
-                    default:
-                        operation.newOrder = operation.startOrder
-                            .slice()
-                            .sort(function(a, b) {
-                                return self._compare(a, b, operation.newSort);
-                            });
-                }
-
-                if (_h.isEqualArray(operation.newOrder, operation.startOrder)) {
-                    operation.willSort = false;
-                }
-
-                self._execAction('_sort', 1);
-
-                return;
-            }
-
-            // Old code:
-
-            self._currentOrder = [];
+            operation.startOrder = [];
 
             for (i = 0; target = self._targets[i]; i++) {
-                self._currentOrder.push(target);
+                operation.currentOrder.push(target);
             }
 
-            switch (self._newSort[0].sortBy) {
+            switch (operation.newSort[0].sortBy) {
                 case 'default':
-                    self._newOrder = self._origOrder.slice();
+                    operation.newOrder = self._origOrder.slice();
 
-                    if (self._newSort[0].order === 'desc') {
-                        self._newOrder.reverse();
+                    if (operation.newSort[0].order === 'desc') {
+                        operation.newOrder.reverse();
                     }
 
                     break;
                 case 'random':
-                    self._newOrder = _h.arrayShuffle(self._currentOrder);
+                    operation.newOrder = _h.arrayShuffle(operation.startOrder);
 
                     break;
                 case 'custom':
-                    self._newOrder = self._newSort[0].order;
+                    operation.newOrder = operation.newSort[0].order;
 
                     break;
                 default:
-                    self._newOrder = self._currentOrder
+                    operation.newOrder = operation.startOrder
                         .slice()
                         .sort(function(a, b) {
-                            return self._compare(a, b);
+                            return self._compare(a, b, operation.newSort);
                         });
             }
 
-            if (
-                _h.isEqualArray(self._newOrder, self._currentOrder)
-            ) {
-                self._isSorting = false;
+            if (_h.isEqualArray(operation.newOrder, operation.startOrder)) {
+                operation.willSort = false;
             }
-
-            self._targets = self._newOrder;
 
             self._execAction('_sort', 1);
         },
@@ -1952,13 +1840,14 @@
          * _printSort
          * @since 2.0.0
          * @param {Boolean} isResetting
+         * @param {Operation} operation
          *
          * Inserts elements into the DOM in the appropriate
          * order using a document fragment for minimal
          * DOM thrashing
          */
 
-        _printSort: function(isResetting) {
+        _printSort: function(isResetting, operation) {
             var self = this,
                 order = isResetting ? self._currentOrder : self._newOrder,
                 targets = _h.children(self._dom.parent, self.selectors.target),
@@ -1968,6 +1857,12 @@
                 whiteSpace = null,
                 el = null,
                 i = -1;
+
+            if (operation) {
+                // TODO: This will replace the above ^
+
+                order = isResetting ? operation.startOrder : operation.newOrder;
+            }
 
             self._execAction('_printSort', 0, arguments);
 
@@ -2199,7 +2094,7 @@
         /**
          * _goMix
          * @param {Boolean} shouldAnimate
-         * @param [{Operation}] operation
+         * @param {Operation} operation
          * @since 2.0.0
          */
 
@@ -2224,10 +2119,10 @@
             }
 
             if (
-                !self._toShow.length &&
-                !self._toHide.length &&
-                !self._isSorting &&
-                !self._isChangingLayout
+                !operation.toShow.length &&
+                !operation.toHide.length &&
+                !operation.willSort &&
+                !operation.willChangeLayout
             ) {
                 // If nothing to show or hide, and not sorting or
                 // changing layout, then abort
@@ -2262,29 +2157,22 @@
 
                 self._isMixing = true;
 
-                self._getStartMixData();
-                self._setInter();
-
-                docState = _h.getDocumentState();
-
-                self._getInterMixData();
-                self._setFinal();
-                self._getFinalMixData();
-
-                if (window.pageYOffset !== docState.scrollTop) {
-                    window.scrollTo(docState.scrollLeft, docState.scrollTop);
+                if (window.pageYOffset !== operation.docState.scrollTop) {
+                    window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
                 }
 
                 if (self.animation.animateResizeContainer) {
-                    self._dom.parent.style.height = self._startHeight + 'px';
-                    self._dom.parent.style.width = self._startWidth + 'px';
+                    self._dom.parent.style.height = operation.startHeight + 'px';
+                    self._dom.parent.style.width = operation.startWidth + 'px';
                 }
 
-                requestAnimationFrame(_h.bind(self, self._moveTargets));
+                requestAnimationFrame(function() {
+                    self._moveTargets(operation);
+                });
             } else {
                 // Abort
 
-                self._cleanUp();
+                self._cleanUp(operation);
             }
 
             self._execAction('_goMix', 1, arguments);
@@ -2295,9 +2183,10 @@
         /**
          * _getStartMixData
          * @since 2.0.0
+         * @param {Operation} operation
          */
 
-        _getStartMixData: function() {
+        _getStartMixData: function(operation) {
             var self = this,
                 parentStyle = window.getComputedStyle(self._dom.parent),
                 target = null,
@@ -2309,19 +2198,23 @@
 
             self._execAction('_getStartMixData', 0);
 
-            for (i = 0; target = self._show[i]; i++) {
+            for (i = 0; target = operation.show[i]; i++) {
                 data = target._getPosData();
 
-                target._startPosData = data;
+                operation.showPosData[i] = {
+                    startPosData: data
+                };
             }
 
-            for (i = 0; target = self._toHide[i]; i++) {
+            for (i = 0; target = operation.toHide[i]; i++) {
                 data = target._getPosData();
 
-                target._startPosData = data;
+                operation.toHidePosData[i] = {
+                    startPosData: data
+                };
             }
 
-            self._startHeight = self._incPadding ?
+            operation.startHeight = self._incPadding ?
                 self._dom.parent.offsetHeight :
                 self._dom.parent.offsetHeight -
                     parseFloat(parentStyle.paddingTop) -
@@ -2329,7 +2222,7 @@
                     parseFloat(parentStyle.borderTop) -
                     parseFloat(parentStyle.borderBottom);
 
-            self._startWidth = self._incPadding ?
+            operation.startWidth = self._incPadding ?
                 self._dom.parent.offsetWidth :
                 self._dom.parent.offsetWidth -
                     parseFloat(parentStyle.paddingLeft) -
@@ -2343,22 +2236,23 @@
         /**
          * _setInter
          * @since 2.0.0
+         * @param {Operation} operation
          */
 
-        _setInter: function() {
+        _setInter: function(operation) {
             var self = this,
                 target = null,
                 i = -1;
 
             self._execAction('_setInter', 0);
 
-            for (i = 0; target = self._toShow[i]; i++) {
+            for (i = 0; target = operation.toShow[i]; i++) {
                 target._show();
             }
 
-            if (self._isChangingLayout) {
+            if (operation.willChangeLayout) {
                 _h.removeClass(self._dom.container, self.layout.containerClass);
-                _h.addClass(self._dom.container, self._newContainerClass);
+                _h.addClass(self._dom.container, operation.newContainerClass);
             }
 
             self._execAction('_setInter', 1);
@@ -2367,15 +2261,34 @@
         /**
          * _getInterMixData
          * @since 2.0.0
+         * @param {Operation} operation
          */
 
-        _getInterMixData: function() {
+        _getInterMixData: function(operation) {
             var self = this,
                 target = null,
                 data = {},
                 i = -1;
 
             self._execAction('_getInterMixData', 0);
+
+            if (operation) {
+                for (i = 0; target = operation.show[i]; i++) {
+                    data = target._getPosData();
+
+                    operation.showPosData[i].interPosData = data;
+                }
+
+                for (i = 0; target = operation.toHide[i]; i++) {
+                    data = target._getPosData();
+
+                    operation.toHidePosData[i].interPosData = data;
+                }
+
+                self._execAction('_getInterMixData', 1);
+
+                return;
+            }
 
             for (i = 0; target = self._show[i]; i++) {
                 data = target._getPosData();
@@ -2388,25 +2301,24 @@
 
                 target._interPosData = data;
             }
-
-            self._execAction('_getInterMixData', 1);
         },
 
         /**
          * _setFinal
          * @since 2.0.0
+         * @param {Operation} operation
          */
 
-        _setFinal: function() {
+        _setFinal: function(operation) {
             var self = this,
                 target = null,
                 i = -1;
 
             self._execAction('_setFinal', 0);
 
-            self._isSorting && self._printSort();
+            operation.willSort && self._printSort(false, operation);
 
-            for (i = 0; target = self._toHide[i]; i++) {
+            for (i = 0; target = operation.toHide[i]; i++) {
                 target._hide();
             }
 
@@ -2416,9 +2328,10 @@
         /**
          * _getFinalMixData
          * @since 2.0.0
+         * @param {Operation} operation
          */
 
-        _getFinalMixData: function() {
+        _getFinalMixData: function(operation) {
             var self = this,
                 parentStyle = window.getComputedStyle(self._dom.parent),
                 target = null,
@@ -2427,19 +2340,19 @@
 
             self._execAction('_getFinalMixData', 0);
 
-            for (i = 0; target = self._show[i]; i++) {
+            for (i = 0; target = operation.show[i]; i++) {
                 data = target._getPosData();
 
-                target._finalPosData = data;
+                operation.showPosData[i].finalPosData = data;
             }
 
-            for (i = 0; target = self._toHide[i]; i++) {
+            for (i = 0; target = operation.toHide[i]; i++) {
                 data = target._getPosData();
 
-                target._finalPosData = data;
+                operation.toHidePosData[i].finalPosData = data;
             }
 
-            self._newHeight = self._incPadding ?
+            operation.newHeight = self._incPadding ?
                 self._dom.parent.offsetHeight :
                 self._dom.parent.offsetHeight -
                     parseFloat(parentStyle.paddingTop) -
@@ -2447,7 +2360,7 @@
                     parseFloat(parentStyle.borderTop) -
                     parseFloat(parentStyle.borderBottom);
 
-            self._newWidth = self._incPadding ?
+            operation.newWidth = self._incPadding ?
                 self._dom.parent.offsetWidth :
                 self._dom.parent.offsetWidth -
                     parseFloat(parentStyle.paddingLeft) -
@@ -2455,20 +2368,20 @@
                     parseFloat(parentStyle.borderLeft) -
                     parseFloat(parentStyle.borderRight);
 
-            if (self._isSorting) {
-                self._printSort(true);
+            if (operation.willSort) {
+                self._printSort(true, operation);
             }
 
-            for (i = 0; target = self._toShow[i]; i++) {
+            for (i = 0; target = operation.toShow[i]; i++) {
                 target._hide();
             }
 
-            for (i = 0; target = self._toHide[i]; i++) {
+            for (i = 0; target = operation.toHide[i]; i++) {
                 target._show();
             }
 
-            if (self._isChangingLayout && self.animation.animateChangeLayout) {
-                _h.removeClass(self._dom.container, self._newContainerClass);
+            if (operation.willChangeLayout && self.animation.animateChangeLayout) {
+                _h.removeClass(self._dom.container, operation.newContainerClass);
                 _h.addClass(self._dom.container, self.layout.containerClass);
             }
 
@@ -2477,25 +2390,37 @@
 
         /**
          * _moveTargets
+         * @param {Operation} operation
          * @since 3.0.0
          */
 
-        _moveTargets: function() {
+        _moveTargets: function(operation) {
             var self = this,
                 target = null,
                 posIn = {},
                 posOut = {},
+                posData = null,
                 toShow = false,
+                checkProgress = function() {
+                    // TODO: Can we find an alternative to this? _h.bind doesn't
+                    // allow the passing of an argument and we don't want to
+                    // make a function within the loops below. Even this
+                    // nested function will cause a perf hit.
+
+                    self._checkProgress(operation);
+                },
                 i = -1;
 
-            for (i = 0; target = self._show[i]; i++) {
+            for (i = 0; target = operation.show[i]; i++) {
+                posData = operation.showPosData[i];
+
                 posIn = {
-                    x: target._isShown ? target._startPosData.x - target._interPosData.x : 0,
-                    y: target._isShown ? target._startPosData.y - target._interPosData.y : 0
+                    x: target._isShown ? posData.startPosData.x - posData.interPosData.x : 0,
+                    y: target._isShown ? posData.startPosData.y - posData.interPosData.y : 0
                 },
                 posOut = {
-                    x: target._finalPosData.x - target._interPosData.x,
-                    y: target._finalPosData.y - target._interPosData.y
+                    x: posData.finalPosData.x - posData.interPosData.x,
+                    y: posData.finalPosData.y - posData.interPosData.y
                 },
                 toShow = target._isShown ? false : 'show';
 
@@ -2504,35 +2429,35 @@
                 }
 
                 if (self.animation.animateResizeTargets) {
-                    posIn.width = target._startPosData.width;
-                    posIn.height = target._startPosData.height;
+                    posIn.width = posData.startPosData.width;
+                    posIn.height = posData.startPosData.height;
 
-                    if (target._startPosData.width - target._finalPosData.width) {
+                    if (posData.startPosData.width - posData.finalPosData.width) {
                         posIn.marginRight =
-                            -(target._startPosData.width - target._interPosData.width) +
-                            (target._startPosData.marginRight * 1);
+                            -(posData.startPosData.width - posData.interPosData.width) +
+                            (posData.startPosData.marginRight * 1);
                     } else {
-                        posIn.marginRight = target._startPosData.marginRight;
+                        posIn.marginRight = posData.startPosData.marginRight;
                     }
 
-                    if (target._startPosData.height - target._finalPosData.height) {
+                    if (posData.startPosData.height - posData.finalPosData.height) {
                         posIn.marginBottom =
-                            -(target._startPosData.height - target._interPosData.height) +
-                            (target._startPosData.marginBottom * 1);
+                            -(posData.startPosData.height - posData.interPosData.height) +
+                            (posData.startPosData.marginBottom * 1);
                     } else {
-                        posIn.marginBottom = target._startPosData.marginBottom;
+                        posIn.marginBottom = posData.startPosData.marginBottom;
                     }
 
-                    posOut.width = target._finalPosData.width;
-                    posOut.height = target._finalPosData.height;
+                    posOut.width = posData.finalPosData.width;
+                    posOut.height = posData.finalPosData.height;
 
                     posOut.marginRight =
-                        -(target._finalPosData.width - target._interPosData.width) +
-                        (target._finalPosData.marginRight * 1);
+                        -(posData.finalPosData.width - posData.interPosData.width) +
+                        (posData.finalPosData.marginRight * 1);
 
                     posOut.marginBottom =
-                        -(target._finalPosData.height - target._interPosData.height) +
-                        (target._finalPosData.marginBottom * 1);
+                        -(posData.finalPosData.height - posData.interPosData.height) +
+                        (posData.finalPosData.marginBottom * 1);
                 }
 
                 target._show();
@@ -2542,14 +2467,16 @@
                     posOut: posOut,
                     hideOrShow: toShow,
                     staggerIndex: i,
-                    callback: _h.bind(self, self._checkProgress)
+                    callback: checkProgress
                 });
             }
 
-            for (i = 0; target = self._toHide[i]; i++) {
+            for (i = 0; target = operation.toHide[i]; i++) {
+                posData = operation.toHidePosData[i];
+
                 posIn = {
-                    x: target._isShown ? target._startPosData.x - target._interPosData.x : 0,
-                    y: target._isShown ? target._startPosData.y - target._interPosData.y : 0
+                    x: target._isShown ? posData.startPosData.x - posData.interPosData.x : 0,
+                    y: target._isShown ? posData.startPosData.y - posData.interPosData.y : 0
                 };
 
                 target._move({
@@ -2562,7 +2489,7 @@
                         posIn,
                     hideOrShow: 'hide',
                     staggerIndex: i,
-                    callback: _h.bind(self, self._checkProgress)
+                    callback: checkProgress
                 });
             }
 
@@ -2572,38 +2499,40 @@
                     'width ' + self.animation.duration + 'ms ease, ';
 
                 requestAnimationFrame(function() {
-                    self._dom.parent.style.height = self._newHeight + 'px';
-                    self._dom.parent.style.width = self._newWidth + 'px';
+                    self._dom.parent.style.height = operation.newHeight + 'px';
+                    self._dom.parent.style.width = operation.newWidth + 'px';
                 });
             }
 
-            if (self._isChangingLayout) {
+            if (operation.willChangeLayout) {
                 _h.removeClass(self._dom.container, self.layout.containerClass);
-                _h.addClass(self._dom.container, self._newContainerClass);
+                _h.addClass(self._dom.container, operation.newContainerClass);
             }
         },
 
         /**
          * _checkProgress
          * @since 2.0.0
+         * @param {Operation} operation
          */
 
-        _checkProgress: function() {
+        _checkProgress: function(operation) {
             var self = this;
 
             self._targetsDone++;
 
             if (self._targetsBound === self._targetsDone) {
-                self._cleanUp();
+                self._cleanUp(operation);
             }
         },
 
         /**
          * _cleanUp
          * @since 2.0.0
+         * @param {Operation} operation
          */
 
-        _cleanUp: function() {
+        _cleanUp: function(operation) {
             var self = this,
                 target = null,
                 firstInQueue = null,
@@ -2618,27 +2547,26 @@
             self._targetsBound = 0;
             self._targetsDone = 0;
 
-            for (i = 0; target = self._show[i]; i++) {
+            for (i = 0; target = operation.show[i]; i++) {
                 target._cleanUp();
 
                 target._show();
                 target._isShown = true;
             }
 
-            for (i = 0; target = self._toHide[i]; i++) {
+            for (i = 0; target = operation.toHide[i]; i++) {
                 target._cleanUp();
 
                 target._hide();
                 target._isShown = false;
             }
 
-            if (self._isSorting) {
-                self._printSort();
+            if (operation.willSort) {
+                self._printSort(operation);
 
-                self._activeSortString = self._newSortString;
-                self._currentOrder = self._newOrder;
+                self._activeSortString = operation.newSortString;
+                self._currentOrder = operation.newOrder;
                 self._newOrder = [];
-                self._isSorting = false;
             }
 
             if (self.animation.animateResizeContainer) {
@@ -2647,15 +2575,17 @@
                 self._dom.parent.style.width = '';
             }
 
-            if (self._isChangingLayout) {
+            if (operation.willChangeLayout) {
                 _h.removeClass(self._dom.container, self.layout.containerClass);
-                _h.addClass(self._dom.container, self._newContainerClass);
+                _h.addClass(self._dom.container, operation.newContainerClass);
 
-                self.layout.containerClass = self._newContainerClass;
-                self._isChangingLayout = false;
+                self.layout.containerClass = operation.newContainerClass;
             }
 
             self._isRemoving = false;
+
+            // TODO: states should be created during getOperation, and embedded into the operation.
+            // On clean up, the operation's futureState should be assigned to the mixer's currentState
 
             self._buildState();
 
@@ -2676,6 +2606,8 @@
                 self._userPromise = firstInQueue[3];
 
                 self.multiMix(firstInQueue[0], firstInQueue[1], firstInQueue[2]);
+
+                // TODO: Couldn't this be done as a call/apply, and just pass in the array?
             }
 
             self._userPromise.resolve(self._state);
@@ -2989,11 +2921,16 @@
                 changeLayoutCommand = command.changeLayout,
                 operation = new Operation();
 
-            self._execAction('getOperation', 0, arguments);
-
             operation.command = command;
 
-            if (sortCommand !== undf) {
+            self._execAction('getOperation', 0, operation);
+
+            // TODO: passing the operation rather than arguments
+            // to the action is non-standard here but essential as
+            // we require a reference to original. Perhaps a "pre"
+            // filter is the best alternative
+
+            if (sortCommand) {
                 operation.newSort = self._parseSort(sortCommand);
                 operation.newSortString = sortCommand;
 
@@ -3004,7 +2941,7 @@
                 }
             }
 
-            if (filterCommand !== undf) {
+            if (filterCommand) {
                 filterCommand = (filterCommand === 'all') ?
                     self.selectors.target : filterCommand;
             }
@@ -3042,6 +2979,8 @@
             self._getStartMixData(operation);
             self._setInter(operation);
 
+            operation.docState = _h.getDocumentState();
+
             self._getInterMixData(operation);
             self._setFinal(operation);
             self._getFinalMixData(operation);
@@ -3061,19 +3000,22 @@
         multiMix: function() {
             var self = this,
                 args = self._parseMultiMixArgs(arguments),
-                sort = args.command.sort,
-                filter = args.command.filter,
-                changeLayout = args.command.changeLayout;
+                operation = null;
 
             self._execAction('multiMix', 0, arguments);
 
             if (!self._isMixing) {
+                operation = self.getOperation(arguments);
+
+                // TODO: its inefficient to call getMultiMixArgs twice ^.
+                // But getOp must be able to function independently. What can we do?
+
                 if (self.controls.enable && !self._isClicking && !self._isRemoving) {
                     self._dom.filterToggleButtons.length && self._buildToggleArray();
 
                     // TODO: what about "live" toggles?
 
-                    self._updateControls(args.command);
+                    self._updateControls(operation.command);
                 }
 
                 (self._queue.length < 2) && (self._isClicking = false);
@@ -3082,41 +3024,16 @@
 
                 if (args.callback) self.callbacks._user = args.callback;
 
-                if (sort !== undf) {
-                    self._newSort = self._parseSort(sort);
-                    self._newSortString = sort;
-
-                    if (sort !== self._activeSortString || sort === 'random') {
-                        self._isSorting = true;
-                        self._sort();
-                    }
-                }
-
-                if (filter !== undf) {
-                    filter = (filter === 'all') ? self.selectors.target : filter;
-
-                    self._activeFilter = filter;
-                }
-
-                self._filter();
-
-                if (changeLayout !== undf) {
-                    self._newContainerClass = typeof changeLayout === 'string' ? changeLayout : '';
-
-                    if (
-                        self._newContainerClass !== self.layout.containerClass
-                    ) {
-                        self._isChangingLayout = true;
-                    }
-                }
-
                 self._execAction('multiMix', 1, arguments);
 
                 return self._goMix(
                     (args.animate ^ self.animation.enable) ?
                         args.animate :
-                        self.animation.enable
+                        self.animation.enable,
+                    operation
                 );
+
+                // TODO: About to rework goMix to accept an operation as second arg
             } else {
                 return self._deferMix(arguments, args);
             }
@@ -4047,17 +3964,19 @@
      * @constructor
      *
      * Operation objects contain all data neccessary to describe
-     * to the full lifecycle of any individual MixItUp operation
+     * the full lifecycle of any individual MixItUp operation
      */
 
     Operation = function() {
         this._execAction('_constructor', 0);
 
         this.command            = null;
-        this.targetPosData      = [];
+        this.showPosData        = [];
+        this.toHidePosData      = [];
         
         this.startState         = null;
         this.endState           = null;
+        this.docState           = null;
 
         this.willSort           = false;
         this.willChangeLayout   = false;
