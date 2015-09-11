@@ -649,6 +649,7 @@
     ---------------------------------------------------------------------- */
 
     prototype = {
+
         /* Public Static Methods
         ---------------------------------------------------------------------- */
 
@@ -882,36 +883,17 @@
             ---------------------------------------------------------------------- */
 
             _isMixing: false,
-            _isSorting: false,
             _isClicking: false,
             _isLoading: true,
-            _isChangingLayout: false,
             _isRemoving: false,
 
             _targets: [],
-            _show: [],
-            _hide: [],
-            _toShow: [],
-            _toHide: [],
-            _toMove: [],
-
-            _origOrder: [],
-            _currentOrder: [],
-            _newOrder: [],
 
             _activeFilter: null,
             _toggleArray: [],
             _toggleString: '',
-            _activeSortString: 'default:asc',
-            _newSort: null,
-            _newSortString: '',
             _staggerDuration: 0,
-            _startHeight: 0,
-            _startWidth: 0,
-            _newHeight: 0,
-            _newWidth: 0,
             _incPadding: true,
-            _newDisplay: null,
             _newContainerClass: null,
             _targetsMoved: 0,
             _targetsImmovable: 0,
@@ -1043,7 +1025,8 @@
              */
 
             (function(ElementPrototype) {
-                ElementPrototype.matches = ElementPrototype.matches ||
+                ElementPrototype.matches =
+                    ElementPrototype.matches ||
                     ElementPrototype.machesSelector ||
                     ElementPrototype.mozMatchesSelector ||
                     ElementPrototype.msMatchesSelector ||
@@ -1075,7 +1058,7 @@
 
         _init: function(el, config) {
             var self = this,
-                operation = null;
+                state = new State();
 
             self._execAction('_init', 0, arguments);
 
@@ -1089,11 +1072,13 @@
 
             self._indexTargets(true);
 
-            self._activeFilter = self.load.filter === 'all' ?
+            state.activeFilter = self.load.filter === 'all' ?
                 self.selectors.target :
                 self.load.filter === 'none' ?
                     '' :
                     self.load.filter;
+                    
+            state.activeSort = self.load.sort;
 
             if (self._dom.filterToggleButtons.length) {
                 // TODO: what about live toggles? is it worth trawling the dom?
@@ -1107,16 +1092,10 @@
             });
 
             self._effects = self._parseEffects();
-
-            self.getOperation({
-                filter: self.load.filter,
-                sort: self.load.sort        
-            });
-
-            // TODo: apply operation to active values? or what?
-
-            self._buildState();
+            
             self._bindEvents();
+            
+            self._state = state;
 
             self._execAction('_init', 1, arguments);
         },
@@ -1655,6 +1634,8 @@
                     self._evaluateHideShow(operation.startFilter.hide.indexOf(target._dom.el) < 0, target, true, operation);
                 }
             }
+            
+            operation.matching = operation.show.slice();
 
             self._execAction('_filter', 1, arguments);
         },
@@ -1671,36 +1652,18 @@
         _evaluateHideShow: function(condition, target, isRemoving, operation) {
             var self = this;
 
-            if (operation) {
-                if (condition) {
-                    if (isRemoving && typeof operation.startFilter === 'string') {
-                        self._evaluateHideShow(target._dom.el.matches(operation.startFilter), target, false, operation);
-                    } else {
-                        operation.show.push(target);
-
-                        !target._isShown && operation.toShow.push(target);
-                    }
-                } else {
-                    operation.hide.push(target);
-
-                    target._isShown && operation.toHide.push(target);
-                }
-
-                return;
-            }
-
             if (condition) {
-                if (isRemoving && typeof self._state.activeFilter === 'string') {
-                    self._evaluateHideShow(target._dom.el.matches(self._state.activeFilter), target);
+                if (isRemoving && typeof operation.startFilter === 'string') {
+                    self._evaluateHideShow(target._dom.el.matches(operation.startFilter), target, false, operation);
                 } else {
-                    self._show.push(target);
+                    operation.show.push(target);
 
-                    !target._isShown && self._toShow.push(target);
+                    !target._isShown && operation.toShow.push(target);
                 }
             } else {
-                self._hide.push(target);
+                operation.hide.push(target);
 
-                target._isShown && self._toHide.push(target);
+                target._isShown && operation.toHide.push(target);
             }
         },
 
@@ -2043,52 +2006,30 @@
         /**
          * _buildState
          * @since 2.0.0
-         * @param {Boolean} future
-         * @return [{Object}] futureState
+         * @param {Operation} operation
+         * @return {State}
          */
 
-        _buildState: function(future) {
+        _buildState: function(operation) {
             var self = this,
-                state = {},
-                targets = [],
-                show = [],
-                hide = [],
-                target = null,
-                i = -1;
+                state = new State();
 
             self._execAction('_buildState', 0);
+            
+            state.activeFilter   = operation.newFilter;
+            state.activeSort     = operation.newSortString;
+            state.hasFailed      = !operation.matching.length && operation.newFilter !== '';
+            state.targets        = self._targets;
+            state.show           = operation.show;
+            state.hide           = operation.hide;
+            state.matching       = operation.matching;
+            state.instance       = self;
+            state.totalTargets   = self._targets.length;
+            state.totalShow      = operation.show.length;
+            state.totalHide      = operation.hide.length;
+            state.totalMatching  = operation.matching.length;
 
-            for (i = 0; target = self._targets[i]; i++) {
-                targets.push(target._dom.el);
-
-                if (target._isShown) {
-                    show.push(target._dom.el);
-                } else {
-                    hide.push(target._dom.el);
-                }
-            }
-
-            state = {
-                activeFilter: self._activeFilter === '' ? 'none' : self._activeFilter,
-                activeSort: future && self._newSortString ? self._newSortString : self._activeSortString,
-                hasFailed: !self._show.length && self._activeFilter !== '',
-                targets: targets,
-                show: show,
-                hide: hide,
-                totalTargets: self._targets.length,
-                totalShow: self._show.length,
-                totalHide: self._hide.length,
-                instance: self,
-                display: future && self._newDisplay ? self._newDisplay : self.layout.display
-            };
-
-            if (future) {
-                return self._execFilter('_buildState', state);
-            } else {
-                self._state = state;
-
-                self._execAction('_buildState', 1);
-            }
+            return self._execFilter('_buildState', state, arguments);
         },
 
         /**
@@ -2102,8 +2043,7 @@
             var self = this,
                 defered = null,
                 resolvePromise = null,
-                docState = null,
-                futureState = self._buildState(true);
+                docState = null;
 
             self._execAction('_goMix', 0, arguments);
 
@@ -2140,12 +2080,12 @@
             }
 
             if (typeof self.callbacks.onMixStart === 'function') {
-                self.callbacks.onMixStart.call(self._dom.container, self._state, futureState, self);
+                self.callbacks.onMixStart.call(self._dom.container, operation.startState, operation.newState, self);
             }
 
             _h.trigger(self._dom.container, 'mixStart', {
-                state: self._state,
-                futureState: futureState,
+                state: operation.startState,
+                futureState: operation.newState,
                 instance: self
             });
 
@@ -2584,10 +2524,7 @@
 
             self._isRemoving = false;
 
-            // TODO: states should be created during getOperation, and embedded into the operation.
-            // On clean up, the operation's futureState should be assigned to the mixer's currentState
-
-            self._buildState();
+            self._state = operation.newState;
 
             if (typeof self.callbacks.onMixEnd === 'function') {
                 self.callbacks.onMixEnd.call(self._dom.el, self._state, self);
@@ -2815,27 +2752,35 @@
 
         /* Public Methods
         ---------------------------------------------------------------------- */
+        
+        /**
+         * init
+         * @since 3.0.0
+         * @return {Promise} -> {State}
+         */
+        
+        init: function() {
+           var self = this;
+           
+           return self.filter(self._state.activeFilter);
+        },
 
         /**
          * show
          * @since 3.0.0
-         * @return {Promise} --> {State}
+         * @return {Promise} -> {State}
          */
 
         show: function() {
             var self = this;
-
-            if (self._activeFilter !== self.selectors.target) {
-                return self.filter('all');
-            } else {
-                return self._goMix(self.animation.enable);
-            }
+            
+            return self.filter('all');
         },
 
         /**
          * hide
          * @since 3.0.0
-         * @return {Promise} --> {State}
+         * @return {Promise} -> {State}
          */
 
         hide: function() {
@@ -2909,19 +2854,19 @@
         /**
          * getOperation
          * @since 3.0.0
-         * @param {Mixed[]} arguments
+         * @param {Command} command
          * @return {Operation}
          */
 
-        getOperation: function() {
+        getOperation: function(command) {
             var self = this,
-                command = self._parseMultiMixArgs(arguments).command,
                 sortCommand = command.sort,
                 filterCommand = command.filter,
                 changeLayoutCommand = command.changeLayout,
                 operation = new Operation();
 
             operation.command = command;
+            operation.startState = self._state;
 
             self._execAction('getOperation', 0, operation);
 
@@ -2931,6 +2876,7 @@
             // filter is the best alternative
 
             if (sortCommand) {
+                operation.startSortString = operation.startState.activeSort;
                 operation.newSort = self._parseSort(sortCommand);
                 operation.newSortString = sortCommand;
 
@@ -2952,8 +2898,8 @@
             // TODO: insert/remove ops would be represented here too.
             // All others would be extended in via hooks
 
-            operation.startFilter = self._activeFilter;
-            operation.newFilter = filterCommand || self._activeFilter;
+            operation.startFilter = operation.startState.activeFilter;
+            operation.newFilter = filterCommand || operation.startState.activeFilter;
 
             self._filter(operation);
 
@@ -2971,10 +2917,9 @@
                 }
             }
 
-            // Run the operation through the equivalent to a goMix to populate
-            // all position data
-
             operation.effects = self._parseEffects();
+
+            // Populate the operation's position data
 
             self._getStartMixData(operation);
             self._setInter(operation);
@@ -2984,8 +2929,8 @@
             self._getInterMixData(operation);
             self._setFinal(operation);
             self._getFinalMixData(operation);
-
-            // The above 5 methods need modifying to make them functional
+            
+            operation.newState = self._buildState(operation);
 
             return self._execFilter('getOperation', operation, arguments);
         },
@@ -2998,14 +2943,14 @@
          */
 
         multiMix: function() {
-            var self = this,
-                args = self._parseMultiMixArgs(arguments),
-                operation = null;
+            var self = this,                
+                operation = null,
+                args = self._parseMultiMixArgs(arguments);
 
             self._execAction('multiMix', 0, arguments);
 
             if (!self._isMixing) {
-                operation = self.getOperation(arguments);
+                operation = self.getOperation(args.command); 
 
                 // TODO: its inefficient to call getMultiMixArgs twice ^.
                 // But getOp must be able to function independently. What can we do?
@@ -3032,8 +2977,6 @@
                         self.animation.enable,
                     operation
                 );
-
-                // TODO: About to rework goMix to accept an operation as second arg
             } else {
                 return self._deferMix(arguments, args);
             }
@@ -3218,6 +3161,8 @@
 
                     return self._state;
                 };
+                
+            // TODO: this method needs a major refactor
 
             self._execAction('remove', 0, arguments);
 
@@ -3970,12 +3915,13 @@
     Operation = function() {
         this._execAction('_constructor', 0);
 
+        this.args               = [];
         this.command            = null;
         this.showPosData        = [];
         this.toHidePosData      = [];
         
         this.startState         = null;
-        this.endState           = null;
+        this.newState           = null;
         this.docState           = null;
 
         this.willSort           = false;
@@ -3984,12 +3930,14 @@
         this.effects            = null;
         this.show               = [];
         this.hide               = [];
+        this.matching           = [];
         this.toShow             = [];
         this.toHide             = [];
         this.toMove             = [];
         this.startOrder         = [];
         this.newOrder           = [];
         this.newSort            = null;
+        this.startSortString    = '';
         this.newSortString      = '';
         this.startFilter        = null;
         this.newFilter          = null;
@@ -3997,7 +3945,6 @@
         this.startWidth         = 0;
         this.newHeight          = 0;
         this.newWidth           = 0;
-        this.newDisplay         = null;
         this.newContainerClass  = null;
 
         this._execAction('_constructor', 1);
@@ -4026,15 +3973,16 @@
 
         this.activeFilter   = '';
         this.activeSort     = '';
-        this.display        = '';
         this.hasFailed      = false;
         this.targets        = null;
         this.show           = null;
         this.hide           = null;
+        this.matching       = null;
         this.instance       = null;
         this.totalTargets   = -1;
         this.totalShow      = -1;
         this.totalHide      = -1;
+        this.totalMatching  = -1;
 
         this._execAction('_constructor', 1);
 
