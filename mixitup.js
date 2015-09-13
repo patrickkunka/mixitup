@@ -2007,7 +2007,7 @@
 
            for (i = 0; transform = self._transformDefaults[i]; i++) {
                self._parseEffect(transform.prop, i);
-           };
+           }
 
            self._parseEffect('stagger');
         },
@@ -3208,6 +3208,7 @@
                 posOut = null,
                 tweenData = null,
                 propertyName = '',
+                toHideIndex = -1,
                 i = -1,
                 j = -1;
                 
@@ -3224,17 +3225,32 @@
                 if (target._dom.el.style.display) {
                     target._hide();
                 }
-            }
-
-            for (i = 0; target = operation.toHide[i]; i++) {
-                posData = operation.toHidePosData[i];
                 
-                if (!target._dom.el.style.display) {
-                    target._show();
-                }
+                if ((toHideIndex = operation.toHide.indexOf(target)) > -1) {
+                    posData = operation.toHidePosData[toHideIndex];
+                
+                    if (!target._dom.el.style.display) {
+                        target._show();
+                    }
 
-                target._applyTween(posData, multiplier);
+                    target._applyTween(posData, multiplier);
+                }
             }
+        },
+        
+        /**
+         * complete
+         * @since 3.0.0
+         * @param {Operation} operation
+         * @param {Float} multiplier
+         * @param {Integer} duration
+         * @void
+         */
+
+        complete: function(operation, multiplier, duration) {
+            var self = this;
+            
+            self._goMix(true, operation);
         },
 
         /**
@@ -3555,6 +3571,9 @@
             _isShown: false,
             _isBound: false,
             _isExcluded: false,
+            _currentValues: null,
+            _currentTransform: null,
+            _finalTransform: null,
             _handler: null,
 
             _dom: {
@@ -3735,14 +3754,19 @@
                 propertyName = '',
                 tweenData = null,
                 posIn = posData.posIn,
-                transformValues =  [],
-                value = -1,
-                xValue = posIn.x,
-                yValue = posIn.y,
+                currentTransformValues = [],
+                finalTransformValues = [],
+                currentValues = new StyleData(),
                 i = -1;
+                
+            currentValues.display = self._mixer.layout.display;
+            currentValues.x = posIn.x;
+            currentValues.y = posIn.y;
 
             if (multiplier === 0) {
-                posIn.display === 'none' && self._hide();
+                currentValues.display = 'none';
+
+                posIn.display === currentValues.display && self._hide();
             } else if (!self._dom.el.style.display) {
                 self._show();
             }
@@ -3753,31 +3777,39 @@
                 if (propertyName === 'x') {
                     if (!tweenData) continue;
 
-                    xValue = posIn.x + (tweenData * multiplier);
+                    currentValues.x = posIn.x + (tweenData * multiplier);
                 } else if (propertyName === 'y') {
                     if (!tweenData) continue;
                     
-                    yValue = posIn.y + (tweenData * multiplier);
+                    currentValues.y = posIn.y + (tweenData * multiplier);
                 } else if (tweenData instanceof TransformData) {
                     if (!tweenData.value) continue;
                     
-                    value = posIn[propertyName].value + (tweenData.value * multiplier);
+                    currentValues[propertyName].value = posIn[propertyName].value + (tweenData.value * multiplier);
+                    currentValues[propertyName].unit = tweenData.unit;
                     
-                    transformValues.push(propertyName + '(' + value + tweenData.unit + ')');
+                    currentTransformValues.push(propertyName + '(' + currentValues[propertyName].value + tweenData.unit + ')');
+                    finalTransformValues.push(propertyName + '(' + posData.posOut[propertyName].value + tweenData.unit + ')');
                 } else if (propertyName !== 'display') {
                     if (!tweenData) continue;
                     
-                    self._dom.el.style[propertyName] = posIn[propertyName] + (tweenData * multiplier);
+                    currentValues[propertyName] = posIn[propertyName] + (tweenData * multiplier);
+                    
+                    self._dom.el.style[propertyName] = currentValues[propertyName];
                 }
             }
             
-            if (xValue || yValue) {
-                transformValues.push('translate(' + xValue + 'px, ' + yValue + 'px)');
+            if (currentValues.x || currentValues.y) {
+                currentTransformValues.unshift('translate(' + currentValues.x + 'px, ' + currentValues.y + 'px)');
             }
             
-            if (transformValues.length) {
-                self._dom.el.style[MixItUp.prototype._transformProp] = transformValues.join(' ');
+            if (currentTransformValues.length) {
+                self._dom.el.style[MixItUp.prototype._transformProp] = currentTransformValues.join(' ');
             }
+
+            self._currentValues = currentValues;
+            self._currentTransform = currentTransformValues;
+            self._finalTransform = finalTransformValues;
         },
 
         /**
@@ -3791,27 +3823,27 @@
 
         _applyStylesIn: function(options) {
             var self = this,
-                isFading = self._mixer._effectsIn.opacity !== undf,
+                posIn = self._currentValues || options.posIn,
+                isFading = self._mixer._effectsIn.opacity !== 1,
                 transformValues = [];
 
-            transformValues.push('translate(' + options.posIn.x + 'px, ' + options.posIn.y + 'px)');
-
-            if (!options.hideOrShow && self._mixer.animation.animateResizeTargets) {
-                self._dom.el.style.width        = options.posIn.width + 'px';
-                self._dom.el.style.height       = options.posIn.height + 'px';
-                self._dom.el.style.marginRight  = options.posIn.marginRight + 'px';
-                self._dom.el.style.marginBottom = options.posIn.marginBottom + 'px';
+            if (!self._currentTransform) {
+                transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
             }
 
-            switch (options.hideOrShow) {
-                case 'hide':
-                    isFading && (self._dom.el.style.opacity = 1);
+            if (!options.hideOrShow && self._mixer.animation.animateResizeTargets) {
+                self._dom.el.style.width        = posIn.width + 'px';
+                self._dom.el.style.height       = posIn.height + 'px';
+                self._dom.el.style.marginRight  = posIn.marginRight + 'px';
+                self._dom.el.style.marginBottom = posIn.marginBottom + 'px';
+            }
+            
+            isFading && (self._dom.el.style.opacity = posIn.opacity);
 
-                    break;
-                case 'show':
-                    isFading && (self._dom.el.style.opacity = self._mixer._effectsIn.opacity);
-
-                    transformValues = transformValues.concat(self._mixer._transformIn);
+            if (options.hideOrShow === 'show') {
+                transformValues = transformValues.concat(self._currentTransform || self._mixer._transformIn);
+            } else if (options.hideOrShow === 'hide' && self._currentTransform) {
+                transformValues = transformValues.concat(self._currentTransform);
             }
 
             self._dom.el.style[MixItUp.prototype._transformProp] = transformValues.join(' ');
@@ -3850,8 +3882,7 @@
 
             if (
                 self._mixer.animation.animateResizeTargets &&
-                self._finalPosData &&
-                self._finalPosData.isShown
+                options.posOut.display
             ) {
                 transitionRules.push(self._writeTransitionRule(
                     'width',
@@ -3912,8 +3943,7 @@
 
             if (
                 isResizing &&
-                self._finalPosData &&
-                self._finalPosData.isShown
+                options.posOut.display
             ) {
                 self._dom.el.style.width        = options.posOut.width + 'px';
                 self._dom.el.style.height       = options.posOut.height + 'px';
@@ -3935,7 +3965,7 @@
                 case 'hide':
                     isFading && (self._dom.el.style.opacity = self._mixer._effectsIn.opacity);
 
-                    transformValues = transformValues.concat(self._mixer._transformOut);
+                    transformValues = transformValues.concat(self._finalTransform || self._mixer._transformOut);
 
                     break;
                 case 'show':
@@ -4186,6 +4216,10 @@
                 self._dom.el.style.marginRight = '';
                 self._dom.el.style.marginBottom = '';
             }
+            
+            self._currentValues = null;
+            self._currentTransform = null;
+            self._finalTransform = null;
 
             self._execAction('_cleanUp', 1, arguments);
         }
