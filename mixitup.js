@@ -660,7 +660,7 @@
                 Object.seal(obj);
             }
         }
-    }; 
+    };
 
     /* basePrototype
     ---------------------------------------------------------------------- */
@@ -679,7 +679,7 @@
          * Shallow extend the prototype with new methods
          */
 
-        // TODO: make the extend helper method more robust with deep/shallow flag, and call here 
+        // TODO: make the extend helper method more robust with deep/shallow flag, and call here
 
         extend: function(extension) {
             var key = '',
@@ -914,7 +914,6 @@
             _targets: [],
             _origOrder: [],
 
-            _activeFilter: null,
             _toggleArray: [],
             _toggleString: '',
             _staggerDuration: 0,
@@ -932,11 +931,12 @@
             _queue: [],
             _handler: null,
             _state: null,
+            _lastOperation: null,
             _vendor: ''
         });
 
         self._execAction('_constructor', 1);
-        
+
         _h.seal(this);
         _h.seal(this.selectors);
         _h.seal(this.animation);
@@ -970,7 +970,7 @@
         _transformProp: 'transform',
         _transformRule: 'transform',
         _transitionProp: 'transition',
-        
+
         _tweenable: [
             'opacity',
             'width', 'height',
@@ -1155,7 +1155,7 @@
                 self.load.filter === 'none' ?
                     '' :
                     self.load.filter;
-                    
+
             state.activeSort = self.load.sort;
 
             if (self._dom.filterToggleButtons.length) {
@@ -1170,9 +1170,9 @@
             });
 
             self._parseEffects();
-            
+
             self._bindEvents();
-            
+
             self._state = state;
 
             self._execAction('_init', 1, arguments);
@@ -1720,7 +1720,7 @@
                     self._evaluateHideShow(operation.startFilter.hide.indexOf(target._dom.el) < 0, target, true, operation);
                 }
             }
-            
+
             operation.matching = operation.show.slice();
 
             self._execAction('_filter', 1, arguments);
@@ -2002,7 +2002,7 @@
            self._effectsOut = new StyleData();
            self._transformIn = [];
            self._transformOut = [];
-            
+
            self._parseEffect('fade');
 
            for (i = 0; transform = self._transformDefaults[i]; i++) {
@@ -2011,12 +2011,12 @@
 
            self._parseEffect('stagger');
         },
-        
+
         /**
          * _parseEffect
          * @since 2.0.0
          * @param {String} effect
-         * @param [{Number}] transformIndex         
+         * @param [{Number}] transformIndex
          */
 
         _parseEffect: function(effect, transformIndex) {
@@ -2085,11 +2085,11 @@
                 }
             } else {
                 // Else, use the default value for the effect
-                
+
                 switch (effect) {
                     case 'fade':
                         self._effectsIn.opacity = self._effectsOut.opacity = 0;
-                            
+
                         break;
                     case 'stagger':
                         self._staggerDuration = 100;
@@ -2124,18 +2124,19 @@
 
             self._execAction('_buildState', 0);
 
-            state.activeFilter   = operation.newFilter;
-            state.activeSort     = operation.newSortString;
-            state.hasFailed      = !operation.matching.length && operation.newFilter !== '';
-            state.targets        = self._targets;
-            state.show           = operation.show;
-            state.hide           = operation.hide;
-            state.matching       = operation.matching;
-            state.instance       = self;
-            state.totalTargets   = self._targets.length;
-            state.totalShow      = operation.show.length;
-            state.totalHide      = operation.hide.length;
-            state.totalMatching  = operation.matching.length;
+            state.activeFilter         = operation.newFilter;
+            state.activeSort           = operation.newSortString;
+            state.activeContainerClass = operation.newContainerClass;
+            state.hasFailed            = !operation.matching.length && operation.newFilter !== '';
+            state.targets              = self._targets;
+            state.show                 = operation.show;
+            state.hide                 = operation.hide;
+            state.matching             = operation.matching;
+            state.instance             = self;
+            state.totalTargets         = self._targets.length;
+            state.totalShow            = operation.show.length;
+            state.totalHide            = operation.hide.length;
+            state.totalMatching        = operation.matching.length;
 
             return self._execFilter('_buildState', state, arguments);
         },
@@ -2425,13 +2426,13 @@
 
             self._execAction('_getFinalMixData', 1);
         },
-        
+
         /**
          *  _getTweenData
          * since 3.0.0
          * @param {Operation} operation
          */
-        
+
         _getTweenData: function(operation) {
             var self = this,
                 target = null,
@@ -2441,43 +2442,43 @@
                 effect = null,
                 i = -1,
                 j = -1;
-            
+
             for (i = 0; target = operation.show[i]; i++) {
                 posData             = operation.showPosData[i];
                 posData.posIn       = new StyleData();
                 posData.posOut      = new StyleData();
                 posData.tweenData   = new StyleData();
-                
+
                 // Process x and y
 
                 posData.posIn.x = target._isShown ? posData.startPosData.x - posData.interPosData.x : 0;
                 posData.posIn.y = target._isShown ? posData.startPosData.y - posData.interPosData.y : 0;
                 posData.posOut.x = posData.finalPosData.x - posData.interPosData.x;
                 posData.posOut.y = posData.finalPosData.y - posData.interPosData.y;
-                
+
                 // Process display
 
                 posData.posIn.display = target._isShown ? self.layout.display : 'none';
                 posData.posOut.display = self.layout.display;
-                
+
                 // Process opacity
 
                 posData.posIn.opacity = target._isShown ? 1 : self._effectsIn.opacity;
                 posData.posOut.opacity = 1;
                 posData.tweenData.opacity = posData.posOut.opacity - posData.posIn.opacity;
-                
+
                 // Adjust x and y if not nudging
 
                 if (!target._isShown && !self.animation.nudgeOut) {
                     posData.posIn.x = posData.posOut.x;
                     posData.posIn.y = posData.posOut.y;
                 }
-                
+
                 posData.tweenData.x = posData.posOut.x - posData.posIn.x;
                 posData.tweenData.y = posData.posOut.y - posData.posIn.y;
-                
+
                 // Process width, height, and margins
-                
+
                 if (self.animation.animateResizeTargets) {
                     posData.posIn.width = posData.startPosData.width;
                     posData.posIn.height = posData.startPosData.height;
@@ -2508,15 +2509,15 @@
                     posData.posOut.marginBottom =
                         -(posData.finalPosData.height - posData.interPosData.height) +
                         (posData.finalPosData.marginBottom * 1);
-                        
+
                     posData.tweenData.width = posData.posOut.width - posData.posIn.width;
                     posData.tweenData.height = posData.posOut.height - posData.posIn.height;
                     posData.tweenData.marginRight = posData.posOut.marginRight - posData.posIn.marginRight;
                     posData.tweenData.marginBottom = posData.posOut.marginBottom - posData.posIn.marginBottom;
                 }
-                
+
                 // Process transforms
-                
+
                 for (j = 0; effectName = effectNames[j]; j++) {
                     effect = self._effectsIn[effectName];
 
@@ -2525,20 +2526,20 @@
                     posData.posIn[effectName].value = effect.value;
                     posData.posOut[effectName].value = 0;
                     posData.tweenData[effectName].value = posData.posOut[effectName].value - posData.posIn[effectName].value;
-                    
+
                     posData.posIn[effectName].unit =
                         posData.posOut[effectName].unit =
                         posData.tweenData[effectName].unit =
                         effect.unit;
                 }
             }
-            
+
             for (i = 0; target = operation.toHide[i]; i++) {
                 posData             = operation.toHidePosData[i];
                 posData.posIn       = new StyleData();
                 posData.posOut      = new StyleData();
                 posData.tweenData   = new StyleData();
-                
+
                 // Process x and y
 
                 posData.posIn.x = target._isShown ? posData.startPosData.x - posData.interPosData.x : 0;
@@ -2547,20 +2548,20 @@
                 posData.posOut.y = self.animation.nudgeOut ? 0 : posData.posIn.y;
                 posData.tweenData.x = posData.posOut.x - posData.posIn.x;
                 posData.tweenData.y = posData.posOut.y - posData.posIn.y;
-                
+
                 // Process display
 
                 posData.posIn.display = self.layout.display;
                 posData.posOut.display = 'none';
-                
+
                 // Process opacity
-                
+
                 posData.posIn.opacity = 1;
                 posData.posOut.opacity = self._effectsOut.opacity;
                 posData.tweenData.opacity = posData.posOut.opacity - posData.posIn.opacity;
-                
+
                 // Process transforms
-                
+
                 for (j = 0; effectName = effectNames[j]; j++) {
                     effect = self._effectsOut[effectName];
 
@@ -2569,7 +2570,7 @@
                     posData.posIn[effectName].value = 0;
                     posData.posOut[effectName].value = effect.value;
                     posData.tweenData[effectName].value = posData.posOut[effectName].value - posData.posIn[effectName].value;
-                    
+
                     posData.posIn[effectName].unit =
                         posData.posOut[effectName].unit =
                         posData.tweenData[effectName].unit =
@@ -2598,7 +2599,7 @@
                     self._checkProgress(operation);
                 },
                 i = -1;
-                
+
             // TODO: this is an extra loop in addition to the calcs
             // done in getOperation, can we get around somehow?
 
@@ -2700,10 +2701,6 @@
 
             if (operation.willSort) {
                 self._printSort(operation);
-
-                self._activeSortString = operation.newSortString;
-                self._currentOrder = operation.newOrder;
-                self._newOrder = [];
             }
 
             if (self.animation.animateResizeContainer) {
@@ -2713,15 +2710,14 @@
             }
 
             if (operation.willChangeLayout) {
-                _h.removeClass(self._dom.container, self.layout.containerClass);
+                _h.removeClass(self._dom.container, operation.startContainerClass);
                 _h.addClass(self._dom.container, operation.newContainerClass);
-
-                self.layout.containerClass = operation.newContainerClass;
             }
 
             self._isRemoving = false;
 
             self._state = operation.newState;
+            self._lastOperation = operation;
 
             if (typeof self.callbacks.onMixEnd === 'function') {
                 self.callbacks.onMixEnd.call(self._dom.el, self._state, self);
@@ -2738,7 +2734,7 @@
                 firstInQueue = self._queue.shift();
 
                 self._userPromise = firstInQueue[3];
-                
+
                 self.multiMix.apply(self, firstInQueue);
             }
 
@@ -2753,18 +2749,18 @@
          * @since 2.0.0
          * @param {Number} index
          * @return {Number}
-         * 
+         *
          * Allow for the manipulation of target indices via a user specified function
          */
 
         _getDelay: function(index) {
             var self = this,
                 delay = -1;
-                
+
             if (typeof self.animation.staggerSequence === 'function') {
                 index = self.animation.staggerSequence.call(self, index, self._state);
             }
-            
+
             delay = !!self._staggerDuration ? index * self.animation.staggerDuration : 0;
 
             return self._execFilter('_getDelay', delay, arguments);
@@ -2956,16 +2952,16 @@
 
         /* Public Methods
         ---------------------------------------------------------------------- */
-        
+
         /**
          * init
          * @since 3.0.0
          * @return {Promise} -> {State}
          */
-        
+
         init: function() {
            var self = this;
-           
+
            return self.filter(self._state.activeFilter);
         },
 
@@ -2977,7 +2973,7 @@
 
         show: function() {
             var self = this;
-            
+
             return self.filter('all');
         },
 
@@ -3067,16 +3063,13 @@
                 sortCommand = command.sort,
                 filterCommand = command.filter,
                 changeLayoutCommand = command.changeLayout,
-                operation = new Operation(),
-                target = null,
-                posData = null,
-                i = -1;
+                operation = new Operation();
 
             operation.command = command;
             operation.startState = self._state;
 
             self._execAction('getOperation', 0, operation);
-            
+
             if (self._isMixing) {
                 return null;
             }
@@ -3091,7 +3084,7 @@
                 operation.newSort = self._parseSort(sortCommand);
                 operation.newSortString = sortCommand;
 
-                if (sortCommand !== self._activeSortString || sortCommand === 'random') {
+                if (sortCommand !== operation.startState.activeSortString || sortCommand === 'random') {
                     operation.willSort = true;
 
                     self._sort(operation);
@@ -3115,14 +3108,12 @@
             self._filter(operation);
 
             if (changeLayoutCommand !== undf) {
+                operation.startContainerClass = operation.startState.activeContainerClass;
                 operation.newContainerClass = typeof changeLayoutCommand === 'string' ?
                     changeLayoutCommand : '';
 
-                // NB: Looks like I decided layout changes can
-                // only be done via class names in v3,.. probably a good thing.
-
                 if (
-                    operation.newContainerClass !== self.layout.containerClass
+                    operation.newContainerClass !== operation.startState.activeContainerClass
                 ) {
                     operation.willChangeLayout = true;
                 }
@@ -3138,11 +3129,11 @@
             self._getInterMixData(operation);
             self._setFinal(operation);
             self._getFinalMixData(operation);
-            
+
             self._parseEffects();
 
             self._getTweenData(operation);
-            
+
             operation.newState = self._buildState(operation);
 
             return self._execFilter('getOperation', operation, arguments);
@@ -3156,7 +3147,7 @@
          */
 
         multiMix: function() {
-            var self = this,                
+            var self = this,
                 operation = null,
                 args = self._parseMultiMixArgs(arguments);
 
@@ -3211,7 +3202,7 @@
                 toHideIndex = -1,
                 i = -1,
                 j = -1;
-                
+
             multiplier = Math.min(multiplier, 1);
             multiplier = Math.max(multiplier, 0);
 
@@ -3220,15 +3211,15 @@
 
                 target._applyTween(posData, multiplier);
             }
-            
+
             for (i = 0; target = operation.hide[i]; i++) {
                 if (target._dom.el.style.display) {
                     target._hide();
                 }
-                
+
                 if ((toHideIndex = operation.toHide.indexOf(target)) > -1) {
                     posData = operation.toHidePosData[toHideIndex];
-                
+
                     if (!target._dom.el.style.display) {
                         target._show();
                     }
@@ -3236,21 +3227,6 @@
                     target._applyTween(posData, multiplier);
                 }
             }
-        },
-        
-        /**
-         * complete
-         * @since 3.0.0
-         * @param {Operation} operation
-         * @param {Float} multiplier
-         * @param {Integer} duration
-         * @void
-         */
-
-        complete: function(operation, multiplier, duration) {
-            var self = this;
-            
-            self._goMix(true, operation);
         },
 
         /**
@@ -3432,7 +3408,7 @@
 
                     return self._state;
                 };
-                
+
             // TODO: this method needs a major refactor
 
             self._execAction('remove', 0, arguments);
@@ -3468,7 +3444,7 @@
 
         getOption: function(string) {
             var self = this;
-            
+
             // TODO
         },
 
@@ -3482,7 +3458,7 @@
             var self = this;
 
             self._execAction('setOptions', 0, arguments);
-            
+
             // TODO
 
             self._execAction('setOptions', 1, arguments);
@@ -3571,9 +3547,6 @@
             _isShown: false,
             _isBound: false,
             _isExcluded: false,
-            _currentValues: null,
-            _currentTransform: null,
-            _finalTransform: null,
             _handler: null,
 
             _dom: {
@@ -3582,7 +3555,7 @@
         });
 
         self._execAction('_constructor', 1, arguments);
-        
+
         _h.seal(this);
         _h.seal(this.dom);
     };
@@ -3740,13 +3713,13 @@
 
             self._execAction('_move', 1, arguments);
         },
-        
+
         /**
          * _applyTween
          * @since 3.0.0
          * @param {Object} posData
          * @param {Number} multiplier
-         * @void 
+         * @void
          */
 
         _applyTween: function(posData, multiplier) {
@@ -3755,10 +3728,9 @@
                 tweenData = null,
                 posIn = posData.posIn,
                 currentTransformValues = [],
-                finalTransformValues = [],
                 currentValues = new StyleData(),
                 i = -1;
-                
+
             currentValues.display = self._mixer.layout.display;
             currentValues.x = posIn.x;
             currentValues.y = posIn.y;
@@ -3780,36 +3752,31 @@
                     currentValues.x = posIn.x + (tweenData * multiplier);
                 } else if (propertyName === 'y') {
                     if (!tweenData) continue;
-                    
+
                     currentValues.y = posIn.y + (tweenData * multiplier);
                 } else if (tweenData instanceof TransformData) {
                     if (!tweenData.value) continue;
-                    
+
                     currentValues[propertyName].value = posIn[propertyName].value + (tweenData.value * multiplier);
                     currentValues[propertyName].unit = tweenData.unit;
-                    
+
                     currentTransformValues.push(propertyName + '(' + currentValues[propertyName].value + tweenData.unit + ')');
-                    finalTransformValues.push(propertyName + '(' + posData.posOut[propertyName].value + tweenData.unit + ')');
                 } else if (propertyName !== 'display') {
                     if (!tweenData) continue;
-                    
+
                     currentValues[propertyName] = posIn[propertyName] + (tweenData * multiplier);
-                    
+
                     self._dom.el.style[propertyName] = currentValues[propertyName];
                 }
             }
-            
+
             if (currentValues.x || currentValues.y) {
                 currentTransformValues.unshift('translate(' + currentValues.x + 'px, ' + currentValues.y + 'px)');
             }
-            
+
             if (currentTransformValues.length) {
                 self._dom.el.style[MixItUp.prototype._transformProp] = currentTransformValues.join(' ');
             }
-
-            self._currentValues = currentValues;
-            self._currentTransform = currentTransformValues;
-            self._finalTransform = finalTransformValues;
         },
 
         /**
@@ -3823,13 +3790,11 @@
 
         _applyStylesIn: function(options) {
             var self = this,
-                posIn = self._currentValues || options.posIn,
+                posIn = options.posIn,
                 isFading = self._mixer._effectsIn.opacity !== 1,
                 transformValues = [];
 
-            if (!self._currentTransform) {
-                transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
-            }
+            transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
 
             if (!options.hideOrShow && self._mixer.animation.animateResizeTargets) {
                 self._dom.el.style.width        = posIn.width + 'px';
@@ -3837,13 +3802,11 @@
                 self._dom.el.style.marginRight  = posIn.marginRight + 'px';
                 self._dom.el.style.marginBottom = posIn.marginBottom + 'px';
             }
-            
+
             isFading && (self._dom.el.style.opacity = posIn.opacity);
 
             if (options.hideOrShow === 'show') {
-                transformValues = transformValues.concat(self._currentTransform || self._mixer._transformIn);
-            } else if (options.hideOrShow === 'hide' && self._currentTransform) {
-                transformValues = transformValues.concat(self._currentTransform);
+                transformValues = transformValues.concat(self._mixer._transformIn);
             }
 
             self._dom.el.style[MixItUp.prototype._transformProp] = transformValues.join(' ');
@@ -3965,7 +3928,7 @@
                 case 'hide':
                     isFading && (self._dom.el.style.opacity = self._mixer._effectsIn.opacity);
 
-                    transformValues = transformValues.concat(self._finalTransform || self._mixer._transformOut);
+                    transformValues = transformValues.concat(self._mixer._transformOut);
 
                     break;
                 case 'show':
@@ -4179,7 +4142,7 @@
                 posData = new StyleData();
 
             self._execAction('_getPosData', 0, arguments);
-            
+
             posData.x               = self._dom.el.offsetLeft;
             posData.y               = self._dom.el.offsetTop;
             posData.width           = self._dom.el.offsetWidth;
@@ -4216,10 +4179,6 @@
                 self._dom.el.style.marginRight = '';
                 self._dom.el.style.marginBottom = '';
             }
-            
-            self._currentValues = null;
-            self._currentTransform = null;
-            self._finalTransform = null;
 
             self._execAction('_cleanUp', 1, arguments);
         }
@@ -4284,42 +4243,43 @@
     Operation = function() {
         this._execAction('_constructor', 0);
 
-        this.args               = [];
-        this.command            = null;
-        this.showPosData        = [];
-        this.toHidePosData      = [];
-        
-        this.startState         = null;
-        this.newState           = null;
-        this.docState           = null;
+        this.args                = [];
+        this.command             = null;
+        this.showPosData         = [];
+        this.toHidePosData       = [];
 
-        this.willSort           = false;
-        this.willChangeLayout   = false;
-        
-        this.show               = [];
-        this.hide               = [];
-        this.matching           = [];
-        this.toShow             = [];
-        this.toHide             = [];
-        this.toMove             = [];
-        this.startOrder         = [];
-        this.newOrder           = [];
-        this.newSort            = null;
-        this.startSortString    = '';
-        this.newSortString      = '';
-        this.startFilter        = null;
-        this.newFilter          = null;
-        this.startHeight        = 0;
-        this.startWidth         = 0;
-        this.newHeight          = 0;
-        this.newWidth           = 0;
-        this.newContainerClass  = null;
+        this.startState          = null;
+        this.newState            = null;
+        this.docState            = null;
+
+        this.willSort            = false;
+        this.willChangeLayout    = false;
+
+        this.show                = [];
+        this.hide                = [];
+        this.matching            = [];
+        this.toShow              = [];
+        this.toHide              = [];
+        this.toMove              = [];
+        this.startOrder          = [];
+        this.newOrder            = [];
+        this.newSort             = null;
+        this.startSortString     = '';
+        this.newSortString       = '';
+        this.startFilter         = null;
+        this.newFilter           = null;
+        this.startHeight         = 0;
+        this.startWidth          = 0;
+        this.newHeight           = 0;
+        this.newWidth            = 0;
+        this.startContainerClass = ''
+        this.newContainerClass   = '';
 
         this._execAction('_constructor', 1);
 
         _h.seal(this);
     };
-    
+
     /**
      * Operation.prototype
      * @since 3.0.0
@@ -4346,24 +4306,25 @@
     State = function() {
         this._execAction('_constructor', 0);
 
-        this.activeFilter   = '';
-        this.activeSort     = '';
-        this.hasFailed      = false;
-        this.targets        = null;
-        this.show           = null;
-        this.hide           = null;
-        this.matching       = null;
-        this.instance       = null;
-        this.totalTargets   = -1;
-        this.totalShow      = -1;
-        this.totalHide      = -1;
-        this.totalMatching  = -1;
+        this.activeFilter         = '';
+        this.activeSort           = '';
+        this.activeContainerClass = '';
+        this.targets              = null;
+        this.show                 = null;
+        this.hide                 = null;
+        this.matching             = null;
+        this.instance             = null;
+        this.totalTargets         = -1;
+        this.totalShow            = -1;
+        this.totalHide            = -1;
+        this.totalMatching        = -1;
+        this.hasFailed            = false;
 
         this._execAction('_constructor', 1);
 
         _h.seal(this);
     };
-    
+
     /**
      * State.prototype
      * @since 3.0.0
@@ -4377,7 +4338,7 @@
         _actions: {},
         _filters: {}
     });
-    
+
     /* TransformData
     ---------------------------------------------------------------------- */
 
@@ -4397,7 +4358,7 @@
 
         _h.seal(this);
     };
-    
+
     /**
      * TransformData.prototype
      * @since 3.0.0
@@ -4411,7 +4372,7 @@
         _actions: {},
         _filters: {}
     });
-    
+
     /* StyleData
     ---------------------------------------------------------------------- */
 
@@ -4444,7 +4405,7 @@
 
         _h.seal(this);
     };
-    
+
     /**
      * StyleData.prototype
      * @since 3.0.0
