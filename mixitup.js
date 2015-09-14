@@ -981,42 +981,36 @@
             'rotateX', 'rotateY', 'rotateZ'
         ],
 
-        _transformDefaults: [
-            {
-                prop: 'scale',
-                value: 0.01
+        _transformDefaults: {
+            scale: {
+                value: 0.01,
+                unit: ''
             },
-            {
-                prop: 'translateX',
+            translateX: {
                 value: 20,
                 unit: 'px'
             },
-            {
-                prop: 'translateY',
+            translateY: {
                 value: 20,
                 unit: 'px'
             },
-            {
-                prop: 'translateZ',
+            translateZ: {
                 value: 20,
                 unit: 'px'
             },
-            {
-                prop: 'rotateX',
+            rotateX: {
                 value: 90,
                 unit: 'deg'
             },
-            {
-                prop: 'rotateY',
+            rotateY: {
                 value: 90,
                 unit: 'deg'
             },
-            {
-                prop: 'rotateZ',
+            rotateZ: {
                 value: 180,
                 unit: 'deg'
             }
-        ],
+        },
 
         _is: {},
         _has: {},
@@ -1148,7 +1142,7 @@
 
             self.animation.enable = self.animation.enable && MixItUp.prototype._has._transitions;
 
-            self._indexTargets(true);
+            self._indexTargets();
 
             state.activeFilter = self.load.filter === 'all' ?
                 self.selectors.target :
@@ -1658,6 +1652,76 @@
 
             self._execAction('_updateControls', 1, arguments);
         },
+        
+        /**
+         * _insert
+         * @since 3.0.0
+         * @param {Object} command
+         * @param {Operation} operation
+         * @param {Array} arguments
+         * @return {Promise} -> {State}
+         */
+
+        _insert: function(command, operation) {
+            var self = this,
+                nextSibling = self._getNextSibling(command.index, command.sibling, command.position),
+                frag = doc.createDocumentFragment(),
+                target = null,
+                el = null,
+                i = -1;
+
+            // TODO: throw error if user attempts to insert element that is already a target
+
+            self._execAction('insert', 0, arguments);
+
+            if (command.collection) {
+                for (i = 0; el = command.collection[i]; i++) {
+                    frag.appendChild(el);
+                    frag.appendChild(doc.createTextNode(' '));
+
+                    if (!_h.isElement(el) || !el.matches(self.selectors.target)) continue;
+
+                    target = new Target();
+
+                    target._init(el, self);
+
+                    self._targets.splice(command.index, 0, target);
+                }
+
+                self._dom.parent.insertBefore(frag, nextSibling);
+            }
+
+            operation.startOrder = self._origOrder = self._targets;
+
+            self._execAction('insert', 1, arguments);
+        },
+        
+        /**
+         * _getNextSibling
+         * @param [{Number}] index
+         * @param [{Element}] sibling
+         * @param [{String}] position
+         */
+        
+        _getNextSibling: function(index, sibling, position) {
+            var self = this;
+            
+            if (sibling) {
+                if (position === 'before') {
+                    return sibling;
+                } else if (position === 'after') {
+                    return sibling.nextElementSibling || null;
+                }
+            }
+            
+            if (self._targets.length && index !== undf) {
+                return (index < self._targets.length || !self._targets.length) ?
+                    self._targets[index]._dom.el :
+                    self._targets[self._targets.length - 1]._dom.el.nextElementSibling;
+            } else {
+                return self._dom.parent.children.length ? self._dom.parent.children[0] : null;
+            }
+        },
 
         /**
          * _filter
@@ -1675,54 +1739,46 @@
             self._execAction('_filter', 0, arguments);
 
             for (i = 0; target = self._targets[i]; i++) {
-                if (typeof operation.startFilter === 'string') {
+                if (typeof operation.newFilter === 'string') {
                     // show via selector
 
-                    condition = operation.startFilter === '' ?
-                        false : target._dom.el.matches(operation.startFilter);
+                    condition = operation.newFilter === '' ?
+                        false : target._dom.el.matches(operation.newFilter);
 
                     self._evaluateHideShow(condition, target, false, operation);
                 } else if (
-                    typeof operation.startFilter === 'object' &&
-                    _h.isElement(operation.startFilter)
+                    typeof operation.newFilter === 'object' &&
+                    _h.isElement(operation.newFilter)
                 ) {
                     // show via element
 
-                    self._evaluateHideShow(target._dom.el === operation.startFilter, target, false, operation);
+                    self._evaluateHideShow(target._dom.el === operation.newFilter, target, false, operation);
                 } else if (
-                    typeof operation.startFilter === 'object' &&
-                    operation.startFilter.length
+                    typeof operation.newFilter === 'object' &&
+                    operation.newFilter.length
                 ) {
                     // show via collection
 
-                    self._evaluateHideShow(operation.startFilter.indexOf(target._dom.el) > -1, target, false, operation);
-                } else if (
-                    typeof operation.startFilter === 'object' &&
-                    typeof operation.startFilter.hide === 'string'
-                ) {
-                    // hide via selector
-
-                    self._evaluateHideShow(!target._dom.el.matches(operation.startFilter.hide), target, true, operation);
-                } else if (
-                    typeof operation.startFilter.hide === 'object' &&
-                    _h.isElement(operation.startFilter.hide)
-                ) {
-                    // hide via element
-
-                    self._evaluateHideShow(target._dom.el !== operation.startFilter.hide, target, true, operation);
-                } else if (
-                    typeof operation.startFilter.hide === 'object' &&
-                    operation.startFilter.hide !== null &&
-                    operation.startFilter.hide.length
-                ) {
-                    // hide via collection
-
-                    self._evaluateHideShow(operation.startFilter.hide.indexOf(target._dom.el) < 0, target, true, operation);
+                    self._evaluateHideShow(operation.newFilter.indexOf(target._dom.el) > -1, target, false, operation);
                 }
             }
 
             operation.matching = operation.show.slice();
+            
+            if (operation.toRemove.length) {
+                for (i = 0; target = operation.show[i]; i++) {
+                    if (operation.toRemove.indexOf(target) > -1) {
+                        // If any shown targets should be removed, move them into the toHide array
 
+                        operation.show.splice(i, 1);
+                        
+                        operation.toHide.push(target);
+                        
+                        i--;
+                    }
+                }
+            }
+            
             self._execAction('_filter', 1, arguments);
         },
 
@@ -1766,13 +1822,9 @@
                 target = null,
                 i = -1;
 
-            self._execAction('_sort', 0);
+            self._execAction('_sort', 0, arguments);
 
-            operation.startOrder = [];
-
-            for (i = 0; target = self._targets[i]; i++) {
-                operation.currentOrder.push(target);
-            }
+            operation.startOrder = self._targets;
 
             switch (operation.newSort[0].sortBy) {
                 case 'default':
@@ -1803,7 +1855,7 @@
                 operation.willSort = false;
             }
 
-            self._execAction('_sort', 1);
+            self._execAction('_sort', 1, arguments);
         },
 
         /**
@@ -1901,7 +1953,7 @@
 
         _printSort: function(isResetting, operation) {
             var self = this,
-                order = isResetting ? self._currentOrder : self._newOrder,
+                order = isResetting ? operation.startOrder : operation.newOrder,
                 targets = _h.children(self._dom.parent, self.selectors.target),
                 nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
                 frag = doc.createDocumentFragment(),
@@ -1909,12 +1961,6 @@
                 whiteSpace = null,
                 el = null,
                 i = -1;
-
-            if (operation) {
-                // TODO: This will replace the above ^
-
-                order = isResetting ? operation.startOrder : operation.newOrder;
-            }
 
             self._execAction('_printSort', 0, arguments);
 
@@ -1995,7 +2041,7 @@
 
         _parseEffects: function() {
             var self = this,
-                transform = null,
+                transformName = '',
                 i = -1;
 
            self._effectsIn = new StyleData();
@@ -2005,8 +2051,8 @@
 
            self._parseEffect('fade');
 
-           for (i = 0; transform = self._transformDefaults[i]; i++) {
-               self._parseEffect(transform.prop, i);
+           for (transformName in self._transformDefaults) {
+               self._parseEffect(transformName);
            }
 
            self._parseEffect('stagger');
@@ -2015,11 +2061,11 @@
         /**
          * _parseEffect
          * @since 2.0.0
-         * @param {String} effect
+         * @param {String} effectName
          * @param [{Number}] transformIndex
          */
 
-        _parseEffect: function(effect, transformIndex) {
+        _parseEffect: function(effectName) {
             var self = this,
                 re = /\(([^)]+)\)/,
                 propIndex = -1,
@@ -2030,7 +2076,7 @@
                 unit = '',
                 i = -1;
 
-            if (self.animation.effects.indexOf(effect) < 0) {
+            if (self.animation.effects.indexOf(effectName) < 0) {
                 // The effect is not present in the animation.effects string
 
                 return;
@@ -2038,7 +2084,7 @@
 
             // The effect is present
 
-            propIndex = self.animation.effects.indexOf(effect + '(');
+            propIndex = self.animation.effects.indexOf(effectName + '(');
 
             // TODO: Can we improve the logic below for DRYness?
 
@@ -2055,7 +2101,7 @@
 
                 val = match[1];
 
-                switch (effect) {
+                switch (effectName) {
                     case 'fade':
                         self._effectsIn.opacity = self._effectsOut.opacity = parseFloat(val);
 
@@ -2069,24 +2115,24 @@
 
                         for (i = 0; unit = units[i]; i++) {
                             if (val.indexOf(unit) > -1) {
-                                self._effectsIn[effect].unit = self._effectsOut[effect].unit = unit;
-                                self._effectsIn[effect].value = parseFloat(val);
+                                self._effectsIn[effectName].unit = self._effectsOut[effectName].unit = unit;
+                                self._effectsIn[effectName].value = parseFloat(val);
                             }
 
                             break;
                         }
 
-                        self._effectsOut[effect].value = (self.animation.reverseOut && effect !== 'scale') ?
-                            self._effectsIn[effect].value * -1 :
-                            self._effectsIn[effect].value;
+                        self._effectsOut[effectName].value = (self.animation.reverseOut && effectName !== 'scale') ?
+                            self._effectsIn[effectName].value * -1 :
+                            self._effectsIn[effectName].value;
 
-                        self._transformIn.push(effect + '(' + self._effectsIn[effect].value + self._effectsIn[effect].unit + ')');
-                        self._transformOut.push(effect + '(' + self._effectsOut[effect].value + self._effectsOut[effect].unit + ')');
+                        self._transformIn.push(effectName + '(' + self._effectsIn[effectName].value + self._effectsIn[effectName].unit + ')');
+                        self._transformOut.push(effectName + '(' + self._effectsOut[effectName].value + self._effectsOut[effectName].unit + ')');
                 }
             } else {
                 // Else, use the default value for the effect
 
-                switch (effect) {
+                switch (effectName) {
                     case 'fade':
                         self._effectsIn.opacity = self._effectsOut.opacity = 0;
 
@@ -2098,15 +2144,15 @@
                     default:
                         // Transforms
 
-                        self._effectsIn[effect].value = self._transformDefaults[i].value;
-                        self._effectsIn[effect].unit = self._effectsOut[effect].unit = self._transformDefaults[i].unit;
+                        self._effectsIn[effectName].value = self._transformDefaults[effectName].value;
+                        self._effectsIn[effectName].unit = self._effectsOut[effectName].unit = self._transformDefaults[effectName].unit;
 
-                        self._effectsOut[effect].value = (self.animation.reverseOut && effect !== 'scale') ?
-                            self._effectsIn[effect].value * -1 :
-                            self._effectsIn[effect].value;
+                        self._effectsOut[effectName].value = (self.animation.reverseOut && effectName !== 'scale') ?
+                            self._effectsIn[effectName].value * -1 :
+                            self._effectsIn[effectName].value;
 
-                        self._transformIn.push(effect + '(' + self._effectsIn[effect].value + self._effectsIn[effect].unit + ')');
-                        self._transformOut.push(effect + '(' + self._effectsOut[effect].value + self._effectsOut[effect].unit + ')');
+                        self._transformIn.push(effectName + '(' + self._effectsIn[effectName].value + self._effectsIn[effectName].unit + ')');
+                        self._transformOut.push(effectName + '(' + self._effectsOut[effectName].value + self._effectsOut[effectName].unit + ')');
                 }
             }
         },
@@ -2700,7 +2746,9 @@
             }
 
             if (operation.willSort) {
-                self._printSort(operation);
+                self._printSort(false, operation);
+                
+                self._targets = operation.newOrder;
             }
 
             if (self.animation.animateResizeContainer) {
@@ -2714,7 +2762,17 @@
                 _h.addClass(self._dom.container, operation.newContainerClass);
             }
 
-            self._isRemoving = false;
+            if (operation.toRemove.length) {
+                for (i = 0; target = self._targets[i]; i++) {
+                    if (operation.toRemove.indexOf(target) > -1) {
+                        _h.deleteElement(target._dom.el);
+
+                        self._targets.splice(i, 1);
+                        
+                        i--;
+                    }
+                }
+            }
 
             self._state = operation.newState;
             self._lastOperation = operation;
@@ -2810,13 +2868,13 @@
         _parseInsertArgs: function(args) {
             var self = this,
                 output = {
-                    index: 0,
-                    collection: [],
-                    multiMix: {
-                        filter: self._state.activeFilter
+                    command: {
+                        index: 0, // Index to insert at
+                        collection: [], // Element(s) to insert
+                        position: 'before', // Position relative to a sibling if passed
+                        sibling: null // A sibling element as a reference
                     },
-                    position: '',
-                    sibling: null,
+                    animate: self.animation.enable,
                     callback: null
                 },
                 arg = null,
@@ -2826,36 +2884,44 @@
                 arg = args[i];
 
                 if (typeof arg === 'number') {
-                    output.index = arg;
+                    // Insert index
+                    
+                    output.command.index = arg;
                 } else if (typeof arg === 'string') {
-                    output.position = arg;
+                    // 'before'/'after'
+
+                    output.command.position = arg;
                 } else if (typeof arg === 'object' && _h.isElement(arg)) {
+                    // Single element
+
                     !output.collection.length ?
-                        (output.collection = [arg]) :
-                        (output.sibling = arg);
+                        (output.command.collection = [arg]) :
+                        (output.command.sibling = arg);
                 } else if (typeof arg === 'object' && arg !== null && arg.length) {
-                    !output.collection.length ?
-                        (output.collection = arg) :
-                        output.sibling = arg[0];
+                    // Multiple elements in array or jQuery collection
+
+                    !output.command.collection.length ?
+                        (output.command.collection = arg) :
+                        output.command.sibling = arg[0];
                 } else if (
                     typeof arg === 'object' &&
                     arg !== null &&
                     arg.childNodes &&
                     arg.childNodes.length
                 ) {
-                    !output.collection.length ?
-                        output.collection = Array.prototype.slice.call(arg.childNodes) :
-                        output.sibling = arg.childNodes[0];
-                } else if (typeof arg === 'object' && arg !== null) {
-                    output.multiMix = arg;
-                } else if (typeof arg === 'boolean' && !arg) {
-                    output.multiMix = false;
+                    // Document fragment
+
+                    !output.command.collection.length ?
+                        output.command.collection = Array.prototype.slice.call(arg.childNodes) :
+                        output.command.sibling = arg.childNodes[0];
+                } else if (typeof arg === 'boolean') {
+                    output.animate = arg;
                 } else if (typeof arg === 'function') {
                     output.callback = arg;
                 }
             }
 
-            if (!output.collection.length && _h.canReportErrors(self)) {
+            if (!output.command.collection.length && _h.canReportErrors(self)) {
                 throw new Error('[MixItUp] No elements were passed to "insert"');
             }
 
@@ -2872,11 +2938,14 @@
         _parseRemoveArgs: function(args) {
             var self = this,
                 output = {
-                    index: -1,
-                    selector: '',
-                    collection: [],
+                    command: {
+                        targets: []
+                    },
+                    animate: self.animation.enable,
                     callback: null
                 },
+                collection = [],
+                target = null,
                 arg = null,
                 i = -1;
 
@@ -2885,25 +2954,39 @@
 
                 switch (typeof arg) {
                     case 'number':
-                        output.index = arg;
+                        if (self._targets[arg]) {
+                            output.command.targets[0] = self._targets[arg];   
+                        }
 
                         break;
                     case 'string':
-                        output.selector = arg;
+                        collection = Array.prototype.slice.call(self._dom.parent.querySelectorAll(arg));
 
                         break;
                     case 'object':
                         if (arg && arg.length) {
-                            output.collection = arg;
+                            collection = arg;
                         } else if (_h.isElement(arg)) {
-                            output.collection = [arg];
+                            collection = [arg];
                         }
 
+                        break;
+                    case 'boolean':
+                        output.animate = arg;
+                        
                         break;
                     case 'function':
                         output.callback = arg;
 
                         break;
+                }
+            }
+            
+            if (collection.length) {
+                for (i = 0; target = self._targets[i]; i++) {
+                    if (collection.indexOf(target._dom.el) > -1) {
+                        output.command.targets.push(target);
+                    }
                 }
             }
 
@@ -3063,21 +3146,34 @@
                 sortCommand = command.sort,
                 filterCommand = command.filter,
                 changeLayoutCommand = command.changeLayout,
+                removeCommand = command.remove,
+                insertCommand = command.insert,
                 operation = new Operation();
 
             operation.command = command;
             operation.startState = self._state;
 
             self._execAction('getOperation', 0, operation);
-
-            if (self._isMixing) {
-                return null;
-            }
-
+            
             // TODO: passing the operation rather than arguments
             // to the action is non-standard here but essential as
             // we require a reference to original. Perhaps a "pre"
             // filter is the best alternative
+
+            if (self._isMixing) {
+                return null;
+            }
+            
+            if (insertCommand) {
+                // TODO: What if the insert/remove command is passed directly to
+                // multimix is not parsed down i.e. "remove: el"
+ 
+                self._insert(insertCommand, operation);
+            }
+            
+            if (removeCommand) {
+                operation.toRemove = removeCommand.targets;
+            }
 
             if (sortCommand) {
                 operation.startSortString = operation.startState.activeSort;
@@ -3091,21 +3187,22 @@
                 }
             }
 
+            operation.startFilter = operation.startState.activeFilter;
+
             if (filterCommand) {
-                filterCommand = (filterCommand === 'all') ?
-                    self.selectors.target : filterCommand;
+                operation.newFilter = filterCommand === 'all' ?
+                    self.selectors.target :
+                    filterCommand === 'none' ?
+                        '' :
+                        filterCommand;
+            } else {
+                operation.newFilter = operation.startState.activeFilter;
             }
+
+            self._filter(operation);
 
             // TODO: we need a definitve object for filter operations,
             // which accomodates selectors, elements, hide vs show etc.
-
-            // TODO: insert/remove ops would be represented here too.
-            // All others would be extended in via hooks
-
-            operation.startFilter = operation.startState.activeFilter;
-            operation.newFilter = filterCommand || operation.startState.activeFilter;
-
-            self._filter(operation);
 
             if (changeLayoutCommand !== undf) {
                 operation.startContainerClass = operation.startState.activeContainerClass;
@@ -3228,76 +3325,28 @@
                 }
             }
         },
-
+        
         /**
          * insert
          * @since 2.0.0
-         * @param {Array} arguments
+         * @param {Mixed[]} arguments
+         * @shorthand multiMix
          * @return {Promise} -> {State}
          */
-
+        
         insert: function() {
             var self = this,
-                args = self._parseInsertArgs(arguments),
-                callback = (typeof args.callback === 'function') ? args.callback : null,
-                frag = doc.createDocumentFragment(),
-                target = null,
-                nextSibling = (function() {
-                    if (args.position === 'before') {
-                        return args.sibling;
-                    }
+                args = self._parseInsertArgs(arguments);
 
-                    if (args.position === 'after') {
-                        return args.sibling.nextElementSibling || null;
-                    }
-
-                    if (self._targets.length) {
-                        return (args.index < self._targets.length || !self._targets.length) ?
-                            self._targets[args.index]._dom.el :
-                            self._targets[self._targets.length - 1]._dom.el.nextElementSibling;
-                    } else {
-                        return self._dom.parent.children.length ? self._dom.parent.children[0] : null;
-                    }
-                })(),
-                el = null,
-                i = -1;
-
-            // TODO: insert and remove must be queuable independently of their multimix calls
-
-            // TODO: throw error if user attempts to insert element that is already a target
-
-            self._execAction('insert', 0, arguments);
-
-            if (args.collection) {
-                for (i = 0; el = args.collection[i]; i++) {
-                    frag.appendChild(el);
-                    frag.appendChild(doc.createTextNode(' '));
-
-                    if (!_h.isElement(el) || !el.matches(self.selectors.target)) continue;
-
-                    target = new Target();
-
-                    target._init(el, self);
-
-                    self._targets.splice(args.index, 0, target);
-                }
-
-                self._dom.parent.insertBefore(frag, nextSibling);
-            }
-
-            self._currentOrder = self._origOrder = self._targets;
-
-            self._execAction('insert', 1, arguments);
-
-            if (typeof args.multiMix === 'object') {
-                return self.multiMix(args.multiMix, callback);
-            }
+            return self.multiMix({
+                insert: args.command
+            }, args.animate, args.callback);
         },
 
         /**
          * insertBefore
          * @since 3.0.0
-         * @shorthand self.insert
+         * @shorthand insert
          * @param {Array} arguments
          * @return {Promise} -> {State}
          */
@@ -3306,13 +3355,13 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(0, args.collection, args.multiMix, 'before', args.sibling, args.callback);
+            return self.insert(args.command.collection, 'before', args.command.sibling, args.animate, args.callback);
         },
 
         /**
          * insertAfter
          * @since 3.0.0
-         * @shorthand self.insert
+         * @shorthand insert
          * @param {Array} arguments
          * @return {Promise} -> {State}
          */
@@ -3321,13 +3370,13 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(0, args.collection, args.multiMix, 'after', args.sibling, args.callback);
+            return self.insert(args.command.collection, 'after', args.command.sibling, args.animate, args.callback);
         },
 
         /**
          * prepend
          * @since 2.0.0
-         * @shorthand self.insert
+         * @shorthand insert
          * @param {Array} arguments
          * @return {Promise} -> {State}
          */
@@ -3336,13 +3385,13 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(0, args.collection, args.multiMix, args.callback);
+            return self.insert(0, args.command.collection, args.animate, args.callback);
         },
 
         /**
          * append
          * @since 2.0.0
-         * @shorthand self.insert
+         * @shorthand insert
          * @param {array} arguments
          * @return {Promise} -> {State}
          */
@@ -3351,88 +3400,26 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(self._state.totalTargets, args.collection, args.multiMix, args.callback);
+            return self.insert(self._state.totalTargets, args.command.collection, args.animate, args.callback);
         },
 
         /**
          * remove
          * @since 3.0.0
-         * @param {Array} arguments
+         * @param {Mixed[]} arguments
+         * @shorthand multiMix
          * @return {Promise} -> {State}
          */
 
         remove: function() {
             var self = this,
-                args = self._parseRemoveArgs(arguments),
-                activeFilterStart = '',
-                multiMix = {
-                    filter: {
-                        hide: null
-                    }
-                },
-                target = null,
-                i = -1,
-                cleanUp = function(state) {
-                    if (args.collection.length) {
-                        for (i = 0; target = self._targets[i]; i++) {
-                            if (args.collection.indexOf(target._dom.el) > -1) {
-                                _h.deleteElement(target._dom.el);
-
-                                self._targets.splice(i, 1);
-
-                                i--;
-                            }
-                        }
-                    } else if (args.index > -1 && self._targets[args.index]) {
-                        _h.deleteElement(self._targets[args.index]._dom.el);
-
-                        self._targets.splice(args.index, 1);
-                    } else if (args.selector) {
-                        for (i = 0; target = self._targets[i]; i++) {
-                            if (target._dom.el.matches(args.selector)) {
-                                _h.deleteElement(target._dom.el);
-
-                                self._targets.splice(i, 1);
-
-                                i--;
-                            }
-                        }
-                    }
-
-                    self._currentOrder = self._origOrder = self._targets;
-
-                    self._activeFilter = activeFilterStart;
-                    self._filter();
-
-                    self._buildState();
-
-                    return self._state;
-                };
-
-            // TODO: this method needs a major refactor
-
-            self._execAction('remove', 0, arguments);
-
-            activeFilterStart = self.getState().activeFilter;
-
-            self._isRemoving = true;
-
-            if (args.collection.length) {
-                multiMix.filter.hide = args.collection;
-            } else if (args.index > -1 && self._targets[args.index]) {
-                multiMix.filter.hide = self._targets[args.index]._dom.el;
-            } else if (args.selector) {
-                multiMix.filter.hide = args.selector;
-            }
-
-            self._execAction('remove', 1, arguments);
-
-            return self.multiMix(multiMix, args.callback)
-                .then(function() {
-                    cleanUp();
-                });
-
-            // TODO: use a normal callback here for browser support!
+                args = self._parseRemoveArgs(arguments);
+                
+            console.log(args);
+                
+            return self.multiMix({
+                remove: args.command
+            }, args.aniamte, args.callback);
         },
 
         /**
@@ -4261,6 +4248,7 @@
         this.toShow              = [];
         this.toHide              = [];
         this.toMove              = [];
+        this.toRemove            = [];
         this.startOrder          = [];
         this.newOrder            = [];
         this.newSort             = null;
