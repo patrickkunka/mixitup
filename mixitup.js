@@ -145,14 +145,14 @@
         },
 
         /**
-         * trigger
+         * triggerCustom
          * @param {Element} element
          * @param {String} eventName
          * @param {Object} data
          * @void
          */
 
-        trigger: function(el, eventName, data) {
+        triggerCustom: function(el, eventName, data) {
             var event = null;
 
             if (typeof window.CustomEvent === 'function') {
@@ -1308,8 +1308,6 @@
             }
 
             self._execAction('_unbindEvents', 1);
-
-            delete self._handler;
         },
 
         /**
@@ -2166,18 +2164,35 @@
 
         _buildState: function(operation) {
             var self = this,
-                state = new State();
-
+                state = new State(),
+                target = null,
+                i = -1;
+                
             self._execAction('_buildState', 0);
+                
+            // Map target elements into state arrays.
+            // the real target objects should never be exposed
+                
+            for (i = 0; target = self._targets[i]; i++) {
+                state.targets.push(target._dom.el);
+            }
+                
+            for (i = 0; target = operation.matching[i]; i++) {
+                state.matching.push(target._dom.el);
+            }
+            
+            for (i = 0; target = operation.show[i]; i++) {
+                state.show.push(target._dom.el);
+            }
+            
+            for (i = 0; target = operation.hide[i]; i++) {
+                state.hide.push(target._dom.el);
+            }
 
             state.activeFilter         = operation.newFilter;
             state.activeSort           = operation.newSortString;
             state.activeContainerClass = operation.newContainerClass;
             state.hasFailed            = !operation.matching.length && operation.newFilter !== '';
-            state.targets              = self._targets;
-            state.show                 = operation.show;
-            state.hide                 = operation.hide;
-            state.matching             = operation.matching;
             state.instance             = self;
             state.totalTargets         = self._targets.length;
             state.totalShow            = operation.show.length;
@@ -2239,7 +2254,7 @@
                 self.callbacks.onMixStart.call(self._dom.container, operation.startState, operation.newState, self);
             }
 
-            _h.trigger(self._dom.container, 'mixStart', {
+            _h.triggerCustom(self._dom.container, 'mixStart', {
                 state: operation.startState,
                 futureState: operation.newState,
                 instance: self
@@ -2781,7 +2796,7 @@
                 self.callbacks.onMixEnd.call(self._dom.el, self._state, self);
             }
 
-            _h.trigger(self._dom.container, 'mixEnd', {
+            _h.triggerCustom(self._dom.container, 'mixEnd', {
                 state: self._state,
                 instance: self
             });
@@ -3022,7 +3037,7 @@
                     self.callbacks.onMixBusy.call(self._dom.container, self._state, self);
                 }
 
-                _h.trigger(self._dom.container, 'mixBusy', {
+                _h.triggerCustom(self._dom.container, 'mixBusy', {
                     state: self._state,
                     instance: self
                 });
@@ -3267,6 +3282,7 @@
 
                 if (args.callback) self._userCallback = args.callback;
 
+                self._execFilter('multiMix', operation, self);
                 self._execAction('multiMix', 1, arguments);
 
                 return self._goMix(
@@ -3415,8 +3431,6 @@
             var self = this,
                 args = self._parseRemoveArgs(arguments);
                 
-            console.log(args);
-                
             return self.multiMix({
                 remove: args.command
             }, args.aniamte, args.callback);
@@ -3544,7 +3558,7 @@
         self._execAction('_constructor', 1, arguments);
 
         _h.seal(this);
-        _h.seal(this.dom);
+        _h.seal(this._dom);
     };
 
     /**
@@ -4090,8 +4104,6 @@
             _h.off(self._dom.el, 'transitionEnd', self._handler);
 
             self._execAction('_unbindEvents', 1, arguments);
-
-            delete self._handler;
         },
 
         /**
@@ -4260,7 +4272,7 @@
         this.startWidth          = 0;
         this.newHeight           = 0;
         this.newWidth            = 0;
-        this.startContainerClass = ''
+        this.startContainerClass = '';
         this.newContainerClass   = '';
 
         this._execAction('_constructor', 1);
@@ -4294,14 +4306,14 @@
     State = function() {
         this._execAction('_constructor', 0);
 
+        this.instance             = null;
         this.activeFilter         = '';
         this.activeSort           = '';
         this.activeContainerClass = '';
-        this.targets              = null;
-        this.show                 = null;
-        this.hide                 = null;
-        this.matching             = null;
-        this.instance             = null;
+        this.targets              = [];
+        this.hide                 = [];
+        this.show                 = [];
+        this.matching             = [];
         this.totalTargets         = -1;
         this.totalShow            = -1;
         this.totalHide            = -1;
