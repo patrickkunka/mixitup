@@ -20,7 +20,7 @@
         Collection      = null,
         Operation       = null,
         StyleData       = null,
-        MixItUp         = null,
+        Mixer           = null,
         mixItUp         = null,
         Target          = null,
         State           = null,
@@ -506,7 +506,7 @@
                 },
                 defered = null;
 
-            if (MixItUp.prototype._has._promises) {
+            if (Mixer.prototype._has._promises) {
                 promise.promise = new Promise(function(resolve, reject) {
                     promise.resolve = resolve;
                     promise.reject = reject;
@@ -699,7 +699,6 @@
          * @param {String} name
          * @param {Function} func
          * @param {Number} priority
-         * @extends {Object} MixItUp.prototype._actions
          * @void
          *
          * Register a named action hook on the prototype
@@ -715,7 +714,6 @@
          * @param {String} hook
          * @param {String} name
          * @param {Function} func
-         * @extends {Object} MixItUp.prototype._filters
          * @void
          *
          * Register a named action hook on the prototype
@@ -735,10 +733,9 @@
          * @param {String} hook name
          * @param {Function} function to execute
          * @param {Number} priority
-         * @extends {Object} MixItUp.prototype._filters
          * @void
          *
-         * Add a hook to the MixItUp prototype
+         * Add a hook to the object's prototype
          */
 
         _addHook: function(type, hook, name, func, priority) {
@@ -802,18 +799,16 @@
         }
     };
 
-    /* MixItUp
+    /* Mixer
     ---------------------------------------------------------------------- */
 
     /**
-     * MixItUp
-     * @since 2.0.0
+     * Mixer
+     * @since 3.0.0
      * @constructor
      */
 
-    // TODO: should this be called a Mixer?
-
-    MixItUp = function() {
+    Mixer = function() {
         var self = this;
 
         self._execAction('_constructor', 0);
@@ -950,16 +945,16 @@
     };
 
     /**
-     * MixItUp.prototype
-     * @since 2.0.0
+     * Mixer.prototype
+     * @since 3.0.0
      * @prototype
      * @extends prototype
      */
 
-    MixItUp.prototype = Object.create(basePrototype);
+    Mixer.prototype = Object.create(basePrototype);
 
-    _h.extend(MixItUp.prototype, {
-        constructor: MixItUp,
+    _h.extend(Mixer.prototype, {
+        constructor: Mixer,
 
         /* Static Properties
         ---------------------------------------------------------------------- */
@@ -1043,19 +1038,21 @@
                 transformPrefix = _h.getPrefix(testEl, 'Transform', vendorsTrans),
                 i = -1;
 
+            self._execAction('_featureDetect', 0);
+
             self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a seperate test
 
-            MixItUp.prototype._has._promises = typeof Promise === 'function';
-            MixItUp.prototype._has._transitions = transitionPrefix !== false;
-            MixItUp.prototype._is._crapIe = window.atob ? false : true;
+            Mixer.prototype._has._promises = typeof Promise === 'function';
+            Mixer.prototype._has._transitions = transitionPrefix !== false;
+            Mixer.prototype._is._crapIe = window.atob ? false : true;
 
-            MixItUp.prototype._transitionProp =
+            Mixer.prototype._transitionProp =
                 transitionPrefix ? transitionPrefix + 'Transition' : 'transition';
 
-            MixItUp.prototype._transformProp =
+            Mixer.prototype._transformProp =
                 transformPrefix ? transformPrefix + 'Transform' : 'transform';
 
-            MixItUp.prototype._transformRule =
+            Mixer.prototype._transformRule =
                 transformPrefix ? '-' + transformPrefix + '-transform' : 'transform';
 
             /* Polyfills
@@ -1140,7 +1137,7 @@
 
             self.layout.containerClass && _h.addClass(el, self.layout.containerClass);
 
-            self.animation.enable = self.animation.enable && MixItUp.prototype._has._transitions;
+            self.animation.enable = self.animation.enable && Mixer.prototype._has._transitions;
 
             self._indexTargets();
 
@@ -1259,7 +1256,7 @@
 
         _bindEvents: function() {
             var self = this,
-                proto = MixItUp.prototype,
+                proto = Mixer.prototype,
                 filters = proto._bound._filter,
                 sorts = proto._bound._sort,
                 button = null,
@@ -1514,7 +1511,7 @@
 
         _trackClick: function(button, method, isTogglingOff) {
             var self = this,
-                proto = MixItUp.prototype,
+                proto = Mixer.prototype,
                 selector = self.selectors[method];
 
             method = '_' + method;
@@ -1650,7 +1647,7 @@
 
             self._execAction('_updateControls', 1, arguments);
         },
-        
+
         /**
          * _insert
          * @since 3.0.0
@@ -1693,17 +1690,17 @@
 
             self._execAction('insert', 1, arguments);
         },
-        
+
         /**
          * _getNextSibling
          * @param [{Number}] index
          * @param [{Element}] sibling
          * @param [{String}] position
          */
-        
+
         _getNextSibling: function(index, sibling, position) {
             var self = this;
-            
+
             if (sibling) {
                 if (position === 'before') {
                     return sibling;
@@ -1711,7 +1708,7 @@
                     return sibling.nextElementSibling || null;
                 }
             }
-            
+
             if (self._targets.length && index !== undf) {
                 return (index < self._targets.length || !self._targets.length) ?
                     self._targets[index]._dom.el :
@@ -1731,6 +1728,7 @@
         _filter: function(operation) {
             var self = this,
                 condition = false,
+                index = -1,
                 target = null,
                 i = -1;
 
@@ -1762,21 +1760,26 @@
             }
 
             operation.matching = operation.show.slice();
-            
+
             if (operation.toRemove.length) {
                 for (i = 0; target = operation.show[i]; i++) {
                     if (operation.toRemove.indexOf(target) > -1) {
                         // If any shown targets should be removed, move them into the toHide array
 
                         operation.show.splice(i, 1);
-                        
+
+                        if ((index = operation.toShow.indexOf(target)) > -1) {
+                            operation.toShow.splice(index, 1);
+                        }
+
                         operation.toHide.push(target);
-                        
+                        operation.hide.push(target);
+
                         i--;
                     }
                 }
             }
-            
+
             self._execAction('_filter', 1, arguments);
         },
 
@@ -2167,24 +2170,24 @@
                 state = new State(),
                 target = null,
                 i = -1;
-                
+
             self._execAction('_buildState', 0);
-                
+
             // Map target elements into state arrays.
             // the real target objects should never be exposed
-                
+
             for (i = 0; target = self._targets[i]; i++) {
                 state.targets.push(target._dom.el);
             }
-                
+
             for (i = 0; target = operation.matching[i]; i++) {
                 state.matching.push(target._dom.el);
             }
-            
+
             for (i = 0; target = operation.show[i]; i++) {
                 state.show.push(target._dom.el);
             }
-            
+
             for (i = 0; target = operation.hide[i]; i++) {
                 state.hide.push(target._dom.el);
             }
@@ -2260,7 +2263,7 @@
                 instance: self
             });
 
-            if (shouldAnimate && MixItUp.prototype._has._transitions) {
+            if (shouldAnimate && Mixer.prototype._has._transitions) {
                 // If we should animate and the platform supports
                 // transitions, go for it
 
@@ -2691,7 +2694,7 @@
             }
 
             if (self.animation.animateResizeContainer) {
-                self._dom.parent.style[MixItUp.prototype._transitionProp] =
+                self._dom.parent.style[Mixer.prototype._transitionProp] =
                     'height ' + self.animation.duration + 'ms ease, ' +
                     'width ' + self.animation.duration + 'ms ease, ';
 
@@ -2762,12 +2765,12 @@
 
             if (operation.willSort) {
                 self._printSort(false, operation);
-                
+
                 self._targets = operation.newOrder;
             }
 
             if (self.animation.animateResizeContainer) {
-                self._dom.parent.style[MixItUp.prototype._transitionProp] = '';
+                self._dom.parent.style[Mixer.prototype._transitionProp] = '';
                 self._dom.parent.style.height = '';
                 self._dom.parent.style.width = '';
             }
@@ -2783,7 +2786,7 @@
                         _h.deleteElement(target._dom.el);
 
                         self._targets.splice(i, 1);
-                        
+
                         i--;
                     }
                 }
@@ -2900,7 +2903,7 @@
 
                 if (typeof arg === 'number') {
                     // Insert index
-                    
+
                     output.command.index = arg;
                 } else if (typeof arg === 'string') {
                     // 'before'/'after'
@@ -2970,7 +2973,7 @@
                 switch (typeof arg) {
                     case 'number':
                         if (self._targets[arg]) {
-                            output.command.targets[0] = self._targets[arg];   
+                            output.command.targets[0] = self._targets[arg];
                         }
 
                         break;
@@ -2988,7 +2991,7 @@
                         break;
                     case 'boolean':
                         output.animate = arg;
-                        
+
                         break;
                     case 'function':
                         output.callback = arg;
@@ -2996,7 +2999,7 @@
                         break;
                 }
             }
-            
+
             if (collection.length) {
                 for (i = 0; target = self._targets[i]; i++) {
                     if (collection.indexOf(target._dom.el) > -1) {
@@ -3169,7 +3172,7 @@
             operation.startState = self._state;
 
             self._execAction('getOperation', 0, operation);
-            
+
             // TODO: passing the operation rather than arguments
             // to the action is non-standard here but essential as
             // we require a reference to original. Perhaps a "pre"
@@ -3178,14 +3181,14 @@
             if (self._isMixing) {
                 return null;
             }
-            
+
             if (insertCommand) {
                 // TODO: What if the insert/remove command is passed directly to
                 // multimix is not parsed down i.e. "remove: el"
- 
+
                 self._insert(insertCommand, operation);
             }
-            
+
             if (removeCommand) {
                 operation.toRemove = removeCommand.targets;
             }
@@ -3341,7 +3344,7 @@
                 }
             }
         },
-        
+
         /**
          * insert
          * @since 2.0.0
@@ -3349,7 +3352,7 @@
          * @shorthand multiMix
          * @return {Promise} -> {State}
          */
-        
+
         insert: function() {
             var self = this,
                 args = self._parseInsertArgs(arguments);
@@ -3430,7 +3433,7 @@
         remove: function() {
             var self = this,
                 args = self._parseRemoveArgs(arguments);
-                
+
             return self.multiMix({
                 remove: args.command
             }, args.aniamte, args.callback);
@@ -3521,7 +3524,7 @@
                 self._dom.container.id = '';
             }
 
-            delete MixItUp.prototype._instances[self.id];
+            delete Mixer.prototype._instances[self.id];
 
             self._execAction('destroy', 1, arguments);
         }
@@ -3776,7 +3779,7 @@
             }
 
             if (currentTransformValues.length) {
-                self._dom.el.style[MixItUp.prototype._transformProp] = currentTransformValues.join(' ');
+                self._dom.el.style[Mixer.prototype._transformProp] = currentTransformValues.join(' ');
             }
         },
 
@@ -3810,7 +3813,7 @@
                 transformValues = transformValues.concat(self._mixer._transformIn);
             }
 
-            self._dom.el.style[MixItUp.prototype._transformProp] = transformValues.join(' ');
+            self._dom.el.style[Mixer.prototype._transformProp] = transformValues.join(' ');
         },
 
         /**
@@ -3832,7 +3835,7 @@
             // Build the transition rules
 
             transitionRules.push(self._writeTransitionRule(
-                MixItUp.prototype._transformRule,
+                Mixer.prototype._transformRule,
                 options.staggerIndex
             ));
 
@@ -3948,7 +3951,7 @@
 
             // Apply transforms
 
-            self._dom.el.style[MixItUp.prototype._transformProp] = transformValues.join(' ');
+            self._dom.el.style[Mixer.prototype._transformProp] = transformValues.join(' ');
         },
 
         /**
@@ -4030,7 +4033,7 @@
 
             self._execAction('_transition', 0, arguments);
 
-            self._dom.el.style[MixItUp.prototype._transitionProp] = transitionString;
+            self._dom.el.style[Mixer.prototype._transitionProp] = transitionString;
 
             self._execAction('_transition', 1, arguments);
         },
@@ -4168,8 +4171,8 @@
 
             self._execAction('_cleanUp', 0, arguments);
 
-            self._dom.el.style[MixItUp.prototype._transformProp] = '';
-            self._dom.el.style[MixItUp.prototype._transitionProp] = '';
+            self._dom.el.style[Mixer.prototype._transformProp] = '';
+            self._dom.el.style[Mixer.prototype._transitionProp] = '';
             self._dom.el.style.opacity = '';
 
             if (self._mixer.animation.animateResizeTargets) {
@@ -4221,7 +4224,7 @@
 
             if (q) {
                 return q.all(tasks);
-            } else if (MixItUp.prototype._has._promises) {
+            } else if (Mixer.prototype._has._promises) {
                 return Promise.all(tasks);
             }
         }
@@ -4431,7 +4434,7 @@
      * @param [{Object}] configuration
      * @param [{Object}] foreignDoc
      * @param [{Boolean}] returnCollection
-     * @return {MixItUp}
+     * @return {Mixer}
      */
 
     mixItUp = function(container, config, foreignDoc, returnCollection) {
@@ -4448,7 +4451,7 @@
 
         if (config && typeof config.extensions === 'object') {
             for (name in config.extensions) {
-                config.extensions[name](MixItUp);
+                config.extensions[name](Mixer);
             }
         }
 
@@ -4480,14 +4483,14 @@
                 id = el.id;
             }
 
-            if (MixItUp.prototype._instances[id] === undf) {
-                instance = new MixItUp(el, config);
+            if (Mixer.prototype._instances[id] === undf) {
+                instance = new Mixer(el, config);
 
                 instance._init(el, config);
 
-                MixItUp.prototype._instances[id] = instance;
-            } else if (MixItUp.prototype._instances[id] instanceof MixItUp) {
-                instance = MixItUp.prototype._instances[id];
+                Mixer.prototype._instances[id] = instance;
+            } else if (Mixer.prototype._instances[id] instanceof Mixer) {
+                instance = Mixer.prototype._instances[id];
 
                 if (config && _h.canReportErrors(config)) {
                     console.warn(
@@ -4530,23 +4533,17 @@
     /* Encapsulation
     ---------------------------------------------------------------------- */
 
-    // Encapsulate shared objects in the MixItUp prototype for transportation
+    // Encapulate all classes in the factory prototype for transportation
 
-    MixItUp.prototype.Operation = Operation;
-    MixItUp.prototype.Target = Target;
-    MixItUp.prototype.State = State;
-    MixItUp.prototype._h = _h;
-
-    // Encapulate the MixItUp constructor in the mixItUp factory for transportation
-
-    // TODO: Why not stick everything in the factory?
-
-    mixItUp.prototype.MixItUp = MixItUp;
+    mixItUp.prototype.Mixer = Mixer;
+    mixItUp.prototype.Operation = Operation;
+    mixItUp.prototype.State = State;
+    mixItUp.prototype._h = _h;
 
     /* Start up
     ---------------------------------------------------------------------- */
 
-    MixItUp.prototype._featureDetect();
+    Mixer.prototype._featureDetect();
 
     /* Module Definitions
     ---------------------------------------------------------------------- */
