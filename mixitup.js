@@ -290,11 +290,11 @@
          */
 
         arrayShuffle: function(oldArray) {
-            var newArray = oldArray.slice(),
-                len = newArray.length,
-                i = len,
-                p = -1,
-                t = [];
+            var newArray    = oldArray.slice(),
+                len         = newArray.length,
+                i           = len,
+                p           = -1,
+                t           = [];
 
             while (i--) {
                 p = parseInt(Math.random() * len);
@@ -320,9 +320,9 @@
             var timeout;
 
             return function() {
-                var context = this,
-                    args = arguments,
-                    later = function() {
+                var context     = this,
+                    args        = arguments,
+                    later       = function() {
                         timeout = null;
 
                         if (!immediate) {
@@ -347,9 +347,9 @@
          */
 
         position: function(element) {
-            var xPosition = 0,
-                yPosition = 0,
-                offsetParent = element;
+            var xPosition       = 0,
+                yPosition       = 0,
+                offsetParent    = element;
 
             while (element) {
                 xPosition -= element.scrollLeft;
@@ -400,8 +400,8 @@
          */
 
         closestParent: function(el, selector, includeSelf, range) {
-            var parent = el.parentNode,
-                depth = range || true;
+            var parent  = el.parentNode,
+                depth   = range || true;
 
             if (includeSelf && el.matches(selector)) {
                 return el;
@@ -433,8 +433,8 @@
          */
 
         children: function(el, selector) {
-            var children = [],
-                tempId = '';
+            var children    = [],
+                tempId      = '';
 
             if (el) {
                 if (!el.id) {
@@ -462,8 +462,8 @@
          */
 
         forEach: function(items, callback) {
-            var i = -1,
-                item = null;
+            var i       = -1,
+                item    = null;
 
             for (i = 0; item = items[i]; i++) {
                 (typeof callback === 'function') && callback.call(this, item);
@@ -507,16 +507,16 @@
                 defered = null;
 
             if (Mixer.prototype._has._promises) {
-                promise.promise = new Promise(function(resolve, reject) {
+                promise.promise     = new Promise(function(resolve, reject) {
                     promise.resolve = resolve;
-                    promise.reject = reject;
+                    promise.reject  = reject;
                 });
             } else if (libraries.q && typeof libraries.q === 'function') {
                 defered = libraries.q.defer();
 
                 promise.promise = defered.promise;
                 promise.resolve = defered.resolve;
-                promise.reject = defered.reject;
+                promise.reject  = defered.reject;
             } else {
                 console.warn('[MixItUp] WARNING: No available Promises implementations were found');
 
@@ -551,8 +551,8 @@
          */
 
         getPrefix: function(el, property, vendors) {
-            var i = -1,
-                prefix = '';
+            var i       = -1,
+                prefix  = '';
 
             if (property.toLowerCase() in el.style) return '';
 
@@ -682,8 +682,8 @@
         // TODO: make the extend helper method more robust with deep/shallow flag, and call here
 
         extend: function(extension) {
-            var key = '',
-                self = this;
+            var key     = '',
+                self    = this;
 
             for (key in extension) {
                 if (extension[key]) {
@@ -739,14 +739,14 @@
          */
 
         _addHook: function(type, hook, name, func, priority) {
-            var collection = this[type],
-                obj = {};
+            var collection  = this[type],
+                obj         = {};
 
             priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
 
-            obj[hook] = {};
-            obj[hook][priority] = {};
-            obj[hook][priority][name] = func;
+            obj[hook]                   = {};
+            obj[hook][priority]         = {};
+            obj[hook][priority][name]   = func;
 
             _h.extend(collection, obj);
         },
@@ -764,8 +764,8 @@
          */
 
         _execAction: function(methodName, isPost, args) {
-            var self = this,
-                key = '',
+            var self    = this,
+                key     = '',
                 context = isPost ? 'post' : 'pre';
 
             if (!self._actions.isEmptyObject && self._actions.hasOwnProperty(methodName)) {
@@ -786,8 +786,8 @@
          */
 
         _execFilter: function(methodName, value, args) {
-            var self = this,
-                key = '';
+            var self    = this,
+                key     = '';
 
             if (!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)) {
                 for (key in self._filters[methodName].pre) {
@@ -1030,21 +1030,21 @@
          */
 
         _featureDetect: function() {
-            var self = this,
-                testEl = document.createElement('div'),
-                vendorsTrans = ['Webkit', 'Moz', 'O', 'ms'],
-                vendorsRAF = ['webkit', 'moz'],
-                transitionPrefix = _h.getPrefix(testEl, 'Transition', vendorsTrans),
-                transformPrefix = _h.getPrefix(testEl, 'Transform', vendorsTrans),
-                i = -1;
+            var self                = this,
+                testEl              = document.createElement('div'),
+                vendorsTrans        = ['Webkit', 'Moz', 'O', 'ms'],
+                vendorsRAF          = ['webkit', 'moz'],
+                transitionPrefix    = _h.getPrefix(testEl, 'Transition', vendorsTrans),
+                transformPrefix     = _h.getPrefix(testEl, 'Transform', vendorsTrans),
+                i                   = -1;
 
             self._execAction('_featureDetect', 0);
 
             self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a seperate test
 
-            Mixer.prototype._has._promises = typeof Promise === 'function';
-            Mixer.prototype._has._transitions = transitionPrefix !== false;
-            Mixer.prototype._is._crapIe = window.atob ? false : true;
+            Mixer.prototype._has._promises      = typeof Promise === 'function';
+            Mixer.prototype._has._transitions   = transitionPrefix !== false;
+            Mixer.prototype._is._crapIe         = window.atob ? false : true;
 
             Mixer.prototype._transitionProp =
                 transitionPrefix ? transitionPrefix + 'Transition' : 'transition';
@@ -1126,8 +1126,8 @@
          */
 
         _init: function(el, config) {
-            var self = this,
-                state = new State();
+            var self    = this,
+                state   = new State();
 
             self._execAction('_init', 0, arguments);
 
@@ -1182,9 +1182,9 @@
 
             self._execAction('_cacheDom', 0, arguments);
 
-            self._dom.body = doc.getElementsByTagName('body')[0];
+            self._dom.body      = doc.getElementsByTagName('body')[0];
             self._dom.container = el;
-            self._dom.parent = el;
+            self._dom.parent    = el;
 
             self._dom.sortButtons =
                 Array.prototype.slice.call(doc.querySelectorAll(self.selectors.sort));
@@ -1216,10 +1216,10 @@
          */
 
         _indexTargets: function() {
-            var self = this,
-                target = null,
-                el = null,
-                i = -1;
+            var self    = this,
+                target  = null,
+                el      = null,
+                i       = -1;
 
             self._execAction('_indexTargets', 0, arguments);
 
@@ -1255,12 +1255,12 @@
          */
 
         _bindEvents: function() {
-            var self = this,
-                proto = Mixer.prototype,
+            var self    = this,
+                proto   = Mixer.prototype,
                 filters = proto._bound._filter,
-                sorts = proto._bound._sort,
-                button = null,
-                i = -1;
+                sorts   = proto._bound._sort,
+                button  = null,
+                i       = -1;
 
             self._execAction('_bindEvents', 0);
 
@@ -1292,9 +1292,9 @@
          */
 
         _unbindEvents: function() {
-            var self = this,
-                button = null,
-                i = -1;
+            var self    = this,
+                button  = null,
+                i       = -1;
 
             self._execAction('_unbindEvents', 0);
 
@@ -1334,19 +1334,19 @@
          */
 
         _handleClick: function(e) {
-            var self = this,
-                selectors = [],
-                selector = '',
+            var self            = this,
+                selectors       = [],
+                selector        = '',
                 toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '',
-                target = null,
-                command = {},
-                filterString = '',
-                sortString = '',
-                method = '',
-                isTogglingOff = false,
-                button = null,
-                key = '',
-                i = -1;
+                target          = null,
+                command         = {},
+                filterString    = '',
+                sortString      = '',
+                method          = '',
+                isTogglingOff   = false,
+                button          = null,
+                key             = '',
+                i               = -1;
 
             self._execAction('_handleClick', 0, arguments);
 
@@ -1510,9 +1510,9 @@
          */
 
         _trackClick: function(button, method, isTogglingOff) {
-            var self = this,
-                proto = Mixer.prototype,
-                selector = self.selectors[method];
+            var self        = this,
+                proto       = Mixer.prototype,
+                selector    = self.selectors[method];
 
             method = '_' + method;
 
@@ -1572,18 +1572,18 @@
          */
 
         _updateControls: function(command) {
-            var self = this,
-                output = {
+            var self                = this,
+                output              = {
                     filter: command.filter,
                     sort: command.sort
                 },
-                filterToggleButton = null,
-                activeButton = null,
-                button = null,
-                selector = '',
-                i = -1,
-                j = -1,
-                k = -1;
+                filterToggleButton  = null,
+                activeButton        = null,
+                button              = null,
+                selector            = '',
+                i                   = -1,
+                j                   = -1,
+                k                   = -1;
 
             self._execAction('_updateControls', 0, arguments);
 
@@ -1658,12 +1658,12 @@
          */
 
         _insert: function(command, operation) {
-            var self = this,
+            var self        = this,
                 nextSibling = self._getNextSibling(command.index, command.sibling, command.position),
-                frag = doc.createDocumentFragment(),
-                target = null,
-                el = null,
-                i = -1;
+                frag        = doc.createDocumentFragment(),
+                target      = null,
+                el          = null,
+                i           = -1;
 
             // TODO: throw error if user attempts to insert element that is already a target
 
@@ -1726,11 +1726,11 @@
          */
 
         _filter: function(operation) {
-            var self = this,
-                condition = false,
-                index = -1,
-                target = null,
-                i = -1;
+            var self        = this,
+                condition   = false,
+                index       = -1,
+                target      = null,
+                i           = -1;
 
             self._execAction('_filter', 0, arguments);
 
@@ -1819,9 +1819,9 @@
          */
 
         _sort: function(operation) {
-            var self = this,
-                target = null,
-                i = -1;
+            var self    = this,
+                target  = null,
+                i       = -1;
 
             self._execAction('_sort', 0, arguments);
 
@@ -1874,11 +1874,11 @@
             depth = depth ? depth : 0;
             sort = sort ? sort : self._newSort;
 
-            var self = this,
-                order = sort[depth].order,
-                isString = false,
-                attrA = self._getAttributeValue(a, depth, sort),
-                attrB = self._getAttributeValue(b, depth, sort);
+            var self        = this,
+                order       = sort[depth].order,
+                isString    = false,
+                attrA       = self._getAttributeValue(a, depth, sort),
+                attrB       = self._getAttributeValue(b, depth, sort);
 
             if (isNaN(attrA * 1) || isNaN(attrB * 1)) {
                 attrA = attrA.toLowerCase();
@@ -1914,8 +1914,8 @@
          */
 
         _getAttributeValue: function(target, depth, sort) {
-            var self = this,
-                value = '';
+            var self    = this,
+                value   = '';
 
             sort = sort ? sort : self._newSort;
 
@@ -1953,15 +1953,15 @@
          */
 
         _printSort: function(isResetting, operation) {
-            var self = this,
-                order = isResetting ? operation.startOrder : operation.newOrder,
-                targets = _h.children(self._dom.parent, self.selectors.target),
+            var self        = this,
+                order       = isResetting ? operation.startOrder : operation.newOrder,
+                targets     = _h.children(self._dom.parent, self.selectors.target),
                 nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
-                frag = doc.createDocumentFragment(),
-                target = null,
-                whiteSpace = null,
-                el = null,
-                i = -1;
+                frag        = doc.createDocumentFragment(),
+                target      = null,
+                whiteSpace  = null,
+                el          = null,
+                i           = -1;
 
             self._execAction('_printSort', 0, arguments);
 
@@ -2009,12 +2009,12 @@
          */
 
         _parseSort: function(sortString) {
-            var self = this,
-                rules = typeof sortString === 'string' ? sortString.split(' ') : [sortString],
-                newSort = [],
-                ruleObj = null,
-                rule = [],
-                i = -1;
+            var self        = this,
+                rules       = typeof sortString === 'string' ? sortString.split(' ') : [sortString],
+                newSort     = [],
+                ruleObj     = null,
+                rule        = [],
+                i           = -1;
 
             for (i = 0; i < rules.length; i++) {
                 rule = typeof sortString === 'string' ? rules[i].split(':') : ['custom', rules[i]];
@@ -2045,10 +2045,10 @@
                 transformName = '',
                 i = -1;
 
-           self._effectsIn = new StyleData();
-           self._effectsOut = new StyleData();
-           self._transformIn = [];
-           self._transformOut = [];
+           self._effectsIn      = new StyleData();
+           self._effectsOut     = new StyleData();
+           self._transformIn    = [];
+           self._transformOut   = [];
 
            self._parseEffect('fade');
 
@@ -2067,15 +2067,15 @@
          */
 
         _parseEffect: function(effectName) {
-            var self = this,
-                re = /\(([^)]+)\)/,
-                propIndex = -1,
-                str = '',
-                match = [],
-                val = '',
-                units = ['%', 'px', 'em', 'rem', 'vh', 'vw'],
-                unit = '',
-                i = -1;
+            var self        = this,
+                re          = /\(([^)]+)\)/,
+                propIndex   = -1,
+                str         = '',
+                match       = [],
+                val         = '',
+                units       = ['%', 'px', 'em', 'rem', 'vh', 'vw'],
+                unit        = '',
+                i           = -1;
 
             if (self.animation.effects.indexOf(effectName) < 0) {
                 // The effect is not present in the animation.effects string
@@ -2145,8 +2145,8 @@
                     default:
                         // Transforms
 
-                        self._effectsIn[effectName].value = self._transformDefaults[effectName].value;
-                        self._effectsIn[effectName].unit = self._effectsOut[effectName].unit = self._transformDefaults[effectName].unit;
+                        self._effectsIn[effectName].value   = self._transformDefaults[effectName].value;
+                        self._effectsIn[effectName].unit    = self._effectsOut[effectName].unit = self._transformDefaults[effectName].unit;
 
                         self._effectsOut[effectName].value = (self.animation.reverseOut && effectName !== 'scale') ?
                             self._effectsIn[effectName].value * -1 :
@@ -2166,10 +2166,10 @@
          */
 
         _buildState: function(operation) {
-            var self = this,
-                state = new State(),
-                target = null,
-                i = -1;
+            var self        = this,
+                state       = new State(),
+                target      = null,
+                i           = -1;
 
             self._execAction('_buildState', 0);
 
@@ -2196,7 +2196,6 @@
             state.activeSort           = operation.newSortString;
             state.activeContainerClass = operation.newContainerClass;
             state.hasFailed            = !operation.matching.length && operation.newFilter !== '';
-            state.instance             = self;
             state.totalTargets         = self._targets.length;
             state.totalShow            = operation.show.length;
             state.totalHide            = operation.hide.length;
@@ -2214,10 +2213,10 @@
          */
 
         _goMix: function(shouldAnimate, operation) {
-            var self = this,
-                defered = null,
-                resolvePromise = null,
-                docState = null;
+            var self            = this,
+                defered         = null,
+                resolvePromise  = null,
+                docState        = null;
 
             self._execAction('_goMix', 0, arguments);
 
@@ -2300,12 +2299,12 @@
          */
 
         _getStartMixData: function(operation) {
-            var self = this,
+            var self        = this,
                 parentStyle = window.getComputedStyle(self._dom.parent),
-                target = null,
-                data = {},
-                i = -1,
-                boxSizing = parentStyle.boxSizing || parentStyle[self._vendor + 'BoxSizing'];
+                target      = null,
+                data        = {},
+                i           = -1,
+                boxSizing   = parentStyle.boxSizing || parentStyle[self._vendor + 'BoxSizing'];
 
             self._incPadding = (boxSizing === 'border-box');
 
@@ -2354,9 +2353,9 @@
          */
 
         _setInter: function(operation) {
-            var self = this,
-                target = null,
-                i = -1;
+            var self    = this,
+                target  = null,
+                i       = -1;
 
             self._execAction('_setInter', 0);
 
@@ -2380,9 +2379,9 @@
          */
 
         _getInterMixData: function(operation) {
-            var self = this,
-                target = null,
-                i = -1;
+            var self    = this,
+                target  = null,
+                i       = -1;
 
             self._execAction('_getInterMixData', 0);
 
@@ -2417,9 +2416,9 @@
          */
 
         _setFinal: function(operation) {
-            var self = this,
-                target = null,
-                i = -1;
+            var self    = this,
+                target  = null,
+                i       = -1;
 
             self._execAction('_setFinal', 0);
 
@@ -2440,10 +2439,10 @@
          */
 
         _getFinalMixData: function(operation) {
-            var self = this,
+            var self        = this,
                 parentStyle = window.getComputedStyle(self._dom.parent),
-                target = null,
-                i = -1;
+                target      = null,
+                i           = -1;
 
             self._execAction('_getFinalMixData', 0);
 
@@ -2498,14 +2497,14 @@
          */
 
         _getTweenData: function(operation) {
-            var self = this,
-                target = null,
-                posData = null,
+            var self        = this,
+                target      = null,
+                posData     = null,
                 effectNames = Object.getOwnPropertyNames(self._effectsIn),
-                effectName = '',
-                effect = null,
-                i = -1,
-                j = -1;
+                effectName  = '',
+                effect      = null,
+                i           = -1,
+                j           = -1;
 
             for (i = 0; target = operation.show[i]; i++) {
                 posData             = operation.showPosData[i];
@@ -2515,21 +2514,21 @@
 
                 // Process x and y
 
-                posData.posIn.x = target._isShown ? posData.startPosData.x - posData.interPosData.x : 0;
-                posData.posIn.y = target._isShown ? posData.startPosData.y - posData.interPosData.y : 0;
-                posData.posOut.x = posData.finalPosData.x - posData.interPosData.x;
-                posData.posOut.y = posData.finalPosData.y - posData.interPosData.y;
+                posData.posIn.x     = target._isShown ? posData.startPosData.x - posData.interPosData.x : 0;
+                posData.posIn.y     = target._isShown ? posData.startPosData.y - posData.interPosData.y : 0;
+                posData.posOut.x    = posData.finalPosData.x - posData.interPosData.x;
+                posData.posOut.y    = posData.finalPosData.y - posData.interPosData.y;
 
                 // Process display
 
-                posData.posIn.display = target._isShown ? self.layout.display : 'none';
-                posData.posOut.display = self.layout.display;
+                posData.posIn.display   = target._isShown ? self.layout.display : 'none';
+                posData.posOut.display  = self.layout.display;
 
                 // Process opacity
 
-                posData.posIn.opacity = target._isShown ? 1 : self._effectsIn.opacity;
-                posData.posOut.opacity = 1;
-                posData.tweenData.opacity = posData.posOut.opacity - posData.posIn.opacity;
+                posData.posIn.opacity       = target._isShown ? 1 : self._effectsIn.opacity;
+                posData.posOut.opacity      = 1;
+                posData.tweenData.opacity   = posData.posOut.opacity - posData.posIn.opacity;
 
                 // Adjust x and y if not nudging
 
@@ -2544,8 +2543,8 @@
                 // Process width, height, and margins
 
                 if (self.animation.animateResizeTargets) {
-                    posData.posIn.width = posData.startPosData.width;
-                    posData.posIn.height = posData.startPosData.height;
+                    posData.posIn.width     = posData.startPosData.width;
+                    posData.posIn.height    = posData.startPosData.height;
 
                     if (posData.startPosData.width - posData.finalPosData.width) {
                         posData.posIn.marginRight =
@@ -2563,8 +2562,8 @@
                         posData.posIn.marginBottom = posData.startPosData.marginBottom;
                     }
 
-                    posData.posOut.width = posData.finalPosData.width;
-                    posData.posOut.height = posData.finalPosData.height;
+                    posData.posOut.width    = posData.finalPosData.width;
+                    posData.posOut.height   = posData.finalPosData.height;
 
                     posData.posOut.marginRight =
                         -(posData.finalPosData.width - posData.interPosData.width) +
@@ -2574,10 +2573,10 @@
                         -(posData.finalPosData.height - posData.interPosData.height) +
                         (posData.finalPosData.marginBottom * 1);
 
-                    posData.tweenData.width = posData.posOut.width - posData.posIn.width;
-                    posData.tweenData.height = posData.posOut.height - posData.posIn.height;
-                    posData.tweenData.marginRight = posData.posOut.marginRight - posData.posIn.marginRight;
-                    posData.tweenData.marginBottom = posData.posOut.marginBottom - posData.posIn.marginBottom;
+                    posData.tweenData.width         = posData.posOut.width - posData.posIn.width;
+                    posData.tweenData.height        = posData.posOut.height - posData.posIn.height;
+                    posData.tweenData.marginRight   = posData.posOut.marginRight - posData.posIn.marginRight;
+                    posData.tweenData.marginBottom  = posData.posOut.marginBottom - posData.posIn.marginBottom;
                 }
 
                 // Process transforms
@@ -2606,10 +2605,10 @@
 
                 // Process x and y
 
-                posData.posIn.x = target._isShown ? posData.startPosData.x - posData.interPosData.x : 0;
-                posData.posIn.y = target._isShown ? posData.startPosData.y - posData.interPosData.y : 0;
-                posData.posOut.x = self.animation.nudgeOut ? 0 : posData.posIn.x;
-                posData.posOut.y = self.animation.nudgeOut ? 0 : posData.posIn.y;
+                posData.posIn.x     = target._isShown ? posData.startPosData.x - posData.interPosData.x : 0;
+                posData.posIn.y     = target._isShown ? posData.startPosData.y - posData.interPosData.y : 0;
+                posData.posOut.x    = self.animation.nudgeOut ? 0 : posData.posIn.x;
+                posData.posOut.y    = self.animation.nudgeOut ? 0 : posData.posIn.y;
                 posData.tweenData.x = posData.posOut.x - posData.posIn.x;
                 posData.tweenData.y = posData.posOut.y - posData.posIn.y;
 
@@ -2620,9 +2619,9 @@
 
                 // Process opacity
 
-                posData.posIn.opacity = 1;
-                posData.posOut.opacity = self._effectsOut.opacity;
-                posData.tweenData.opacity = posData.posOut.opacity - posData.posIn.opacity;
+                posData.posIn.opacity       = 1;
+                posData.posOut.opacity      = self._effectsOut.opacity;
+                posData.tweenData.opacity   = posData.posOut.opacity - posData.posIn.opacity;
 
                 // Process transforms
 
@@ -2631,8 +2630,8 @@
 
                     if (!(effect instanceof TransformData) || !effect.value) continue;
 
-                    posData.posIn[effectName].value = 0;
-                    posData.posOut[effectName].value = effect.value;
+                    posData.posIn[effectName].value     = 0;
+                    posData.posOut[effectName].value    = effect.value;
                     posData.tweenData[effectName].value = posData.posOut[effectName].value - posData.posIn[effectName].value;
 
                     posData.posIn[effectName].unit =
@@ -2651,10 +2650,10 @@
          */
 
         _moveTargets: function(operation) {
-            var self = this,
-                target = null,
-                posData = null,
-                checkProgress = function() {
+            var self            = this,
+                target          = null,
+                posData         = null,
+                checkProgress   = function() {
                     // TODO: Can we find an alternative to this? _h.bind doesn't
                     // allow the passing of an argument and we don't want to
                     // make a function within the loops below. Even this
@@ -2662,7 +2661,7 @@
 
                     self._checkProgress(operation);
                 },
-                i = -1;
+                i               = -1;
 
             // TODO: this is an extra loop in addition to the calcs
             // done in getOperation, can we get around somehow?
@@ -2735,19 +2734,19 @@
          */
 
         _cleanUp: function(operation) {
-            var self = this,
-                target = null,
-                firstInQueue = null,
-                i = -1;
+            var self            = this,
+                target          = null,
+                firstInQueue    = null,
+                i               = -1;
 
             self._isMixing = false;
 
             self._execAction('_cleanUp', 0);
 
-            self._targetsMoved = 0;
-            self._targetsImmovable = 0;
-            self._targetsBound = 0;
-            self._targetsDone = 0;
+            self._targetsMoved      = 0;
+            self._targetsImmovable  = 0;
+            self._targetsBound      = 0;
+            self._targetsDone       = 0;
 
             for (i = 0; target = operation.show[i]; i++) {
                 target._cleanUp();
@@ -2771,8 +2770,8 @@
 
             if (self.animation.animateResizeContainer) {
                 self._dom.parent.style[Mixer.prototype._transitionProp] = '';
-                self._dom.parent.style.height = '';
-                self._dom.parent.style.width = '';
+                self._dom.parent.style.height                           = '';
+                self._dom.parent.style.width                            = '';
             }
 
             if (operation.willChangeLayout) {
@@ -2830,8 +2829,8 @@
          */
 
         _getDelay: function(index) {
-            var self = this,
-                delay = -1;
+            var self    = this,
+                delay   = -1;
 
             if (typeof self.animation.staggerSequence === 'function') {
                 index = self.animation.staggerSequence.call(self, index, self._state);
@@ -2850,14 +2849,14 @@
          */
 
         _parseMultiMixArgs: function(args) {
-            var self = this,
-                output = {
+            var self    = this,
+                output  = {
                     command: null,
                     animate: self.animation.enable,
                     callback: null
                 },
-                arg = null,
-                i = -1;
+                arg     = null,
+                i       = -1;
 
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
@@ -2884,8 +2883,8 @@
          */
 
         _parseInsertArgs: function(args) {
-            var self = this,
-                output = {
+            var self    = this,
+                output  = {
                     command: {
                         index: 0, // Index to insert at
                         collection: [], // Element(s) to insert
@@ -2895,8 +2894,8 @@
                     animate: self.animation.enable,
                     callback: null
                 },
-                arg = null,
-                i = -1;
+                arg     = null,
+                i       = -1;
 
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
@@ -2954,18 +2953,18 @@
          */
 
         _parseRemoveArgs: function(args) {
-            var self = this,
-                output = {
+            var self        = this,
+                output      = {
                     command: {
                         targets: []
                     },
                     animate: self.animation.enable,
                     callback: null
                 },
-                collection = [],
-                target = null,
-                arg = null,
-                i = -1;
+                collection  = [],
+                target      = null,
+                arg         = null,
+                i           = -1;
 
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
@@ -3161,12 +3160,12 @@
 
         getOperation: function(command) {
             var self = this,
-                sortCommand = command.sort,
-                filterCommand = command.filter,
+                sortCommand         = command.sort,
+                filterCommand       = command.filter,
                 changeLayoutCommand = command.changeLayout,
-                removeCommand = command.remove,
-                insertCommand = command.insert,
-                operation = new Operation();
+                removeCommand       = command.remove,
+                insertCommand       = command.insert,
+                operation           = new Operation();
 
             operation.command = command;
             operation.startState = self._state;
@@ -3194,9 +3193,9 @@
             }
 
             if (sortCommand) {
-                operation.startSortString = operation.startState.activeSort;
-                operation.newSort = self._parseSort(sortCommand);
-                operation.newSortString = sortCommand;
+                operation.startSortString   = operation.startState.activeSort;
+                operation.newSort           = self._parseSort(sortCommand);
+                operation.newSortString     = sortCommand;
 
                 if (sortCommand !== operation.startState.activeSortString || sortCommand === 'random') {
                     operation.willSort = true;
@@ -3262,9 +3261,9 @@
          */
 
         multiMix: function() {
-            var self = this,
-                operation = null,
-                args = self._parseMultiMixArgs(arguments);
+            var self        = this,
+                operation   = null,
+                args        = self._parseMultiMixArgs(arguments);
 
             self._execAction('multiMix', 0, arguments);
 
@@ -3308,16 +3307,16 @@
          */
 
         tween: function(operation, multiplier) {
-            var self = this,
-                target = null,
-                posData = null,
-                posIn = null,
-                posOut = null,
-                tweenData = null,
-                propertyName = '',
-                toHideIndex = -1,
-                i = -1,
-                j = -1;
+            var self            = this,
+                target          = null,
+                posData         = null,
+                posIn           = null,
+                posOut          = null,
+                tweenData       = null,
+                propertyName    = '',
+                toHideIndex     = -1,
+                i               = -1,
+                j               = -1;
 
             multiplier = Math.min(multiplier, 1);
             multiplier = Math.max(multiplier, 0);
@@ -3499,10 +3498,10 @@
          */
 
         destroy: function(hideAll) {
-            var self = this,
-                target = null,
-                button = null,
-                i = 0;
+            var self    = this,
+                target  = null,
+                button  = null,
+                i       = 0;
 
             self._execAction('destroy', 0, arguments);
 
@@ -3635,8 +3634,8 @@
          */
 
         _getSortString: function(attributeName) {
-            var self = this,
-                value = self._dom.el.getAttribute('data-' + attributeName) || '';
+            var self    = this,
+                value   = self._dom.el.getAttribute('data-' + attributeName) || '';
 
             self._execAction('_getSortString', 0, arguments);
 
@@ -3727,17 +3726,17 @@
          */
 
         _applyTween: function(posData, multiplier) {
-            var self = this,
-                propertyName = '',
-                tweenData = null,
-                posIn = posData.posIn,
-                currentTransformValues = [],
-                currentValues = new StyleData(),
-                i = -1;
+            var self                    = this,
+                propertyName            = '',
+                tweenData               = null,
+                posIn                   = posData.posIn,
+                currentTransformValues  = [],
+                currentValues           = new StyleData(),
+                i                       = -1;
 
-            currentValues.display = self._mixer.layout.display;
-            currentValues.x = posIn.x;
-            currentValues.y = posIn.y;
+            currentValues.display   = self._mixer.layout.display;
+            currentValues.x         = posIn.x;
+            currentValues.y         = posIn.y;
 
             if (multiplier === 0) {
                 currentValues.display = 'none';
@@ -3793,9 +3792,9 @@
          */
 
         _applyStylesIn: function(options) {
-            var self = this,
-                posIn = options.posIn,
-                isFading = self._mixer._effectsIn.opacity !== 1,
+            var self            = this,
+                posIn           = options.posIn,
+                isFading        = self._mixer._effectsIn.opacity !== 1,
                 transformValues = [];
 
             transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
@@ -4008,9 +4007,9 @@
          */
 
         _writeTransitionRule: function(rule, staggerIndex, duration) {
-            var self = this,
-                delay = self._mixer._getDelay(staggerIndex),
-                output = '';
+            var self    = this,
+                delay   = self._mixer._getDelay(staggerIndex),
+                output  = '';
 
             output = rule + ' ' +
                 (duration || self._mixer.animation.duration) + 'ms ' +
@@ -4171,14 +4170,14 @@
 
             self._execAction('_cleanUp', 0, arguments);
 
-            self._dom.el.style[Mixer.prototype._transformProp] = '';
+            self._dom.el.style[Mixer.prototype._transformProp]  = '';
             self._dom.el.style[Mixer.prototype._transitionProp] = '';
-            self._dom.el.style.opacity = '';
+            self._dom.el.style.opacity                          = '';
 
             if (self._mixer.animation.animateResizeTargets) {
-                self._dom.el.style.width = '';
-                self._dom.el.style.height = '';
-                self._dom.el.style.marginRight = '';
+                self._dom.el.style.width        = '';
+                self._dom.el.style.height       = '';
+                self._dom.el.style.marginRight  = '';
                 self._dom.el.style.marginBottom = '';
             }
 
@@ -4205,12 +4204,12 @@
         constructor: Collection,
 
         mixItUp: function(methodName) {
-            var self = this,
-                instance = null,
-                args = Array.prototype.slice.call(arguments),
-                tasks = [],
-                q = null,
-                i = -1;
+            var self        = this,
+                instance    = null,
+                args        = Array.prototype.slice.call(arguments),
+                tasks       = [],
+                q           = null,
+                i           = -1;
 
             args.shift();
 
@@ -4304,12 +4303,14 @@
      * State
      * @since 3.0.0
      * @constructor
+     *
+     * State objects form part of the public API and are provided
+     * at the start and end of any operation.
      */
 
     State = function() {
         this._execAction('_constructor', 0);
 
-        this.instance             = null;
         this.activeFilter         = '';
         this.activeSort           = '';
         this.activeContainerClass = '';
@@ -4438,14 +4439,14 @@
      */
 
     mixItUp = function(container, config, foreignDoc, returnCollection) {
-        var el = null,
-            instance = null,
-            instances = [],
-            id = '',
-            name = '',
-            rand = _h.randomHexKey(),
-            elements = [],
-            i = -1;
+        var el          = null,
+            instance    = null,
+            instances   = [],
+            id          = '',
+            name        = '',
+            rand        = _h.randomHexKey(),
+            elements    = [],
+            i           = -1;
 
         doc = foreignDoc || document;
 
@@ -4535,10 +4536,10 @@
 
     // Encapulate all classes in the factory prototype for transportation
 
-    mixItUp.prototype.Mixer = Mixer;
+    mixItUp.prototype.Mixer     = Mixer;
     mixItUp.prototype.Operation = Operation;
-    mixItUp.prototype.State = State;
-    mixItUp.prototype._h = _h;
+    mixItUp.prototype.State     = State;
+    mixItUp.prototype._h        = _h;
 
     /* Start up
     ---------------------------------------------------------------------- */
