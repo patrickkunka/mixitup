@@ -15,7 +15,8 @@
 (function(window, document, undf) {
     'use strict';
 
-    var basePrototype   = null,
+    var UserInstruction = null,
+        basePrototype   = null,
         TransformData   = null,
         Collection      = null,
         Operation       = null,
@@ -2850,13 +2851,11 @@
 
         _parseMultiMixArgs: function(args) {
             var self    = this,
-                output  = {
-                    command: null,
-                    animate: self.animation.enable,
-                    callback: null
-                },
+                output  = new UserInstruction(),
                 arg     = null,
                 i       = -1;
+
+            output.animate = self.animation.enable;
 
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
@@ -2884,18 +2883,18 @@
 
         _parseInsertArgs: function(args) {
             var self    = this,
-                output  = {
-                    command: {
-                        index: 0, // Index to insert at
-                        collection: [], // Element(s) to insert
-                        position: 'before', // Position relative to a sibling if passed
-                        sibling: null // A sibling element as a reference
-                    },
-                    animate: self.animation.enable,
-                    callback: null
-                },
+                output  = new UserInstruction(),
                 arg     = null,
                 i       = -1;
+
+            output.animate = self.animation.enable;
+
+            output.command = {
+                index: 0, // Index to insert at
+                collection: [], // Element(s) to insert
+                position: 'before', // Position relative to a sibling if passed
+                sibling: null // A sibling element as a reference
+            };
 
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
@@ -2954,17 +2953,17 @@
 
         _parseRemoveArgs: function(args) {
             var self        = this,
-                output      = {
-                    command: {
-                        targets: []
-                    },
-                    animate: self.animation.enable,
-                    callback: null
-                },
+                output      = new UserInstruction(),
                 collection  = [],
                 target      = null,
                 arg         = null,
                 i           = -1;
+
+            output.animate = self.animation.enable;
+
+            output.command = {
+                targets: []
+            };
 
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
@@ -4424,6 +4423,41 @@
         _filters: {}
     });
 
+    /* UserInstruction
+    ---------------------------------------------------------------------- */
+
+    /**
+     * UserInstruction
+     * @since 3.0.0
+     * @constructor
+     */
+
+    UserInstruction = function() {
+        this._execAction('_constructor', 0);
+
+        this.command    = {};
+        this.animate    = false;
+        this.callback   = null;
+
+        this._execAction('_constructor', 1);
+
+        _h.seal(this);
+    };
+
+    /**
+     * UserInstruction.prototype
+     * @since 3.0.0
+     * @prototype
+     * @extends basePrototype
+     */
+
+    UserInstruction.prototype = Object.create(basePrototype);
+
+    _h.extend(UserInstruction.prototype, {
+        _actions: {},
+        _filters: {}
+    });
+
     /* mixItUp Factory
     ---------------------------------------------------------------------- */
 
@@ -4536,10 +4570,11 @@
 
     // Encapulate all classes in the factory prototype for transportation
 
-    mixItUp.prototype.Mixer     = Mixer;
-    mixItUp.prototype.Operation = Operation;
-    mixItUp.prototype.State     = State;
-    mixItUp.prototype._h        = _h;
+    mixItUp.prototype.UserInstruction   = UserInstruction;
+    mixItUp.prototype.Operation         = Operation;
+    mixItUp.prototype.Mixer             = Mixer;
+    mixItUp.prototype.State             = State;
+    mixItUp.prototype._h                = _h;
 
     /* Start up
     ---------------------------------------------------------------------- */
