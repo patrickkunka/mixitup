@@ -265,8 +265,8 @@
         /**
          * isEqualArray
          * @since 3.0.0
-         * @param {Array} a
-         * @param {Array} b
+         * @param {*[]} a
+         * @param {*[]} b
          * @return {Boolean}
          */
 
@@ -286,8 +286,8 @@
          * arrayShuffle
          * @since 2.0.0
          * arrayShuffle
-         * @param {Array} oldArray
-         * @return {Array}
+         * @param {*[]} oldArray
+         * @return {*[]}
          */
 
         arrayShuffle: function(oldArray) {
@@ -457,7 +457,7 @@
         /**
          * forEach
          * @since 3.0.0
-         * @param {Array} items
+         * @param {*[]} items
          * @param {Function} callback
          * @void
          */
@@ -474,8 +474,8 @@
         /**
          * clean
          * @since 3.0.0
-         * @param {Array} originalArray
-         * @return {Array}
+         * @param {*[]} originalArray
+         * @return {*[]}
          */
 
         clean: function(originalArray) {
@@ -760,7 +760,7 @@
          * @since 2.0.0
          * @param {String} methodName
          * @param {Boolean} isPost
-         * @param {Array} args
+         * @param {*[]} args
          * @void
          */
 
@@ -780,9 +780,9 @@
          * _execFilter
          * @since 2.0.0
          * @param {String} methodName
-         * @param {Mixed} value
-         * @param {Array} args
-         * @return {Mixed}
+         * @param {*} value
+         * @param {*[]} args
+         * @return {*}
          * @void
          */
 
@@ -1654,7 +1654,7 @@
          * @since 3.0.0
          * @param {Object} command
          * @param {Operation} operation
-         * @param {Array} arguments
+         * @param {*[]} arguments
          * @return {Promise} -> {State}
          */
 
@@ -2845,51 +2845,51 @@
         /**
          * _parseMultiMixArgs
          * @since 2.0.0
-         * @param {Array} args
+         * @param {*[]} args
          * @return {Object}
          */
 
         _parseMultiMixArgs: function(args) {
-            var self    = this,
-                output  = new UserInstruction(),
-                arg     = null,
-                i       = -1;
+            var self        = this,
+                instruction = new UserInstruction(),
+                arg         = null,
+                i           = -1;
 
-            output.animate = self.animation.enable;
+            instruction.animate = self.animation.enable;
 
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
 
                 if (arg !== null) {
                     if (typeof arg === 'object' || typeof arg === 'string') {
-                        output.command = arg;
+                        instruction.command = arg;
                     } else if (typeof arg === 'boolean') {
-                        output.animate = arg;
+                        instruction.animate = arg;
                     } else if (typeof arg === 'function') {
-                        output.callback = arg;
+                        instruction.callback = arg;
                     }
                 }
             }
 
-            return self._execFilter('_parseMultiMixArgs', output, arguments);
+            return self._execFilter('_parseMultiMixArgs', instruction, arguments);
         },
 
         /**
          * _parseInsertArgs
          * @since 2.0.0
-         * @param {Array} args
+         * @param {*[]} args
          * @return {Object}
          */
 
         _parseInsertArgs: function(args) {
-            var self    = this,
-                output  = new UserInstruction(),
-                arg     = null,
-                i       = -1;
+            var self        = this,
+                instruction = new UserInstruction(),
+                arg         = null,
+                i           = -1;
 
-            output.animate = self.animation.enable;
+            instruction.animate = self.animation.enable;
 
-            output.command = {
+            instruction.command = {
                 index: 0, // Index to insert at
                 collection: [], // Element(s) to insert
                 position: 'before', // Position relative to a sibling if passed
@@ -2902,23 +2902,23 @@
                 if (typeof arg === 'number') {
                     // Insert index
 
-                    output.command.index = arg;
+                    instruction.command.index = arg;
                 } else if (typeof arg === 'string') {
                     // 'before'/'after'
 
-                    output.command.position = arg;
+                    instruction.command.position = arg;
                 } else if (typeof arg === 'object' && _h.isElement(arg)) {
                     // Single element
 
-                    !output.collection.length ?
-                        (output.command.collection = [arg]) :
-                        (output.command.sibling = arg);
+                    !instruction.collection.length ?
+                        (instruction.command.collection = [arg]) :
+                        (instruction.command.sibling = arg);
                 } else if (typeof arg === 'object' && arg !== null && arg.length) {
                     // Multiple elements in array or jQuery collection
 
-                    !output.command.collection.length ?
-                        (output.command.collection = arg) :
-                        output.command.sibling = arg[0];
+                    !instruction.command.collection.length ?
+                        (instruction.command.collection = arg) :
+                        instruction.command.sibling = arg[0];
                 } else if (
                     typeof arg === 'object' &&
                     arg !== null &&
@@ -2927,41 +2927,41 @@
                 ) {
                     // Document fragment
 
-                    !output.command.collection.length ?
-                        output.command.collection = Array.prototype.slice.call(arg.childNodes) :
-                        output.command.sibling = arg.childNodes[0];
+                    !instruction.command.collection.length ?
+                        instruction.command.collection = Array.prototype.slice.call(arg.childNodes) :
+                        instruction.command.sibling = arg.childNodes[0];
                 } else if (typeof arg === 'boolean') {
-                    output.animate = arg;
+                    instruction.animate = arg;
                 } else if (typeof arg === 'function') {
-                    output.callback = arg;
+                    instruction.callback = arg;
                 }
             }
 
-            if (!output.command.collection.length && _h.canReportErrors(self)) {
+            if (!instruction.command.collection.length && _h.canReportErrors(self)) {
                 throw new Error('[MixItUp] No elements were passed to "insert"');
             }
 
-            return self._execFilter('_parseInsertArgs', output, arguments);
+            return self._execFilter('_parseInsertArgs', instruction, arguments);
         },
 
         /**
          * _parseRemoveArgs
          * @since 3.0.0
-         * @param {Array} args
+         * @param {*[]} args
          * @return {Object}
          */
 
         _parseRemoveArgs: function(args) {
             var self        = this,
-                output      = new UserInstruction(),
+                instruction = new UserInstruction(),
                 collection  = [],
                 target      = null,
                 arg         = null,
                 i           = -1;
 
-            output.animate = self.animation.enable;
+            instruction.animate = self.animation.enable;
 
-            output.command = {
+            instruction.command = {
                 targets: []
             };
 
@@ -2971,7 +2971,7 @@
                 switch (typeof arg) {
                     case 'number':
                         if (self._targets[arg]) {
-                            output.command.targets[0] = self._targets[arg];
+                            instruction.command.targets[0] = self._targets[arg];
                         }
 
                         break;
@@ -2988,11 +2988,11 @@
 
                         break;
                     case 'boolean':
-                        output.animate = arg;
+                        instruction.animate = arg;
 
                         break;
                     case 'function':
-                        output.callback = arg;
+                        instruction.callback = arg;
 
                         break;
                 }
@@ -3001,18 +3001,18 @@
             if (collection.length) {
                 for (i = 0; target = self._targets[i]; i++) {
                     if (collection.indexOf(target._dom.el) > -1) {
-                        output.command.targets.push(target);
+                        instruction.command.targets.push(target);
                     }
                 }
             }
 
-            return self._execFilter('_parseRemoveArgs', output, arguments);
+            return self._execFilter('_parseRemoveArgs', instruction, arguments);
         },
 
         /**
          * _deferMix
          * @since 3.0.0
-         * @param {Mixed[]} args
+         * @param {*[]} args
          * @param {Object} parsedArgs
          * @return {Promise} -> {State}
          */
@@ -3104,7 +3104,7 @@
          * filter
          * @since 2.0.0
          * @shorthand self.multiMix
-         * @param {Array} arguments
+         * @param {*[]} arguments
          * @return {Promise} -> {State}
          */
 
@@ -3123,7 +3123,7 @@
          * sort
          * @since 2.0.0
          * @shorthand self.multiMix
-         * @param {Array} arguments
+         * @param {*[]} arguments
          * @return {Promise} -> {State}
          */
 
@@ -3140,7 +3140,7 @@
          * changeLayout
          * @since 2.0.0
          * @shorthand self.multiMix
-         * @param {Mixed[]} arguments
+         * @param {*[]} arguments
          * @return {Promise} -> {State}
          */
 
@@ -3255,19 +3255,19 @@
         /**
          * multiMix
          * @since 2.0.0
-         * @param {Mixed[]} arguments
+         * @param {*[]} arguments
          * @return {Promise} -> {State}
          */
 
         multiMix: function() {
             var self        = this,
                 operation   = null,
-                args        = self._parseMultiMixArgs(arguments);
+                instruction = self._parseMultiMixArgs(arguments);
 
             self._execAction('multiMix', 0, arguments);
 
             if (!self._isMixing) {
-                operation = self.getOperation(args.command);
+                operation = self.getOperation(instruction.command);
 
                 if (self.controls.enable && !self._isClicking && !self._isRemoving) {
                     self._dom.filterToggleButtons.length && self._buildToggleArray();
@@ -3281,19 +3281,19 @@
 
                 self._userCallback = null;
 
-                if (args.callback) self._userCallback = args.callback;
+                if (instruction.callback) self._userCallback = instruction.callback;
 
                 self._execFilter('multiMix', operation, self);
                 self._execAction('multiMix', 1, arguments);
 
                 return self._goMix(
-                    (args.animate ^ self.animation.enable) ?
-                        args.animate :
+                    (instruction.animate ^ self.animation.enable) ?
+                        instruction.animate :
                         self.animation.enable,
                     operation
                 );
             } else {
-                return self._deferMix(arguments, args);
+                return self._deferMix(arguments, instruction);
             }
         },
 
@@ -3346,7 +3346,7 @@
         /**
          * insert
          * @since 2.0.0
-         * @param {Mixed[]} arguments
+         * @param {*[]} arguments
          * @shorthand multiMix
          * @return {Promise} -> {State}
          */
@@ -3364,7 +3364,7 @@
          * insertBefore
          * @since 3.0.0
          * @shorthand insert
-         * @param {Array} arguments
+         * @param {*[]} arguments
          * @return {Promise} -> {State}
          */
 
@@ -3379,7 +3379,7 @@
          * insertAfter
          * @since 3.0.0
          * @shorthand insert
-         * @param {Array} arguments
+         * @param {*[]} arguments
          * @return {Promise} -> {State}
          */
 
@@ -3394,7 +3394,7 @@
          * prepend
          * @since 2.0.0
          * @shorthand insert
-         * @param {Array} arguments
+         * @param {*[]} arguments
          * @return {Promise} -> {State}
          */
 
@@ -3409,7 +3409,7 @@
          * append
          * @since 2.0.0
          * @shorthand insert
-         * @param {array} arguments
+         * @param {*[]} arguments
          * @return {Promise} -> {State}
          */
 
@@ -3423,7 +3423,7 @@
         /**
          * remove
          * @since 3.0.0
-         * @param {Mixed[]} arguments
+         * @param {*[]} arguments
          * @shorthand multiMix
          * @return {Promise} -> {State}
          */
@@ -3441,7 +3441,7 @@
          * getOption
          * @since 2.0.0
          * @param {String} string
-         * @return {Mixed}
+         * @return {*}
          */
 
         getOption: function(string) {
@@ -4021,7 +4021,7 @@
         /**
          * _applyTransition
          * @since 3.0.0
-         * @param {Array} rules
+         * @param {String[]} rules
          * @void
          */
 
