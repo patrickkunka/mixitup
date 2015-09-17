@@ -28,11 +28,6 @@
         doc             = null,
         _h              = null;
 
-    /* Meta Data
-    ---------------------------------------------------------------------- */
-
-    mixItUp.prototype.CORE_VERSION = '3.0.0';
-
     /* Helper Library
     ---------------------------------------------------------------------- */
 
@@ -844,7 +839,7 @@
                 animateChangeLayout: false,
                 animateResizeContainer: true,
                 animateResizeTargets: false,
-                staggerSequence: false,
+                staggerSequence: null,
                 reverseOut: false,
                 nudgeOut: true
             },
@@ -971,6 +966,8 @@
         _transformProp: 'transform',
         _transformRule: 'transform',
         _transitionProp: 'transition',
+        _perspectiveProp: 'perspective',
+        _perspectiveOriginProp: 'perspectiveOrigin',
 
         _tweenable: [
             'opacity',
@@ -1060,6 +1057,12 @@
 
             Mixer.prototype._transformRule =
                 transformPrefix ? '-' + transformPrefix + '-transform' : 'transform';
+
+            Mixer.prototype._perspectiveProp =
+                transformPrefix ? transformPrefix + 'Perspective' : 'perspective';
+
+            Mixer.prototype._perspectiveOriginProp =
+                transformPrefix ? transformPrefix + 'PerspectiveOrigin' : 'perspectiveOrigin';
 
             /* Polyfills
             ---------------------------------------------------------------------- */
@@ -2056,6 +2059,8 @@
            self._transformIn    = [];
            self._transformOut   = [];
 
+           self._effectsIn.opacity = self._effectsOut.opacity = 1;
+
            self._parseEffect('fade');
 
            for (transformName in self._transformDefaults) {
@@ -2123,11 +2128,12 @@
                         for (i = 0; unit = units[i]; i++) {
                             if (val.indexOf(unit) > -1) {
                                 self._effectsIn[effectName].unit = self._effectsOut[effectName].unit = unit;
-                                self._effectsIn[effectName].value = parseFloat(val);
-                            }
 
-                            break;
+                                break;
+                            }
                         }
+
+                        self._effectsIn[effectName].value = parseFloat(val);
 
                         self._effectsOut[effectName].value = (self.animation.reverseOut && effectName !== 'scale') ?
                             self._effectsIn[effectName].value * -1 :
@@ -2151,8 +2157,8 @@
                     default:
                         // Transforms
 
-                        self._effectsIn[effectName].value   = self._transformDefaults[effectName].value;
-                        self._effectsIn[effectName].unit    = self._effectsOut[effectName].unit = self._transformDefaults[effectName].unit;
+                        self._effectsIn[effectName].value = self._transformDefaults[effectName].value;
+                        self._effectsIn[effectName].unit = self._effectsOut[effectName].unit = self._transformDefaults[effectName].unit;
 
                         self._effectsOut[effectName].value = (self.animation.reverseOut && effectName !== 'scale') ?
                             self._effectsIn[effectName].value * -1 :
@@ -2244,9 +2250,18 @@
                 !operation.willChangeLayout
             ) {
                 // If nothing to show or hide, and not sorting or
-                // changing layout, then abort
+                // changing layout
 
                 shouldAnimate = false;
+            }
+
+            if (
+                !operation.startState.show.length &&
+                !operation.show.length
+            ) {
+                // If nothing currently shown, nothing to show
+
+                shouldAnimate = false
             }
 
             if (
@@ -2277,6 +2292,9 @@
                 if (window.pageYOffset !== operation.docState.scrollTop) {
                     window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
                 }
+
+                self._dom.parent.style[Mixer.prototype._perspectiveProp] = self.animation.perspective;
+                self._dom.parent.style[Mixer.prototype._perspectiveOriginProp] = self.animation.perspectiveOrigin;
 
                 if (self.animation.animateResizeContainer) {
                     self._dom.parent.style.height = operation.startHeight + 'px';
@@ -2659,6 +2677,10 @@
             var self            = this,
                 target          = null,
                 posData         = null,
+                hideOrShow      = '',
+                willTransition  = false,
+                staggerIndex    = -1,
+                i               = -1,
                 checkProgress   = function() {
                     // TODO: Can we find an alternative to this? _h.bind doesn't
                     // allow the passing of an argument and we don't want to
@@ -2666,8 +2688,8 @@
                     // nested function will cause a perf hit.
 
                     self._checkProgress(operation);
-                },
-                i               = -1;
+                };
+
 
             // TODO: this is an extra loop in addition to the calcs
             // done in getOperation, can we get around somehow?
@@ -2675,28 +2697,45 @@
             for (i = 0; target = operation.show[i]; i++) {
                 posData = operation.showPosData[i];
 
+                hideOrShow = target._isShown ? false : 'show'; // TODO: can we not mix types here?
+
+                willTransition = self._willTransition(hideOrShow, posData.posIn, posData.posOut);
+
+                if (willTransition) {
+                    // Prevent non-transitioning targets from incrementing the staggerIndex
+
+                    staggerIndex++;
+                }
+
                 target._show();
 
                 target._move({
                     posIn: posData.posIn,
                     posOut: posData.posOut,
-                    hideOrShow: target._isShown ? false : 'show', // TODO: can we not mix types here?
-                    staggerIndex: i,
-                    callback: checkProgress
+                    hideOrShow: hideOrShow,
+                    staggerIndex: staggerIndex,
+                    callback: willTransition ? checkProgress : null
                 });
             }
 
             for (i = 0; target = operation.toHide[i]; i++) {
                 posData = operation.toHidePosData[i];
 
+                hideOrShow = 'hide';
+
+                willTransition = self._willTransition(hideOrShow, posData.posIn, posData.posOut);
+
                 target._move({
                     posIn: posData.posIn,
                     posOut: posData.posOut,
-                    hideOrShow: 'hide',
+                    hideOrShow: hideOrShow,
                     staggerIndex: i,
-                    callback: checkProgress
+                    callback: willTransition ? checkProgress : null
                 });
             }
+
+            self._dom.parent.style.perspective = self.animation.perspectiveDistance + 'px';
+            self._dom.parent.style.perspectiveOrigin = self.animation.perspectiveOrigin;
 
             if (self.animation.animateResizeContainer) {
                 self._dom.parent.style[Mixer.prototype._transitionProp] =
@@ -2712,6 +2751,50 @@
             if (operation.willChangeLayout) {
                 _h.removeClass(self._dom.container, self.layout.containerClass);
                 _h.addClass(self._dom.container, operation.newContainerClass);
+            }
+        },
+
+        /**
+         * _willTransition
+         * @param {String|Boolean} hideOrShow
+         * @param {StyleData} posIn
+         * @param {StyleData} posOut
+         * @return {Boolean}
+         *
+         * Determines if a target element will transition in
+         * some fasion and therefore requires binding of
+         * transitionEnd
+         */
+
+        _willTransition: function(hideOrShow, posIn, posOut) {
+            var self = this;
+
+            if (!_h.isVisible(self._dom.container)) {
+                // If the container is not visible, the transitionEnd
+                // event will not occur and MixItUp will hang
+
+                return false;
+            }
+
+            // Check if opacity and/or translate will change
+
+            if (
+                (hideOrShow && self._effectsIn.opacity !== 1) ||
+                posIn.x !== posOut.x ||
+                posIn.y !== posOut.y
+            ) {
+                return true;
+            } else if (self.animation.animateResizeTargets) {
+                // Check if width, height or margins will change
+
+                return (
+                    posIn.width !== posOut.width ||
+                    posIn.height !== posOut.height ||
+                    posIn.marginRight !== posOut.marginRight ||
+                    posIn.marginTop !== posOut.marginTop
+                );
+            } else {
+                return false;
             }
         },
 
@@ -2740,19 +2823,19 @@
          */
 
         _cleanUp: function(operation) {
-            var self            = this,
-                target          = null,
-                firstInQueue    = null,
-                i               = -1;
+            var self = this,
+                target = null,
+                firstInQueue = null,
+                i = -1;
 
             self._isMixing = false;
 
             self._execAction('_cleanUp', 0);
 
-            self._targetsMoved      = 0;
-            self._targetsImmovable  = 0;
-            self._targetsBound      = 0;
-            self._targetsDone       = 0;
+            self._targetsMoved = 0;
+            self._targetsImmovable = 0;
+            self._targetsBound = 0;
+            self._targetsDone = 0;
 
             for (i = 0; target = operation.show[i]; i++) {
                 target._cleanUp();
@@ -2776,9 +2859,12 @@
 
             if (self.animation.animateResizeContainer) {
                 self._dom.parent.style[Mixer.prototype._transitionProp] = '';
-                self._dom.parent.style.height                           = '';
-                self._dom.parent.style.width                            = '';
+                self._dom.parent.style.height = '';
+                self._dom.parent.style.width = '';
             }
+
+            self._dom.parent.style[Mixer.prototype._perspectiveProp] = '';
+            self._dom.parent.style[Mixer.prototype._perspectiveOriginProp] = '';
 
             if (operation.willChangeLayout) {
                 _h.removeClass(self._dom.container, operation.startContainerClass);
@@ -2823,28 +2909,6 @@
             self._userPromise.isResolved = true;
 
             self._execAction('_cleanUp', 1);
-        },
-
-        /**
-         * _getDelay
-         * @since 2.0.0
-         * @param {Number} index
-         * @return {Number}
-         *
-         * Allow for the manipulation of target indices via a user specified function
-         */
-
-        _getDelay: function(index) {
-            var self    = this,
-                delay   = -1;
-
-            if (typeof self.animation.staggerSequence === 'function') {
-                index = self.animation.staggerSequence.call(self, index, self._state);
-            }
-
-            delay = !!self._staggerDuration ? index * self.animation.staggerDuration : 0;
-
-            return self._execFilter('_getDelay', delay, arguments);
         },
 
         /**
@@ -3873,10 +3937,10 @@
                 ));
             }
 
-            // Based on the data we have, if the element will
-            // not transition in any way, abort here
+            // If no callback was provided, the element will
+            // not transition in any way so abort here
 
-            if (!self._willTransition(options)) {
+            if (!options.callback) {
                 self._mixer._targetsImmovable++;
 
                 if (self._mixer._targetsMoved === self._mixer._targetsImmovable) {
@@ -4012,7 +4076,7 @@
 
         _writeTransitionRule: function(rule, staggerIndex, duration) {
             var self    = this,
-                delay   = self._mixer._getDelay(staggerIndex),
+                delay   = self._getDelay(staggerIndex),
                 output  = '';
 
             output = rule + ' ' +
@@ -4021,6 +4085,28 @@
                 (rule === 'opacity' ? 'linear' : self._mixer.animation.easing);
 
             return output;
+        },
+
+        /**
+         * _getDelay
+         * @since 2.0.0
+         * @param {Number} index
+         * @return {Number}
+         *
+         * Allow for the manipulation of target indices via a user specified function
+         */
+
+        _getDelay: function(index) {
+            var self = this,
+                delay = -1;
+
+            if (typeof self._mixer.animation.staggerSequence === 'function') {
+                index = self._mixer.animation.staggerSequence.call(self, index, self._state);
+            }
+
+            delay = !!self._mixer._staggerDuration ? index * self._mixer._staggerDuration : 0;
+
+            return self._execFilter('_getDelay', delay, arguments);
         },
 
         /**
@@ -4569,6 +4655,11 @@
 
         return self.constructor(container, config, foreignDoc, true);
     };
+
+    /* Meta Data
+    ---------------------------------------------------------------------- */
+
+    mixItUp.prototype.CORE_VERSION = '3.0.0';
 
     /* Encapsulation
     ---------------------------------------------------------------------- */
