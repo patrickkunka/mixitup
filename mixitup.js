@@ -21,10 +21,10 @@
         Collection      = null,
         Operation       = null,
         StyleData       = null,
-        Mixer           = null,
         mixItUp         = null,
         Target          = null,
         State           = null,
+        Mixer           = null,
         doc             = null,
         _h              = null;
 
@@ -2084,7 +2084,7 @@
                 str         = '',
                 match       = [],
                 val         = '',
-                units       = ['%', 'px', 'em', 'rem', 'vh', 'vw'],
+                units       = ['%', 'px', 'em', 'rem', 'vh', 'vw', 'deg'],
                 unit        = '',
                 i           = -1;
 
@@ -2699,7 +2699,7 @@
 
                 hideOrShow = target._isShown ? false : 'show'; // TODO: can we not mix types here?
 
-                willTransition = self._willTransition(hideOrShow, posData.posIn, posData.posOut);
+                willTransition = self._willTransition(hideOrShow, operation.hasEffect, posData.posIn, posData.posOut);
 
                 if (willTransition) {
                     // Prevent non-transitioning targets from incrementing the staggerIndex
@@ -2714,6 +2714,7 @@
                     posOut: posData.posOut,
                     hideOrShow: hideOrShow,
                     staggerIndex: staggerIndex,
+                    operation: operation,
                     callback: willTransition ? checkProgress : null
                 });
             }
@@ -2730,6 +2731,7 @@
                     posOut: posData.posOut,
                     hideOrShow: hideOrShow,
                     staggerIndex: i,
+                    operation: operation,
                     callback: willTransition ? checkProgress : null
                 });
             }
@@ -2755,8 +2757,42 @@
         },
 
         /**
+         * _hasEffect
+         * @return {Boolean}
+         */
+
+        _hasEffect: function() {
+            var self        = this,
+                effectables = [
+                    'scale',
+                    'translateX', 'translateY', 'translateZ',
+                    'rotateX', 'rotateY', 'rotateZ'
+                ],
+                effectName  = '',
+                effect      = null,
+                value       = -1,
+                i           = -1;
+
+            if (self._effectsIn.opacity !== 1) {
+                return true;
+            }
+
+            for (i = 0; effectName = effectables[i]; i++) {
+                effect  = self._effectsIn[effectName];
+                value   = (effect && effect.value !== undf) ?
+                    effect.value : effect;
+
+                if (value !== 0) {
+                    return true;
+                }
+            }
+
+            return false;
+        },
+
+        /**
          * _willTransition
-         * @param {String|Boolean} hideOrShow
+         * @param {Boolean} hasEffect
          * @param {StyleData} posIn
          * @param {StyleData} posOut
          * @return {Boolean}
@@ -2766,7 +2802,7 @@
          * transitionEnd
          */
 
-        _willTransition: function(hideOrShow, posIn, posOut) {
+        _willTransition: function(hideOrShow, hasEffect, posIn, posOut) {
             var self = this;
 
             if (!_h.isVisible(self._dom.container)) {
@@ -2779,7 +2815,7 @@
             // Check if opacity and/or translate will change
 
             if (
-                (hideOrShow && self._effectsIn.opacity !== 1) ||
+                (hideOrShow && hasEffect) ||
                 posIn.x !== posOut.x ||
                 posIn.y !== posOut.y
             ) {
@@ -3314,6 +3350,8 @@
 
             self._parseEffects();
 
+            operation.hasEffect = self._hasEffect();
+
             self._getTweenData(operation);
 
             operation.newState = self._buildState(operation);
@@ -3772,14 +3810,7 @@
             });
 
             requestAnimationFrame(function() {
-                self._applyStylesOut({
-                    posIn: options.posIn,
-                    posOut: options.posOut,
-                    hideOrShow: options.hideOrShow,
-                    staggerIndex: options.staggerIndex,
-                    duration: options.duration,
-                    callback: options.callback
-                });
+                self._applyStylesOut(options);
             });
 
             self._execAction('_move', 1, arguments);
@@ -3938,17 +3969,19 @@
             }
 
             // If no callback was provided, the element will
-            // not transition in any way so abort here
+            // not transition in any way so tag it as "immovable"
 
             if (!options.callback) {
                 self._mixer._targetsImmovable++;
+
+                self._mixer._checkProgress();
 
                 if (self._mixer._targetsMoved === self._mixer._targetsImmovable) {
                     // If the total targets moved is equal to the
                     // number of immovable targets, the operation
                     // should be considered finished
 
-                    self._mixer._cleanUp();
+                    self._mixer._cleanUp(options.operation);
                 }
 
                 return;
@@ -4019,47 +4052,6 @@
             // Apply transforms
 
             self._dom.el.style[Mixer.prototype._transformProp] = transformValues.join(' ');
-        },
-
-        /**
-         * _willTransition
-         * @param {Object} options
-         * @return {Boolean}
-         *
-         * Determines if a target element will transition in
-         * some fasion and therefore requires binding of
-         * transitionEnd
-         */
-
-        _willTransition: function(options) {
-            var self = this,
-                canResize = self._mixer.animation.animateResizeTargets;
-
-            if (!_h.isVisible(self._mixer._dom.container)) {
-                // If the container is not visible, the transitionEnd
-                // event will not occur and MixItUp will hang
-
-                return false;
-            }
-
-            // Check if opacity and/or translate will change
-
-            if (
-                options.hideOrShow ||
-                options.posIn.x !== options.posOut.x ||
-                options.posIn.y !== options.posOut.y
-            ) {
-                return true;
-            } else if (canResize) {
-                // Check if width, height or margins will change
-
-                return (
-                    options.posIn.width !== options.posOut.width ||
-                    options.posIn.height !== options.posOut.height ||
-                    options.posIn.marginRight !== options.posOut.marginRight ||
-                    options.posIn.marginTop !== options.posOut.marginTop
-                );
-            }
         },
 
         /**
@@ -4345,6 +4337,7 @@
 
         this.willSort            = false;
         this.willChangeLayout    = false;
+        this.hasEffect           = false;
 
         this.show                = [];
         this.hide                = [];
