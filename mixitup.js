@@ -35,10 +35,10 @@
 
         /**
          * hasClass
-         * @since 3.0.0
-         * @param {Element} el
-         * @param {String} cls
-         * @return {Boolean}
+         * @since   3.0.0
+         * @param   {Element}   el
+         * @param   {String}    cls
+         * @return  {Boolean}
          */
 
         hasClass: function(el, cls) {
@@ -47,9 +47,9 @@
 
         /**
          * addClass
-         * @since 3.0.0
-         * @param {Element} el
-         * @param {String} cls
+         * @since   3.0.0
+         * @param   {Element}   el
+         * @param   {String}    cls
          * @void
          */
 
@@ -59,9 +59,9 @@
 
         /**
          * removeClass
-         * @since 3.0.0
-         * @param {Element} el
-         * @param {String} cls
+         * @since   3.0.0
+         * @param   {Element}   el
+         * @param   {String}    cls
          * @void
          */
 
@@ -75,9 +75,9 @@
 
         /**
          * extend
-         * @since 3.0.0
-         * @param {Object} destination
-         * @param {Object} source
+         * @since   3.0.0
+         * @param   {Object}    destination
+         * @param   {Object}    source
          * @void
          */
 
@@ -101,11 +101,11 @@
 
         /**
          * on
-         * @since 3.0.0
-         * @param {Element} el
-         * @param {String} type
-         * @param {Function} fn
-         * @param {Boolean} useCapture
+         * @since   3.0.0
+         * @param   {Element}   el
+         * @param   {String}    type
+         * @param   {Function}  fn
+         * @param   {Boolean}   useCapture
          * @void
          */
 
@@ -127,10 +127,10 @@
 
         /**
          * off
-         * @since 3.0.0
-         * @param {Element} el
-         * @param {String} type
-         * @param {Function} fn
+         * @since   3.0.0
+         * @param   {Element}   el
+         * @param   {String}    type
+         * @param   {Function}  fn
          * @void
          */
 
@@ -147,9 +147,9 @@
 
         /**
          * triggerCustom
-         * @param {Element} element
-         * @param {String} eventName
-         * @param {Object} data
+         * @param   {Element}   element
+         * @param   {String}    eventName
+         * @param   {Object}    data
          * @void
          */
 
@@ -170,10 +170,10 @@
 
         /**
          * index
-         * @since 3.0.0
-         * @param {Element} el
-         * @param {String} selector
-         * @return {Number}
+         * @since   3.0.0
+         * @param   {Element}   el
+         * @param   {String}    selector
+         * @return  {Number}
          */
 
         index: function(el, selector) {
@@ -190,9 +190,9 @@
 
         /**
          * camelCase
-         * @since 2.0.0
-         * @param {String}
-         * @return {String}
+         * @since   2.0.0
+         * @param   {String}
+         * @return  {String}
          */
 
         camelCase: function(string) {
@@ -203,9 +203,9 @@
 
         /**
          * isElement
-         * @since 2.1.3
-         * @param {Element} el
-         * @return {Boolean}
+         * @since   2.1.3
+         * @param   {Element}   el
+         * @return  {Boolean}
          */
 
         isElement: function(el) {
@@ -231,9 +231,9 @@
 
         /**
          * createElement
-         * @since 3.0.0
-         * @param {String} htmlString
-         * @return {DocumentFragment}
+         * @since   3.0.0
+         * @param   {String}            htmlString
+         * @return  {DocumentFragment}
          */
 
         createElement: function(htmlString) {
@@ -251,8 +251,8 @@
 
         /**
          * deleteElement
-         * @since 3.0.0
-         * @param {Element} el
+         * @since   3.0.0
+         * @param   {Element}   el
          * @void
          */
 
@@ -264,10 +264,10 @@
 
         /**
          * isEqualArray
-         * @since 3.0.0
-         * @param {*[]} a
-         * @param {*[]} b
-         * @return {Boolean}
+         * @since   3.0.0
+         * @param   {*[]}       a
+         * @param   {*[]}       b
+         * @return  {Boolean}
          */
 
         isEqualArray: function(a, b) {
@@ -284,10 +284,9 @@
 
         /**
          * arrayShuffle
-         * @since 2.0.0
-         * arrayShuffle
-         * @param {*[]} oldArray
-         * @return {*[]}
+         * @since   2.0.0
+         * @param   {*[]}   oldArray
+         * @return  {*[]}
          */
 
         arrayShuffle: function(oldArray) {
@@ -310,11 +309,11 @@
 
         /**
          * debounce
-         * @since 3.0.0
-         * @param {Function} func
-         * @param {Number} wait
-         * @param {Boolean} immediate
-         * @return {Function}
+         * @since   3.0.0
+         * @param   {Function}  func
+         * @param   {Number}    wait
+         * @param   {Boolean}   immediate
+         * @return  {Function}
          */
 
         debounce: function(func, wait, immediate) {
@@ -342,9 +341,9 @@
 
         /**
          * position
-         * @since 3.0.0
-         * @param {Element} element
-         * @return {Object}
+         * @since   3.0.0
+         * @param   {Element}   element
+         * @return  {Object}
          */
 
         position: function(element) {
@@ -374,10 +373,10 @@
 
         /**
          * getHypotenuse
-         * @since 3.0.0
-         * @param {Object} node1
-         * @return {Object} node2
-         * @return {Number}
+         * @since   3.0.0
+         * @param   {Object}    node1
+         * @return  {Object}    node2
+         * @return  {Number}
          */
 
         getHypotenuse: function(node1, node2) {
@@ -392,12 +391,12 @@
 
         /**
          * closestParent
-         * @since 3.0.0
-         * @param {Object} el
-         * @param {String} selector
-         * @param {Boolean} includeSelf
-         * @param {Number} range
-         * @return {Element}
+         * @since   3.0.0
+         * @param   {Object}    el
+         * @param   {String}    selector
+         * @param   {Boolean}   includeSelf
+         * @param   {Number}    range
+         * @return  {Element}
          */
 
         closestParent: function(el, selector, includeSelf, range) {
@@ -427,10 +426,10 @@
 
         /**
          * children
-         * @since 3.0.0
-         * @param {Element} el
-         * @param {String} selector
-         * @return {NodeList}
+         * @since   3.0.0
+         * @param   {Element}   el
+         * @param   {String}    selector
+         * @return  {NodeList}
          */
 
         children: function(el, selector) {
@@ -456,9 +455,9 @@
 
         /**
          * forEach
-         * @since 3.0.0
-         * @param {*[]} items
-         * @param {Function} callback
+         * @since   3.0.0
+         * @param   {*[]}       items
+         * @param   {Function}  callback
          * @void
          */
 
@@ -473,9 +472,9 @@
 
         /**
          * clean
-         * @since 3.0.0
-         * @param {*[]} originalArray
-         * @return {*[]}
+         * @since   3.0.0
+         * @param   {*[]}   originalArray
+         * @return  {*[]}
          */
 
         clean: function(originalArray) {
@@ -493,8 +492,8 @@
 
         /**
          * getPromise
-         * @since 3.0.0
-         * @return {Object} libraries
+         * @since  3.0.0
+         * @return {Object}     libraries
          * @return {Object}
          */
 
@@ -529,9 +528,9 @@
 
         /**
          * canReportErrors
-         * @since 3.0.0
-         * @param [{Object}] config
-         * @return {Boolean}
+         * @since   3.0.0
+         * @param   [{Object}] config
+         * @return  {Boolean}
          */
 
         canReportErrors: function(config) {
@@ -544,12 +543,14 @@
 
         /**
          * getPrefix
-         * @since 2.0.0
-         * @param {Element} el,
-         * @param {String} property
-         * @param {String[]} vendors
-         * @return {String | Boolean}
+         * @since   2.0.0
+         * @param   {Element}   el
+         * @param   {String}    property
+         * @param   {String[]}  vendors
+         * @return  {String | Boolean}
          */
+
+        // TODO: make this return a single type
 
         getPrefix: function(el, property, vendors) {
             var i       = -1,
@@ -567,25 +568,9 @@
         },
 
         /**
-         * negateValue
-         * @param {String} value
-         * @param {Boolean} invert
-         * @return {String}
-         */
-
-        negateValue: function(value, invert) {
-            if (invert) {
-                return value.charAt(0) === '-' ?
-                    value.substr(1, value.length) :
-                    '-' + value;
-            } else {
-                return value;
-            }
-        },
-
-        /**
          * randomHexKey
-         * @return {String}
+         * @since   3.0.0
+         * @return  {String}
          */
 
         randomHexKey: function() {
@@ -599,8 +584,8 @@
 
         /**
          * getDocumentState
-         * @since 3.0.0
-         * @return {Object}
+         * @since   3.0.0
+         * @return  {Object}
          */
 
         getDocumentState: function() {
@@ -613,9 +598,10 @@
 
         /**
          * bind
-         * @param {Object} obj
-         * @param {Function} fn
-         * @return {Function}
+         * @since   3.0.0
+         * @param   {Object}    obj
+         * @param   {Function}  fn
+         * @return  {Function}
          */
 
         bind: function(obj, fn) {
@@ -626,8 +612,9 @@
 
         /**
          * isVisible
-         * @param {Element} el
-         * @return {Boolean}
+         * @since   3.0.0
+         * @param   {Element}   el
+         * @return  {Boolean}
          */
 
         isVisible: function(el) {
@@ -653,13 +640,43 @@
 
         /**
          * seal
-         * @param {Object} obj
+         * @since   3.0.0
+         * @param   {Object}    obj
          */
 
         seal: function(obj) {
             if (typeof Object.seal === 'function') {
                 Object.seal(obj);
             }
+        },
+
+        /**
+         * compareVersions
+         * @since   3.0.0
+         * @param   {String}    control
+         * @param   {String}    specimen
+         * @return  {Boolean}
+         */
+
+        compareVersions: function(control, specimen) {
+            var controlParts    = control.split('.'),
+                specimenParts   = specimen.split('.'),
+                controlPart     = -1,
+                specimenPart    = -1,
+                i               = -1;
+
+            for (i = 0; i < controlParts.length; i++) {
+                controlPart     = parseInt(controlParts[i]);
+                specimenPart    = parseInt(specimenParts[i] || 0);
+
+                if (specimenPart < controlPart) {
+                    return false;
+                } else if (specimenPart > controlPart) {
+                    return true;
+                }
+            }
+
+            return true;
         }
     };
 
@@ -673,14 +690,14 @@
 
         /**
          * extend
-         * @since 2.1.0
-         * @param {Object} new properties/methods
+         * @since   2.1.0
+         * @param   {Object}
          * @void
          *
-         * Shallow extend the prototype with new methods
+         * Shallow extend the base prototype with new methods
          */
 
-        // TODO: make the extend helper method more robust with deep/shallow flag, and call here
+        // TODO: make the extend helper method more robust with deep/shallow flag, and call here as shallow
 
         extend: function(extension) {
             var key     = '',
@@ -695,11 +712,11 @@
 
         /**
          * addAction
-         * @since 2.1.0
-         * @param {String} hook name
-         * @param {String} name
-         * @param {Function} func
-         * @param {Number} priority
+         * @since   2.1.0
+         * @param   {String}    hook name
+         * @param   {String}    name
+         * @param   {Function}  func
+         * @param   {Number}    priority
          * @void
          *
          * Register a named action hook on the prototype
@@ -711,10 +728,10 @@
 
         /**
          * addFilter
-         * @since 2.1.0
-         * @param {String} hook
-         * @param {String} name
-         * @param {Function} func
+         * @since   2.1.0
+         * @param   {String}    hook
+         * @param   {String}    name
+         * @param   {Function}  func
          * @void
          *
          * Register a named action hook on the prototype
@@ -729,11 +746,11 @@
 
         /**
          * _addHook
-         * @since 2.1.0
-         * @param {String} type of hook
-         * @param {String} hook name
-         * @param {Function} function to execute
-         * @param {Number} priority
+         * @since   2.1.0
+         * @param   {String}    type of hook
+         * @param   {String}    hook name
+         * @param   {Function}  function to execute
+         * @param   {Number}    priority
          * @void
          *
          * Add a hook to the object's prototype
@@ -757,10 +774,10 @@
 
         /**
          * _execAction
-         * @since 2.0.0
-         * @param {String} methodName
-         * @param {Boolean} isPost
-         * @param {*[]} args
+         * @since   2.0.0
+         * @param   {String}    methodName
+         * @param   {Boolean}   isPost
+         * @param   {*[]} args
          * @void
          */
 
@@ -778,11 +795,11 @@
 
         /**
          * _execFilter
-         * @since 2.0.0
-         * @param {String} methodName
-         * @param {*} value
-         * @param {*[]} args
-         * @return {*}
+         * @since   2.0.0
+         * @param   {String}    methodName
+         * @param   {*}         value
+         * @param   {*[]}       args
+         * @return  {*}
          * @void
          */
 
@@ -805,7 +822,7 @@
 
     /**
      * Mixer
-     * @since 3.0.0
+     * @since       3.0.0
      * @constructor
      */
 
@@ -947,9 +964,9 @@
 
     /**
      * Mixer.prototype
-     * @since 3.0.0
+     * @since       3.0.0
      * @prototype
-     * @extends prototype
+     * @extends     basePrototype
      */
 
     Mixer.prototype = Object.create(basePrototype);
@@ -1128,9 +1145,9 @@
 
         /**
          * _init
-         * @since 2.0.0
-         * @param {Element} el
-         * @param {Object} config
+         * @since   2.0.0
+         * @param   {Element}   el
+         * @param   {Object}    config
          * @void
          */
 
@@ -1180,7 +1197,7 @@
 
         /**
          * _cacheDom
-         * @since 3.0.0
+         * @since   3.0.0
          * @void
          *
          * Cache references of all neccessary DOM elements
@@ -1217,7 +1234,7 @@
 
         /**
          * _indexTargets
-         * @since 3.0.0
+         * @since   3.0.0
          * @void
          *
          * Index matching children of the container, and
@@ -1259,7 +1276,7 @@
 
         /**
          * _bindEvents
-         * @since 3.0.0
+         * @since   3.0.0
          * @void
          */
 
@@ -1296,7 +1313,7 @@
 
         /**
          * _unbindEvents
-         * @since 3.0.0
+         * @since   3.0.0
          * @void
          */
 
@@ -1318,8 +1335,8 @@
 
         /**
          * _eventBus
-         * @param {Object} e
-         * @return [{Boolean}]
+         * @param   {Object}    e
+         * @return  [{Boolean}]
          */
 
         _eventBus: function(e) {
@@ -1333,9 +1350,9 @@
 
         /**
          * _handleClick
-         * @since 3.0.0
-         * @param {object} button
-         * @param {string} type
+         * @since   3.0.0
+         * @param   {object}    button
+         * @param   {string}    type
          * @void
          *
          * Determines the type of operation needed and the
@@ -1511,10 +1528,10 @@
 
         /**
          * _trackClick
-         * @since 3.0.0
-         * @param {Element} button
-         * @param {String} method
-         * @param {Boolean} isTogglingOff
+         * @since   3.0.0
+         * @param   {Element}   button
+         * @param   {String}    method
+         * @param   {Boolean}   isTogglingOff
          * @void
          */
 
@@ -1541,7 +1558,7 @@
 
         /**
          * _buildToggleArray
-         * @since 2.0.0
+         * @since   2.0.0
          * @void
          *
          * Combines the selectors of toggled buttons into an array
@@ -1572,8 +1589,8 @@
 
         /**
          * _updateControls
-         * @since 2.0.0
-         * @param {Object} command
+         * @since   2.0.0
+         * @param   {Object} command
          * @void
          *
          * Updates buttons to their active/deactive state based
@@ -1659,11 +1676,11 @@
 
         /**
          * _insert
-         * @since 3.0.0
-         * @param {Object} command
-         * @param {Operation} operation
-         * @param {*[]} arguments
-         * @return {Promise} -> {State}
+         * @since   3.0.0
+         * @param   {Object}        command
+         * @param   {Operation}     operation
+         * @param   {*[]}           arguments
+         * @return  {Promise} ->    {State}
          */
 
         _insert: function(command, operation) {
@@ -1702,9 +1719,9 @@
 
         /**
          * _getNextSibling
-         * @param [{Number}] index
-         * @param [{Element}] sibling
-         * @param [{String}] position
+         * @param   [{Number}]      index
+         * @param   [{Element}]     sibling
+         * @param   [{String}]      position
          */
 
         _getNextSibling: function(index, sibling, position) {
@@ -1730,7 +1747,7 @@
         /**
          * _filter
          * @since 2.0.0
-         * @param {Operation} operation
+         * @param   {Operation}     operation
          * @void
          */
 
@@ -1794,11 +1811,11 @@
 
         /**
          * _evaluateHideShow
-         * @since 3.0.0
-         * @param {Boolean} condition
-         * @param {Element} target
-         * @param {Boolean} isRemoving
-         * @param {Operation} operation
+         * @since   3.0.0
+         * @param   {Boolean}   condition
+         * @param   {Element}   target
+         * @param   {Boolean}   isRemoving
+         * @param   {Operation} operation
          * @void
          */
 
@@ -1823,7 +1840,7 @@
         /**
          * _sort
          * @since 2.0.0
-         * @param {Operation} operation
+         * @param   {Operation}     operation
          * @void
          */
 
@@ -1871,12 +1888,12 @@
         /**
          * _compare
          * @algorithm
-         * @since 2.0.0
-         * @param {String|Number} a
-         * @param {String|Number} b
-         * @param {Number} depth (recursion)
-         * @param {ParsedSort} sort
-         * @return {Number}
+         * @since   2.0.0
+         * @param   {String|Number}     a
+         * @param   {String|Number}     b
+         * @param   {Number}            depth
+         * @param   {ParsedSort}        sort
+         * @return  {Number}
          */
 
         _compare: function(a, b, depth, sort) {
@@ -1914,10 +1931,10 @@
 
         /**
          * _getAttributeValue
-         * @since 3.0.0
-         * @param {Element} target
-         * @param [{ParsedSort}] sort
-         * @return {String|Number}
+         * @since   3.0.0
+         * @param   {Element}           target
+         * @param   [{ParsedSort}]      sort
+         * @return  {String|Number}
          *
          * Reads the values of sort attributes
          */
@@ -1951,9 +1968,9 @@
 
         /**
          * _printSort
-         * @since 2.0.0
-         * @param {Boolean} isResetting
-         * @param {Operation} operation
+         * @since   2.0.0
+         * @param   {Boolean}   isResetting
+         * @param   {Operation} operation
          * @void
          *
          * Inserts elements into the DOM in the appropriate
@@ -2009,9 +2026,9 @@
 
         /**
          * _parseSort
-         * @since 2.0.0
-         * @param {String} sortString
-         * @return {String[]}
+         * @since   2.0.0
+         * @param   {String}    sortString
+         * @return  {String[]}
          *
          * Parse user-defined sort strings into useable values
          * or "rules"
@@ -2042,7 +2059,7 @@
 
         /**
          * _parseEffects
-         * @since 2.0.0
+         * @since   2.0.0
          * @void
          *
          * Parse the user-defined effects string into values
@@ -2072,9 +2089,9 @@
 
         /**
          * _parseEffect
-         * @since 2.0.0
-         * @param {String} effectName
-         * @param [{Number}] transformIndex
+         * @since   2.0.0
+         * @param   {String}    effectName
+         * @param   [{Number}]  transformIndex
          */
 
         _parseEffect: function(effectName) {
@@ -2172,9 +2189,9 @@
 
         /**
          * _buildState
-         * @since 2.0.0
-         * @param {Operation} operation
-         * @return {State}
+         * @since   2.0.0
+         * @param   {Operation}     operation
+         * @return  {State}
          */
 
         _buildState: function(operation) {
@@ -2218,9 +2235,9 @@
 
         /**
          * _goMix
-         * @since 2.0.0
-         * @param {Boolean} shouldAnimate
-         * @param {Operation} operation
+         * @since   2.0.0
+         * @param   {Boolean}   shouldAnimate
+         * @param   {Operation} operation
          * @void
          */
 
@@ -2317,8 +2334,8 @@
 
         /**
          * _getStartMixData
-         * @since 2.0.0
-         * @param {Operation} operation
+         * @since   2.0.0
+         * @param   {Operation}     operation
          * @void
          */
 
@@ -2371,8 +2388,8 @@
 
         /**
          * _setInter
-         * @since 2.0.0
-         * @param {Operation} operation
+         * @since   2.0.0
+         * @param   {Operation}     operation
          * @void
          */
 
@@ -2397,8 +2414,8 @@
 
         /**
          * _getInterMixData
-         * @since 2.0.0
-         * @param {Operation} operation
+         * @since   2.0.0
+         * @param   {Operation}     operation
          * @void
          */
 
@@ -2434,8 +2451,8 @@
 
         /**
          * _setFinal
-         * @since 2.0.0
-         * @param {Operation} operation
+         * @since   2.0.0
+         * @param   {Operation}     operation
          * @void
          */
 
@@ -2457,8 +2474,8 @@
 
         /**
          * _getFinalMixData
-         * @since 2.0.0
-         * @param {Operation} operation
+         * @since   2.0.0
+         * @param   {Operation}     operation
          * @void
          */
 
@@ -2516,8 +2533,8 @@
 
         /**
          *  _getTweenData
-         * since 3.0.0
-         * @param {Operation} operation
+         * since    3.0.0
+         * @param   {Operation}     operation
          */
 
         _getTweenData: function(operation) {
@@ -2668,8 +2685,8 @@
 
         /**
          * _moveTargets
-         * @since 3.0.0
-         * @param {Operation} operation
+         * @since   3.0.0
+         * @param   {Operation}     operation
          * @void
          */
 
@@ -2758,7 +2775,7 @@
 
         /**
          * _hasEffect
-         * @return {Boolean}
+         * @return  {Boolean}
          */
 
         _hasEffect: function() {
@@ -2792,10 +2809,10 @@
 
         /**
          * _willTransition
-         * @param {Boolean} hasEffect
-         * @param {StyleData} posIn
-         * @param {StyleData} posOut
-         * @return {Boolean}
+         * @param   {Boolean}       hasEffect
+         * @param   {StyleData}     posIn
+         * @param   {StyleData}     posOut
+         * @return  {Boolean}
          *
          * Determines if a target element will transition in
          * some fasion and therefore requires binding of
@@ -2853,8 +2870,8 @@
 
         /**
          * _cleanUp
-         * @since 2.0.0
-         * @param {Operation} operation
+         * @since   2.0.0
+         * @param   {Operation}     operation
          * @void
          */
 
@@ -2949,9 +2966,9 @@
 
         /**
          * _parseMultiMixArgs
-         * @since 2.0.0
-         * @param {*[]} args
-         * @return {Object}
+         * @since   2.0.0
+         * @param   {*[]}       args
+         * @return  {Object}
          */
 
         _parseMultiMixArgs: function(args) {
@@ -2981,9 +2998,9 @@
 
         /**
          * _parseInsertArgs
-         * @since 2.0.0
-         * @param {*[]} args
-         * @return {Object}
+         * @since   2.0.0
+         * @param   {*[]}       args
+         * @return  {Object}
          */
 
         _parseInsertArgs: function(args) {
@@ -3051,9 +3068,9 @@
 
         /**
          * _parseRemoveArgs
-         * @since 3.0.0
-         * @param {*[]} args
-         * @return {Object}
+         * @since   3.0.0
+         * @param   {*[]}       args
+         * @return  {Object}
          */
 
         _parseRemoveArgs: function(args) {
@@ -3116,10 +3133,10 @@
 
         /**
          * _deferMix
-         * @since 3.0.0
-         * @param {*[]} args
-         * @param {Object} parsedArgs
-         * @return {Promise} -> {State}
+         * @since   3.0.0
+         * @param   {*[]}           args
+         * @param   {Object}        parsedArgs
+         * @return  {Promise} ->    {State}
          */
 
         _deferMix: function(args, parsedArgs) {
@@ -3171,8 +3188,8 @@
 
         /**
          * show
-         * @since 3.0.0
-         * @return {Promise} -> {State}
+         * @since   3.0.0
+         * @return  {Promise} ->    {State}
          */
 
         show: function() {
@@ -3195,8 +3212,8 @@
 
         /**
          * isMixing
-         * @since 2.0.0
-         * @return {Boolean}
+         * @since   2.0.0
+         * @return  {Boolean}
          */
 
         isMixing: function() {
@@ -3207,10 +3224,10 @@
 
         /**
          * filter
-         * @since 2.0.0
-         * @shorthand self.multiMix
-         * @param {*[]} arguments
-         * @return {Promise} -> {State}
+         * @since       2.0.0
+         * @shorthand   self.multiMix
+         * @param       {*[]}           arguments
+         * @return      {Promise} ->    {State}
          */
 
         filter: function() {
@@ -3226,10 +3243,10 @@
 
         /**
          * sort
-         * @since 2.0.0
-         * @shorthand self.multiMix
-         * @param {*[]} arguments
-         * @return {Promise} -> {State}
+         * @since       2.0.0
+         * @shorthand   self.multiMix
+         * @param       {*[]}           arguments
+         * @return      {Promise} ->    {State}
          */
 
         sort: function() {
@@ -3243,10 +3260,10 @@
 
         /**
          * changeLayout
-         * @since 2.0.0
-         * @shorthand self.multiMix
-         * @param {*[]} arguments
-         * @return {Promise} -> {State}
+         * @since       2.0.0
+         * @shorthand   self.multiMix
+         * @param       {*[]} arguments
+         * @return      {Promise} ->    {State}
          */
 
         changeLayout: function() {
@@ -3257,9 +3274,9 @@
 
         /**
          * getOperation
-         * @since 3.0.0
-         * @param {Command} command
-         * @return {Operation}
+         * @since   3.0.0
+         * @param   {Command}   command
+         * @return  {Operation}
          */
 
         getOperation: function(command) {
@@ -3361,9 +3378,9 @@
 
         /**
          * multiMix
-         * @since 2.0.0
-         * @param {*[]} arguments
-         * @return {Promise} -> {State}
+         * @since   2.0.0
+         * @param   {*[]}           arguments
+         * @return  {Promise} ->    {State}
          */
 
         multiMix: function() {
@@ -3406,9 +3423,9 @@
 
         /**
          * tween
-         * @since 3.0.0
-         * @param {Operation} operation
-         * @param {Float} multiplier
+         * @since   3.0.0
+         * @param   {Operation}     operation
+         * @param   {Float}         multiplier
          * @void
          */
 
@@ -3452,10 +3469,10 @@
 
         /**
          * insert
-         * @since 2.0.0
-         * @param {*[]} arguments
-         * @shorthand multiMix
-         * @return {Promise} -> {State}
+         * @since       2.0.0
+         * @param       {*[]} arguments
+         * @shorthand   multiMix
+         * @return      {Promise} ->    {State}
          */
 
         insert: function() {
@@ -3469,10 +3486,10 @@
 
         /**
          * insertBefore
-         * @since 3.0.0
-         * @shorthand insert
-         * @param {*[]} arguments
-         * @return {Promise} -> {State}
+         * @since       3.0.0
+         * @shorthand   insert
+         * @param       {*[]}           arguments
+         * @return      {Promise} ->    {State}
          */
 
         insertBefore: function() {
@@ -3484,10 +3501,10 @@
 
         /**
          * insertAfter
-         * @since 3.0.0
-         * @shorthand insert
-         * @param {*[]} arguments
-         * @return {Promise} -> {State}
+         * @since       3.0.0
+         * @shorthand   insert
+         * @param       {*[]}           arguments
+         * @return      {Promise} ->    {State}
          */
 
         insertAfter: function() {
@@ -3499,10 +3516,10 @@
 
         /**
          * prepend
-         * @since 2.0.0
-         * @shorthand insert
-         * @param {*[]} arguments
-         * @return {Promise} -> {State}
+         * @since       2.0.0
+         * @shorthand   insert
+         * @param       {*[]}           arguments
+         * @return      {Promise} ->    {State}
          */
 
         prepend: function() {
@@ -3514,10 +3531,10 @@
 
         /**
          * append
-         * @since 2.0.0
-         * @shorthand insert
-         * @param {*[]} arguments
-         * @return {Promise} -> {State}
+         * @since       2.0.0
+         * @shorthand   insert
+         * @param       {*[]}           arguments
+         * @return      {Promise} ->    {State}
          */
 
         append: function() {
@@ -3529,10 +3546,10 @@
 
         /**
          * remove
-         * @since 3.0.0
-         * @param {*[]} arguments
-         * @shorthand multiMix
-         * @return {Promise} -> {State}
+         * @since       3.0.0
+         * @shorthand   multiMix
+         * @param       {*[]}           arguments
+         * @return      {Promise} ->    {State}
          */
 
         remove: function() {
@@ -3546,9 +3563,9 @@
 
         /**
          * getOption
-         * @since 2.0.0
-         * @param {String} string
-         * @return {*}
+         * @since       2.0.0
+         * @param       {String}    string
+         * @return      {*}
          */
 
         getOption: function(string) {
@@ -3559,8 +3576,8 @@
 
         /**
          * setOptions
-         * @since 2.0.0
-         * @param {Object} config
+         * @since       2.0.0
+         * @param       {Object}    config
          */
 
         setOptions: function(config) {
@@ -3575,8 +3592,8 @@
 
         /**
          * getState
-         * @since 2.0.0
-         * @return {State}
+         * @since       2.0.0
+         * @return      {State}
          */
 
         getState: function() {
@@ -3598,8 +3615,8 @@
 
         /**
          * destroy
-         * @since 2.0.0
-         * @param {Boolean} hideAll
+         * @since   2.0.0
+         * @param   {Boolean}   hideAll
          * @void
          */
 
@@ -3641,7 +3658,7 @@
     /**
      * Target
      * @constructor
-     * @since 3.0.0
+     * @since       3.0.0
      */
 
     Target = function() {
@@ -3672,8 +3689,8 @@
     /**
      * Target.prototype
      * @prototype
-     * @extends basePrototype
-     * @since 3.0.0
+     * @extends     basePrototype
+     * @since       3.0.0
      */
 
     Target.prototype = Object.create(basePrototype);
@@ -3715,8 +3732,8 @@
 
         /**
          * cacheDom
-         * @since 3.0.0
-         * @param {Object} element
+         * @since   3.0.0
+         * @param   {Object}    element
          * @void
          *
          * Cache any DOM elements from the target context inwards
@@ -3734,8 +3751,8 @@
 
         /**
          * _getSortString
-         * @since 3.0.0
-         * @param {String} attributeName
+         * @since   3.0.0
+         * @param   {String}    attributeName
          * @void
          */
 
@@ -3756,8 +3773,8 @@
 
         /**
          * _show
-         * @since 3.0.0
-         * @param {Boolean} animate
+         * @since   3.0.0
+         * @param   {Boolean}   animate
          * @void
          */
 
@@ -3773,8 +3790,8 @@
 
         /**
          * _hide
-         * @since 3.0.0
-         * @param {Boolean} animate
+         * @since   3.0.0
+         * @param   {Boolean}   animate
          * @void
          */
 
@@ -3790,8 +3807,8 @@
 
         /**
          * _move
-         * @since 3.0.0
-         * @param {Object} options
+         * @since   3.0.0
+         * @param   {Object}    options
          * @void
          */
 
@@ -3818,9 +3835,9 @@
 
         /**
          * _applyTween
-         * @since 3.0.0
-         * @param {Object} posData
-         * @param {Number} multiplier
+         * @since   3.0.0
+         * @param   {Object}    posData
+         * @param   {Number}    multiplier
          * @void
          */
 
@@ -3883,7 +3900,7 @@
 
         /**
          * _applyStylesIn
-         * @param {Object} options
+         * @param   {Object}    options
          * @void
          *
          * Applies starting styles to a target element
@@ -3916,7 +3933,7 @@
 
         /**
          * _applyStylesOut
-         * @param {Object} options
+         * @param   {Object}    options
          * @void
          *
          * Applies a transition and the corresponding styles to
@@ -4056,11 +4073,11 @@
 
         /**
          * _writeTransitionRule
-         * @since 3.0.0
-         * @param {String} rule
-         * @param {Number} staggerIndex
-         * @param [{Number}] duration
-         * @return {String}
+         * @since   3.0.0
+         * @param   {String}    rule
+         * @param   {Number}    staggerIndex
+         * @param   [{Number}]  duration
+         * @return  {String}
          *
          * Combines the name of a rule with duration and delay values
          * to produce a valid transition value
@@ -4081,9 +4098,9 @@
 
         /**
          * _getDelay
-         * @since 2.0.0
-         * @param {Number} index
-         * @return {Number}
+         * @since   2.0.0
+         * @param   {Number}    index
+         * @return  {Number}
          *
          * Allow for the manipulation of target indices via a user specified function
          */
@@ -4103,8 +4120,8 @@
 
         /**
          * _applyTransition
-         * @since 3.0.0
-         * @param {String[]} rules
+         * @since   3.0.0
+         * @param   {String[]}  rules
          * @void
          */
 
@@ -4121,7 +4138,7 @@
 
         /**
          * handleTransitionEnd
-         * @since 3.0.0
+         * @since   3.0.0
          * @void
          */
 
@@ -4154,8 +4171,8 @@
 
         /**
          * _eventBus
-         * @since 3.0.0
-         * @param {Event} e
+         * @since   3.0.0
+         * @param   {Event}     e
          * @void
          */
 
@@ -4175,7 +4192,7 @@
 
         /**
          * _unbindEvents
-         * @since 3.0.0
+         * @since   3.0.0
          * @void
          */
 
@@ -4192,7 +4209,7 @@
 
         /**
          * _bindEvents
-         * @since 3.0.0
+         * @since   3.0.0
          * @void
          */
 
@@ -4215,8 +4232,8 @@
 
         /**
          * _getPosData
-         * @since 3.0.0
-         * @return {PosData}
+         * @since   3.0.0
+         * @return  {PosData}
          */
 
         _getPosData: function() {
@@ -4316,7 +4333,7 @@
 
     /**
      * Operation
-     * @since 3.0.0
+     * @since       3.0.0
      * @constructor
      *
      * Operation objects contain all data neccessary to describe
@@ -4367,9 +4384,9 @@
 
     /**
      * Operation.prototype
-     * @since 3.0.0
+     * @since       3.0.0
      * @prototype
-     * @extends basePrototype
+     * @extends     basePrototype
      */
 
     Operation.prototype = Object.create(basePrototype);
@@ -4384,7 +4401,7 @@
 
     /**
      * State
-     * @since 3.0.0
+     * @since       3.0.0
      * @constructor
      *
      * State objects form part of the public API and are provided
@@ -4414,9 +4431,9 @@
 
     /**
      * State.prototype
-     * @since 3.0.0
+     * @since       3.0.0
      * @prototype
-     * @extends basePrototype
+     * @extends     basePrototype
      */
 
     State.prototype = Object.create(basePrototype);
@@ -4431,7 +4448,7 @@
 
     /**
      * TransformData
-     * @since 3.0.0
+     * @since       3.0.0
      * @constructor
      */
 
@@ -4448,9 +4465,9 @@
 
     /**
      * TransformData.prototype
-     * @since 3.0.0
+     * @since       3.0.0
      * @prototype
-     * @extends basePrototype
+     * @extends     basePrototype
      */
 
     TransformData.prototype = Object.create(basePrototype);
@@ -4465,7 +4482,7 @@
 
     /**
      * StyleData
-     * @since 3.0.0
+     * @since       3.0.0
      * @constructor
      */
 
@@ -4495,9 +4512,9 @@
 
     /**
      * StyleData.prototype
-     * @since 3.0.0
+     * @since       3.0.0
      * @prototype
-     * @extends basePrototype
+     * @extends     basePrototype
      */
 
     StyleData.prototype = Object.create(basePrototype);
@@ -4512,7 +4529,7 @@
 
     /**
      * UserInstruction
-     * @since 3.0.0
+     * @since       3.0.0
      * @constructor
      */
 
@@ -4530,9 +4547,9 @@
 
     /**
      * UserInstruction.prototype
-     * @since 3.0.0
+     * @since       3.0.0
      * @prototype
-     * @extends basePrototype
+     * @extends     basePrototype
      */
 
     UserInstruction.prototype = Object.create(basePrototype);
@@ -4547,13 +4564,13 @@
 
     /**
      * mixItUp
-     * @since 3.0.0
+     * @since   3.0.0
      * @factory
-     * @param {Element|Element[]|String} container
-     * @param [{Object}] configuration
-     * @param [{Object}] foreignDoc
-     * @param [{Boolean}] returnCollection
-     * @return {Mixer}
+     * @param   {Element|Element[]|String}  container
+     * @param   [{Object}]                  configuration
+     * @param   [{Object}]                  foreignDoc
+     * @param   [{Boolean}]                 returnCollection
+     * @return  {Mixer}
      */
 
     mixItUp = function(container, config, foreignDoc, returnCollection) {
@@ -4562,7 +4579,6 @@
             instances   = [],
             id          = '',
             name        = '',
-            rand        = _h.randomHexKey(),
             elements    = [],
             i           = -1;
 
@@ -4631,12 +4647,12 @@
 
     /**
      * mixItUp.prototype.all
-     * @since 3.0.0
+     * @since   3.0.0
      * @factory
-     * @param {Element|Element[]|String} container
-     * @param [{Object}] configuration
-     * @param [{Object}] foreignDoc
-     * @return {Collection}
+     * @param   {Element|Element[]|String}  container
+     * @param   [{Object}]                  configuration
+     * @param   [{Object}]                  foreignDoc
+     * @return  {Collection}
      *
      * Returns a collection of one or more instances
      * that can be operated on simultaneously, similar
@@ -4649,7 +4665,7 @@
         return self.constructor(container, config, foreignDoc, true);
     };
 
-    /* Meta Data
+    /* Core Meta Data
     ---------------------------------------------------------------------- */
 
     mixItUp.prototype.CORE_VERSION = '3.0.0';
