@@ -1152,8 +1152,9 @@
          */
 
         _init: function(el, config) {
-            var self    = this,
-                state   = new State();
+            var self            = this,
+                state           = new State(),
+                mockOperation   = {};
 
             self._execAction('_init', 0, arguments);
 
@@ -1175,6 +1176,21 @@
 
             state.activeSort = self.load.sort;
 
+            if (state.activeSort) {
+                // Perform a syncronous sort without an operation
+
+                mockOperation.startSortString   = 'default:asc';
+                mockOperation.startOrder        = self._targets;
+                mockOperation.newSort           = self._parseSort(state.activeSort);
+                mockOperation.newSortString     = state.activeSort;
+
+                self._sort(mockOperation);
+
+                self._printSort(false, mockOperation);
+
+                self._targets = mockOperation.newOrder;
+            }
+
             if (self._dom.filterToggleButtons.length) {
                 // TODO: what about live toggles? is it worth trawling the dom?
 
@@ -1182,8 +1198,8 @@
             }
 
             self._updateControls({
-                filter: self._activeFilter,
-                sort: self._activeSortString
+                filter: state.activeFilter,
+                sort: state.activeSort
             });
 
             self._parseEffects();
@@ -3181,7 +3197,9 @@
         init: function() {
            var self = this;
 
-           return self.filter(self._state.activeFilter);
+           return self.multiMix({
+               filter: self._state.activeFilter
+           });
         },
 
         /**
@@ -3321,6 +3339,8 @@
 
                     self._sort(operation);
                 }
+            } else {
+                operation.startSortString = operation.newSortString = operation.startState.activeSort;
             }
 
             operation.startFilter = operation.startState.activeFilter;
@@ -3989,8 +4009,6 @@
 
             if (!options.callback) {
                 self._mixer._targetsImmovable++;
-
-                self._mixer._checkProgress();
 
                 if (self._mixer._targetsMoved === self._mixer._targetsImmovable) {
                     // If the total targets moved is equal to the
