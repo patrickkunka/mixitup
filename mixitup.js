@@ -12,6 +12,8 @@
  *            http://creativecommons.org/licenses/by-nc/3.0/
  */
 
+/* global Promise */
+
 (function(window, document, undf) {
     'use strict';
 
@@ -547,10 +549,8 @@
          * @param   {Element}   el
          * @param   {String}    property
          * @param   {String[]}  vendors
-         * @return  {String | Boolean}
+         * @return  {String}
          */
-
-        // TODO: make this return a single type
 
         getPrefix: function(el, property, vendors) {
             var i       = -1,
@@ -564,7 +564,7 @@
                 }
             }
 
-            return false;
+            return 'unsupported';
         },
 
         /**
@@ -1063,7 +1063,7 @@
             self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a seperate test
 
             Mixer.prototype._has._promises      = typeof Promise === 'function';
-            Mixer.prototype._has._transitions   = transitionPrefix !== false;
+            Mixer.prototype._has._transitions   = transitionPrefix !== 'unsupported';
             Mixer.prototype._is._crapIe         = window.atob ? false : true;
 
             Mixer.prototype._transitionProp =
@@ -1250,6 +1250,7 @@
             self._execAction('_indexTargets', 0, arguments);
 
             self._dom.targets = _h.children(self._dom.container, self.selectors.target);
+            self._dom.targets = Array.prototype.slice.call(self._dom.targets);
 
             // TODO: allow querying of all descendants via config option, allowing for nested parent
 
@@ -1691,12 +1692,14 @@
                 el          = null,
                 i           = -1;
 
-            // TODO: throw error if user attempts to insert element that is already a target
-
             self._execAction('insert', 0, arguments);
 
             if (command.collection) {
                 for (i = 0; el = command.collection[i]; i++) {
+                    if (self._dom.targets.indexOf(el) > -1) {
+                        throw new Error('[MixItUp] An inserted element already exists in the container');
+                    }
+
                     frag.appendChild(el);
                     frag.appendChild(doc.createTextNode(' '));
 
@@ -2698,14 +2701,7 @@
                 willTransition  = false,
                 staggerIndex    = -1,
                 i               = -1,
-                checkProgress   = function() {
-                    // TODO: Can we find an alternative to this? _h.bind doesn't
-                    // allow the passing of an argument and we don't want to
-                    // make a function within the loops below. Even this
-                    // nested function will cause a perf hit.
-
-                    self._checkProgress(operation);
-                };
+                checkProgress   = _h.bind(self, self._checkProgress);
 
 
             // TODO: this is an extra loop in addition to the calcs
@@ -2938,6 +2934,8 @@
 
             self._state = operation.newState;
             self._lastOperation = operation;
+
+            self._dom.targets = self._state.targets;
 
             if (typeof self.callbacks.onMixEnd === 'function') {
                 self.callbacks.onMixEnd.call(self._dom.el, self._state, self);
@@ -3674,6 +3672,7 @@
             _isBound: false,
             _isExcluded: false,
             _handler: null,
+            _operation: null,
 
             _dom: {
                 el: null
@@ -4007,6 +4006,7 @@
             // If the target will transition in some fasion,
             // assign a callback function
 
+            self._operation = options.operation;
             self._callback = options.callback;
 
             // As long as the target is not excluded, increment
@@ -4160,10 +4160,11 @@
                     canResize && propName.indexOf('margin') > -1
                 )
             ) {
-                self._callback.call(self);
+                self._callback.call(self, self._operation);
 
                 self._isBound = false;
                 self._callback = null;
+                self._operation = null;
             }
 
             self._execAction('_handleTransitionEnd', 1, arguments);
