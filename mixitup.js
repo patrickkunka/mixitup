@@ -1746,6 +1746,8 @@
                 self._dom.parent.insertBefore(frag, nextSibling);
             }
 
+            // Since targets have been added, the original order must be updated
+
             operation.startOrder = self._origOrder = self._targets;
 
             self._execAction('insert', 1, arguments);
@@ -2976,6 +2978,10 @@
                         i--;
                     }
                 }
+
+                // Since targets have been removed, the original order must be updated
+
+                self._origOrder = self._targets;
             }
 
             self._state = operation.newState;
