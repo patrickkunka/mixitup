@@ -1484,7 +1484,7 @@
                 if (!_h.hasClass(button, self.controls.activeClass)) {
                     self._toggleArray.push(filterString);
                 } else {
-                    self._toggleArray.splice(self._toggleArray.indexOf(filterString, 1));
+                    self._toggleArray.splice(self._toggleArray.indexOf(filterString), 1);
 
                     isTogglingOff = true;
                 }
