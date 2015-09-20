@@ -1154,7 +1154,7 @@
         _init: function(el, config) {
             var self            = this,
                 state           = new State(),
-                mockOperation   = {};
+                operation       = new Operation();
 
             self._execAction('_init', 0, arguments);
 
@@ -1179,16 +1179,16 @@
             if (state.activeSort) {
                 // Perform a syncronous sort without an operation
 
-                mockOperation.startSortString   = 'default:asc';
-                mockOperation.startOrder        = self._targets;
-                mockOperation.newSort           = self._parseSort(state.activeSort);
-                mockOperation.newSortString     = state.activeSort;
+                operation.startSortString   = 'default:asc';
+                operation.startOrder        = self._targets;
+                operation.newSort           = self._parseSort(state.activeSort);
+                operation.newSortString     = state.activeSort;
 
-                self._sort(mockOperation);
+                self._sort(operation);
 
-                self._printSort(false, mockOperation);
+                self._printSort(false, operation);
 
-                self._targets = mockOperation.newOrder;
+                self._targets = operation.newOrder;
             }
 
             if (self._dom.filterToggleButtons.length) {
@@ -1630,8 +1630,8 @@
 
             self._execAction('_updateControls', 0, arguments);
 
-            (command.filter === undf) && (output.filter = self._activeFilter);
-            (command.sort === undf) && (output.sort = self._activeSortString);
+            (command.filter === undf) && (output.filter = self._state.activeFilter);
+            (command.sort === undf) && (output.sort = self._state.activeSort);
             (output.filter === self.selectors.target) && (output.filter = 'all');
 
             for (i = 0; button = self._dom.sortButtons[i]; i++) {
@@ -1779,7 +1779,7 @@
 
             self._execAction('_filter', 0, arguments);
 
-            for (i = 0; target = self._targets[i]; i++) {
+            for (i = 0; target = operation.newOrder[i]; i++) {
                 if (typeof operation.newFilter === 'string') {
                     // show via selector
 
@@ -1893,7 +1893,7 @@
                     operation.newOrder = operation.startOrder
                         .slice()
                         .sort(function(a, b) {
-                            return self._compare(a, b, operation.newSort);
+                            return self._compare(a, b, 0, operation.newSort);
                         });
             }
 
@@ -1917,11 +1917,9 @@
 
         _compare: function(a, b, depth, sort) {
             depth = depth ? depth : 0;
-            sort = sort ? sort : self._newSort;
 
             var self        = this,
                 order       = sort[depth].order,
-                isString    = false,
                 attrA       = self._getAttributeValue(a, depth, sort),
                 attrB       = self._getAttributeValue(b, depth, sort);
 
@@ -3341,6 +3339,7 @@
                 }
             } else {
                 operation.startSortString = operation.newSortString = operation.startState.activeSort;
+                operation.startOrder = operation.newOrder = self._targets;
             }
 
             operation.startFilter = operation.startState.activeFilter;
