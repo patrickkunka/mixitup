@@ -13,6 +13,7 @@
  */
 
 /* global Promise */
+/* global define */
 
 (function(window, document, undf) {
     'use strict';
@@ -30,7 +31,7 @@
         doc             = null,
         _h              = null;
 
-    /* Helper Library
+    /* {_h} helper library
     ---------------------------------------------------------------------- */
 
     _h = {
@@ -531,7 +532,7 @@
         /**
          * canReportErrors
          * @since   3.0.0
-         * @param   [{Object}] config
+         * @param   {Object}  [config]
          * @return  {Boolean}
          */
 
@@ -680,16 +681,14 @@
         }
     };
 
-    /* basePrototype
+    /* {basePrototype}
     ---------------------------------------------------------------------- */
 
     basePrototype = {
 
-        /* Public Static Methods
-        ---------------------------------------------------------------------- */
-
         /**
          * extend
+         * @public
          * @since   2.1.0
          * @param   {Object}
          * @void
@@ -712,6 +711,7 @@
 
         /**
          * addAction
+         * @public
          * @since   2.1.0
          * @param   {String}    hook name
          * @param   {String}    name
@@ -728,6 +728,7 @@
 
         /**
          * addFilter
+         * @public
          * @since   2.1.0
          * @param   {String}    hook
          * @param   {String}    name
@@ -741,11 +742,9 @@
             this._addHook('_filters', hook, name, func);
         },
 
-        /* Private Static Methods
-        ---------------------------------------------------------------------- */
-
         /**
          * _addHook
+         * @private
          * @since   2.1.0
          * @param   {String}    type of hook
          * @param   {String}    hook name
@@ -769,11 +768,9 @@
             _h.extend(collection, obj);
         },
 
-        /* Private Instance Methods
-        ---------------------------------------------------------------------- */
-
         /**
          * _execAction
+         * @private
          * @since   2.0.0
          * @param   {String}    methodName
          * @param   {Boolean}   isPost
@@ -795,6 +792,7 @@
 
         /**
          * _execFilter
+         * @private
          * @since   2.0.0
          * @param   {String}    methodName
          * @param   {*}         value
@@ -817,7 +815,7 @@
         }
     };
 
-    /* Mixer
+    /* {Mixer} class
     ---------------------------------------------------------------------- */
 
     /**
@@ -832,10 +830,6 @@
         self._execAction('_constructor', 0);
 
         _h.extend(self, {
-
-            /* Public Properties
-            ---------------------------------------------------------------------- */
-
             selectors: {
                 target: '.mix',
                 filter: '.filter',
@@ -898,11 +892,7 @@
             },
 
             document: null,
-
             extensions: null,
-
-            /* DOM
-            ---------------------------------------------------------------------- */
 
             _dom: {
                 body: null,
@@ -916,17 +906,12 @@
                 allButtons: []
             },
 
-            /* Private Properties
-            ---------------------------------------------------------------------- */
-
             _isMixing: false,
             _isClicking: false,
             _isLoading: true,
             _isRemoving: false,
-
             _targets: [],
             _origOrder: [],
-
             _toggleArray: [],
             _toggleString: '',
             _staggerDuration: 0,
@@ -966,16 +951,13 @@
      * Mixer.prototype
      * @since       3.0.0
      * @prototype
-     * @extends     basePrototype
+     * @extends     {basePrototype}
      */
 
     Mixer.prototype = Object.create(basePrototype);
 
     _h.extend(Mixer.prototype, {
         constructor: Mixer,
-
-        /* Static Properties
-        ---------------------------------------------------------------------- */
 
         _actions: {},
         _filters: {},
@@ -1044,6 +1026,7 @@
 
         /**
          * _featureDetect
+         * @private
          * @since 2.0.0
          *
          * Performs all neccessary feature detection on evalulation
@@ -1081,20 +1064,15 @@
             Mixer.prototype._perspectiveOriginProp =
                 transformPrefix ? transformPrefix + 'PerspectiveOrigin' : 'perspectiveOrigin';
 
-            /* Polyfills
-            ---------------------------------------------------------------------- */
+            // Apply polyfills:
 
-            /**
-             * window.requestAnimationFrame
-             */
+            // window.requestAnimationFrame
 
             for (i = 0; i < vendorsRAF.length && !window.requestAnimationFrame; i++) {
                 window.requestAnimationFrame = window[vendorsRAF[i] + 'RequestAnimationFrame'];
             }
 
-            /**
-             * Element.nextElementSibling
-             */
+            // Element.nextElementSibling
 
             if (testEl.nextElementSibling === undf) {
                 Object.defineProperty(Element.prototype, 'nextElementSibling', {
@@ -1114,9 +1092,7 @@
                 });
             }
 
-            /**
-             * Element.matches
-             */
+            // Element.matches
 
             (function(ElementPrototype) {
                 ElementPrototype.matches =
@@ -1140,11 +1116,9 @@
             self._execAction('_featureDetect', 1);
         },
 
-        /* Private Methods
-        ---------------------------------------------------------------------- */
-
         /**
          * _init
+         * @private
          * @since   2.0.0
          * @param   {Element}   el
          * @param   {Object}    config
@@ -1213,6 +1187,7 @@
 
         /**
          * _cacheDom
+         * @private
          * @since   3.0.0
          * @void
          *
@@ -1250,6 +1225,7 @@
 
         /**
          * _indexTargets
+         * @private
          * @since   3.0.0
          * @void
          *
@@ -1293,6 +1269,7 @@
 
         /**
          * _bindEvents
+         * @private
          * @since   3.0.0
          * @void
          */
@@ -1330,6 +1307,7 @@
 
         /**
          * _unbindEvents
+         * @private
          * @since   3.0.0
          * @void
          */
@@ -1352,8 +1330,9 @@
 
         /**
          * _eventBus
-         * @param   {Object}    e
-         * @return  [{Boolean}]
+         * @private
+         * @param   {Object}            e
+         * @return  {(Boolean|void)}
          */
 
         _eventBus: function(e) {
@@ -1367,9 +1346,10 @@
 
         /**
          * _handleClick
+         * @private
          * @since   3.0.0
-         * @param   {object}    button
-         * @param   {string}    type
+         * @param   {Object}    button
+         * @param   {String}    type
          * @void
          *
          * Determines the type of operation needed and the
@@ -1545,6 +1525,7 @@
 
         /**
          * _trackClick
+         * @private
          * @since   3.0.0
          * @param   {Element}   button
          * @param   {String}    method
@@ -1575,6 +1556,7 @@
 
         /**
          * _buildToggleArray
+         * @private
          * @since   2.0.0
          * @void
          *
@@ -1606,6 +1588,7 @@
 
         /**
          * _updateControls
+         * @private
          * @since   2.0.0
          * @param   {Object} command
          * @void
@@ -1693,6 +1676,7 @@
 
         /**
          * _insert
+         * @private
          * @since   3.0.0
          * @param   {Object}        command
          * @param   {Operation}     operation
@@ -1738,9 +1722,11 @@
 
         /**
          * _getNextSibling
-         * @param   [{Number}]      index
-         * @param   [{Element}]     sibling
-         * @param   [{String}]      position
+         * @private
+         * @since   3.0.0
+         * @param   {Number}      [index]
+         * @param   {Element}     [sibling]
+         * @param   {String}      [position]
          */
 
         _getNextSibling: function(index, sibling, position) {
@@ -1765,6 +1751,7 @@
 
         /**
          * _filter
+         * @private
          * @since 2.0.0
          * @param   {Operation}     operation
          * @void
@@ -1830,6 +1817,7 @@
 
         /**
          * _evaluateHideShow
+         * @private
          * @since   3.0.0
          * @param   {Boolean}   condition
          * @param   {Element}   target
@@ -1858,15 +1846,14 @@
 
         /**
          * _sort
+         * @private
          * @since 2.0.0
          * @param   {Operation}     operation
          * @void
          */
 
         _sort: function(operation) {
-            var self    = this,
-                target  = null,
-                i       = -1;
+            var self = this;
 
             self._execAction('_sort', 0, arguments);
 
@@ -1906,7 +1893,7 @@
 
         /**
          * _compare
-         * @algorithm
+         * @private
          * @since   2.0.0
          * @param   {String|Number}     a
          * @param   {String|Number}     b
@@ -1948,10 +1935,11 @@
 
         /**
          * _getAttributeValue
+         * @private
          * @since   3.0.0
          * @param   {Element}           target
-         * @param   [{ParsedSort}]      sort
-         * @return  {String|Number}
+         * @param   {ParsedSort}        [sort]
+         * @return  {(String|Number)}
          *
          * Reads the values of sort attributes
          */
@@ -1985,6 +1973,7 @@
 
         /**
          * _printSort
+         * @private
          * @since   2.0.0
          * @param   {Boolean}   isResetting
          * @param   {Operation} operation
@@ -2043,6 +2032,7 @@
 
         /**
          * _parseSort
+         * @private
          * @since   2.0.0
          * @param   {String}    sortString
          * @return  {String[]}
@@ -2076,6 +2066,7 @@
 
         /**
          * _parseEffects
+         * @private
          * @since   2.0.0
          * @void
          *
@@ -2085,8 +2076,7 @@
 
         _parseEffects: function() {
             var self = this,
-                transformName = '',
-                i = -1;
+                transformName = '';
 
            self._effectsIn      = new StyleData();
            self._effectsOut     = new StyleData();
@@ -2106,9 +2096,10 @@
 
         /**
          * _parseEffect
+         * @private
          * @since   2.0.0
          * @param   {String}    effectName
-         * @param   [{Number}]  transformIndex
+         * @param   {Number}    [transformIndex]
          */
 
         _parseEffect: function(effectName) {
@@ -2206,6 +2197,7 @@
 
         /**
          * _buildState
+         * @private
          * @since   2.0.0
          * @param   {Operation}     operation
          * @return  {State}
@@ -2252,6 +2244,7 @@
 
         /**
          * _goMix
+         * @private
          * @since   2.0.0
          * @param   {Boolean}   shouldAnimate
          * @param   {Operation} operation
@@ -2259,10 +2252,7 @@
          */
 
         _goMix: function(shouldAnimate, operation) {
-            var self            = this,
-                defered         = null,
-                resolvePromise  = null,
-                docState        = null;
+            var self            = this;
 
             self._execAction('_goMix', 0, arguments);
 
@@ -2351,6 +2341,7 @@
 
         /**
          * _getStartMixData
+         * @private
          * @since   2.0.0
          * @param   {Operation}     operation
          * @void
@@ -2405,6 +2396,7 @@
 
         /**
          * _setInter
+         * @private
          * @since   2.0.0
          * @param   {Operation}     operation
          * @void
@@ -2431,6 +2423,7 @@
 
         /**
          * _getInterMixData
+         * @private
          * @since   2.0.0
          * @param   {Operation}     operation
          * @void
@@ -2468,6 +2461,7 @@
 
         /**
          * _setFinal
+         * @private
          * @since   2.0.0
          * @param   {Operation}     operation
          * @void
@@ -2491,6 +2485,7 @@
 
         /**
          * _getFinalMixData
+         * @private
          * @since   2.0.0
          * @param   {Operation}     operation
          * @void
@@ -2550,7 +2545,8 @@
 
         /**
          *  _getTweenData
-         * since    3.0.0
+         * @private
+         * @since    3.0.0
          * @param   {Operation}     operation
          */
 
@@ -2702,6 +2698,7 @@
 
         /**
          * _moveTargets
+         * @private
          * @since   3.0.0
          * @param   {Operation}     operation
          * @void
@@ -2785,6 +2782,7 @@
 
         /**
          * _hasEffect
+         * @private
          * @return  {Boolean}
          */
 
@@ -2819,6 +2817,7 @@
 
         /**
          * _willTransition
+         * @private
          * @param   {Boolean}       hasEffect
          * @param   {StyleData}     posIn
          * @param   {StyleData}     posOut
@@ -2863,8 +2862,9 @@
 
         /**
          * _checkProgress
-         * @since 2.0.0
-         * @param {Operation} operation
+         * @private
+         * @since   2.0.0
+         * @param   {Operation}     operation
          * @void
          */
 
@@ -2880,6 +2880,7 @@
 
         /**
          * _cleanUp
+         * @private
          * @since   2.0.0
          * @param   {Operation}     operation
          * @void
@@ -2978,6 +2979,7 @@
 
         /**
          * _parseMultiMixArgs
+         * @private
          * @since   2.0.0
          * @param   {*[]}       args
          * @return  {Object}
@@ -3010,6 +3012,7 @@
 
         /**
          * _parseInsertArgs
+         * @private
          * @since   2.0.0
          * @param   {*[]}       args
          * @return  {Object}
@@ -3080,6 +3083,7 @@
 
         /**
          * _parseRemoveArgs
+         * @private
          * @since   3.0.0
          * @param   {*[]}       args
          * @return  {Object}
@@ -3145,6 +3149,7 @@
 
         /**
          * _deferMix
+         * @private
          * @since   3.0.0
          * @param   {*[]}           args
          * @param   {Object}        parsedArgs
@@ -3183,11 +3188,9 @@
             return self._userPromise.promise;
         },
 
-        /* Public Methods
-        ---------------------------------------------------------------------- */
-
         /**
          * init
+         * @public
          * @since 3.0.0
          * @return {Promise} -> {State}
          */
@@ -3202,6 +3205,7 @@
 
         /**
          * show
+         * @public
          * @since   3.0.0
          * @return  {Promise} ->    {State}
          */
@@ -3214,6 +3218,7 @@
 
         /**
          * hide
+         * @public
          * @since 3.0.0
          * @return {Promise} -> {State}
          */
@@ -3226,6 +3231,7 @@
 
         /**
          * isMixing
+         * @public
          * @since   2.0.0
          * @return  {Boolean}
          */
@@ -3238,6 +3244,7 @@
 
         /**
          * filter
+         * @public
          * @since       2.0.0
          * @shorthand   self.multiMix
          * @param       {*[]}           arguments
@@ -3257,6 +3264,7 @@
 
         /**
          * sort
+         * @public
          * @since       2.0.0
          * @shorthand   self.multiMix
          * @param       {*[]}           arguments
@@ -3274,6 +3282,7 @@
 
         /**
          * changeLayout
+         * @public
          * @since       2.0.0
          * @shorthand   self.multiMix
          * @param       {*[]} arguments
@@ -3281,13 +3290,12 @@
          */
 
         changeLayout: function() {
-            var self = this;
-
-            // TODO: map to multiMix
+            // TODO: parse args, and map to multiMix
         },
 
         /**
          * getOperation
+         * @public
          * @since   3.0.0
          * @param   {Command}   command
          * @return  {Operation}
@@ -3395,6 +3403,7 @@
 
         /**
          * multiMix
+         * @public
          * @since   2.0.0
          * @param   {*[]}           arguments
          * @return  {Promise} ->    {State}
@@ -3440,6 +3449,7 @@
 
         /**
          * tween
+         * @public
          * @since   3.0.0
          * @param   {Operation}     operation
          * @param   {Float}         multiplier
@@ -3447,16 +3457,10 @@
          */
 
         tween: function(operation, multiplier) {
-            var self            = this,
-                target          = null,
+            var target          = null,
                 posData         = null,
-                posIn           = null,
-                posOut          = null,
-                tweenData       = null,
-                propertyName    = '',
                 toHideIndex     = -1,
-                i               = -1,
-                j               = -1;
+                i               = -1;
 
             multiplier = Math.min(multiplier, 1);
             multiplier = Math.max(multiplier, 0);
@@ -3486,6 +3490,7 @@
 
         /**
          * insert
+         * @public
          * @since       2.0.0
          * @param       {*[]} arguments
          * @shorthand   multiMix
@@ -3503,6 +3508,7 @@
 
         /**
          * insertBefore
+         * @public
          * @since       3.0.0
          * @shorthand   insert
          * @param       {*[]}           arguments
@@ -3518,6 +3524,7 @@
 
         /**
          * insertAfter
+         * @public
          * @since       3.0.0
          * @shorthand   insert
          * @param       {*[]}           arguments
@@ -3533,6 +3540,7 @@
 
         /**
          * prepend
+         * @public
          * @since       2.0.0
          * @shorthand   insert
          * @param       {*[]}           arguments
@@ -3548,6 +3556,7 @@
 
         /**
          * append
+         * @public
          * @since       2.0.0
          * @shorthand   insert
          * @param       {*[]}           arguments
@@ -3580,19 +3589,19 @@
 
         /**
          * getOption
+         * @public
          * @since       2.0.0
          * @param       {String}    string
          * @return      {*}
          */
 
-        getOption: function(string) {
-            var self = this;
-
-            // TODO
+        getOption: function(stringKey) {
+            // TODO: requires stringKey parser helper
         },
 
         /**
          * setOptions
+         * @public
          * @since       2.0.0
          * @param       {Object}    config
          */
@@ -3602,13 +3611,14 @@
 
             self._execAction('setOptions', 0, arguments);
 
-            // TODO
+            // TODO (requires deep extend helper)
 
             self._execAction('setOptions', 1, arguments);
         },
 
         /**
          * getState
+         * @public
          * @since       2.0.0
          * @return      {State}
          */
@@ -3621,6 +3631,7 @@
 
         /**
          * forceRefresh
+         * @public
          * @since 2.1.2
          */
 
@@ -3632,6 +3643,7 @@
 
         /**
          * destroy
+         * @public
          * @since   2.0.0
          * @param   {Boolean}   hideAll
          * @void
@@ -3669,7 +3681,7 @@
         }
     });
 
-    /* Target
+    /* {Target} class
     ---------------------------------------------------------------------- */
 
     /**
@@ -3707,7 +3719,7 @@
     /**
      * Target.prototype
      * @prototype
-     * @extends     basePrototype
+     * @extends     {basePrototype}
      * @since       3.0.0
      */
 
@@ -3719,11 +3731,9 @@
         _actions: {},
         _filters: {},
 
-        /* Private Instance Methods
-        ---------------------------------------------------------------------- */
-
         /**
          * _init
+         * @private
          * @since 3.0.0
          * @param {Object} element
          * @param {Object} mixer
@@ -3749,7 +3759,8 @@
         },
 
         /**
-         * cacheDom
+         * _cacheDom
+         * @private
          * @since   3.0.0
          * @param   {Object}    element
          * @void
@@ -3769,6 +3780,7 @@
 
         /**
          * _getSortString
+         * @private
          * @since   3.0.0
          * @param   {String}    attributeName
          * @void
@@ -3791,6 +3803,7 @@
 
         /**
          * _show
+         * @private
          * @since   3.0.0
          * @param   {Boolean}   animate
          * @void
@@ -3808,6 +3821,7 @@
 
         /**
          * _hide
+         * @private
          * @since   3.0.0
          * @param   {Boolean}   animate
          * @void
@@ -3825,6 +3839,7 @@
 
         /**
          * _move
+         * @private
          * @since   3.0.0
          * @param   {Object}    options
          * @void
@@ -3853,6 +3868,7 @@
 
         /**
          * _applyTween
+         * @private
          * @since   3.0.0
          * @param   {Object}    posData
          * @param   {Number}    multiplier
@@ -3918,6 +3934,7 @@
 
         /**
          * _applyStylesIn
+         * @private
          * @param   {Object}    options
          * @void
          *
@@ -3951,6 +3968,7 @@
 
         /**
          * _applyStylesOut
+         * @private
          * @param   {Object}    options
          * @void
          *
@@ -4090,10 +4108,11 @@
 
         /**
          * _writeTransitionRule
+         * @private
          * @since   3.0.0
          * @param   {String}    rule
          * @param   {Number}    staggerIndex
-         * @param   [{Number}]  duration
+         * @param   {Number}    [duration]
          * @return  {String}
          *
          * Combines the name of a rule with duration and delay values
@@ -4115,6 +4134,7 @@
 
         /**
          * _getDelay
+         * @private
          * @since   2.0.0
          * @param   {Number}    index
          * @return  {Number}
@@ -4137,6 +4157,7 @@
 
         /**
          * _applyTransition
+         * @private
          * @since   3.0.0
          * @param   {String[]}  rules
          * @void
@@ -4154,7 +4175,8 @@
         },
 
         /**
-         * handleTransitionEnd
+         * _handleTransitionEnd
+         * @private
          * @since   3.0.0
          * @void
          */
@@ -4189,6 +4211,7 @@
 
         /**
          * _eventBus
+         * @private
          * @since   3.0.0
          * @param   {Event}     e
          * @void
@@ -4210,6 +4233,7 @@
 
         /**
          * _unbindEvents
+         * @private
          * @since   3.0.0
          * @void
          */
@@ -4227,6 +4251,7 @@
 
         /**
          * _bindEvents
+         * @private
          * @since   3.0.0
          * @void
          */
@@ -4250,6 +4275,7 @@
 
         /**
          * _getPosData
+         * @private
          * @since   3.0.0
          * @return  {PosData}
          */
@@ -4279,6 +4305,7 @@
 
         /**
          * _cleanUp
+         * @private
          * @void
          */
 
@@ -4302,12 +4329,17 @@
         }
     });
 
-    /* Collection
+    /* {Collection} class
     ---------------------------------------------------------------------- */
 
+    /**
+     * Collection
+     * @since 3.0.0
+     * @constructor
+     */
+
     Collection = function(instances) {
-        var propKey = '',
-            instance = null,
+        var instance = null,
             i = -1;
 
         for (i = 0; instance = instances[i]; i++) {
@@ -4316,6 +4348,12 @@
 
         this.length = instances.length;
     };
+
+    /**
+     * Collection.prototype
+     * @since 3.0.0
+     * @prototype
+     */
 
     Collection.prototype = {
         constructor: Collection,
@@ -4346,7 +4384,7 @@
         }
     };
 
-    /* Operation
+    /* {Operation} class
     ---------------------------------------------------------------------- */
 
     /**
@@ -4404,7 +4442,7 @@
      * Operation.prototype
      * @since       3.0.0
      * @prototype
-     * @extends     basePrototype
+     * @extends     {basePrototype}
      */
 
     Operation.prototype = Object.create(basePrototype);
@@ -4414,7 +4452,7 @@
         _filters: {}
     });
 
-    /* State
+    /* {State} class
     ---------------------------------------------------------------------- */
 
     /**
@@ -4451,7 +4489,7 @@
      * State.prototype
      * @since       3.0.0
      * @prototype
-     * @extends     basePrototype
+     * @extends     {basePrototype}
      */
 
     State.prototype = Object.create(basePrototype);
@@ -4461,41 +4499,7 @@
         _filters: {}
     });
 
-    /* TransformData
-    ---------------------------------------------------------------------- */
-
-    /**
-     * TransformData
-     * @since       3.0.0
-     * @constructor
-     */
-
-    TransformData = function() {
-        this._execAction('_constructor', 0);
-
-        this.value = 0;
-        this.unit = '';
-
-        this._execAction('_constructor', 1);
-
-        _h.seal(this);
-    };
-
-    /**
-     * TransformData.prototype
-     * @since       3.0.0
-     * @prototype
-     * @extends     basePrototype
-     */
-
-    TransformData.prototype = Object.create(basePrototype);
-
-    _h.extend(TransformData.prototype, {
-        _actions: {},
-        _filters: {}
-    });
-
-    /* StyleData
+    /* {StyleData} class
     ---------------------------------------------------------------------- */
 
     /**
@@ -4532,7 +4536,7 @@
      * StyleData.prototype
      * @since       3.0.0
      * @prototype
-     * @extends     basePrototype
+     * @extends     {basePrototype}
      */
 
     StyleData.prototype = Object.create(basePrototype);
@@ -4542,7 +4546,41 @@
         _filters: {}
     });
 
-    /* UserInstruction
+    /* {TransformData} class
+    ---------------------------------------------------------------------- */
+
+    /**
+     * TransformData
+     * @since       3.0.0
+     * @constructor
+     */
+
+    TransformData = function() {
+        this._execAction('_constructor', 0);
+
+        this.value = 0;
+        this.unit = '';
+
+        this._execAction('_constructor', 1);
+
+        _h.seal(this);
+    };
+
+    /**
+     * TransformData.prototype
+     * @since       3.0.0
+     * @prototype
+     * @extends     {basePrototype}
+     */
+
+    TransformData.prototype = Object.create(basePrototype);
+
+    _h.extend(TransformData.prototype, {
+        _actions: {},
+        _filters: {}
+    });
+
+    /* {UserInstruction} class
     ---------------------------------------------------------------------- */
 
     /**
@@ -4567,7 +4605,7 @@
      * UserInstruction.prototype
      * @since       3.0.0
      * @prototype
-     * @extends     basePrototype
+     * @extends     {basePrototype}
      */
 
     UserInstruction.prototype = Object.create(basePrototype);
@@ -4577,17 +4615,17 @@
         _filters: {}
     });
 
-    /* mixItUp Factory
+    /* mixItUp factory function
     ---------------------------------------------------------------------- */
 
     /**
      * mixItUp
      * @since   3.0.0
      * @factory
-     * @param   {Element|Element[]|String}  container
-     * @param   [{Object}]                  configuration
-     * @param   [{Object}]                  foreignDoc
-     * @param   [{Boolean}]                 returnCollection
+     * @param   {(Element|Element[]|String)}  container
+     * @param   {Object}                      [configuration]
+     * @param   {Object}                      [foreignDoc]
+     * @param   {Boolean}                     [returnCollection]
      * @return  {Mixer}
      */
 
@@ -4667,9 +4705,9 @@
      * mixItUp.prototype.all
      * @since   3.0.0
      * @factory
-     * @param   {Element|Element[]|String}  container
-     * @param   [{Object}]                  configuration
-     * @param   [{Object}]                  foreignDoc
+     * @param   {(Element|Element[]|String)}  container
+     * @param   {Object}                      [configuration]
+     * @param   {Object}                      [foreignDoc]
      * @return  {Collection}
      *
      * Returns a collection of one or more instances
