@@ -300,7 +300,7 @@
                 t           = [];
 
             while (i--) {
-                p = parseInt(Math.random() * len);
+                p = ~~(Math.random() * len);
                 t = newArray[i];
 
                 newArray[i] = newArray[p];
@@ -699,8 +699,7 @@
         // TODO: make the extend helper method more robust with deep/shallow flag, and call here as shallow
 
         extend: function(extension) {
-            var key     = '',
-                self    = this;
+            var key     = '';
 
             for (key in extension) {
                 if (extension[key]) {
@@ -1467,7 +1466,7 @@
                 }
 
                 self._toggleArray = _h.clean(self._toggleArray);
-                self._toggleArray = self._toggleArray.join(self.controls.toggleLogic === 'or' ? ',' : '');
+                self._toggleArray = self._toggleArray.join(toggleSeperator);
 
                 for (i = 0; button = self._dom.filterButtons[i]; i++) {
                     _h.removeClass(button, self.controls.activeClass);
@@ -1477,7 +1476,7 @@
                     _h.removeClass(button, self.controls.activeClass);
                 }
 
-                self._toggleString = self._toggleArray.join(seperator);
+                self._toggleString = self._toggleArray.join(toggleSeperator);
 
                 command = {
                     filter: self._toggleString
