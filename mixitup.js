@@ -485,7 +485,7 @@
                 i = -1;
 
             for (i = 0; i < originalArray.length; i++) {
-                if (originalArray[i]) {
+                if (originalArray[i] !== '') {
                     cleanArray.push(originalArray[i]);
                 }
             }
@@ -868,6 +868,7 @@
                 live: false,
                 toggleFilterButtons: false,
                 toggleLogic: 'or',
+                toggleDefault: 'all',
                 activeClass: 'active'
             },
 
@@ -908,7 +909,6 @@
             _isMixing: false,
             _isClicking: false,
             _isLoading: true,
-            _isRemoving: false,
             _targets: [],
             _origOrder: [],
             _toggleArray: [],
@@ -1014,11 +1014,15 @@
         _instances: {},
 
         _handled: {
+            _filterToggle: {},
+            _multimix: {},
             _filter: {},
             _sort: {}
         },
 
         _bound: {
+            _filterToggle: {},
+            _multimix: {},
             _filter: {},
             _sort: {}
         },
@@ -1164,12 +1168,6 @@
                 self._targets = operation.newOrder;
             }
 
-            if (self._dom.filterToggleButtons.length) {
-                // TODO: what about live toggles? is it worth trawling the dom?
-
-                self._buildToggleArray();
-            }
-
             self._updateControls({
                 filter: state.activeFilter,
                 sort: state.activeSort
@@ -1180,6 +1178,12 @@
             self._bindEvents();
 
             self._state = state;
+
+            if (self._dom.filterToggleButtons.length) {
+                // TODO: what about live toggles? is it worth trawling the dom?
+
+                self._buildToggleArray();
+            }
 
             self._execAction('_init', 1, arguments);
         },
@@ -1274,12 +1278,14 @@
          */
 
         _bindEvents: function() {
-            var self    = this,
-                proto   = Mixer.prototype,
-                filters = proto._bound._filter,
-                sorts   = proto._bound._sort,
-                button  = null,
-                i       = -1;
+            var self            = this,
+                proto           = Mixer.prototype,
+                filterToggles   = proto._bound._filterToggle,
+                multimixs       = proto._bound._multimix,
+                filters         = proto._bound._filter,
+                sorts           = proto._bound._sort,
+                button          = null,
+                i               = -1;
 
             self._execAction('_bindEvents', 0);
 
@@ -1294,6 +1300,16 @@
                     _h.on(button, 'click', self._handler);
                 }
             }
+
+            // For each mixer instance, increment the bound value for each button type
+
+            // TODO: could be much DRYer
+
+            filterToggles[self.selectors.filterToggle] = (filterToggles[self.selectors.filterToggle] === undf) ?
+                1 : filterToggles[self.selectors.filterToggle] + 1;
+
+            multimixs[self.selectors.filter] = (multimixs[self.selectors.filter] === undf) ?
+                1 : multimixs[self.selectors.multimix] + 1;
 
             filters[self.selectors.filter] = (filters[self.selectors.filter] === undf) ?
                 1 : filters[self.selectors.filter] + 1;
@@ -1360,13 +1376,13 @@
                 selectors       = [],
                 selector        = '',
                 toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '',
-                target          = null,
+                button          = null,
                 command         = {},
                 filterString    = '',
                 sortString      = '',
                 method          = '',
                 isTogglingOff   = false,
-                button          = null,
+                el              = null,
                 key             = '',
                 i               = -1;
 
@@ -1382,13 +1398,13 @@
 
             selector = selectors.join(',');
 
-            target = _h.closestParent(
+            button = _h.closestParent(
                 e.target,
                 selector,
                 true
             );
 
-            if (!target) return;
+            if (!button) return;
 
             if (
                 self._isMixing &&
@@ -1405,20 +1421,20 @@
 
             self._isClicking = true;
 
-            if (target.matches(self.selectors.sort)) {
+            if (button.matches(self.selectors.sort)) {
 
                 // sort
 
-                sortString = target.getAttribute('data-sort');
+                sortString = button.getAttribute('data-sort');
 
                 if (
-                    !_h.hasClass(target, self.controls.activeClass) ||
+                    !_h.hasClass(button, self.controls.activeClass) ||
                     sortString.indexOf('random') > -1
                 ) {
                     method = 'sort';
 
-                    for (i = 0; button = self._dom.sortButtons[i]; i++) {
-                        _h.removeClass(button, self.controls.activeClass);
+                    for (i = 0; el = self._dom.sortButtons[i]; i++) {
+                        _h.removeClass(el, self.controls.activeClass);
                     }
 
                     command = {
@@ -1427,37 +1443,45 @@
                 } else {
                     return;
                 }
-            } else if (target.matches(self.selectors.filter)) {
+            } else if (button.matches(self.selectors.filter)) {
 
                 // filter
 
-                if (!_h.hasClass(target, self.controls.activeClass)) {
+                if (!_h.hasClass(button, self.controls.activeClass)) {
                     method = 'filter';
 
-                    for (i = 0; button = self._dom.filterButtons[i]; i++) {
-                        _h.removeClass(button, self.controls.activeClass);
+                    for (i = 0; el = self._dom.filterButtons[i]; i++) {
+                        _h.removeClass(el, self.controls.activeClass);
                     }
 
-                    for (i = 0; button = self._dom.filterToggleButtons[i]; i++) {
-                        _h.removeClass(button, self.controls.activeClass);
+                    for (i = 0; el = self._dom.filterToggleButtons[i]; i++) {
+                        _h.removeClass(el, self.controls.activeClass);
                     }
 
                     command = {
-                        filter: target.getAttribute('data-filter')
+                        filter: button.getAttribute('data-filter')
                     };
                 } else {
                     return;
                 }
-            } else if (target.matches(self.selectors.filterToggle)) {
+            } else if (button.matches(self.selectors.filterToggle)) {
 
                 // filterToggle
 
-                filterString = target.getAttribute('data-filter');
-                method = 'filterToggle';
+                filterString    = button.getAttribute('data-filter');
+                method          = 'filterToggle';
+
+                for (i = 0; el = self._dom.filterButtons[i]; i++) {
+                    _h.removeClass(el, self.controls.activeClass);
+                }
+
+                for (i = 0; el = self._dom.multiMixButtons[i]; i++) {
+                    _h.removeClass(el, self.controls.activeClass);
+                }
 
                 self._buildToggleArray();
 
-                if (!_h.hasClass(target, self.controls.activeClass)) {
+                if (!_h.hasClass(button, self.controls.activeClass)) {
                     self._toggleArray.push(filterString);
                 } else {
                     self._toggleArray.splice(self._toggleArray.indexOf(filterString, 1));
@@ -1466,47 +1490,48 @@
                 }
 
                 self._toggleArray = _h.clean(self._toggleArray);
-                self._toggleArray = self._toggleArray.join(toggleSeperator);
-
-                for (i = 0; button = self._dom.filterButtons[i]; i++) {
-                    _h.removeClass(button, self.controls.activeClass);
-                }
-
-                for (i = 0; button = self._dom.multiMixButtons[i]; i++) {
-                    _h.removeClass(button, self.controls.activeClass);
-                }
 
                 self._toggleString = self._toggleArray.join(toggleSeperator);
 
-                command = {
-                    filter: self._toggleString
-                };
-            } else if (target.matches(self.selectors.multiMix)) {
+                if (self._toggleString === '') {
+                    self._toggleString = self.controls.toggleDefault;
+
+                    command = {
+                        filter: self._toggleString
+                    };
+
+                    self._updateControls(command);
+                } else {
+                    command = {
+                        filter: self._toggleString
+                    };
+                }
+            } else if (button.matches(self.selectors.multiMix)) {
 
                 // multiMix
 
-                if (!_h.hasClass(target, self.controls.activeClass)) {
+                if (!_h.hasClass(button, self.controls.activeClass)) {
                     method = 'multiMix';
 
-                    for (i = 0; button = self._dom.filterButtons[i]; i++) {
-                        _h.removeClass(button, self.controls.activeClass);
+                    for (i = 0; el = self._dom.filterButtons[i]; i++) {
+                        _h.removeClass(el, self.controls.activeClass);
                     }
 
-                    for (i = 0; button = self._dom.filterToggleButtons[i]; i++) {
-                        _h.removeClass(button, self.controls.activeClass);
+                    for (i = 0; el = self._dom.filterToggleButtons[i]; i++) {
+                        _h.removeClass(el, self.controls.activeClass);
                     }
 
-                    for (i = 0; button = self._dom.sortButtons[i]; i++) {
-                        _h.removeClass(button, self.controls.activeClass);
+                    for (i = 0; el = self._dom.sortButtons[i]; i++) {
+                        _h.removeClass(el, self.controls.activeClass);
                     }
 
-                    for (i = 0; button = self._dom.multiMixButtons[i]; i++) {
-                        _h.removeClass(button, self.controls.activeClass);
+                    for (i = 0; el = self._dom.multiMixButtons[i]; i++) {
+                        _h.removeClass(el, self.controls.activeClass);
                     }
 
                     command = {
-                        sort: target.getAttribute('data-sort'),
-                        filter: target.getAttribute('data-filter')
+                        sort: button.getAttribute('data-sort'),
+                        filter: button.getAttribute('data-filter')
                     };
                 } else {
                     return;
@@ -1514,7 +1539,7 @@
             }
 
             if (method) {
-                self._trackClick(target, method, isTogglingOff);
+                self._trackClick(button, method, isTogglingOff);
 
                 self.multiMix(command);
             }
@@ -1536,6 +1561,9 @@
             var self        = this,
                 proto       = Mixer.prototype,
                 selector    = self.selectors[method];
+
+            // Add the active class to a button only once
+            // all mixer instances have handled the click
 
             method = '_' + method;
 
@@ -1564,9 +1592,11 @@
 
         _buildToggleArray: function() {
             var self = this,
-                activeFilter = self._activeFilter.replace(/\s/g, ''),
+                activeFilter = self._state.activeFilter.replace(/\s/g, ''),
                 filter = '',
                 i = -1;
+
+            activeFilter = activeFilter === self.selectors.target ? '' : activeFilter;
 
             self._execAction('_buildToggleArray', 0, arguments);
 
@@ -1581,6 +1611,8 @@
                     self._toggleArray[i] = '.' + filter;
                 }
             }
+
+            self._toggleArray = _h.clean(self._toggleArray);
 
             self._execAction('_buildToggleArray', 1, arguments);
         },
@@ -1626,6 +1658,10 @@
 
             for (i = 0; button = self._dom.filterButtons[i]; i++) {
                 _h.removeClass(button, self.controls.activeClass);
+
+                if (button.matches('[data-filter="' + output.filter + '"]')) {
+                    _h.addClass(button, self.controls.activeClass);
+                }
             }
 
             for (i = 0; button = self._dom.multiMixButtons[i]; i++) {
@@ -1660,12 +1696,8 @@
                         }
                     }
 
-                    _h.addClass(activeButton, self.controls.activeClass);
-                }
-            } else {
-                for (i = 0; button = self._dom.filterButtons[i]; i++) {
-                    if (button.matches('[data-filter="' + output.filter + '"]')) {
-                        _h.addClass(button, self.controls.activeClass);
+                    if (activeButton) {
+                        _h.addClass(activeButton, self.controls.activeClass);
                     }
                 }
             }
@@ -3418,7 +3450,9 @@
             if (!self._isMixing) {
                 operation = self.getOperation(instruction.command);
 
-                if (self.controls.enable && !self._isClicking && !self._isRemoving) {
+                if (self.controls.enable && !self._isClicking) {
+                    // Update controls for API calls
+
                     self._dom.filterToggleButtons.length && self._buildToggleArray();
 
                     // TODO: what about "live" toggles?
