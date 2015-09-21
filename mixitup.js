@@ -2530,7 +2530,7 @@
                 target      = null,
                 i           = -1;
 
-            self._execAction('_getFinalMixData', 0);
+            self._execAction('_getFinalMixData', 0, arguments);
 
             for (i = 0; target = operation.show[i]; i++) {
                 operation.showPosData[i].finalPosData = target._getPosData();
@@ -2573,7 +2573,7 @@
                 _h.addClass(self._dom.container, self.layout.containerClass);
             }
 
-            self._execAction('_getFinalMixData', 1);
+            self._execAction('_getFinalMixData', 1, arguments);
         },
 
         /**
@@ -2988,6 +2988,10 @@
             self._lastOperation = operation;
 
             self._dom.targets = self._state.targets;
+
+            if (typeof self._userCallback === 'function') {
+                self._userCallback.call(self._dom.el, self._state, self);
+            }
 
             if (typeof self.callbacks.onMixEnd === 'function') {
                 self.callbacks.onMixEnd.call(self._dom.el, self._state, self);
@@ -4768,10 +4772,13 @@
     /* Encapsulation
     ---------------------------------------------------------------------- */
 
-    // Encapulate all classes in the factory prototype for transportation
+    // Encapsulate all classes in the factory prototype for transportation
 
     mixItUp.prototype.UserInstruction   = UserInstruction;
+    mixItUp.prototype.TransformData     = TransformData;
     mixItUp.prototype.Operation         = Operation;
+    mixItUp.prototype.StyleData         = StyleData;
+    mixItUp.prototype.Target            = Target;
     mixItUp.prototype.Mixer             = Mixer;
     mixItUp.prototype.State             = State;
     mixItUp.prototype._h                = _h;
