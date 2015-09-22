@@ -3088,7 +3088,7 @@
                 } else if (typeof arg === 'object' && _h.isElement(arg)) {
                     // Single element
 
-                    !instruction.collection.length ?
+                    !instruction.command.collection.length ?
                         (instruction.command.collection = [arg]) :
                         (instruction.command.sibling = arg);
                 } else if (typeof arg === 'object' && arg !== null && arg.length) {
