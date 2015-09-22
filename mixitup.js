@@ -4685,7 +4685,10 @@
 
         if (config && typeof config.extensions === 'object') {
             for (name in config.extensions) {
-                config.extensions[name](Mixer);
+                // Call the extension's factory function, passing
+                // the mixItUp factory as a paramater
+
+                config.extensions[name](mixItUp);
             }
         }
 
