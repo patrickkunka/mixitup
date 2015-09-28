@@ -1,6 +1,10 @@
 MixItUp ChangeLog
 =================
 
+## 2.1.11
+- Fixed strict-mode TypeError affecting latest Safari/iOS9 when deleting a dataset property
+- Removed all trailing whitespace
+
 ## 2.1.10
 - Fixed accidental global declaration of `unBrake` in the _cleanUp method
 - Force ES5 "Strict Mode"
@@ -47,7 +51,7 @@ MixItUp ChangeLog
 - Added new static API methods for extending $.MixItUp prototype, and hooking actions and filters.
 
 ## 2.0.6
-- Retain scroll position if container height change decreases document height while filtering out targets. 
+- Retain scroll position if container height change decreases document height while filtering out targets.
 - Fixed animation bug when sorting by 'default:desc'.
 
 ## 2.0.5

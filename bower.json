@@ -1,6 +1,6 @@
 {
   "name": "mixitup",
-  "version": "2.1.9",
+  "version": "2.1.11",
   "main": "src/jquery.mixitup.js",
   "ignore": [
     "Gruntfile.js"
