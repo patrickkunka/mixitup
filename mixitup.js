@@ -929,6 +929,7 @@
             _handler: null,
             _state: null,
             _lastOperation: null,
+            _lastClicked: null,
             _vendor: ''
         });
 
@@ -1388,10 +1389,6 @@
 
             self._execAction('_handleClick', 0, arguments);
 
-            if (typeof self.callbacks.onMixClick === 'function') {
-                self.callbacks.onMixClick.call(self._dom.container, self._state, self);
-            }
-
             for (key in self.selectors) {
                 selectors.push(self.selectors[key]);
             }
@@ -1406,12 +1403,20 @@
 
             if (!button) return;
 
+            if (typeof self.callbacks.onMixClick === 'function') {
+                self.callbacks.onMixClick.call(button, self._state, self);
+
+                // TODO: trigger event
+            }
+
             if (
                 self._isMixing &&
                 (!self.animation.queue || self._queue.length >= self.animation.queueLimit)
             ) {
                 if (typeof self.callbacks.onMixBusy === 'function') {
                     self.callbacks.onMixBusy.call(self._dom.container, self._state, self);
+
+                    // TODO: trigger event
                 }
 
                 self._execAction('_handleClickBusy', 1, arguments);
@@ -1561,6 +1566,8 @@
             var self        = this,
                 proto       = Mixer.prototype,
                 selector    = self.selectors[method];
+
+            self._lastClicked = button;
 
             // Add the active class to a button only once
             // all mixer instances have handled the click
@@ -2146,6 +2153,10 @@
                 unit        = '',
                 i           = -1;
 
+            if (!self.animation.effects || typeof self.animation.effects !== 'string') {
+                throw new Error('[MixItUp] Invalid effects string');
+            }
+
             if (self.animation.effects.indexOf(effectName) < 0) {
                 // The effect is not present in the animation.effects string
 
@@ -2271,6 +2282,7 @@
             state.totalShow            = operation.show.length;
             state.totalHide            = operation.hide.length;
             state.totalMatching        = operation.matching.length;
+            state.triggerElement       = self._lastClicked;
 
             return self._execFilter('_buildState', state, arguments);
         },
@@ -2318,7 +2330,7 @@
             ) {
                 // If nothing currently shown, nothing to show
 
-                shouldAnimate = false
+                shouldAnimate = false;
             }
 
             if (
@@ -3457,6 +3469,10 @@
 
             self._execAction('multiMix', 0, arguments);
 
+            if (!self._isClicking) {
+                self._lastClicked = null;
+            }
+
             if (!self._isMixing) {
                 operation = self.getOperation(instruction.command);
 
@@ -4522,6 +4538,7 @@
         this.totalHide            = -1;
         this.totalMatching        = -1;
         this.hasFailed            = false;
+        this.triggerElement       = null;
 
         this._execAction('_constructor', 1);
 
