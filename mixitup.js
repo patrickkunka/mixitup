@@ -3643,7 +3643,7 @@
 
             return self.multiMix({
                 remove: args.command
-            }, args.aniamte, args.callback);
+            }, args.animate, args.callback);
         },
 
         /**
