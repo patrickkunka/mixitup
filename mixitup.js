@@ -906,6 +906,7 @@
                 allButtons: []
             },
 
+            _id: '',
             _isMixing: false,
             _isClicking: false,
             _isLoading: true,
@@ -3465,6 +3466,7 @@
         multiMix: function() {
             var self        = this,
                 operation   = null,
+                animate     = false,
                 instruction = self._parseMultiMixArgs(arguments);
 
             self._execAction('multiMix', 0, arguments);
@@ -3495,12 +3497,13 @@
                 self._execFilter('multiMix', operation, self);
                 self._execAction('multiMix', 1, arguments);
 
-                return self._goMix(
-                    (instruction.animate ^ self.animation.enable) ?
-                        instruction.animate :
-                        self.animation.enable,
-                    operation
-                );
+                // Always allow the instruction to override the instance setting
+
+                animate = (instruction.animate ^ self.animation.enable) ?
+                    instruction.animate :
+                    self.animation.enable;
+
+                return self._goMix(animate, operation);
             } else {
                 return self._deferMix(arguments, instruction);
             }
@@ -3731,10 +3734,10 @@
             if (self._dom.container.id.indexOf('MixItUp') > -1) {
                 // TODO: use a regex
 
-                self._dom.container.id = '';
+                self._dom.container.removeAttribute('id');
             }
 
-            delete Mixer.prototype._instances[self.id];
+            delete Mixer.prototype._instances[self._id];
 
             self._execAction('destroy', 1, arguments);
         }
@@ -4738,8 +4741,9 @@
             }
 
             if (Mixer.prototype._instances[id] === undf) {
-                instance = new Mixer(el, config);
+                instance = new Mixer();
 
+                instance._id = id;
                 instance._init(el, config);
 
                 Mixer.prototype._instances[id] = instance;
