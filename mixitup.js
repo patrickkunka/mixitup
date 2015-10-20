@@ -4712,7 +4712,13 @@
             }
         }
 
-        if (!container && _h.canReportErrors(config)) {
+        if (
+            (
+                !container ||
+                (typeof container !== 'string' && typeof container !== 'object')
+            ) &&
+            _h.canReportErrors(config)
+        ) {
             throw new Error('[MixItUp] Invalid selector or element');
         }
 
