@@ -1749,6 +1749,8 @@
                     target._init(el, self);
 
                     self._targets.splice(command.index, 0, target);
+
+                    command.index++;
                 }
 
                 self._dom.parent.insertBefore(frag, nextSibling);
