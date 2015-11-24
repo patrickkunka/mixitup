@@ -1733,8 +1733,8 @@
 
             self._execAction('insert', 0, arguments);
 
-            if (command.collection) {
-                for (i = 0; el = command.collection[i]; i++) {
+            if (command.targets) {
+                for (i = 0; el = command.targets[i]; i++) {
                     if (self._dom.targets.indexOf(el) > -1) {
                         throw new Error('[MixItUp] An inserted element already exists in the container');
                     }
@@ -1838,7 +1838,7 @@
 
             if (operation.toRemove.length) {
                 for (i = 0; target = operation.show[i]; i++) {
-                    if (operation.toRemove.indexOf(target) > -1) {
+                    if (operation.toRemove.indexOf(target._dom.el) > -1) {
                         // If any shown targets should be removed, move them into the toHide array
 
                         operation.show.splice(i, 1);
@@ -2985,7 +2985,7 @@
 
             if (operation.toRemove.length) {
                 for (i = 0; target = self._targets[i]; i++) {
-                    if (operation.toRemove.indexOf(target) > -1) {
+                    if (operation.toRemove.indexOf(target._dom.el) > -1) {
                         _h.deleteElement(target._dom.el);
 
                         self._targets.splice(i, 1);
@@ -3084,7 +3084,7 @@
 
             instruction.command = {
                 index: 0, // Index to insert at
-                collection: [], // Element(s) to insert
+                targets: [], // Element(s) to insert
                 position: 'before', // Position relative to a sibling if passed
                 sibling: null // A sibling element as a reference
             };
@@ -3103,14 +3103,14 @@
                 } else if (typeof arg === 'object' && _h.isElement(arg)) {
                     // Single element
 
-                    !instruction.command.collection.length ?
-                        (instruction.command.collection = [arg]) :
+                    !instruction.command.targets.length ?
+                        (instruction.command.targets = [arg]) :
                         (instruction.command.sibling = arg);
                 } else if (typeof arg === 'object' && arg !== null && arg.length) {
                     // Multiple elements in array or jQuery collection
 
-                    !instruction.command.collection.length ?
-                        (instruction.command.collection = arg) :
+                    !instruction.command.targets.length ?
+                        (instruction.command.targets = arg) :
                         instruction.command.sibling = arg[0];
                 } else if (
                     typeof arg === 'object' &&
@@ -3120,8 +3120,8 @@
                 ) {
                     // Document fragment
 
-                    !instruction.command.collection.length ?
-                        instruction.command.collection = Array.prototype.slice.call(arg.childNodes) :
+                    !instruction.command.targets.length ?
+                        instruction.command.targets = Array.prototype.slice.call(arg.childNodes) :
                         instruction.command.sibling = arg.childNodes[0];
                 } else if (typeof arg === 'boolean') {
                     instruction.animate = arg;
@@ -3130,7 +3130,7 @@
                 }
             }
 
-            if (!instruction.command.collection.length && _h.canReportErrors(self)) {
+            if (!instruction.command.targets.length && _h.canReportErrors(self)) {
                 throw new Error('[MixItUp] No elements were passed to "insert"');
             }
 
@@ -3170,14 +3170,14 @@
 
                         break;
                     case 'string':
-                        collection = Array.prototype.slice.call(self._dom.parent.querySelectorAll(arg));
+                        targets = Array.prototype.slice.call(self._dom.parent.querySelectorAll(arg));
 
                         break;
                     case 'object':
                         if (arg && arg.length) {
-                            collection = arg;
+                            targets = arg;
                         } else if (_h.isElement(arg)) {
-                            collection = [arg];
+                            targets = [arg];
                         }
 
                         break;
@@ -3192,9 +3192,9 @@
                 }
             }
 
-            if (collection.length) {
+            if (targets.length) {
                 for (i = 0; target = self._targets[i]; i++) {
-                    if (collection.indexOf(target._dom.el) > -1) {
+                    if (targets.indexOf(target._dom.el) > -1) {
                         instruction.command.targets.push(target);
                     }
                 }
@@ -3381,9 +3381,6 @@
             }
 
             if (insertCommand) {
-                // TODO: What if the insert/remove command is passed directly to
-                // multimix is not parsed down i.e. "remove: el"
-
                 self._insert(insertCommand, operation);
             }
 
@@ -3583,7 +3580,7 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(args.command.collection, 'before', args.command.sibling, args.animate, args.callback);
+            return self.insert(args.command.targets, 'before', args.command.sibling, args.animate, args.callback);
         },
 
         /**
@@ -3599,7 +3596,7 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(args.command.collection, 'after', args.command.sibling, args.animate, args.callback);
+            return self.insert(args.command.targets, 'after', args.command.sibling, args.animate, args.callback);
         },
 
         /**
@@ -3615,7 +3612,7 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(0, args.command.collection, args.animate, args.callback);
+            return self.insert(0, args.command.targets, args.animate, args.callback);
         },
 
         /**
@@ -3631,7 +3628,7 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(self._state.totalTargets, args.command.collection, args.animate, args.callback);
+            return self.insert(self._state.totalTargets, args.command.targets, args.animate, args.callback);
         },
 
         /**
