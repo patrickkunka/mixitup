@@ -840,6 +840,8 @@
             animation: {
                 enable: true,
                 effects: 'fade scale',
+                effectsIn: '',
+                effectsOut: '',
                 duration: 600,
                 easing: 'ease',
                 perspectiveDistance: '3000',
@@ -2118,8 +2120,10 @@
          */
 
         _parseEffects: function() {
-            var self = this,
-                transformName = '';
+            var self            = this,
+                transformName   = '',
+                effectsIn       = self.animation.effectsIn || self.animation.effects,
+                effectsOut      = self.animation.effectsOut || self.animation.effects;
 
            self._effectsIn      = new StyleData();
            self._effectsOut     = new StyleData();
@@ -2128,13 +2132,16 @@
 
            self._effectsIn.opacity = self._effectsOut.opacity = 1;
 
-           self._parseEffect('fade');
+           self._parseEffect('fade', effectsIn, self._effectsIn, self._transformIn);
+           self._parseEffect('fade', effectsOut, self._effectsOut, self._transformOut, true);
 
            for (transformName in self._transformDefaults) {
-               self._parseEffect(transformName);
+               self._parseEffect(transformName, effectsIn, self._effectsIn, self._transformIn);
+               self._parseEffect(transformName, effectsOut, self._effectsOut, self._transformOut, true);
            }
 
-           self._parseEffect('stagger');
+           self._parseEffect('stagger', effectsIn, self._effectsIn, self._transformIn);
+           self._parseEffect('stagger', effectsOut, self._effectsOut, self._transformOut, true);
         },
 
         /**
@@ -2142,10 +2149,13 @@
          * @private
          * @since   2.0.0
          * @param   {String}    effectName
-         * @param   {Number}    [transformIndex]
+         * @param   {String}    effectString
+         * @param   {StyleData} effects
+         * @param   {String[]}  transform
+         * @param   {Boolean}   [isOut]
          */
 
-        _parseEffect: function(effectName) {
+        _parseEffect: function(effectName, effectString, effects, transform, isOut) {
             var self        = this,
                 re          = /\(([^)]+)\)/,
                 propIndex   = -1,
@@ -2156,19 +2166,19 @@
                 unit        = '',
                 i           = -1;
 
-            if (!self.animation.effects || typeof self.animation.effects !== 'string') {
+            if (!effectString || typeof effectString !== 'string') {
                 throw new Error('[MixItUp] Invalid effects string');
             }
 
-            if (self.animation.effects.indexOf(effectName) < 0) {
-                // The effect is not present in the animation.effects string
+            if (effectString.indexOf(effectName) < 0) {
+                // The effect is not present in the effects string
 
                 return;
             }
 
             // The effect is present
 
-            propIndex = self.animation.effects.indexOf(effectName + '(');
+            propIndex = effectString.indexOf(effectName + '(');
 
             // TODO: Can we improve the logic below for DRYness?
 
@@ -2177,7 +2187,7 @@
 
                 // Extract from the first parenthesis to the end of string
 
-                str = self.animation.effects.substring(propIndex);
+                str = effectString.substring(propIndex);
 
                 // Match any number of characters between "(" and ")"
 
@@ -2187,11 +2197,13 @@
 
                 switch (effectName) {
                     case 'fade':
-                        self._effectsIn.opacity = self._effectsOut.opacity = parseFloat(val);
+                        effects.opacity = parseFloat(val);
 
                         break;
                     case 'stagger':
                         self._staggerDuration = parseFloat(val);
+
+                        // NB: Currently stagger must be applied globally
 
                         break;
                     default:
@@ -2199,27 +2211,26 @@
 
                         for (i = 0; unit = units[i]; i++) {
                             if (val.indexOf(unit) > -1) {
-                                self._effectsIn[effectName].unit = self._effectsOut[effectName].unit = unit;
+                                effects[effectName].unit = unit;
 
                                 break;
                             }
                         }
 
-                        self._effectsIn[effectName].value = parseFloat(val);
+                        if (isOut && self.animation.reverseOut && effectName !== 'scale') {
+                            effects[effectName].value = parseFloat(val) * -1;
+                        } else {
+                            effects[effectName].value = parseFloat(val);
+                        }
 
-                        self._effectsOut[effectName].value = (self.animation.reverseOut && effectName !== 'scale') ?
-                            self._effectsIn[effectName].value * -1 :
-                            self._effectsIn[effectName].value;
-
-                        self._transformIn.push(effectName + '(' + self._effectsIn[effectName].value + self._effectsIn[effectName].unit + ')');
-                        self._transformOut.push(effectName + '(' + self._effectsOut[effectName].value + self._effectsOut[effectName].unit + ')');
+                        transform.push(effectName + '(' + effects[effectName].value + effects[effectName].unit + ')');
                 }
             } else {
                 // Else, use the default value for the effect
 
                 switch (effectName) {
                     case 'fade':
-                        self._effectsIn.opacity = self._effectsOut.opacity = 0;
+                        effects.opacity = 0;
 
                         break;
                     case 'stagger':
@@ -2229,15 +2240,15 @@
                     default:
                         // Transforms
 
-                        self._effectsIn[effectName].value = self._transformDefaults[effectName].value;
-                        self._effectsIn[effectName].unit = self._effectsOut[effectName].unit = self._transformDefaults[effectName].unit;
+                        if (isOut && self.animation.reverseOut && effectName !== 'scale') {
+                            effects[effectName].value = self._transformDefaults[effectName].value;
+                        } else {
+                            effects[effectName].value = self._transformDefaults[effectName].value * -1;
+                        }
 
-                        self._effectsOut[effectName].value = (self.animation.reverseOut && effectName !== 'scale') ?
-                            self._effectsIn[effectName].value * -1 :
-                            self._effectsIn[effectName].value;
+                        effects[effectName].unit = self._transformDefaults[effectName].unit;
 
-                        self._transformIn.push(effectName + '(' + self._effectsIn[effectName].value + self._effectsIn[effectName].unit + ')');
-                        self._transformOut.push(effectName + '(' + self._effectsOut[effectName].value + self._effectsOut[effectName].unit + ')');
+                        transform.push(effectName + '(' + effects[effectName].value + effects[effectName].unit + ')');
                 }
             }
         },
@@ -4143,7 +4154,7 @@
 
             switch (options.hideOrShow) {
                 case 'hide':
-                    isFading && (self._dom.el.style.opacity = self._mixer._effectsIn.opacity);
+                    isFading && (self._dom.el.style.opacity = self._mixer._effectsOut.opacity);
 
                     transformValues = transformValues.concat(self._mixer._transformOut);
 
