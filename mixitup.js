@@ -875,6 +875,7 @@
             },
 
             layout: {
+                allowNestedTargets: false,
                 display: 'inline-block',
                 containerClass: '',
                 containerClassFail: 'fail'
@@ -1248,7 +1249,10 @@
 
             self._execAction('_indexTargets', 0, arguments);
 
-            self._dom.targets = _h.children(self._dom.container, self.selectors.target);
+            self._dom.targets = self.layout.allowNestedTargets ?
+                self._dom.container.querySelectorAll(self.selectors.target) :
+                _h.children(self._dom.container, self.selectors.target);
+
             self._dom.targets = Array.prototype.slice.call(self._dom.targets);
 
             // TODO: allow querying of all descendants via config option, allowing for nested parent
