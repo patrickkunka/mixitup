@@ -2413,6 +2413,7 @@
         _getStartMixData: function(operation) {
             var self        = this,
                 parentStyle = window.getComputedStyle(self._dom.parent),
+                parentRect  = self._dom.parent.getBoundingClientRect(),
                 target      = null,
                 data        = {},
                 i           = -1,
@@ -2439,16 +2440,16 @@
             }
 
             operation.startHeight = self._incPadding ?
-                self._dom.parent.offsetHeight :
-                self._dom.parent.offsetHeight -
+                parentRect.height :
+                parentRect.height -
                     parseFloat(parentStyle.paddingTop) -
                     parseFloat(parentStyle.paddingBottom) -
                     parseFloat(parentStyle.borderTop) -
                     parseFloat(parentStyle.borderBottom);
 
             operation.startWidth = self._incPadding ?
-                self._dom.parent.offsetWidth :
-                self._dom.parent.offsetWidth -
+                parentRect.width :
+                parentRect.width -
                     parseFloat(parentStyle.paddingLeft) -
                     parseFloat(parentStyle.paddingRight) -
                     parseFloat(parentStyle.borderLeft) -
@@ -2556,9 +2557,14 @@
 
         _getFinalMixData: function(operation) {
             var self        = this,
-                parentStyle = window.getComputedStyle(self._dom.parent),
+                parentStyle = null,
+                parentRect  = self._dom.parent.getBoundingClientRect(),
                 target      = null,
                 i           = -1;
+
+            if (!self._incPadding) {
+                parentStyle = window.getComputedStyle(self._dom.parent);
+            }
 
             self._execAction('_getFinalMixData', 0, arguments);
 
@@ -2571,16 +2577,16 @@
             }
 
             operation.newHeight = self._incPadding ?
-                self._dom.parent.offsetHeight :
-                self._dom.parent.offsetHeight -
+                parentRect.height :
+                parentRect.height -
                     parseFloat(parentStyle.paddingTop) -
                     parseFloat(parentStyle.paddingBottom) -
                     parseFloat(parentStyle.borderTop) -
                     parseFloat(parentStyle.borderBottom);
 
             operation.newWidth = self._incPadding ?
-                self._dom.parent.offsetWidth :
-                self._dom.parent.offsetWidth -
+                parentRect.width :
+                parentRect.width -
                     parseFloat(parentStyle.paddingLeft) -
                     parseFloat(parentStyle.paddingRight) -
                     parseFloat(parentStyle.borderLeft) -
