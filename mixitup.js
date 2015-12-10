@@ -1157,6 +1157,8 @@
                     self.load.filter;
 
             state.activeSort = self.load.sort;
+            state.activeContainerClass = self.layout.containerClass;
+            state.activeDisplay = self.layout.display;
 
             if (state.activeSort) {
                 // Perform a syncronous sort without an operation
@@ -2295,6 +2297,7 @@
             state.activeFilter         = operation.newFilter;
             state.activeSort           = operation.newSortString;
             state.activeContainerClass = operation.newContainerClass;
+            state.activeDisplay        = operation.newDisplay;
             state.hasFailed            = !operation.matching.length && operation.newFilter !== '';
             state.totalTargets         = self._targets.length;
             state.totalShow            = operation.show.length;
@@ -2474,11 +2477,11 @@
             self._execAction('_setInter', 0);
 
             for (i = 0; target = operation.toShow[i]; i++) {
-                target._show();
+                target._show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
             }
 
             if (operation.willChangeLayout) {
-                _h.removeClass(self._dom.container, self.layout.containerClass);
+                _h.removeClass(self._dom.container, operation.startContainerClass);
                 _h.addClass(self._dom.container, operation.newContainerClass);
             }
 
@@ -2601,7 +2604,7 @@
             }
 
             for (i = 0; target = operation.toHide[i]; i++) {
-                target._show();
+                target._show(self.layout.display);
             }
 
             if (operation.willChangeLayout && self.animation.animateChangeLayout) {
@@ -2800,7 +2803,7 @@
                     staggerIndex++;
                 }
 
-                target._show();
+                target._show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
 
                 target._move({
                     posIn: posData.posIn,
@@ -2973,7 +2976,7 @@
             for (i = 0; target = operation.show[i]; i++) {
                 target._cleanUp();
 
-                target._show();
+                target._show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
                 target._isShown = true;
             }
 
@@ -3387,8 +3390,9 @@
                 insertCommand       = command.insert,
                 operation           = new Operation();
 
-            operation.command = command;
-            operation.startState = self._state;
+            operation.command       = command;
+            operation.startState    = self._state;
+            operation.id            = _h.randomHexKey();
 
             self._execAction('getOperation', 0, operation);
 
@@ -3442,12 +3446,14 @@
             // which accomodates selectors, elements, hide vs show etc.
 
             if (changeLayoutCommand !== undf) {
+                operation.startDisplay        = operation.startState.activeDisplay;
                 operation.startContainerClass = operation.startState.activeContainerClass;
-                operation.newContainerClass = typeof changeLayoutCommand === 'string' ?
-                    changeLayoutCommand : '';
+                operation.newDisplay          = changeLayoutCommand.display || operation.startDisplay;
+                operation.newContainerClass   = changeLayoutCommand.containerClass || operation.startContainerClass;
 
                 if (
-                    operation.newContainerClass !== operation.startState.activeContainerClass
+                    operation.newContainerClass !== operation.startContainerClass ||
+                    operation.newDisplay !== operation.startDisplay
                 ) {
                     operation.willChangeLayout = true;
                 }
@@ -3562,7 +3568,7 @@
                     posData = operation.toHidePosData[toHideIndex];
 
                     if (!target._dom.el.style.display) {
-                        target._show();
+                        target._show(self.layout.display);
                     }
 
                     target._applyTween(posData, multiplier);
@@ -3887,16 +3893,18 @@
          * _show
          * @private
          * @since   3.0.0
-         * @param   {Boolean}   animate
+         * @param   {string}   display
          * @void
          */
 
-        _show: function(animate) {
+        _show: function(display) {
             var self = this;
 
             self._execAction('_show', 0, arguments);
 
-            !self._dom.el.style.display && (self._dom.el.style.display = self._mixer.layout.display);
+            if (!self._dom.el.style.display || self._dom.el.style.display !== display) {
+                self._dom.el.style.display = display;
+            }
 
             self._execAction('_show', 1, arguments);
         },
@@ -3905,11 +3913,10 @@
          * _hide
          * @private
          * @since   3.0.0
-         * @param   {Boolean}   animate
          * @void
          */
 
-        _hide: function(animate) {
+        _hide: function() {
             var self = this;
 
             self._execAction('_hide', 0, arguments);
@@ -3975,7 +3982,7 @@
 
                 posIn.display === currentValues.display && self._hide();
             } else if (!self._dom.el.style.display) {
-                self._show();
+                self._show(self.layout.display);
             }
 
             for (i = 0; propertyName = self._mixer._tweenable[i]; i++) {
@@ -4484,6 +4491,8 @@
     Operation = function() {
         this._execAction('_constructor', 0);
 
+        this.id                  = '';
+
         this.args                = [];
         this.command             = null;
         this.showPosData         = [];
@@ -4516,7 +4525,9 @@
         this.newHeight           = 0;
         this.newWidth            = 0;
         this.startContainerClass = '';
+        this.startDisplay        = '';
         this.newContainerClass   = '';
+        this.newDisplay          = '';
 
         this._execAction('_constructor', 1);
 
@@ -4554,6 +4565,7 @@
 
         this.activeFilter         = '';
         this.activeSort           = '';
+        this.activeDisplay        = '';
         this.activeContainerClass = '';
         this.targets              = [];
         this.hide                 = [];
