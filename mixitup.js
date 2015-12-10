@@ -4225,8 +4225,8 @@
          */
 
         _getDelay: function(index) {
-            var self = this,
-                delay = -1;
+            var self    = this,
+                delay   = -1;
 
             if (typeof self._mixer.animation.staggerSequence === 'function') {
                 index = self._mixer.animation.staggerSequence.call(self, index, self._state);
@@ -4246,8 +4246,8 @@
          */
 
         _applyTransition: function(rules) {
-            var self = this,
-                transitionString = rules.join(', ');
+            var self                = this,
+                transitionString    = rules.join(', ');
 
             self._execAction('_transition', 0, arguments);
 
@@ -4264,9 +4264,9 @@
          */
 
         _handleTransitionEnd: function(e) {
-            var self = this,
-                propName = e.propertyName,
-                canResize = self._mixer.animation.animateResizeTargets;
+            var self        = this,
+                propName    = e.propertyName,
+                canResize   = self._mixer.animation.animateResizeTargets;
 
             self._execAction('_handleTransitionEnd', 0, arguments);
 
@@ -4363,20 +4363,23 @@
          */
 
         _getPosData: function() {
-            var self = this,
-                styles = {},
+            var self    = this,
+                styles  = {},
+                rect    = null,
                 posData = new StyleData();
 
             self._execAction('_getPosData', 0, arguments);
 
             posData.x               = self._dom.el.offsetLeft;
             posData.y               = self._dom.el.offsetTop;
-            posData.width           = self._dom.el.offsetWidth;
-            posData.height          = self._dom.el.offsetHeight;
             posData.display         = self._dom.el.style.display || 'none';
 
             if (self._mixer.animation.animateResizeTargets) {
+                rect = self._dom.el.getBoundingClientRect();
                 styles = window.getComputedStyle(self._dom.el);
+
+                posData.width = rect.width;
+                posData.height = rect.height;
 
                 posData.marginBottom = parseFloat(styles.marginBottom);
                 posData.marginRight = parseFloat(styles.marginRight);
