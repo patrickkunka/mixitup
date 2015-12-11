@@ -3545,7 +3545,8 @@
          */
 
         tween: function(operation, multiplier) {
-            var target          = null,
+            var self            = this,
+                target          = null,
                 posData         = null,
                 toHideIndex     = -1,
                 i               = -1;
@@ -3982,7 +3983,7 @@
 
                 posIn.display === currentValues.display && self._hide();
             } else if (!self._dom.el.style.display) {
-                self._show(self.layout.display);
+                self._show(self._mixer.layout.display);
             }
 
             for (i = 0; propertyName = self._mixer._tweenable[i]; i++) {
