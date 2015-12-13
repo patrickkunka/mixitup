@@ -3172,7 +3172,7 @@
         _parseRemoveArgs: function(args) {
             var self        = this,
                 instruction = new UserInstruction(),
-                collection  = [],
+                targets     = [],
                 target      = null,
                 arg         = null,
                 i           = -1;
