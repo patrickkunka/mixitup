@@ -1846,7 +1846,7 @@
 
             if (operation.toRemove.length) {
                 for (i = 0; target = operation.show[i]; i++) {
-                    if (operation.toRemove.indexOf(target._dom.el) > -1) {
+                    if (operation.toRemove.indexOf(target) > -1) {
                         // If any shown targets should be removed, move them into the toHide array
 
                         operation.show.splice(i, 1);
@@ -2297,7 +2297,7 @@
             state.activeFilter         = operation.newFilter;
             state.activeSort           = operation.newSortString;
             state.activeContainerClass = operation.newContainerClass;
-            state.activeDisplay        = operation.newDisplay;
+            state.activeDisplay        = operation.newDisplay || self.layout.display;
             state.hasFailed            = !operation.matching.length && operation.newFilter !== '';
             state.totalTargets         = self._targets.length;
             state.totalShow            = operation.show.length;
@@ -3172,7 +3172,7 @@
         _parseRemoveArgs: function(args) {
             var self        = this,
                 instruction = new UserInstruction(),
-                targets     = [],
+                collection  = [],
                 target      = null,
                 arg         = null,
                 i           = -1;
@@ -3194,14 +3194,14 @@
 
                         break;
                     case 'string':
-                        targets = Array.prototype.slice.call(self._dom.parent.querySelectorAll(arg));
+                        collection = Array.prototype.slice.call(self._dom.parent.querySelectorAll(arg));
 
                         break;
                     case 'object':
                         if (arg && arg.length) {
-                            targets = arg;
+                            collection = arg;
                         } else if (_h.isElement(arg)) {
-                            targets = [arg];
+                            collection = [arg];
                         }
 
                         break;
@@ -3216,9 +3216,9 @@
                 }
             }
 
-            if (targets.length) {
+            if (collection.length) {
                 for (i = 0; target = self._targets[i]; i++) {
-                    if (targets.indexOf(target._dom.el) > -1) {
+                    if (collection.indexOf(target._dom.el) > -1) {
                         instruction.command.targets.push(target);
                     }
                 }
