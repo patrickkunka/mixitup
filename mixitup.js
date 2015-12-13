@@ -3009,7 +3009,7 @@
 
             if (operation.toRemove.length) {
                 for (i = 0; target = self._targets[i]; i++) {
-                    if (operation.toRemove.indexOf(target._dom.el) > -1) {
+                    if (operation.toRemove.indexOf(target) > -1) {
                         _h.deleteElement(target._dom.el);
 
                         self._targets.splice(i, 1);
