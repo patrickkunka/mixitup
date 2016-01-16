@@ -1,0 +1,9 @@
+{
+    "-W030": true,
+    "-W053": true,
+    "-W084": true,
+    "-W055": true,
+    "-W069": true,
+    "-W097": true,
+    "laxbreak": true
+}

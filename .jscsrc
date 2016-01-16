@@ -1,0 +1,86 @@
+{
+    "requireCurlyBraces": [
+        "else",
+        "for",
+        "while",
+        "do",
+        "try",
+        "catch"
+    ],
+    "requireSpaceAfterKeywords": [
+        "if",
+        "else",
+        "for",
+        "while",
+        "do",
+        "case",
+        "return",
+        "try",
+        "typeof"
+    ],
+    "safeContextKeyword": ["self"],
+    "maximumLineLength": {
+      "value": 110,
+      "allowComments": false,
+      "allowRegex": true
+    },
+    "requireSpaceBeforeBlockStatements": true,
+    "requireParenthesesAroundIIFE": true,
+    "requireSpaceAfterLineComment": {
+        "allExcept": ["#", "="]
+    },
+    "requireSpacesInConditionalExpression": true,
+    "disallowSpacesInNamedFunctionExpression": {
+        "beforeOpeningRoundBrace": true
+    },
+    "disallowSpacesInFunctionDeclaration": {
+        "beforeOpeningRoundBrace": true
+    },
+    "disallowFunctionDeclarations": true,
+    "requireSpaceBetweenArguments": true,
+    "requireMultipleVarDecl": "onevar",
+    "requireBlocksOnNewline": true,
+    "requireSemicolons": true,
+    "disallowEmptyBlocks": true,
+    "disallowSpacesInsideArrayBrackets": true,
+    "disallowSpacesInsideParentheses": true,
+    "requireCommaBeforeLineBreak": true,
+    "requireLineBreakAfterVariableAssignment": true,
+    "requirePaddingNewlinesBeforeKeywords": [
+        "do",
+        "for",
+        "if",
+        "switch",
+        "try",
+        "void",
+        "while",
+        "return"
+    ],
+    "requirePaddingNewLinesInObjects": true,
+    "disallowSpaceAfterPrefixUnaryOperators": true,
+    "disallowSpaceBeforePostfixUnaryOperators": true,
+    "disallowSpaceBeforeBinaryOperators": [
+        ","
+    ],
+    "requireSpacesInForStatement": true,
+    "requireSpaceBeforeBinaryOperators": true,
+    "requireSpaceAfterBinaryOperators": true,
+    "disallowKeywords": [
+        "with"
+    ],
+    "validateIndentation": 4,
+    "disallowMixedSpacesAndTabs": true,
+    "disallowTrailingWhitespace": true,
+    "disallowTrailingComma": true,
+    "disallowKeywordsOnNewLine": [
+        "else"
+    ],
+    "requireCapitalizedConstructors": true,
+    "disallowNewlineBeforeBlockStatements": true,
+    "disallowMultipleLineStrings": true,
+    "disallowMultipleLineBreaks": true,
+    "disallowOperatorBeforeLineBreak": ["."],
+    "requireSpaceBeforeObjectValues": true,
+    "validateIndentation": 4,
+    "validateQuoteMarks": "'"
+}
