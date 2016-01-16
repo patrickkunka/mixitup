@@ -44,6 +44,7 @@ Build.prototype = {
                     code    = '';
 
                 code = self._.render.call(self, scope);
+                code = self._.cleanBuild(code);
 
                 return self._.writeFile.call(self, code);
             })
@@ -107,9 +108,26 @@ Private.prototype = {
                 buffers.forEach(function(buffer, i) {
                     var slug = fileNames[i].replace('.js', '');
 
+                    buffer = self._.cleanPartial(buffer);
+
                     self._.hbs.registerPartial(slug, buffer);
                 });
             });
+    },
+
+    /**
+     * cleanPartial
+     * @private
+     * @param {string} buffer
+     * @return {string}
+     */
+
+    cleanPartial: function(buffer) {
+        // Remove jshint global declarations
+
+        buffer = buffer.replace(/(^)?\/\* global [a-zA-Z]+ \*\/\n/g, '');
+
+        return buffer;
     },
 
     /**
@@ -151,6 +169,25 @@ Private.prototype = {
         output = template(scope);
 
         return output;
+    },
+
+    /**
+     * cleanBuild
+     * @private
+     * @param {string} buffer
+     * @return {string}
+     */
+
+    cleanBuild: function(buffer) {
+        // Remove trailing whitespace at ends of lines
+
+        buffer = buffer.replace(/[ \t]+($|[\n])/g, '\n');
+
+        // Replace multiple empty lines with one
+
+        buffer = buffer.replace(/\n{3,}/g, '\n\n');
+
+        return buffer;
     },
 
     /**

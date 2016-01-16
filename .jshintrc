@@ -5,5 +5,8 @@
     "-W055": true,
     "-W069": true,
     "-W097": true,
-    "laxbreak": true
+    "laxbreak": true,
+    "predef": [
+        "define"
+    ]
 }

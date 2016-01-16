@@ -1,7 +1,5 @@
 {{>banner}}
 
-/* global define */
-
 (function(window) {
     'use strict';
 
