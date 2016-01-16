@@ -6,18 +6,41 @@
     </head>
     <body>
         <menu>
-            <menuitem class="filter" data-filter=".cat-1">Category 1</menuitem>
-            <menuitem class="filter" data-filter=".cat-2">Category 2</menuitem>
-            <menuitem class="filter" data-filter=".cat-3">Category 3</menuitem>
+            <h3>Filters</h3>
+
+            <menuitem class="filter control" data-filter="all">All</menuitem>
+            <menuitem class="filter control" data-filter="none">None</menuitem>
+            <menuitem class="filter control" data-filter=".cat-1">Category A</menuitem>
+            <menuitem class="filter control" data-filter=".cat-2">Category B</menuitem>
+            <menuitem class="filter control" data-filter=".cat-3">Category C</menuitem>
+
+            <h3>Filter Toggles</h3>
+
+            <menuitem class="filter-toggle control" data-filter=".cat-1">Category A</menuitem>
+            <menuitem class="filter-toggle control" data-filter=".cat-2">Category B</menuitem>
+            <menuitem class="filter-toggle control" data-filter=".cat-3">Category C</menuitem>
+
+            <h3>Sorts</h3>
+
+            <menuitem class="sort control" data-sort="default:asc">Ascending</menuitem>
+            <menuitem class="sort control" data-sort="default:desc">Descending</menuitem> |
+
+            <menuitem class="sort control" data-sort="order:asc">Custom Ascending</menuitem>
+            <menuitem class="sort control" data-sort="order:desc">Custom Descending</menuitem>
+
+            <h3>MultiMix</h3>
+
+            <menuitem class="multi-mix control" data-filter=".cat-1" data-sort="default:asc">Category A / Ascending</menuitem>
+            <menuitem class="multi-mix control" data-filter=".cat-3" data-sort="order:desc">Category C / Custom Descending</menuitem>
         </menu>
 
         <section class="sandbox">
-            <div class="mix cat-1">1</div>
-            <div class="mix cat-1">1</div>
-            <div class="mix cat-2">2</div>
-            <div class="mix cat-2">2</div>
-            <div class="mix cat-3">3</div>
-            <div class="mix cat-3">3</div>
+            <div class="mix cat-1" data-order="5">A 5</div>
+            <div class="mix cat-1" data-order="1">A 1</div>
+            <div class="mix cat-2" data-order="4">B 4</div>
+            <div class="mix cat-2" data-order="3">B 3</div>
+            <div class="mix cat-3" data-order="2">C 2</div>
+            <div class="mix cat-3" data-order="6">C 6</div>
         </section>
 
         <script src="../dist/mixitup.js"></script>

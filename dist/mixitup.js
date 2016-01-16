@@ -951,7 +951,7 @@
                 target: '.mix',
                 filter: '.filter',
                 filterToggle: '.filter-toggle',
-                multiMix: '.multimix',
+                multiMix: '.multi-mix',
                 sort: '.sort'
             },
 
@@ -965,7 +965,7 @@
                 perspectiveDistance: '3000',
                 perspectiveOrigin: '50% 50%',
                 queue: true,
-                queueLimit: 1,
+                queueLimit: 3,
                 animateChangeLayout: false,
                 animateResizeContainer: true,
                 animateResizeTargets: false,
@@ -1001,7 +1001,7 @@
 
             load: {
                 filter: 'all',
-                sort: false
+                sort: 'default:asc'
             },
 
             libraries: {
@@ -1132,14 +1132,14 @@
 
         handled: {
             _filterToggle: {},
-            _multimix: {},
+            _multiMix: {},
             _filter: {},
             _sort: {}
         },
 
         _bound: {
             _filterToggle: {},
-            _multimix: {},
+            _multiMix: {},
             _filter: {},
             _sort: {}
         },
@@ -1402,7 +1402,7 @@
             var self            = this,
                 proto           = mixitup.Mixer.prototype,
                 filterToggles   = proto._bound._filterToggle,
-                multimixs       = proto._bound._multimix,
+                multiMixs       = proto._bound._multiMix,
                 filters         = proto._bound._filter,
                 sorts           = proto._bound._sort,
                 button          = null,
@@ -1430,9 +1430,9 @@
                 (typeof filterToggles[self.selectors.filterToggle] === 'undefined') ?
                     1 : filterToggles[self.selectors.filterToggle] + 1;
 
-            multimixs[self.selectors.filter] =
-                (typeof multimixs[self.selectors.filter] === 'undefined') ?
-                    1 : multimixs[self.selectors.multimix] + 1;
+            multiMixs[self.selectors.multiMix] =
+                (typeof multiMixs[self.selectors.multiMix] === 'undefined') ?
+                    1 : multiMixs[self.selectors.multiMix] + 1;
 
             filters[self.selectors.filter] =
                 (typeof filters[self.selectors.filter] === 'undefined') ?
@@ -1568,6 +1568,10 @@
                         h.removeClass(el, self.controls.activeClass);
                     }
 
+                    for (i = 0; el = self._dom.multiMixButtons[i]; i++) {
+                        h.removeClass(el, self.controls.activeClass);
+                    }
+
                     command = {
                         sort: sortString
                     };
@@ -1589,6 +1593,10 @@
                         h.removeClass(el, self.controls.activeClass);
                     }
 
+                    for (i = 0; el = self._dom.multiMixButtons[i]; i++) {
+                        h.removeClass(el, self.controls.activeClass);
+                    }
+
                     command = {
                         filter: button.getAttribute('data-filter')
                     };
@@ -1598,6 +1606,11 @@
             } else if (button.matches(self.selectors.filterToggle)) {
 
                 // filterToggle
+
+                // TODO: there is an issue when multiple toggles are clicked
+                // while an operation is in progress, the array is
+                // reset to the last completed state each time. Needs
+                // some thought.
 
                 filterString    = button.getAttribute('data-filter');
                 method          = 'filterToggle';
@@ -1610,7 +1623,11 @@
                     h.removeClass(el, self.controls.activeClass);
                 }
 
+                // Build a toggle array from the last active filter
+
                 self._buildToggleArray();
+
+                // Add or remove filters as needed
 
                 if (!h.hasClass(button, self.controls.activeClass)) {
                     self._toggleArray.push(filterString);
@@ -1664,6 +1681,16 @@
                         sort: button.getAttribute('data-sort'),
                         filter: button.getAttribute('data-filter')
                     };
+
+                    // Clear any active toggles
+
+                    self._state.activeFilter = '';
+                    self._buildToggleArray();
+
+                    // Update any matching individual filter and sort
+                    // controls to reflect the multiMix
+
+                    self._updateControls(command);
                 } else {
                     return;
                 }
@@ -1704,11 +1731,12 @@
                 (typeof proto.handled[method][selector] === 'undefined') ?
                     1 : proto.handled[method][selector] + 1;
 
-            if (
-                proto.handled[method][selector] ===
-                proto._bound[method][selector]
-            ) {
-                h[(isTogglingOff ? 'remove' : 'add') + 'Class'](button, self.controls.activeClass);
+            if (proto.handled[method][selector] === proto._bound[method][selector]) {
+                if (isTogglingOff) {
+                    h.removeClass(button, self.controls.activeClass);
+                } else {
+                    h.addClass(button, self.controls.activeClass);
+                }
 
                 delete proto.handled[method][selector];
             }
@@ -1758,27 +1786,28 @@
          * @void
          *
          * Updates buttons to their active/deactive state based
-         * on the current state of the instance
+         * on the command or current state of the instance
          */
 
         _updateControls: function(command) {
             var self                = this,
-                output              = {
-                    filter: command.filter,
-                    sort: command.sort
-                },
+                output              = null,
                 filterToggleButton  = null,
                 activeButton        = null,
                 button              = null,
                 selector            = '',
                 i                   = -1,
-                j                   = -1,
-                k                   = -1;
+                j                   = -1;
+
+            output = {
+                filter: command && command.filter,
+                sort: command && command.sort
+            };
 
             self._execAction('_updateControls', 0, arguments);
 
-            (typeof command.filter === 'undefined') && (output.filter = self._state.activeFilter);
-            (typeof command.sort === 'undefined') && (output.sort = self._state.activeSort);
+            (typeof output.filter === 'undefined') && (output.filter = self._state.activeFilter);
+            (typeof output.sort === 'undefined') && (output.sort = self._state.activeSort);
             (output.filter === self.selectors.target) && (output.filter = 'all');
 
             for (i = 0; button = self._dom.sortButtons[i]; i++) {
@@ -1808,21 +1837,23 @@
                 }
             }
 
-            if (self._toggleArray.length) {
-                if (output.filter === 'none' || output.filter === '') {
-                    for (i = 0; button = self._dom.filterToggleButtons[i]; i++) {
-                        h.removeClass(button, self.controls.activeClass);
+            if (self._dom.filterToggleButtons.length) {
+                for (i = 0; button = self._dom.filterToggleButtons[i]; i++) {
+                    h.removeClass(button, self.controls.activeClass);
+
+                    if (button.matches('[data-filter="' + output.filter + '"]')) {
+                        h.addClass(button, self.controls.activeClass);
                     }
                 }
 
-                for (j = 0; selector = self._toggleArray[j]; j++) {
+                for (i = 0; selector = self._toggleArray[i]; i++) {
                     activeButton = null;
 
                     if (self.controls.live) {
                         activeButton = self._dom.document
                             .querySelector(self.selectors.filterToggle + '[data-filter="' + selector + '"]');
                     } else {
-                        for (k = 0; filterToggleButton = self._dom.filterToggleButtons[k]; k++) {
+                        for (j = 0; filterToggleButton = self._dom.filterToggleButtons[j]; j++) {
                             if (filterToggleButton.matches('[data-filter="' + selector + '"]')) {
                                 activeButton = filterToggleButton;
                             }
@@ -1851,7 +1882,7 @@
         _insert: function(command, operation) {
             var self        = this,
                 nextSibling = self._getNextSibling(command.index, command.sibling, command.position),
-                frag        = self._dom.documentcreateDocumentFragment(),
+                frag        = self._dom.document.createDocumentFragment(),
                 target      = null,
                 el          = null,
                 i           = -1;
@@ -1865,7 +1896,7 @@
                     }
 
                     frag.appendChild(el);
-                    frag.appendChild(self._dom.documentcreateTextNode(' '));
+                    frag.appendChild(self._dom.document.createTextNode(' '));
 
                     if (!h.isElement(el, self._dom.document) || !el.matches(self.selectors.target)) continue;
 
@@ -2177,7 +2208,7 @@
                 order       = isResetting ? operation.startOrder : operation.newOrder,
                 targets     = h.children(self._dom.parent, self.selectors.target, self._dom.document),
                 nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
-                frag        = self._dom.documentcreateDocumentFragment(),
+                frag        = self._dom.document.createDocumentFragment(),
                 target      = null,
                 whiteSpace  = null,
                 el          = null,
@@ -2205,7 +2236,7 @@
                 el = target._dom.el;
 
                 frag.appendChild(el);
-                frag.appendChild(self._dom.documentcreateTextNode(' '));
+                frag.appendChild(self._dom.document.createTextNode(' '));
             }
 
             // Insert the document fragment into the container
