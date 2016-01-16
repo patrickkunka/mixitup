@@ -29,7 +29,7 @@ gulp.task('watch', function() {
         });
 });
 
-gulp.task('reload-js', ['build'], function() {
+gulp.task('reload-js', ['prod'], function() {
     return livereload.changed();
 });
 

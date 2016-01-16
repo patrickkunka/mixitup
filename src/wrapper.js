@@ -8,10 +8,7 @@
 
     {{>factory}}
 
-    mixitup.CORE_VERSION    = '{{version}}';
-    mixitup.h               = h;
-
-    {{h}}
+    {{>h}}
 
     {{>base-prototype}}
 
@@ -30,6 +27,9 @@
     {{>transform-data}}
 
     {{>user-instruction}}
+
+    mixitup.CORE_VERSION    = '{{version}}';
+    mixitup.h               = h;
 
     mixitup.Mixer.prototype._featureDetect();
 

@@ -386,21 +386,21 @@ h.extend(mixitup.Mixer.prototype, {
 
         self._execAction('_cacheDom', 0, arguments);
 
-        self._dom.body      = self._dom.documentgetElementsByTagName('body')[0];
+        self._dom.body      = self._dom.document.getElementsByTagName('body')[0];
         self._dom.container = el;
         self._dom.parent    = el;
 
         self._dom.sortButtons =
-            Array.prototype.slice.call(self._dom.documentquerySelectorAll(self.selectors.sort));
+            Array.prototype.slice.call(self._dom.document.querySelectorAll(self.selectors.sort));
 
         self._dom.filterButtons =
-            Array.prototype.slice.call(self._dom.documentquerySelectorAll(self.selectors.filter));
+            Array.prototype.slice.call(self._dom.document.querySelectorAll(self.selectors.filter));
 
         self._dom.filterToggleButtons =
-            Array.prototype.slice.call(self._dom.documentquerySelectorAll(self.selectors.filterToggle));
+            Array.prototype.slice.call(self._dom.document.querySelectorAll(self.selectors.filterToggle));
 
         self._dom.multiMixButtons =
-            Array.prototype.slice.call(self._dom.documentquerySelectorAll(self.selectors.multiMix));
+            Array.prototype.slice.call(self._dom.document.querySelectorAll(self.selectors.multiMix));
 
         self._dom.allButtons = self._dom.filterButtons
             .concat(self._dom.sortButtons)
@@ -1456,9 +1456,9 @@ h.extend(mixitup.Mixer.prototype, {
                     // Transforms
 
                     if (isOut && self.animation.reverseOut && effectName !== 'scale') {
-                        effects[effectName].value = self._transformDefaults[effectName].value;
-                    } else {
                         effects[effectName].value = self._transformDefaults[effectName].value * -1;
+                    } else {
+                        effects[effectName].value = self._transformDefaults[effectName].value;
                     }
 
                     effects[effectName].unit = self._transformDefaults[effectName].unit;
@@ -1767,7 +1767,7 @@ h.extend(mixitup.Mixer.prototype, {
         operation.willSort && self._printSort(false, operation);
 
         for (i = 0; target = operation.toHide[i]; i++) {
-            target.hide();
+            target._hide();
         }
 
         self._execAction('_setFinal', 1);
@@ -1823,7 +1823,7 @@ h.extend(mixitup.Mixer.prototype, {
         }
 
         for (i = 0; target = operation.toShow[i]; i++) {
-            target.hide();
+            target._hide();
         }
 
         for (i = 0; target = operation.toHide[i]; i++) {
@@ -2805,7 +2805,7 @@ h.extend(mixitup.Mixer.prototype, {
 
         for (i = 0; target = operation.hide[i]; i++) {
             if (target._dom.el.style.display) {
-                target.hide();
+                target._hide();
             }
 
             if ((toHideIndex = operation.toHide.indexOf(target)) > -1) {
@@ -2992,7 +2992,7 @@ h.extend(mixitup.Mixer.prototype, {
         self._unbindEvents();
 
         for (i = 0; target = self._targets[i]; i++) {
-            hideAll && target.hide();
+            hideAll && target._hide();
 
             target._unbindEvents();
         }
