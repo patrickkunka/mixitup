@@ -3041,18 +3041,21 @@
                 instance: self
             });
 
-            if (self._queue.length) {
-                self._execAction('_queue', 0);
-
-                firstInQueue = self._queue.shift();
-
-                self._userPromise = firstInQueue[3];
-
-                self.multiMix.apply(self, firstInQueue);
-            }
-
             self._userPromise.resolve(self._state);
+
             self._userPromise.isResolved = true;
+
+            setTimeout(function() {
+                if (self._queue.length) {
+                    self._execAction('_queue', 0);
+
+                    firstInQueue = self._queue.shift();
+
+                    self._userPromise = firstInQueue[3];
+
+                    self.multiMix.apply(self, firstInQueue);
+                }
+            });
 
             self._execAction('_cleanUp', 1);
         },
@@ -3231,27 +3234,34 @@
          * _deferMix
          * @private
          * @since   3.0.0
-         * @param   {*[]}           args
-         * @param   {Object}        parsedArgs
-         * @return  {Promise} ->    {State}
+         * @param   {*[]}               args
+         * @param   {UserInstruction}   instruction
+         * @return  {Promise} ->        {State}
          */
 
-        _deferMix: function(args, parsedArgs) {
-            var self = this;
+        _deferMix: function(args, instruction) {
+            var self    = this,
+                promise = null;
 
-            self._userPromise = _h.getPromise(self.libraries);
+            promise = _h.getPromise(self.libraries);
 
             if (self.animation.queue && self._queue.length < self.animation.queueLimit) {
-                args[3] = self._userPromise;
+                args[3] = promise;
 
                 self._queue.push(args);
 
-                (self.controls.enable && !self._isClicking) && self._updateControls(parsedArgs.command);
+                (self.controls.enable && !self._isClicking) && self._updateControls(instruction.command);
 
                 self._execAction('multiMixQueue', 1, args);
             } else {
-                self._userPromise.resolve(self._state); // TODO: include warning that was busy in state?
-                self._userPromise.isResolved = true;
+                if (_h.canReportErrors(self)) {
+                    console.warn(
+                        '[MixItUp] An operation was requested but the MixItUp instance was busy. The operation was rejected because queueing is disabled or the queue is full.'
+                    );
+                }
+
+                promise.resolve(self._state);
+                promise.isResolved = true;
 
                 if (typeof self.callbacks.onMixBusy === 'function') {
                     self.callbacks.onMixBusy.call(self._dom.container, self._state, self);
@@ -3265,7 +3275,7 @@
                 self._execAction('multiMixBusy', 1, args);
             }
 
-            return self._userPromise.promise;
+            return promise.promise;
         },
 
         /**
