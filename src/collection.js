@@ -18,12 +18,6 @@ mixitup.Collection = function(instances) {
     this.length = instances.length;
 };
 
-/**
- * mixitup.Collection.prototype
- * @since 3.0.0
- * @prototype
- */
-
 mixitup.Collection.prototype = {
     constructor: mixitup.Collection,
 

@@ -1,5 +1,4 @@
-/* global mixitup */
-/* global h */
+/* global mixitup:true, h */
 
 /**
  * mixitup

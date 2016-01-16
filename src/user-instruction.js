@@ -3,7 +3,7 @@
 
 /**
  * mixitup.UserInstruction
- * @since       3.0.0
+ * @since 3.0.0
  * @constructor
  */
 
@@ -18,13 +18,6 @@ mixitup.UserInstruction = function() {
 
     h.seal(this);
 };
-
-/**
- * mixitup.UserInstruction.prototype
- * @since       3.0.0
- * @prototype
- * @extends     {mixitup.basePrototype}
- */
 
 mixitup.UserInstruction.prototype = Object.create(mixitup.basePrototype);
 

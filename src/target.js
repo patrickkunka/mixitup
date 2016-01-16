@@ -33,13 +33,6 @@ mixitup.Target = function() {
     h.seal(this._dom);
 };
 
-/**
- * mixitup.Target.prototype
- * @prototype
- * @extends     {mixitup.basePrototype}
- * @since       3.0.0
- */
-
 mixitup.Target.prototype = Object.create(mixitup.basePrototype);
 
 h.extend(mixitup.Target.prototype, {
@@ -221,10 +214,14 @@ h.extend(mixitup.Target.prototype, {
             } else if (tweenData instanceof mixitup.TransformData) {
                 if (!tweenData.value) continue;
 
-                currentValues[propertyName].value = posIn[propertyName].value + (tweenData.value * multiplier);
-                currentValues[propertyName].unit = tweenData.unit;
+                currentValues[propertyName].value =
+                    posIn[propertyName].value + (tweenData.value * multiplier);
 
-                currentTransformValues.push(propertyName + '(' + currentValues[propertyName].value + tweenData.unit + ')');
+                currentValues[propertyName].unit  = tweenData.unit;
+
+                currentTransformValues.push(
+                    propertyName + '(' + currentValues[propertyName].value + tweenData.unit + ')'
+                );
             } else if (propertyName !== 'display') {
                 if (!tweenData) continue;
 

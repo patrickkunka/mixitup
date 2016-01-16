@@ -136,13 +136,6 @@ mixitup.Mixer = function() {
     h.seal(this._dom);
 };
 
-/**
- * mixitup.Mixer.prototype
- * @since       3.0.0
- * @prototype
- * @extends     {mixitup.basePrototype}
- */
-
 mixitup.Mixer.prototype = Object.create(mixitup.basePrototype);
 
 h.extend(mixitup.Mixer.prototype, {
@@ -296,11 +289,10 @@ h.extend(mixitup.Mixer.prototype, {
                 ElementPrototype.oMatchesSelector ||
                 ElementPrototype.webkitMatchesSelector ||
                 function (selector) {
-                    var node = this,
-                        nodes = (node.parentNode || node.doc).querySelectorAll(selector),
+                    var nodes = (this.parentNode || this.doc).querySelectorAll(selector),
                         i = -1;
 
-                    while (nodes[++i] && nodes[i] != node) {
+                    while (nodes[++i] && nodes[i] != this) {
                         return !!nodes[i];
                     }
                 };
@@ -319,9 +311,9 @@ h.extend(mixitup.Mixer.prototype, {
      */
 
     _init: function(el, config) {
-        var self            = this,
-            state           = new mixitup.State(),
-            operation       = new mixitup.Operation();
+        var self        = this,
+            state       = new mixitup.State(),
+            operation   = new mixitup.Operation();
 
         self._execAction('_init', 0, arguments);
 
@@ -1015,21 +1007,36 @@ h.extend(mixitup.Mixer.prototype, {
                 condition = operation.newFilter === '' ?
                     false : target._dom.el.matches(operation.newFilter);
 
-                self._evaluateHideShow(condition, target, false, operation);
+                self._evaluateHideShow(
+                    condition,
+                    target,
+                    false,
+                    operation
+                );
             } else if (
                 typeof operation.newFilter === 'object' &&
                 h.isElement(operation.newFilter, self._dom.document)
             ) {
                 // show via element
 
-                self._evaluateHideShow(target._dom.el === operation.newFilter, target, false, operation);
+                self._evaluateHideShow(
+                    target._dom.el === operation.newFilter,
+                    target,
+                    false,
+                    operation
+                );
             } else if (
                 typeof operation.newFilter === 'object' &&
                 operation.newFilter.length
             ) {
                 // show via collection
 
-                self._evaluateHideShow(operation.newFilter.indexOf(target._dom.el) > -1, target, false, operation);
+                self._evaluateHideShow(
+                    operation.newFilter.indexOf(target._dom.el) > -1,
+                    target,
+                    false,
+                    operation
+                );
             }
         }
 
@@ -1073,7 +1080,12 @@ h.extend(mixitup.Mixer.prototype, {
 
         if (condition) {
             if (isRemoving && typeof operation.startFilter === 'string') {
-                self._evaluateHideShow(target._dom.el.matches(operation.startFilter), target, false, operation);
+                self._evaluateHideShow(
+                    target._dom.el.matches(operation.startFilter),
+                    target,
+                    false,
+                    operation
+                );
             } else {
                 operation.show.push(target);
 
@@ -1420,7 +1432,13 @@ h.extend(mixitup.Mixer.prototype, {
                         effects[effectName].value = parseFloat(val);
                     }
 
-                    transform.push(effectName + '(' + effects[effectName].value + effects[effectName].unit + ')');
+                    transform.push(
+                        effectName +
+                        '(' +
+                        effects[effectName].value +
+                        effects[effectName].unit +
+                        ')'
+                    );
             }
         } else {
             // Else, use the default value for the effect
@@ -1445,7 +1463,13 @@ h.extend(mixitup.Mixer.prototype, {
 
                     effects[effectName].unit = self._transformDefaults[effectName].unit;
 
-                    transform.push(effectName + '(' + effects[effectName].value + effects[effectName].unit + ')');
+                    transform.push(
+                        effectName +
+                        '(' +
+                        effects[effectName].value +
+                        effects[effectName].unit +
+                        ')'
+                    );
             }
         }
     },
@@ -1555,7 +1579,12 @@ h.extend(mixitup.Mixer.prototype, {
         }
 
         if (typeof self.callbacks.onMixStart === 'function') {
-            self.callbacks.onMixStart.call(self._dom.container, operation.startState, operation.newState, self);
+            self.callbacks.onMixStart.call(
+                self._dom.container,
+                operation.startState,
+                operation.newState,
+                self
+            );
         }
 
         h.triggerCustom(self._dom.container, 'mixStart', {
@@ -1574,8 +1603,11 @@ h.extend(mixitup.Mixer.prototype, {
                 window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
             }
 
-            self._dom.parent.style[mixitup.Mixer.prototype._perspectiveProp] = self.animation.perspective;
-            self._dom.parent.style[mixitup.Mixer.prototype._perspectiveOriginProp] = self.animation.perspectiveOrigin;
+            self._dom.parent.style[mixitup.Mixer.prototype._perspectiveProp] =
+                self.animation.perspective;
+
+            self._dom.parent.style[mixitup.Mixer.prototype._perspectiveOriginProp] =
+                self.animation.perspectiveOrigin;
 
             if (self.animation.animateResizeContainer) {
                 self._dom.parent.style.height = operation.startHeight + 'px';
@@ -1903,9 +1935,11 @@ h.extend(mixitup.Mixer.prototype, {
 
                 if (!(effect instanceof mixitup.TransformData) || !effect.value) continue;
 
-                posData.posIn[effectName].value = effect.value;
-                posData.posOut[effectName].value = 0;
-                posData.tweenData[effectName].value = posData.posOut[effectName].value - posData.posIn[effectName].value;
+                posData.posIn[effectName].value     = effect.value;
+                posData.posOut[effectName].value    = 0;
+
+                posData.tweenData[effectName].value =
+                    posData.posOut[effectName].value - posData.posIn[effectName].value;
 
                 posData.posIn[effectName].unit =
                     posData.posOut[effectName].unit =
@@ -1949,7 +1983,9 @@ h.extend(mixitup.Mixer.prototype, {
 
                 posData.posIn[effectName].value     = 0;
                 posData.posOut[effectName].value    = effect.value;
-                posData.tweenData[effectName].value = posData.posOut[effectName].value - posData.posIn[effectName].value;
+
+                posData.tweenData[effectName].value =
+                    posData.posOut[effectName].value - posData.posIn[effectName].value;
 
                 posData.posIn[effectName].unit =
                     posData.posOut[effectName].unit =
@@ -1977,7 +2013,6 @@ h.extend(mixitup.Mixer.prototype, {
             i               = -1,
             checkProgress   = h.bind(self, self._checkProgress);
 
-
         // TODO: this is an extra loop in addition to the calcs
         // done in getOperation, can we get around somehow?
 
@@ -1986,7 +2021,12 @@ h.extend(mixitup.Mixer.prototype, {
 
             hideOrShow = target._isShown ? false : 'show'; // TODO: can we not mix types here?
 
-            willTransition = self._willTransition(hideOrShow, operation.hasEffect, posData.posIn, posData.posOut);
+            willTransition = self._willTransition(
+                hideOrShow,
+                operation.hasEffect,
+                posData.posIn,
+                posData.posOut
+            );
 
             if (willTransition) {
                 // Prevent non-transitioning targets from incrementing the staggerIndex
@@ -2445,7 +2485,9 @@ h.extend(mixitup.Mixer.prototype, {
         } else {
             if (h.canReportErrors(self)) {
                 console.warn(
-                    '[MixItUp] An operation was requested but the MixItUp instance was busy. The operation was rejected because queueing is disabled or the queue is full.'
+                    '[MixItUp] An operation was requested but the MixItUp ' +
+                    'instance was busy. The operation was rejected because ' +
+                    'queueing is disabled or the queue is full.'
                 );
             }
 
@@ -2648,7 +2690,9 @@ h.extend(mixitup.Mixer.prototype, {
             operation.startDisplay        = operation.startState.activeDisplay;
             operation.startContainerClass = operation.startState.activeContainerClass;
             operation.newDisplay          = changeLayoutCommand.display || operation.startDisplay;
-            operation.newContainerClass   = changeLayoutCommand.containerClass || operation.startContainerClass;
+
+            operation.newContainerClass   =
+                changeLayoutCommand.containerClass || operation.startContainerClass;
 
             if (
                 operation.newContainerClass !== operation.startContainerClass ||

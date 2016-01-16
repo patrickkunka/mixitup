@@ -31,13 +31,6 @@ mixitup.StyleData = function() {
     h.seal(this);
 };
 
-/**
- * mixitup.StyleData.prototype
- * @since       3.0.0
- * @prototype
- * @extends     {mixitup.basePrototype}
- */
-
 mixitup.StyleData.prototype = Object.create(mixitup.basePrototype);
 
 h.extend(mixitup.StyleData.prototype, {

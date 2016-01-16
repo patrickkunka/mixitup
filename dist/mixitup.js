@@ -1,5 +1,5 @@
 /**!
- * MixItUp v*.*.*
+ * MixItUp v3.0.0-beta
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -133,7 +133,7 @@
 
         return self.constructor(container, config, foreignDoc, true);
     };
-    mixitup.CORE_VERSION    = '*.*.*';
+    mixitup.CORE_VERSION    = '3.0.0-beta';
     mixitup.h               = h;
 
     mixitup.basePrototype = {
@@ -401,13 +401,6 @@
         h.seal(this._dom);
     };
 
-    /**
-     * mixitup.Mixer.prototype
-     * @since       3.0.0
-     * @prototype
-     * @extends     {mixitup.basePrototype}
-     */
-
     mixitup.Mixer.prototype = Object.create(mixitup.basePrototype);
 
     h.extend(mixitup.Mixer.prototype, {
@@ -561,11 +554,10 @@
                     ElementPrototype.oMatchesSelector ||
                     ElementPrototype.webkitMatchesSelector ||
                     function (selector) {
-                        var node = this,
-                            nodes = (node.parentNode || node.doc).querySelectorAll(selector),
+                        var nodes = (this.parentNode || this.doc).querySelectorAll(selector),
                             i = -1;
 
-                        while (nodes[++i] && nodes[i] != node) {
+                        while (nodes[++i] && nodes[i] != this) {
                             return !!nodes[i];
                         }
                     };
@@ -584,9 +576,9 @@
          */
 
         _init: function(el, config) {
-            var self            = this,
-                state           = new mixitup.State(),
-                operation       = new mixitup.Operation();
+            var self        = this,
+                state       = new mixitup.State(),
+                operation   = new mixitup.Operation();
 
             self._execAction('_init', 0, arguments);
 
@@ -1280,21 +1272,36 @@
                     condition = operation.newFilter === '' ?
                         false : target._dom.el.matches(operation.newFilter);
 
-                    self._evaluateHideShow(condition, target, false, operation);
+                    self._evaluateHideShow(
+                        condition,
+                        target,
+                        false,
+                        operation
+                    );
                 } else if (
                     typeof operation.newFilter === 'object' &&
                     h.isElement(operation.newFilter, self._dom.document)
                 ) {
                     // show via element
 
-                    self._evaluateHideShow(target._dom.el === operation.newFilter, target, false, operation);
+                    self._evaluateHideShow(
+                        target._dom.el === operation.newFilter,
+                        target,
+                        false,
+                        operation
+                    );
                 } else if (
                     typeof operation.newFilter === 'object' &&
                     operation.newFilter.length
                 ) {
                     // show via collection
 
-                    self._evaluateHideShow(operation.newFilter.indexOf(target._dom.el) > -1, target, false, operation);
+                    self._evaluateHideShow(
+                        operation.newFilter.indexOf(target._dom.el) > -1,
+                        target,
+                        false,
+                        operation
+                    );
                 }
             }
 
@@ -1338,7 +1345,12 @@
 
             if (condition) {
                 if (isRemoving && typeof operation.startFilter === 'string') {
-                    self._evaluateHideShow(target._dom.el.matches(operation.startFilter), target, false, operation);
+                    self._evaluateHideShow(
+                        target._dom.el.matches(operation.startFilter),
+                        target,
+                        false,
+                        operation
+                    );
                 } else {
                     operation.show.push(target);
 
@@ -1685,7 +1697,13 @@
                             effects[effectName].value = parseFloat(val);
                         }
 
-                        transform.push(effectName + '(' + effects[effectName].value + effects[effectName].unit + ')');
+                        transform.push(
+                            effectName +
+                            '(' +
+                            effects[effectName].value +
+                            effects[effectName].unit +
+                            ')'
+                        );
                 }
             } else {
                 // Else, use the default value for the effect
@@ -1710,7 +1728,13 @@
 
                         effects[effectName].unit = self._transformDefaults[effectName].unit;
 
-                        transform.push(effectName + '(' + effects[effectName].value + effects[effectName].unit + ')');
+                        transform.push(
+                            effectName +
+                            '(' +
+                            effects[effectName].value +
+                            effects[effectName].unit +
+                            ')'
+                        );
                 }
             }
         },
@@ -1820,7 +1844,12 @@
             }
 
             if (typeof self.callbacks.onMixStart === 'function') {
-                self.callbacks.onMixStart.call(self._dom.container, operation.startState, operation.newState, self);
+                self.callbacks.onMixStart.call(
+                    self._dom.container,
+                    operation.startState,
+                    operation.newState,
+                    self
+                );
             }
 
             h.triggerCustom(self._dom.container, 'mixStart', {
@@ -1839,8 +1868,11 @@
                     window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
                 }
 
-                self._dom.parent.style[mixitup.Mixer.prototype._perspectiveProp] = self.animation.perspective;
-                self._dom.parent.style[mixitup.Mixer.prototype._perspectiveOriginProp] = self.animation.perspectiveOrigin;
+                self._dom.parent.style[mixitup.Mixer.prototype._perspectiveProp] =
+                    self.animation.perspective;
+
+                self._dom.parent.style[mixitup.Mixer.prototype._perspectiveOriginProp] =
+                    self.animation.perspectiveOrigin;
 
                 if (self.animation.animateResizeContainer) {
                     self._dom.parent.style.height = operation.startHeight + 'px';
@@ -2168,9 +2200,11 @@
 
                     if (!(effect instanceof mixitup.TransformData) || !effect.value) continue;
 
-                    posData.posIn[effectName].value = effect.value;
-                    posData.posOut[effectName].value = 0;
-                    posData.tweenData[effectName].value = posData.posOut[effectName].value - posData.posIn[effectName].value;
+                    posData.posIn[effectName].value     = effect.value;
+                    posData.posOut[effectName].value    = 0;
+
+                    posData.tweenData[effectName].value =
+                        posData.posOut[effectName].value - posData.posIn[effectName].value;
 
                     posData.posIn[effectName].unit =
                         posData.posOut[effectName].unit =
@@ -2214,7 +2248,9 @@
 
                     posData.posIn[effectName].value     = 0;
                     posData.posOut[effectName].value    = effect.value;
-                    posData.tweenData[effectName].value = posData.posOut[effectName].value - posData.posIn[effectName].value;
+
+                    posData.tweenData[effectName].value =
+                        posData.posOut[effectName].value - posData.posIn[effectName].value;
 
                     posData.posIn[effectName].unit =
                         posData.posOut[effectName].unit =
@@ -2250,7 +2286,12 @@
 
                 hideOrShow = target._isShown ? false : 'show'; // TODO: can we not mix types here?
 
-                willTransition = self._willTransition(hideOrShow, operation.hasEffect, posData.posIn, posData.posOut);
+                willTransition = self._willTransition(
+                    hideOrShow,
+                    operation.hasEffect,
+                    posData.posIn,
+                    posData.posOut
+                );
 
                 if (willTransition) {
                     // Prevent non-transitioning targets from incrementing the staggerIndex
@@ -2709,7 +2750,9 @@
             } else {
                 if (h.canReportErrors(self)) {
                     console.warn(
-                        '[MixItUp] An operation was requested but the MixItUp instance was busy. The operation was rejected because queueing is disabled or the queue is full.'
+                        '[MixItUp] An operation was requested but the MixItUp ' +
+                        'instance was busy. The operation was rejected because ' +
+                        'queueing is disabled or the queue is full.'
                     );
                 }
 
@@ -2912,7 +2955,9 @@
                 operation.startDisplay        = operation.startState.activeDisplay;
                 operation.startContainerClass = operation.startState.activeContainerClass;
                 operation.newDisplay          = changeLayoutCommand.display || operation.startDisplay;
-                operation.newContainerClass   = changeLayoutCommand.containerClass || operation.startContainerClass;
+
+                operation.newContainerClass   =
+                    changeLayoutCommand.containerClass || operation.startContainerClass;
 
                 if (
                     operation.newContainerClass !== operation.startContainerClass ||
@@ -3265,13 +3310,6 @@
         h.seal(this._dom);
     };
 
-    /**
-     * mixitup.Target.prototype
-     * @prototype
-     * @extends     {mixitup.basePrototype}
-     * @since       3.0.0
-     */
-
     mixitup.Target.prototype = Object.create(mixitup.basePrototype);
 
     h.extend(mixitup.Target.prototype, {
@@ -3453,10 +3491,14 @@
                 } else if (tweenData instanceof mixitup.TransformData) {
                     if (!tweenData.value) continue;
 
-                    currentValues[propertyName].value = posIn[propertyName].value + (tweenData.value * multiplier);
-                    currentValues[propertyName].unit = tweenData.unit;
+                    currentValues[propertyName].value =
+                        posIn[propertyName].value + (tweenData.value * multiplier);
 
-                    currentTransformValues.push(propertyName + '(' + currentValues[propertyName].value + tweenData.unit + ')');
+                    currentValues[propertyName].unit  = tweenData.unit;
+
+                    currentTransformValues.push(
+                        propertyName + '(' + currentValues[propertyName].value + tweenData.unit + ')'
+                    );
                 } else if (propertyName !== 'display') {
                     if (!tweenData) continue;
 
@@ -3881,12 +3923,6 @@
         this.length = instances.length;
     };
 
-    /**
-     * mixitup.Collection.prototype
-     * @since 3.0.0
-     * @prototype
-     */
-
     mixitup.Collection.prototype = {
         constructor: mixitup.Collection,
 
@@ -3989,13 +4025,6 @@
         h.seal(this);
     };
 
-    /**
-     * mixitup.Operation.prototype
-     * @since       3.0.0
-     * @prototype
-     * @extends     {mixitup.basePrototype}
-     */
-
     mixitup.Operation.prototype = Object.create(mixitup.basePrototype);
 
     h.extend(mixitup.Operation.prototype, {
@@ -4037,13 +4066,6 @@
         h.seal(this);
     };
 
-    /**
-     * mixitup.State.prototype
-     * @since       3.0.0
-     * @prototype
-     * @extends     {mixitup.basePrototype}
-     */
-
     mixitup.State.prototype = Object.create(mixitup.basePrototype);
 
     h.extend(mixitup.State.prototype, {
@@ -4081,13 +4103,6 @@
         h.seal(this);
     };
 
-    /**
-     * mixitup.StyleData.prototype
-     * @since       3.0.0
-     * @prototype
-     * @extends     {mixitup.basePrototype}
-     */
-
     mixitup.StyleData.prototype = Object.create(mixitup.basePrototype);
 
     h.extend(mixitup.StyleData.prototype, {
@@ -4112,13 +4127,6 @@
         h.seal(this);
     };
 
-    /**
-     * mixitup.TransformData.prototype
-     * @since       3.0.0
-     * @prototype
-     * @extends     {mixitup.basePrototype}
-     */
-
     mixitup.TransformData.prototype = Object.create(mixitup.basePrototype);
 
     h.extend(mixitup.TransformData.prototype, {
@@ -4129,7 +4137,7 @@
 
     /**
      * mixitup.UserInstruction
-     * @since       3.0.0
+     * @since 3.0.0
      * @constructor
      */
 
@@ -4145,13 +4153,6 @@
         h.seal(this);
     };
 
-    /**
-     * mixitup.UserInstruction.prototype
-     * @since       3.0.0
-     * @prototype
-     * @extends     {mixitup.basePrototype}
-     */
-
     mixitup.UserInstruction.prototype = Object.create(mixitup.basePrototype);
 
     h.extend(mixitup.UserInstruction.prototype, {
@@ -4159,9 +4160,6 @@
         _filters: {}
     });
     mixitup.Mixer.prototype._featureDetect();
-
-    /* Module Definitions
-    ---------------------------------------------------------------------- */
 
     if (typeof exports === 'object' && typeof module === 'object') {
         module.exports = mixitup;
@@ -4172,4 +4170,4 @@
     } else if (typeof window.mixitup === 'undefined' || typeof window.mixitup !== 'function') {
         window.mixitup = window.mixItUp = mixitup;
     }
-})(window, document);
+})(window);

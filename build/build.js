@@ -11,10 +11,15 @@ var handlebars  = require('handlebars'),
     TEMPLATE    = '{{>wrapper}}';
 
 Build = function() {
-    this.fileName   = '';
-    this._          = new Private();
+    var version     = '',
+        fileName    = '';
 
-    this.init();
+    this._      = new Private();
+
+    version     = this._.getParameter('-v');
+    fileName    = this._.getParameter('-o');
+
+    this.init(version, fileName);
 
     Object.seal(this);
 };
@@ -24,16 +29,18 @@ Build.prototype = {
      * init
      * @public
      * @param   {string}    version
+     * @param   {string}    fileName
      * @return  {Promise}
      */
 
-    init: function(version) {
+    init: function(version, fileName) {
         var self = this;
 
-        self.fileName = 'mixitup.js';
+        self._.hbs          = handlebars.create();
+        self._.root         = process.cwd();
+        self._.startTime    = Date.now();
 
-        self._.hbs  = handlebars.create();
-        self._.root = process.cwd(); // pass in as param?
+        console.log('[MixItUp-Build] Initialising build...');
 
         self._.readPartials.call(self)
             .then(function(partials) {
@@ -46,7 +53,7 @@ Build.prototype = {
                 code = self._.render.call(self, scope);
                 code = self._.cleanBuild(code);
 
-                return self._.writeFile.call(self, code);
+                return self._.writeFile.call(self, code, fileName);
             })
             .catch(function(e) {
                 console.error(e);
@@ -56,11 +63,32 @@ Build.prototype = {
 };
 
 Private = function() {
-    this.hbs    = null;
-    this.root   = '';
+    this.hbs        = null;
+    this.root       = '',
+    this.startTime  = -1;
 };
 
 Private.prototype = {
+    /**
+     * getParamter
+     * @param   {string}    param
+     * @return  {string}
+     */
+
+    getParameter: function(param) {
+        var params      = process.argv,
+            paramIndex  = -1,
+            value       = '';
+
+        paramIndex = params.indexOf(param);
+
+        if (paramIndex > -1) {
+            value = params[paramIndex + 1];
+        }
+
+        return value || '';
+    },
+
     /**
      * readPartials
      * @private
@@ -103,6 +131,8 @@ Private.prototype = {
             tasks.push(fs.read(filePath));
         });
 
+        console.log('[MixItUp-Build] ' + fileNames.length + ' modules found');
+
         return q.all(tasks)
             .then(function(buffers) {
                 buffers.forEach(function(buffer, i) {
@@ -125,7 +155,7 @@ Private.prototype = {
     cleanPartial: function(buffer) {
         // Remove jshint global declarations
 
-        buffer = buffer.replace(/(^)?\/\* global [a-zA-Z]+ \*\/\n/g, '');
+        buffer = buffer.replace(/(^)?\/\* global [a-zA-Z:, ]+ \*\/\n/g, '');
 
         return buffer;
     },
@@ -194,12 +224,16 @@ Private.prototype = {
      * writeFile
      * @private
      * @param   {string} code
+     * @param   {string} fileName
      * @return  {Promise}
      */
 
-    writeFile: function(code) {
+    writeFile: function(code, fileName) {
         var self        = this,
-            outputPath  = path.join(self._.root, 'dist', self.fileName);
+            outputPath  = path.join(self._.root, 'dist', fileName),
+            duration    = Date.now() - self._.startTime;
+
+        console.log('[MixItUp-Build] Build completed in ' + duration + 'ms');
 
         return fs.write(outputPath, code);
     }

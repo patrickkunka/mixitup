@@ -35,13 +35,6 @@ mixitup.State = function() {
     h.seal(this);
 };
 
-/**
- * mixitup.State.prototype
- * @since       3.0.0
- * @prototype
- * @extends     {mixitup.basePrototype}
- */
-
 mixitup.State.prototype = Object.create(mixitup.basePrototype);
 
 h.extend(mixitup.State.prototype, {

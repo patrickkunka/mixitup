@@ -18,13 +18,6 @@ mixitup.TransformData = function() {
     h.seal(this);
 };
 
-/**
- * mixitup.TransformData.prototype
- * @since       3.0.0
- * @prototype
- * @extends     {mixitup.basePrototype}
- */
-
 mixitup.TransformData.prototype = Object.create(mixitup.basePrototype);
 
 h.extend(mixitup.TransformData.prototype, {
