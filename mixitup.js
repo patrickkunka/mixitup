@@ -3045,17 +3045,15 @@
 
             self._userPromise.isResolved = true;
 
-            setTimeout(function() {
-                if (self._queue.length) {
-                    self._execAction('_queue', 0);
+            if (self._queue.length) {
+                self._execAction('_queue', 0);
 
-                    firstInQueue = self._queue.shift();
+                firstInQueue = self._queue.shift();
 
-                    self._userPromise = firstInQueue[3];
+                self._userPromise = firstInQueue[3];
 
-                    self.multiMix.apply(self, firstInQueue);
-                }
-            });
+                self.multiMix.apply(self, firstInQueue);
+            }
 
             self._execAction('_cleanUp', 1);
         },
