@@ -19,14 +19,15 @@
         h               = null;
 
     /**
-     * mixitup
+     * The `mixitup` factory function is the main empty point for the v3 API,
+     * abstracting away the functionality of instantiating `Mixer` objects.
+     *
      * @since   3.0.0
-     * @factory
-     * @param   {(Element|Element[]|string)}  container
-     * @param   {object}                      [configuration]
-     * @param   {object}                      [foreignDoc]
-     * @param   {boolean}                     [returnCollection]
-     * @return  {mixitup.Mixer}
+     * @param   {(Element|Element[]|string)}        container
+     * @param   {object}                            [config]
+     * @param   {object}                            [foreignDoc]
+     * @param   {boolean}                           [returnCollection]
+     * @return  {mixitup.Mixer|mixitup.Collection}
      */
 
     mixitup = function(container, config, foreignDoc, returnCollection) {
@@ -115,17 +116,15 @@
     };
 
     /**
-     * mixitup.prototype.all
-     * @since   3.0.0
-     * @factory
-     * @param   {(Element|Element[]|string)}  container
-     * @param   {object}                      [configuration]
-     * @param   {object}                      [foreignDoc]
-     * @return  {mixitup.Collection}
-     *
      * Returns a mixitup.Collection of one or more instances
      * that can be operated on simultaneously, similar
-     * to a jQuery mixitup.Collection
+     * to a jQuery mixitup.Collection.
+     *
+     * @since   3.0.0
+     * @param   {(Element|Element[]|string)}  container
+     * @param   {object}                      [config]
+     * @param   {object}                      [foreignDoc]
+     * @return  {mixitup.Collection}
      */
 
     mixitup.prototype.all = function(container, config, foreignDoc) {
@@ -137,7 +136,6 @@
     h = {
 
         /**
-         * hasClass
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    cls
@@ -149,11 +147,10 @@
         },
 
         /**
-         * addClass
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    cls
-         * @void
+         * @return  {void}
          */
 
         addClass: function(el, cls) {
@@ -161,11 +158,10 @@
         },
 
         /**
-         * removeClass
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    cls
-         * @void
+         * @return  {void}
          */
 
         removeClass: function(el, cls) {
@@ -177,11 +173,10 @@
         },
 
         /**
-         * extend
          * @since   3.0.0
          * @param   {object}    destination
          * @param   {object}    source
-         * @void
+         * @return  {void}
          */
 
         extend: function(destination, source) {
@@ -203,13 +198,12 @@
         },
 
         /**
-         * on
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    type
          * @param   {function}  fn
          * @param   {boolean}   useCapture
-         * @void
+         * @return  {void}
          */
 
         on: function(el, type, fn, useCapture) {
@@ -217,6 +211,8 @@
 
             if (el.attachEvent) {
                 el['e' + type + fn] = fn;
+
+                /** @return {void} */
 
                 el[type + fn] = function() {
                     el['e' + type + fn](window.event);
@@ -229,12 +225,11 @@
         },
 
         /**
-         * off
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    type
          * @param   {function}  fn
-         * @void
+         * @return  {void}
          */
 
         off: function(el, type, fn) {
@@ -249,12 +244,11 @@
         },
 
         /**
-         * triggerCustom
-         * @param   {Element}   element
+         * @param   {Element}   el
          * @param   {string}    eventName
          * @param   {object}    data
          * @param   {Document}  [doc]
-         * @void
+         * @return  {void}
          */
 
         triggerCustom: function(el, eventName, data, doc) {
@@ -275,7 +269,6 @@
         },
 
         /**
-         * index
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    selector
@@ -295,20 +288,18 @@
         },
 
         /**
-         * camelCase
          * @since   2.0.0
-         * @param   {string}
+         * @param   {string} str
          * @return  {string}
          */
 
-        camelCase: function(string) {
-            return string.replace(/-([a-z])/g, function(g) {
+        camelCase: function(str) {
+            return str.replace(/-([a-z])/g, function(g) {
                 return g[1].toUpperCase();
             });
         },
 
         /**
-         * isElement
          * @since   2.1.3
          * @param   {Element}   el
          * @param   {Document}  [doc]
@@ -339,7 +330,6 @@
         },
 
         /**
-         * createElement
          * @since   3.0.0
          * @param   {string}            htmlString
          * @param   {Document}          [doc]
@@ -365,10 +355,9 @@
         },
 
         /**
-         * deleteElement
          * @since   3.0.0
          * @param   {Element}   el
-         * @void
+         * @return  {void}
          */
 
         deleteElement: function(el) {
@@ -378,7 +367,6 @@
         },
 
         /**
-         * isEqualArray
          * @since   3.0.0
          * @param   {*[]}       a
          * @param   {*[]}       b
@@ -398,7 +386,6 @@
         },
 
         /**
-         * arrayShuffle
          * @since   2.0.0
          * @param   {*[]}   oldArray
          * @return  {*[]}
@@ -423,7 +410,6 @@
         },
 
         /**
-         * debounce
          * @since   3.0.0
          * @param   {function}  func
          * @param   {Number}    wait
@@ -439,6 +425,8 @@
                     args     = arguments,
                     callNow  = immediate && !timeout,
                     later    = null;
+
+                /** @return void */
 
                 later = function() {
                     timeout  = null;
@@ -457,7 +445,6 @@
         },
 
         /**
-         * position
          * @since   3.0.0
          * @param   {Element}   element
          * @return  {object}
@@ -489,10 +476,9 @@
         },
 
         /**
-         * getHypotenuse
          * @since   3.0.0
          * @param   {object}    node1
-         * @return  {object}    node2
+         * @param  {object}    node2
          * @return  {Number}
          */
 
@@ -507,14 +493,13 @@
         },
 
         /**
-         * closestParent
          * @since   3.0.0
-         * @param   {object}    el
-         * @param   {string}    selector
-         * @param   {boolean}   [includeSelf]
-         * @param   {Number}    [range]
-         * @param   {Document}  [doc]
-         * @return  {Element}
+         * @param   {object}        el
+         * @param   {string}        selector
+         * @param   {boolean}       [includeSelf]
+         * @param   {Number}        [range]
+         * @param   {Document}      [doc]
+         * @return  {Element|null}
          */
 
         closestParent: function(el, selector, includeSelf, range, doc) {
@@ -546,7 +531,6 @@
         },
 
         /**
-         * children
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    selector
@@ -578,11 +562,10 @@
         },
 
         /**
-         * forEach
          * @since   3.0.0
          * @param   {*[]}       items
          * @param   {function}  callback
-         * @void
+         * @return  {void}
          */
 
         forEach: function(items, callback) {
@@ -595,9 +578,8 @@
         },
 
         /**
-         * clean
          * @since   3.0.0
-         * @param   {*[]}   originalArray
+         * @param   {*[]} originalArray
          * @return  {*[]}
          */
 
@@ -615,10 +597,9 @@
         },
 
         /**
-         * getPromise
          * @since  3.0.0
-         * @return {object}     libraries
-         * @return {object}
+         * @param  {object}         libraries
+         * @return {object|null}
          */
 
         getPromise: function(libraries) {
@@ -651,7 +632,6 @@
         },
 
         /**
-         * canReportErrors
          * @since   3.0.0
          * @param   {object}  [config]
          * @return  {boolean}
@@ -666,7 +646,6 @@
         },
 
         /**
-         * getPrefix
          * @since   2.0.0
          * @param   {Element}   el
          * @param   {string}    property
@@ -690,7 +669,6 @@
         },
 
         /**
-         * randomHexKey
          * @since   3.0.0
          * @return  {string}
          */
@@ -705,7 +683,6 @@
         },
 
         /**
-         * getDocumentState
          * @since   3.0.0
          * @param   {Document}  [doc]
          * @return  {object}
@@ -722,7 +699,6 @@
         },
 
         /**
-         * bind
          * @since   3.0.0
          * @param   {object}    obj
          * @param   {function}  fn
@@ -736,7 +712,6 @@
         },
 
         /**
-         * isVisible
          * @since   3.0.0
          * @param   {Element}   el
          * @return  {boolean}
@@ -764,7 +739,6 @@
         },
 
         /**
-         * seal
          * @since   3.0.0
          * @param   {object}    obj
          */
@@ -776,7 +750,6 @@
         },
 
         /**
-         * compareVersions
          * @since   3.0.0
          * @param   {string}    control
          * @param   {string}    specimen
@@ -808,19 +781,19 @@
     mixitup.basePrototype = {
 
         /**
-         * extend
+         * Shallow extend the base prototype with new methods
+         *
          * @public
          * @since   2.1.0
-         * @param   {object}
-         * @void
-         *
-         * Shallow extend the base prototype with new methods
+         * @param   {object} extension
+         * @return  {void}
          */
-
-        // TODO: make the extend helper method more robust with deep/shallow flag, and call here as shallow
 
         extend: function(extension) {
             var key = '';
+
+            // TODO: make the h extend helper method more robust with deep/shallow flag,
+            // and call here as shallow
 
             for (key in extension) {
                 if (extension[key]) {
@@ -830,16 +803,15 @@
         },
 
         /**
-         * addAction
+         * Register a named action hook on the prototype
+         *
          * @public
          * @since   2.1.0
-         * @param   {string}    hook name
+         * @param   {string}    hook
          * @param   {string}    name
          * @param   {function}  func
          * @param   {number}    priority
-         * @void
-         *
-         * Register a named action hook on the prototype
+         * @return  {void}
          */
 
         addAction: function(hook, name, func, priority) {
@@ -847,15 +819,14 @@
         },
 
         /**
-         * addFilter
+         * Register a named action hook on the prototype
+         *
          * @public
          * @since   2.1.0
          * @param   {string}    hook
          * @param   {string}    name
          * @param   {function}  func
-         * @void
-         *
-         * Register a named action hook on the prototype
+         * @return  {void}
          */
 
         addFilter: function(hook, name, func) {
@@ -863,16 +834,16 @@
         },
 
         /**
-         * _addHook
+         * Add a hook to the object's prototype
+         *
          * @private
          * @since   2.1.0
-         * @param   {string}    type of hook
-         * @param   {string}    hook name
-         * @param   {function}  function to execute
+         * @param   {string}    type
+         * @param   {string}    hook
+         * @param   {string}    name
+         * @param   {function}  func
          * @param   {number}    priority
-         * @void
-         *
-         * Add a hook to the object's prototype
+         * @return  {void}
          */
 
         _addHook: function(type, hook, name, func, priority) {
@@ -889,13 +860,12 @@
         },
 
         /**
-         * _execAction
          * @private
          * @since   2.0.0
          * @param   {string}    methodName
          * @param   {boolean}   isPost
-         * @param   {*[]} args
-         * @void
+         * @param   {*[]}       args
+         * @return  {void}
          */
 
         _execAction: function(methodName, isPost, args) {
@@ -911,14 +881,12 @@
         },
 
         /**
-         * _execFilter
          * @private
          * @since   2.0.0
          * @param   {string}    methodName
          * @param   {*}         value
          * @param   {*[]}       args
          * @return  {*}
-         * @void
          */
 
         _execFilter: function(methodName, value, args) {
@@ -936,9 +904,9 @@
     };
 
     /**
-     * mixitup.Mixer
      * @since       3.0.0
      * @constructor
+     * @namespace
      */
 
     mixitup.Mixer = function() {
@@ -986,7 +954,6 @@
             controls: {
                 enable: true,
                 live: false,
-                toggleFilterButtons: false,
                 toggleLogic: 'or',
                 toggleDefault: 'all',
                 activeClass: 'active'
@@ -1145,11 +1112,10 @@
         },
 
         /**
-         * _featureDetect
+         * Performs all neccessary feature detection on evalulation
+         *
          * @private
          * @since 2.0.0
-         *
-         * Performs all neccessary feature detection on evalulation
          */
 
         _featureDetect: function() {
@@ -1196,6 +1162,9 @@
 
             if (typeof testEl.nextElementSibling === 'undefined') {
                 Object.defineProperty(Element.prototype, 'nextElementSibling', {
+
+                    /** @return {Element|null} */
+
                     get: function() {
                         var el = this.nextSibling;
 
@@ -1236,12 +1205,11 @@
         },
 
         /**
-         * _init
          * @private
          * @since   2.0.0
          * @param   {Element}   el
          * @param   {object}    config
-         * @void
+         * @return  {void}
          */
 
         _init: function(el, config) {
@@ -1307,12 +1275,12 @@
         },
 
         /**
-         * _cacheDom
+         * Cache references of all neccessary DOM elements
+         *
          * @private
          * @since   3.0.0
-         * @void
-         *
-         * Cache references of all neccessary DOM elements
+         * @param   {Element} el
+         * @return  {void}
          */
 
         _cacheDom: function(el) {
@@ -1345,13 +1313,12 @@
         },
 
         /**
-         * _indexTargets
-         * @private
-         * @since   3.0.0
-         * @void
-         *
          * Index matching children of the container, and
          * instantiate mixitup.Target instances for each one
+         *
+         * @private
+         * @since   3.0.0
+         * @return  {void}
          */
 
         _indexTargets: function() {
@@ -1392,10 +1359,9 @@
         },
 
         /**
-         * _bindEvents
          * @private
          * @since   3.0.0
-         * @void
+         * @return  {void}
          */
 
         _bindEvents: function() {
@@ -1409,6 +1375,11 @@
                 i               = -1;
 
             self._execAction('_bindEvents', 0);
+
+            /**
+             * @param   {Event} e
+             * @return  {*}
+             */
 
             self.handler = function(e) {
                 return self._eventBus(e);
@@ -1446,10 +1417,9 @@
         },
 
         /**
-         * _unbindEvents
          * @private
          * @since   3.0.0
-         * @void
+         * @return  {void}
          */
 
         _unbindEvents: function() {
@@ -1469,7 +1439,6 @@
         },
 
         /**
-         * _eventBus
          * @private
          * @param   {object}            e
          * @return  {(Boolean|void)}
@@ -1485,12 +1454,10 @@
         },
 
         /**
-         * handleClick
          * @private
          * @since   3.0.0
-         * @param   {object}    button
-         * @param   {string}    type
-         * @void
+         * @param   {Event}  e
+         * @return  {void}
          *
          * Determines the type of operation needed and the
          * appropriate parameters when a button is clicked
@@ -1706,13 +1673,12 @@
         },
 
         /**
-         * _trackClick
          * @private
          * @since   3.0.0
          * @param   {Element}   button
          * @param   {string}    method
          * @param   {boolean}   isTogglingOff
-         * @void
+         * @return  {void}
          */
 
         _trackClick: function(button, method, isTogglingOff) {
@@ -1743,12 +1709,12 @@
         },
 
         /**
-         * _buildToggleArray
+         * Combines the selectors of toggled buttons into an array
+         *
          * @private
          * @since   2.0.0
-         * @void
+         * @return  {void}
          *
-         * Combines the selectors of toggled buttons into an array
          */
 
         _buildToggleArray: function() {
@@ -1779,14 +1745,13 @@
         },
 
         /**
-         * _updateControls
+         * Updates buttons to their active/deactive state based
+         * on the command or current state of the instance
+         *
          * @private
          * @since   2.0.0
          * @param   {object} command
-         * @void
-         *
-         * Updates buttons to their active/deactive state based
-         * on the command or current state of the instance
+         * @return  {void}
          */
 
         _updateControls: function(command) {
@@ -1870,13 +1835,11 @@
         },
 
         /**
-         * _insert
          * @private
          * @since   3.0.0
          * @param   {object}        command
          * @param   {Operation}     operation
-         * @param   {*[]}           arguments
-         * @return  {Promise} ->    {State}
+         * @return  {Promise.<mixitup.State>}
          */
 
         _insert: function(command, operation) {
@@ -1920,7 +1883,6 @@
         },
 
         /**
-         * _getNextSibling
          * @private
          * @since   3.0.0
          * @param   {Number}      [index]
@@ -1949,11 +1911,10 @@
         },
 
         /**
-         * _filter
          * @private
-         * @since 2.0.0
+         * @since   2.0.0
          * @param   {Operation}     operation
-         * @void
+         * @return  {void}
          */
 
         _filter: function(operation) {
@@ -2030,14 +1991,13 @@
         },
 
         /**
-         * _evaluateHideShow
          * @private
          * @since   3.0.0
          * @param   {boolean}   condition
          * @param   {Element}   target
          * @param   {boolean}   isRemoving
          * @param   {Operation} operation
-         * @void
+         * @return  {void}
          */
 
         _evaluateHideShow: function(condition, target, isRemoving, operation) {
@@ -2064,11 +2024,10 @@
         },
 
         /**
-         * _sort
          * @private
-         * @since 2.0.0
+         * @since   2.0.0
          * @param   {Operation}     operation
-         * @void
+         * @return  {void}
          */
 
         _sort: function(operation) {
@@ -2111,7 +2070,6 @@
         },
 
         /**
-         * _compare
          * @private
          * @since   2.0.0
          * @param   {String|Number}     a
@@ -2153,14 +2111,14 @@
         },
 
         /**
-         * _getAttributeValue
+         * Reads the values of sort attributes
+         *
          * @private
          * @since   3.0.0
          * @param   {Element}           target
+         * @param   {number}            depth
          * @param   {ParsedSort}        [sort]
          * @return  {(String|Number)}
-         *
-         * Reads the values of sort attributes
          */
 
         _getAttributeValue: function(target, depth, sort) {
@@ -2191,16 +2149,15 @@
         },
 
         /**
-         * _printSort
+         * Inserts elements into the DOM in the appropriate
+         * order using a document fragment for minimal
+         * DOM thrashing
+         *
          * @private
          * @since   2.0.0
          * @param   {boolean}   isResetting
          * @param   {Operation} operation
-         * @void
-         *
-         * Inserts elements into the DOM in the appropriate
-         * order using a document fragment for minimal
-         * DOM thrashing
+         * @return  {void}
          */
 
         _printSort: function(isResetting, operation) {
@@ -2250,14 +2207,13 @@
         },
 
         /**
-         * _parseSort
+         * Parse user-defined sort strings into useable values
+         * or "rules"
+         *
          * @private
          * @since   2.0.0
          * @param   {string}    sortString
          * @return  {String[]}
-         *
-         * Parse user-defined sort strings into useable values
-         * or "rules"
          */
 
         _parseSort: function(sortString) {
@@ -2284,13 +2240,12 @@
         },
 
         /**
-         * _parseEffects
-         * @private
-         * @since   2.0.0
-         * @void
-         *
          * Parse the user-defined effects string into values
          * and units, and create transform strings
+         *
+         * @private
+         * @since   2.0.0
+         * @return  {void}
          */
 
         _parseEffects: function() {
@@ -2319,7 +2274,6 @@
         },
 
         /**
-         * _parseEffect
          * @private
          * @since   2.0.0
          * @param   {string}    effectName
@@ -2440,7 +2394,6 @@
         },
 
         /**
-         * _buildState
          * @private
          * @since   2.0.0
          * @param   {Operation}     operation
@@ -2489,12 +2442,11 @@
         },
 
         /**
-         * _goMix
          * @private
          * @since   2.0.0
          * @param   {boolean}   shouldAnimate
          * @param   {Operation} operation
-         * @void
+         * @return  {void}
          */
 
         _goMix: function(shouldAnimate, operation) {
@@ -2594,11 +2546,10 @@
         },
 
         /**
-         * _getStartMixData
          * @private
          * @since   2.0.0
          * @param   {Operation}     operation
-         * @void
+         * @return  {void}
          */
 
         _getStartMixData: function(operation) {
@@ -2650,11 +2601,10 @@
         },
 
         /**
-         * _setInter
          * @private
          * @since   2.0.0
          * @param   {Operation}     operation
-         * @void
+         * @return  {void}
          */
 
         _setInter: function(operation) {
@@ -2677,11 +2627,10 @@
         },
 
         /**
-         * _getInterMixData
          * @private
          * @since   2.0.0
          * @param   {Operation}     operation
-         * @void
+         * @return  {void}
          */
 
         _getInterMixData: function(operation) {
@@ -2715,11 +2664,10 @@
         },
 
         /**
-         * _setFinal
          * @private
          * @since   2.0.0
          * @param   {Operation}     operation
-         * @void
+         * @return  {void}
          */
 
         _setFinal: function(operation) {
@@ -2739,11 +2687,10 @@
         },
 
         /**
-         * _getFinalMixData
          * @private
          * @since   2.0.0
          * @param   {Operation}     operation
-         * @void
+         * @return  {void}
          */
 
         _getFinalMixData: function(operation) {
@@ -2804,10 +2751,9 @@
         },
 
         /**
-         *  _getTweenData
          * @private
          * @since    3.0.0
-         * @param   {Operation}     operation
+         * @param    {Operation}     operation
          */
 
         _getTweenData: function(operation) {
@@ -2961,11 +2907,10 @@
         },
 
         /**
-         * _moveTargets
          * @private
          * @since   3.0.0
          * @param   {Operation}     operation
-         * @void
+         * @return  {void}
          */
 
         _moveTargets: function(operation) {
@@ -3049,7 +2994,6 @@
         },
 
         /**
-         * hasEffect
          * @private
          * @return  {boolean}
          */
@@ -3084,16 +3028,17 @@
         },
 
         /**
-         * _willTransition
+         * Determines if a target element will transition in
+         * some fasion and therefore requires binding of
+         * transitionEnd
+         *
          * @private
+         * @since   3.0.0
+         * @param   {string}        hideOrShow
          * @param   {boolean}       hasEffect
          * @param   {StyleData}     posIn
          * @param   {StyleData}     posOut
          * @return  {boolean}
-         *
-         * Determines if a target element will transition in
-         * some fasion and therefore requires binding of
-         * transitionEnd
          */
 
         _willTransition: function(hideOrShow, hasEffect, posIn, posOut) {
@@ -3129,11 +3074,10 @@
         },
 
         /**
-         * _checkProgress
          * @private
          * @since   2.0.0
          * @param   {Operation}     operation
-         * @void
+         * @return  {void}
          */
 
         _checkProgress: function(operation) {
@@ -3147,11 +3091,10 @@
         },
 
         /**
-         * _cleanUp
          * @private
          * @since   2.0.0
          * @param   {Operation}     operation
-         * @void
+         * @return  {void}
          */
 
         _cleanUp: function(operation) {
@@ -3255,7 +3198,6 @@
         },
 
         /**
-         * _parseMultiMixArgs
          * @private
          * @since   2.0.0
          * @param   {*[]}       args
@@ -3288,7 +3230,6 @@
         },
 
         /**
-         * _parseInsertArgs
          * @private
          * @since   2.0.0
          * @param   {*[]}       args
@@ -3359,7 +3300,6 @@
         },
 
         /**
-         * _parseRemoveArgs
          * @private
          * @since   3.0.0
          * @param   {*[]}       args
@@ -3425,12 +3365,11 @@
         },
 
         /**
-         * _deferMix
          * @private
-         * @since   3.0.0
-         * @param   {*[]}           args
-         * @param   {object}        parsedArgs
-         * @return  {Promise} ->    {State}
+         * @since       3.0.0
+         * @param       {*[]}                       args
+         * @param       {mixitup.UserInstruction}   instruction
+         * @return      {Promise.<mixitup.State>}
          */
 
         _deferMix: function(args, instruction) {
@@ -3475,10 +3414,9 @@
         },
 
         /**
-         * init
          * @public
-         * @since 3.0.0
-         * @return {Promise} -> {State}
+         * @since       3.0.0
+         * @return      {Promise.<mixitup.State>}
          */
 
         init: function() {
@@ -3490,10 +3428,9 @@
         },
 
         /**
-         * show
          * @public
-         * @since   3.0.0
-         * @return  {Promise} ->    {State}
+         * @since       3.0.0
+         * @return      {Promise.<mixitup.State>}
          */
 
         show: function() {
@@ -3503,10 +3440,9 @@
         },
 
         /**
-         * hide
          * @public
-         * @since 3.0.0
-         * @return {Promise} -> {State}
+         * @since       3.0.0
+         * @return      {Promise.<mixitup.State>}
          */
 
         hide: function() {
@@ -3516,7 +3452,6 @@
         },
 
         /**
-         * isMixing
          * @public
          * @since   2.0.0
          * @return  {boolean}
@@ -3529,12 +3464,9 @@
         },
 
         /**
-         * filter
          * @public
          * @since       2.0.0
-         * @shorthand   self.multiMix
-         * @param       {*[]}           arguments
-         * @return      {Promise} ->    {State}
+         * @return      {Promise.<mixitup.State>}
          */
 
         filter: function() {
@@ -3549,12 +3481,9 @@
         },
 
         /**
-         * sort
          * @public
          * @since       2.0.0
-         * @shorthand   self.multiMix
-         * @param       {*[]}           arguments
-         * @return      {Promise} ->    {State}
+         * @return      {Promise.<mixitup.State>}
          */
 
         sort: function() {
@@ -3567,24 +3496,20 @@
         },
 
         /**
-         * changeLayout
          * @public
          * @since       2.0.0
-         * @shorthand   self.multiMix
-         * @param       {*[]} arguments
-         * @return      {Promise} ->    {State}
+         * @return      {Promise.<mixitup.State>}
          */
 
         changeLayout: function() {
-            // TODO: parse args, and map to multiMix
+            // TODO: parse arguments, and map to multiMix
         },
 
         /**
-         * getOperation
          * @public
          * @since   3.0.0
-         * @param   {Command}   command
-         * @return  {Operation}
+         * @param   {Command}           command
+         * @return  {Operation|null}
          */
 
         getOperation: function(command) {
@@ -3690,11 +3615,9 @@
         },
 
         /**
-         * multiMix
          * @public
-         * @since   2.0.0
-         * @param   {*[]}           arguments
-         * @return  {Promise} ->    {State}
+         * @since       2.0.0
+         * @return      {Promise.<mixitup.State>}
          */
 
         multiMix: function() {
@@ -3744,12 +3667,11 @@
         },
 
         /**
-         * tween
          * @public
          * @since   3.0.0
          * @param   {Operation}     operation
          * @param   {Float}         multiplier
-         * @void
+         * @return  {void}
          */
 
         tween: function(operation, multiplier) {
@@ -3786,12 +3708,9 @@
         },
 
         /**
-         * insert
          * @public
          * @since       2.0.0
-         * @param       {*[]} arguments
-         * @shorthand   multiMix
-         * @return      {Promise} ->    {State}
+         * @return      {Promise.<mixitup.State>}
          */
 
         insert: function() {
@@ -3804,12 +3723,9 @@
         },
 
         /**
-         * insertBefore
          * @public
          * @since       3.0.0
-         * @shorthand   insert
-         * @param       {*[]}           arguments
-         * @return      {Promise} ->    {State}
+         * @return      {Promise.<mixitup.State>}
          */
 
         insertBefore: function() {
@@ -3820,12 +3736,9 @@
         },
 
         /**
-         * insertAfter
          * @public
          * @since       3.0.0
-         * @shorthand   insert
-         * @param       {*[]}           arguments
-         * @return      {Promise} ->    {State}
+         * @return      {Promise.<mixitup.State>}
          */
 
         insertAfter: function() {
@@ -3836,12 +3749,9 @@
         },
 
         /**
-         * prepend
          * @public
          * @since       2.0.0
-         * @shorthand   insert
-         * @param       {*[]}           arguments
-         * @return      {Promise} ->    {State}
+         * @return      {Promise.<mixitup.State>}
          */
 
         prepend: function() {
@@ -3852,12 +3762,9 @@
         },
 
         /**
-         * append
          * @public
          * @since       2.0.0
-         * @shorthand   insert
-         * @param       {*[]}           arguments
-         * @return      {Promise} ->    {State}
+         * @return      {Promise.<mixitup.State>}
          */
 
         append: function() {
@@ -3868,11 +3775,9 @@
         },
 
         /**
-         * remove
+         * @public
          * @since       3.0.0
-         * @shorthand   multiMix
-         * @param       {*[]}           arguments
-         * @return      {Promise} ->    {State}
+         * @return      {Promise.<mixitup.State>}
          */
 
         remove: function() {
@@ -3885,10 +3790,9 @@
         },
 
         /**
-         * getOption
          * @public
          * @since       2.0.0
-         * @param       {string}    string
+         * @param       {string}    stringKey
          * @return      {*}
          */
 
@@ -3897,7 +3801,6 @@
         },
 
         /**
-         * setOptions
          * @public
          * @since       2.0.0
          * @param       {object}    config
@@ -3914,7 +3817,6 @@
         },
 
         /**
-         * getState
          * @public
          * @since       2.0.0
          * @return      {State}
@@ -3927,7 +3829,6 @@
         },
 
         /**
-         * forceRefresh
          * @public
          * @since 2.1.2
          */
@@ -3939,11 +3840,10 @@
         },
 
         /**
-         * destroy
          * @public
          * @since   2.0.0
          * @param   {boolean}   hideAll
-         * @void
+         * @return  {void}
          */
 
         destroy: function(hideAll) {
@@ -3979,8 +3879,8 @@
     });
 
     /**
-     * mixitup.Target
      * @constructor
+     * @namespace
      * @since       3.0.0
      */
 
@@ -4019,11 +3919,10 @@
         _filters: {},
 
         /**
-         * _init
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {object}    mixer
-         * @void
+         * @return  {void}
          *
          * Initialize a newly instantiated mixitup.Target
          */
@@ -4045,10 +3944,9 @@
         },
 
         /**
-         * _cacheDom
          * @since   3.0.0
          * @param   {Element} el
-         * @void
+         * @return  {void}
          *
          * Cache any DOM elements from the target context inwards
          */
@@ -4064,10 +3962,9 @@
         },
 
         /**
-         * _getSortString
          * @since   3.0.0
          * @param   {string}    attributeName
-         * @void
+         * @return  {void}
          */
 
         _getSortString: function(attributeName) {
@@ -4086,10 +3983,9 @@
         },
 
         /**
-         * _show
          * @since   3.0.0
          * @param   {string}   display
-         * @void
+         * @return  {void}
          */
 
         _show: function(display) {
@@ -4105,9 +4001,8 @@
         },
 
         /**
-         * _hide
          * @since   3.0.0
-         * @void
+         * @return  {void}
          */
 
         _hide: function() {
@@ -4121,10 +4016,9 @@
         },
 
         /**
-         * _move
          * @since   3.0.0
          * @param   {object}    options
-         * @void
+         * @return  {void}
          */
 
         _move: function(options) {
@@ -4149,11 +4043,10 @@
         },
 
         /**
-         * _applyTween
          * @since   3.0.0
          * @param   {object}    posData
          * @param   {number}    multiplier
-         * @void
+         * @return  {void}
          */
 
         _applyTween: function(posData, multiplier) {
@@ -4218,12 +4111,11 @@
         },
 
         /**
-         * _applyStylesIn
-         * @param   {object}    options
-         * @void
-         *
          * Applies starting styles to a target element
          * before any transition is applied
+         *
+         * @param   {object}    options
+         * @return  {void}
          */
 
         _applyStylesIn: function(options) {
@@ -4251,12 +4143,11 @@
         },
 
         /**
-         * _applyStylesOut
-         * @param   {object}    options
-         * @void
-         *
          * Applies a transition and the corresponding styles to
          * transition towards
+         *
+         * @param   {object}    options
+         * @return  {void}
          */
 
         _applyStylesOut: function(options) {
@@ -4390,15 +4281,14 @@
         },
 
         /**
-         * _writeTransitionRule
+         * Combines the name of a rule with duration and delay values
+         * to produce a valid transition value
+         *
          * @since   3.0.0
          * @param   {string}    rule
          * @param   {number}    staggerIndex
          * @param   {number}    [duration]
          * @return  {string}
-         *
-         * Combines the name of a rule with duration and delay values
-         * to produce a valid transition value
          */
 
         _writeTransitionRule: function(rule, staggerIndex, duration) {
@@ -4415,12 +4305,11 @@
         },
 
         /**
-         * _getDelay
+         * Allow for the manipulation of target indices via a user specified function
+         *
          * @since   2.0.0
          * @param   {number}    index
          * @return  {number}
-         *
-         * Allow for the manipulation of target indices via a user specified function
          */
 
         _getDelay: function(index) {
@@ -4437,10 +4326,9 @@
         },
 
         /**
-         * _applyTransition
          * @since   3.0.0
          * @param   {string[]}  rules
-         * @void
+         * @return  {void}
          */
 
         _applyTransition: function(rules) {
@@ -4455,9 +4343,9 @@
         },
 
         /**
-         * handleTransitionEnd
          * @since   3.0.0
-         * @void
+         * @param   {Event} e
+         * @return  {void}
          */
 
         handleTransitionEnd: function(e) {
@@ -4489,10 +4377,9 @@
         },
 
         /**
-         * _eventBus
          * @since   3.0.0
          * @param   {Event}     e
-         * @void
+         * @return  {void}
          */
 
         _eventBus: function(e) {
@@ -4510,9 +4397,8 @@
         },
 
         /**
-         * _unbindEvents
          * @since   3.0.0
-         * @void
+         * @return  {void}
          */
 
         _unbindEvents: function() {
@@ -4527,9 +4413,8 @@
         },
 
         /**
-         * _bindEvents
          * @since   3.0.0
-         * @void
+         * @return  {void}
          */
 
         _bindEvents: function() {
@@ -4539,6 +4424,11 @@
                     'transitionend';
 
             self._execAction('_bindEvents', 0, arguments);
+
+            /**
+             * @param {Event} e
+             * @return {*}
+             */
 
             self.handler = function(e) {
                 return self._eventBus(e);
@@ -4550,7 +4440,6 @@
         },
 
         /**
-         * _getPosData
          * @since   3.0.0
          * @return  {PosData}
          */
@@ -4582,8 +4471,7 @@
         },
 
         /**
-         * _cleanUp
-         * @void
+         * @return {void}
          */
 
         _cleanUp: function() {
@@ -4607,9 +4495,10 @@
     });
 
     /**
-     * mixitup.Collection
      * @since 3.0.0
      * @constructor
+     * @namespace
+     * @param       {mixitup.Mixer[]}   instances
      */
 
     mixitup.Collection = function(instances) {
@@ -4627,12 +4516,11 @@
         constructor: mixitup.Collection,
 
         /**
-         * mixitup
-         * @param   {string}    methodName
-         * @return  {Promise}
-         *
          * Provides a jQueryUI-like API for controlling one or more
          * MixItUp instances. Used as a shim for v2.0 compatibility.
+         *
+         * @param   {string}    methodName
+         * @return  {Promise}
          */
 
         mixitup: function(methodName) {
@@ -4661,7 +4549,6 @@
         },
 
         /**
-         * mixItUp
          * @alias mixitup.Collection.prototype.mixitup
          */
 
@@ -4671,7 +4558,6 @@
     };
 
     /**
-     * mixitup.Operation
      * @since       3.0.0
      * @constructor
      *
@@ -4733,14 +4619,14 @@
     });
 
     /**
-     * mixitup.State
-     * @since       3.0.0
-     * @constructor
-     *
-     * mixitup.State objects form part of the public API and are provided
+     * State objects form part of the public API and are provided
      * at the start and end of any operation. The most recent state
      * object is stored between operations and can also be retrieved
      * via the API.
+     *
+     * @since       3.0.0
+     * @constructor
+     * @namespace
      */
 
     mixitup.State = function() {
@@ -4774,7 +4660,6 @@
     });
 
     /**
-     * mixitup.StyleData
      * @since       3.0.0
      * @constructor
      */
@@ -4811,7 +4696,6 @@
     });
 
     /**
-     * mixitup.TransformData
      * @since       3.0.0
      * @constructor
      */
@@ -4833,11 +4717,9 @@
         _actions: {},
         _filters: {}
     });
-    /* global UserInstruction *
 
     /**
-     * mixitup.UserInstruction
-     * @since 3.0.0
+     * @since       3.0.0
      * @constructor
      */
 

@@ -936,7 +936,7 @@ h.extend(mixitup.Mixer.prototype, {
      * @since   3.0.0
      * @param   {object}        command
      * @param   {Operation}     operation
-     * @return  {Promise} ->    {State}
+     * @return  {Promise.<mixitup.State>}
      */
 
     _insert: function(command, operation) {
@@ -2463,10 +2463,10 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
-     * @since   3.0.0
-     * @param   {*[]}                       args
-     * @param   {mixitup.UserInstruction}   instruction
-     * @return  {Promise} ->                {State}
+     * @since       3.0.0
+     * @param       {*[]}                       args
+     * @param       {mixitup.UserInstruction}   instruction
+     * @return      {Promise.<mixitup.State>}
      */
 
     _deferMix: function(args, instruction) {
@@ -2512,8 +2512,8 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
-     * @since  3.0.0
-     * @return {Promise} -> {State}
+     * @since       3.0.0
+     * @return      {Promise.<mixitup.State>}
      */
 
     init: function() {
@@ -2526,8 +2526,8 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
-     * @since   3.0.0
-     * @return  {Promise} ->    {State}
+     * @since       3.0.0
+     * @return      {Promise.<mixitup.State>}
      */
 
     show: function() {
@@ -2538,8 +2538,8 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
-     * @since  3.0.0
-     * @return {Promise} -> {State}
+     * @since       3.0.0
+     * @return      {Promise.<mixitup.State>}
      */
 
     hide: function() {
@@ -2563,7 +2563,7 @@ h.extend(mixitup.Mixer.prototype, {
     /**
      * @public
      * @since       2.0.0
-     * @return      {Promise} ->    {State}
+     * @return      {Promise.<mixitup.State>}
      */
 
     filter: function() {
@@ -2580,7 +2580,7 @@ h.extend(mixitup.Mixer.prototype, {
     /**
      * @public
      * @since       2.0.0
-     * @return      {Promise} ->    {State}
+     * @return      {Promise.<mixitup.State>}
      */
 
     sort: function() {
@@ -2595,7 +2595,7 @@ h.extend(mixitup.Mixer.prototype, {
     /**
      * @public
      * @since       2.0.0
-     * @return      {Promise} ->    {State}
+     * @return      {Promise.<mixitup.State>}
      */
 
     changeLayout: function() {
@@ -2713,8 +2713,8 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
-     * @since   2.0.0
-     * @return  {Promise} ->    {State}
+     * @since       2.0.0
+     * @return      {Promise.<mixitup.State>}
      */
 
     multiMix: function() {
@@ -2807,7 +2807,7 @@ h.extend(mixitup.Mixer.prototype, {
     /**
      * @public
      * @since       2.0.0
-     * @return      {Promise} ->    {State}
+     * @return      {Promise.<mixitup.State>}
      */
 
     insert: function() {
@@ -2822,7 +2822,7 @@ h.extend(mixitup.Mixer.prototype, {
     /**
      * @public
      * @since       3.0.0
-     * @return      {Promise} ->    {State}
+     * @return      {Promise.<mixitup.State>}
      */
 
     insertBefore: function() {
@@ -2835,7 +2835,7 @@ h.extend(mixitup.Mixer.prototype, {
     /**
      * @public
      * @since       3.0.0
-     * @return      {Promise} ->    {State}
+     * @return      {Promise.<mixitup.State>}
      */
 
     insertAfter: function() {
@@ -2848,7 +2848,7 @@ h.extend(mixitup.Mixer.prototype, {
     /**
      * @public
      * @since       2.0.0
-     * @return      {Promise} ->    {State}
+     * @return      {Promise.<mixitup.State>}
      */
 
     prepend: function() {
@@ -2861,7 +2861,7 @@ h.extend(mixitup.Mixer.prototype, {
     /**
      * @public
      * @since       2.0.0
-     * @return      {Promise} ->    {State}
+     * @return      {Promise.<mixitup.State>}
      */
 
     append: function() {
@@ -2874,7 +2874,7 @@ h.extend(mixitup.Mixer.prototype, {
     /**
      * @public
      * @since       3.0.0
-     * @return      {Promise} ->    {State}
+     * @return      {Promise.<mixitup.State>}
      */
 
     remove: function() {
