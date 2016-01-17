@@ -1,14 +1,15 @@
 /* global mixitup:true, h */
 
 /**
- * mixitup
+ * The `mixitup` factory function is the main empty point for the v3 API,
+ * abstracting away the functionality of instantiating `Mixer` objects.
+ *
  * @since   3.0.0
- * @factory
- * @param   {(Element|Element[]|string)}  container
- * @param   {object}                      [configuration]
- * @param   {object}                      [foreignDoc]
- * @param   {boolean}                     [returnCollection]
- * @return  {mixitup.Mixer}
+ * @param   {(Element|Element[]|string)}        container
+ * @param   {object}                            [config]
+ * @param   {object}                            [foreignDoc]
+ * @param   {boolean}                           [returnCollection]
+ * @return  {mixitup.Mixer|mixitup.Collection}
  */
 
 mixitup = function(container, config, foreignDoc, returnCollection) {
@@ -97,17 +98,15 @@ mixitup = function(container, config, foreignDoc, returnCollection) {
 };
 
 /**
- * mixitup.prototype.all
- * @since   3.0.0
- * @factory
- * @param   {(Element|Element[]|string)}  container
- * @param   {object}                      [configuration]
- * @param   {object}                      [foreignDoc]
- * @return  {mixitup.Collection}
- *
  * Returns a mixitup.Collection of one or more instances
  * that can be operated on simultaneously, similar
- * to a jQuery mixitup.Collection
+ * to a jQuery mixitup.Collection.
+ *
+ * @since   3.0.0
+ * @param   {(Element|Element[]|string)}  container
+ * @param   {object}                      [config]
+ * @param   {object}                      [foreignDoc]
+ * @return  {mixitup.Collection}
  */
 
 mixitup.prototype.all = function(container, config, foreignDoc) {

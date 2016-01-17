@@ -1,8 +1,6 @@
-/* global mixitup */
-/* global h */
+/* global mixitup, h */
 
 /**
- * mixitup.Operation
  * @since       3.0.0
  * @constructor
  *

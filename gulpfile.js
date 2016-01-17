@@ -69,9 +69,8 @@ gulp.task('code-style', function() {
     {
         base: '/'
     })
-        .pipe(jscs({
-            configPath: '.jscsrc'
-        }));
+        .pipe(jscs())
+        .pipe(jscs.reporter());
 });
 
 gulp.task('build', ['lint', 'code-style'], function(done) {

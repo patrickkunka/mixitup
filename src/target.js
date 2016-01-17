@@ -1,9 +1,8 @@
-/* global mixitup */
-/* global h */
+/* global mixitup, h */
 
 /**
- * mixitup.Target
  * @constructor
+ * @namespace
  * @since       3.0.0
  */
 
@@ -42,11 +41,10 @@ h.extend(mixitup.Target.prototype, {
     _filters: {},
 
     /**
-     * _init
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {object}    mixer
-     * @void
+     * @return  {void}
      *
      * Initialize a newly instantiated mixitup.Target
      */
@@ -68,10 +66,9 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _cacheDom
      * @since   3.0.0
      * @param   {Element} el
-     * @void
+     * @return  {void}
      *
      * Cache any DOM elements from the target context inwards
      */
@@ -87,10 +84,9 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _getSortString
      * @since   3.0.0
      * @param   {string}    attributeName
-     * @void
+     * @return  {void}
      */
 
     _getSortString: function(attributeName) {
@@ -109,10 +105,9 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _show
      * @since   3.0.0
      * @param   {string}   display
-     * @void
+     * @return  {void}
      */
 
     _show: function(display) {
@@ -128,9 +123,8 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _hide
      * @since   3.0.0
-     * @void
+     * @return  {void}
      */
 
     _hide: function() {
@@ -144,10 +138,9 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _move
      * @since   3.0.0
      * @param   {object}    options
-     * @void
+     * @return  {void}
      */
 
     _move: function(options) {
@@ -172,11 +165,10 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _applyTween
      * @since   3.0.0
      * @param   {object}    posData
      * @param   {number}    multiplier
-     * @void
+     * @return  {void}
      */
 
     _applyTween: function(posData, multiplier) {
@@ -241,12 +233,11 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _applyStylesIn
-     * @param   {object}    options
-     * @void
-     *
      * Applies starting styles to a target element
      * before any transition is applied
+     *
+     * @param   {object}    options
+     * @return  {void}
      */
 
     _applyStylesIn: function(options) {
@@ -274,12 +265,11 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _applyStylesOut
-     * @param   {object}    options
-     * @void
-     *
      * Applies a transition and the corresponding styles to
      * transition towards
+     *
+     * @param   {object}    options
+     * @return  {void}
      */
 
     _applyStylesOut: function(options) {
@@ -413,15 +403,14 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _writeTransitionRule
+     * Combines the name of a rule with duration and delay values
+     * to produce a valid transition value
+     *
      * @since   3.0.0
      * @param   {string}    rule
      * @param   {number}    staggerIndex
      * @param   {number}    [duration]
      * @return  {string}
-     *
-     * Combines the name of a rule with duration and delay values
-     * to produce a valid transition value
      */
 
     _writeTransitionRule: function(rule, staggerIndex, duration) {
@@ -438,12 +427,11 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _getDelay
+     * Allow for the manipulation of target indices via a user specified function
+     *
      * @since   2.0.0
      * @param   {number}    index
      * @return  {number}
-     *
-     * Allow for the manipulation of target indices via a user specified function
      */
 
     _getDelay: function(index) {
@@ -460,10 +448,9 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _applyTransition
      * @since   3.0.0
      * @param   {string[]}  rules
-     * @void
+     * @return  {void}
      */
 
     _applyTransition: function(rules) {
@@ -478,9 +465,9 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * handleTransitionEnd
      * @since   3.0.0
-     * @void
+     * @param   {Event} e
+     * @return  {void}
      */
 
     handleTransitionEnd: function(e) {
@@ -512,10 +499,9 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _eventBus
      * @since   3.0.0
      * @param   {Event}     e
-     * @void
+     * @return  {void}
      */
 
     _eventBus: function(e) {
@@ -533,9 +519,8 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _unbindEvents
      * @since   3.0.0
-     * @void
+     * @return  {void}
      */
 
     _unbindEvents: function() {
@@ -550,9 +535,8 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _bindEvents
      * @since   3.0.0
-     * @void
+     * @return  {void}
      */
 
     _bindEvents: function() {
@@ -562,6 +546,11 @@ h.extend(mixitup.Target.prototype, {
                 'transitionend';
 
         self._execAction('_bindEvents', 0, arguments);
+
+        /**
+         * @param {Event} e
+         * @return {*}
+         */
 
         self.handler = function(e) {
             return self._eventBus(e);
@@ -573,7 +562,6 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _getPosData
      * @since   3.0.0
      * @return  {PosData}
      */
@@ -605,8 +593,7 @@ h.extend(mixitup.Target.prototype, {
     },
 
     /**
-     * _cleanUp
-     * @void
+     * @return {void}
      */
 
     _cleanUp: function() {

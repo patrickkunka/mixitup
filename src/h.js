@@ -3,7 +3,6 @@
 h = {
 
     /**
-     * hasClass
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    cls
@@ -15,11 +14,10 @@ h = {
     },
 
     /**
-     * addClass
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    cls
-     * @void
+     * @return  {void}
      */
 
     addClass: function(el, cls) {
@@ -27,11 +25,10 @@ h = {
     },
 
     /**
-     * removeClass
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    cls
-     * @void
+     * @return  {void}
      */
 
     removeClass: function(el, cls) {
@@ -43,11 +40,10 @@ h = {
     },
 
     /**
-     * extend
      * @since   3.0.0
      * @param   {object}    destination
      * @param   {object}    source
-     * @void
+     * @return  {void}
      */
 
     extend: function(destination, source) {
@@ -69,13 +65,12 @@ h = {
     },
 
     /**
-     * on
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    type
      * @param   {function}  fn
      * @param   {boolean}   useCapture
-     * @void
+     * @return  {void}
      */
 
     on: function(el, type, fn, useCapture) {
@@ -83,6 +78,8 @@ h = {
 
         if (el.attachEvent) {
             el['e' + type + fn] = fn;
+
+            /** @return {void} */
 
             el[type + fn] = function() {
                 el['e' + type + fn](window.event);
@@ -95,12 +92,11 @@ h = {
     },
 
     /**
-     * off
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    type
      * @param   {function}  fn
-     * @void
+     * @return  {void}
      */
 
     off: function(el, type, fn) {
@@ -115,12 +111,11 @@ h = {
     },
 
     /**
-     * triggerCustom
-     * @param   {Element}   element
+     * @param   {Element}   el
      * @param   {string}    eventName
      * @param   {object}    data
      * @param   {Document}  [doc]
-     * @void
+     * @return  {void}
      */
 
     triggerCustom: function(el, eventName, data, doc) {
@@ -141,7 +136,6 @@ h = {
     },
 
     /**
-     * index
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    selector
@@ -161,20 +155,18 @@ h = {
     },
 
     /**
-     * camelCase
      * @since   2.0.0
-     * @param   {string}
+     * @param   {string} str
      * @return  {string}
      */
 
-    camelCase: function(string) {
-        return string.replace(/-([a-z])/g, function(g) {
+    camelCase: function(str) {
+        return str.replace(/-([a-z])/g, function(g) {
             return g[1].toUpperCase();
         });
     },
 
     /**
-     * isElement
      * @since   2.1.3
      * @param   {Element}   el
      * @param   {Document}  [doc]
@@ -205,7 +197,6 @@ h = {
     },
 
     /**
-     * createElement
      * @since   3.0.0
      * @param   {string}            htmlString
      * @param   {Document}          [doc]
@@ -231,10 +222,9 @@ h = {
     },
 
     /**
-     * deleteElement
      * @since   3.0.0
      * @param   {Element}   el
-     * @void
+     * @return  {void}
      */
 
     deleteElement: function(el) {
@@ -244,7 +234,6 @@ h = {
     },
 
     /**
-     * isEqualArray
      * @since   3.0.0
      * @param   {*[]}       a
      * @param   {*[]}       b
@@ -264,7 +253,6 @@ h = {
     },
 
     /**
-     * arrayShuffle
      * @since   2.0.0
      * @param   {*[]}   oldArray
      * @return  {*[]}
@@ -289,7 +277,6 @@ h = {
     },
 
     /**
-     * debounce
      * @since   3.0.0
      * @param   {function}  func
      * @param   {Number}    wait
@@ -305,6 +292,8 @@ h = {
                 args     = arguments,
                 callNow  = immediate && !timeout,
                 later    = null;
+
+            /** @return void */
 
             later = function() {
                 timeout  = null;
@@ -323,7 +312,6 @@ h = {
     },
 
     /**
-     * position
      * @since   3.0.0
      * @param   {Element}   element
      * @return  {object}
@@ -355,10 +343,9 @@ h = {
     },
 
     /**
-     * getHypotenuse
      * @since   3.0.0
      * @param   {object}    node1
-     * @return  {object}    node2
+     * @param  {object}    node2
      * @return  {Number}
      */
 
@@ -373,14 +360,13 @@ h = {
     },
 
     /**
-     * closestParent
      * @since   3.0.0
-     * @param   {object}    el
-     * @param   {string}    selector
-     * @param   {boolean}   [includeSelf]
-     * @param   {Number}    [range]
-     * @param   {Document}  [doc]
-     * @return  {Element}
+     * @param   {object}        el
+     * @param   {string}        selector
+     * @param   {boolean}       [includeSelf]
+     * @param   {Number}        [range]
+     * @param   {Document}      [doc]
+     * @return  {Element|null}
      */
 
     closestParent: function(el, selector, includeSelf, range, doc) {
@@ -412,7 +398,6 @@ h = {
     },
 
     /**
-     * children
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    selector
@@ -444,11 +429,10 @@ h = {
     },
 
     /**
-     * forEach
      * @since   3.0.0
      * @param   {*[]}       items
      * @param   {function}  callback
-     * @void
+     * @return  {void}
      */
 
     forEach: function(items, callback) {
@@ -461,9 +445,8 @@ h = {
     },
 
     /**
-     * clean
      * @since   3.0.0
-     * @param   {*[]}   originalArray
+     * @param   {*[]} originalArray
      * @return  {*[]}
      */
 
@@ -481,10 +464,9 @@ h = {
     },
 
     /**
-     * getPromise
      * @since  3.0.0
-     * @return {object}     libraries
-     * @return {object}
+     * @param  {object}         libraries
+     * @return {object|null}
      */
 
     getPromise: function(libraries) {
@@ -517,7 +499,6 @@ h = {
     },
 
     /**
-     * canReportErrors
      * @since   3.0.0
      * @param   {object}  [config]
      * @return  {boolean}
@@ -532,7 +513,6 @@ h = {
     },
 
     /**
-     * getPrefix
      * @since   2.0.0
      * @param   {Element}   el
      * @param   {string}    property
@@ -556,7 +536,6 @@ h = {
     },
 
     /**
-     * randomHexKey
      * @since   3.0.0
      * @return  {string}
      */
@@ -571,7 +550,6 @@ h = {
     },
 
     /**
-     * getDocumentState
      * @since   3.0.0
      * @param   {Document}  [doc]
      * @return  {object}
@@ -588,7 +566,6 @@ h = {
     },
 
     /**
-     * bind
      * @since   3.0.0
      * @param   {object}    obj
      * @param   {function}  fn
@@ -602,7 +579,6 @@ h = {
     },
 
     /**
-     * isVisible
      * @since   3.0.0
      * @param   {Element}   el
      * @return  {boolean}
@@ -630,7 +606,6 @@ h = {
     },
 
     /**
-     * seal
      * @since   3.0.0
      * @param   {object}    obj
      */
@@ -642,7 +617,6 @@ h = {
     },
 
     /**
-     * compareVersions
      * @since   3.0.0
      * @param   {string}    control
      * @param   {string}    specimen

@@ -1,10 +1,10 @@
-/* global mixitup */
-/* global h */
+/* global mixitup, h */
 
 /**
- * mixitup.Collection
  * @since 3.0.0
  * @constructor
+ * @namespace
+ * @param       {mixitup.Mixer[]}   instances
  */
 
 mixitup.Collection = function(instances) {
@@ -22,12 +22,11 @@ mixitup.Collection.prototype = {
     constructor: mixitup.Collection,
 
     /**
-     * mixitup
-     * @param   {string}    methodName
-     * @return  {Promise}
-     *
      * Provides a jQueryUI-like API for controlling one or more
      * MixItUp instances. Used as a shim for v2.0 compatibility.
+     *
+     * @param   {string}    methodName
+     * @return  {Promise}
      */
 
     mixitup: function(methodName) {
@@ -56,7 +55,6 @@ mixitup.Collection.prototype = {
     },
 
     /**
-     * mixItUp
      * @alias mixitup.Collection.prototype.mixitup
      */
 

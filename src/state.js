@@ -1,15 +1,14 @@
-/* global mixitup */
-/* global h */
+/* global mixitup, h */
 
 /**
- * mixitup.State
- * @since       3.0.0
- * @constructor
- *
- * mixitup.State objects form part of the public API and are provided
+ * State objects form part of the public API and are provided
  * at the start and end of any operation. The most recent state
  * object is stored between operations and can also be retrieved
  * via the API.
+ *
+ * @since       3.0.0
+ * @constructor
+ * @namespace
  */
 
 mixitup.State = function() {

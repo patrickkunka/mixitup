@@ -1,22 +1,21 @@
-/* global mixitup */
-/* global h */
+/* global mixitup, h */
 
 mixitup.basePrototype = {
 
     /**
-     * extend
+     * Shallow extend the base prototype with new methods
+     *
      * @public
      * @since   2.1.0
-     * @param   {object}
-     * @void
-     *
-     * Shallow extend the base prototype with new methods
+     * @param   {object} extension
+     * @return  {void}
      */
-
-    // TODO: make the extend helper method more robust with deep/shallow flag, and call here as shallow
 
     extend: function(extension) {
         var key = '';
+
+        // TODO: make the h extend helper method more robust with deep/shallow flag,
+        // and call here as shallow
 
         for (key in extension) {
             if (extension[key]) {
@@ -26,16 +25,15 @@ mixitup.basePrototype = {
     },
 
     /**
-     * addAction
+     * Register a named action hook on the prototype
+     *
      * @public
      * @since   2.1.0
-     * @param   {string}    hook name
+     * @param   {string}    hook
      * @param   {string}    name
      * @param   {function}  func
      * @param   {number}    priority
-     * @void
-     *
-     * Register a named action hook on the prototype
+     * @return  {void}
      */
 
     addAction: function(hook, name, func, priority) {
@@ -43,15 +41,14 @@ mixitup.basePrototype = {
     },
 
     /**
-     * addFilter
+     * Register a named action hook on the prototype
+     *
      * @public
      * @since   2.1.0
      * @param   {string}    hook
      * @param   {string}    name
      * @param   {function}  func
-     * @void
-     *
-     * Register a named action hook on the prototype
+     * @return  {void}
      */
 
     addFilter: function(hook, name, func) {
@@ -59,16 +56,16 @@ mixitup.basePrototype = {
     },
 
     /**
-     * _addHook
+     * Add a hook to the object's prototype
+     *
      * @private
      * @since   2.1.0
-     * @param   {string}    type of hook
-     * @param   {string}    hook name
-     * @param   {function}  function to execute
+     * @param   {string}    type
+     * @param   {string}    hook
+     * @param   {string}    name
+     * @param   {function}  func
      * @param   {number}    priority
-     * @void
-     *
-     * Add a hook to the object's prototype
+     * @return  {void}
      */
 
     _addHook: function(type, hook, name, func, priority) {
@@ -85,13 +82,12 @@ mixitup.basePrototype = {
     },
 
     /**
-     * _execAction
      * @private
      * @since   2.0.0
      * @param   {string}    methodName
      * @param   {boolean}   isPost
-     * @param   {*[]} args
-     * @void
+     * @param   {*[]}       args
+     * @return  {void}
      */
 
     _execAction: function(methodName, isPost, args) {
@@ -107,14 +103,12 @@ mixitup.basePrototype = {
     },
 
     /**
-     * _execFilter
      * @private
      * @since   2.0.0
      * @param   {string}    methodName
      * @param   {*}         value
      * @param   {*[]}       args
      * @return  {*}
-     * @void
      */
 
     _execFilter: function(methodName, value, args) {

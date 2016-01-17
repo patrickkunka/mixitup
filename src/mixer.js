@@ -1,10 +1,9 @@
-/* global mixitup */
-/* global h */
+/* global mixitup, h */
 
 /**
- * mixitup.Mixer
  * @since       3.0.0
  * @constructor
+ * @namespace
  */
 
 mixitup.Mixer = function() {
@@ -52,7 +51,6 @@ mixitup.Mixer = function() {
         controls: {
             enable: true,
             live: false,
-            toggleFilterButtons: false,
             toggleLogic: 'or',
             toggleDefault: 'all',
             activeClass: 'active'
@@ -211,11 +209,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _featureDetect
+     * Performs all neccessary feature detection on evalulation
+     *
      * @private
      * @since 2.0.0
-     *
-     * Performs all neccessary feature detection on evalulation
      */
 
     _featureDetect: function() {
@@ -262,6 +259,9 @@ h.extend(mixitup.Mixer.prototype, {
 
         if (typeof testEl.nextElementSibling === 'undefined') {
             Object.defineProperty(Element.prototype, 'nextElementSibling', {
+
+                /** @return {Element|null} */
+
                 get: function() {
                     var el = this.nextSibling;
 
@@ -302,12 +302,11 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _init
      * @private
      * @since   2.0.0
      * @param   {Element}   el
      * @param   {object}    config
-     * @void
+     * @return  {void}
      */
 
     _init: function(el, config) {
@@ -373,12 +372,12 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _cacheDom
+     * Cache references of all neccessary DOM elements
+     *
      * @private
      * @since   3.0.0
-     * @void
-     *
-     * Cache references of all neccessary DOM elements
+     * @param   {Element} el
+     * @return  {void}
      */
 
     _cacheDom: function(el) {
@@ -411,13 +410,12 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _indexTargets
-     * @private
-     * @since   3.0.0
-     * @void
-     *
      * Index matching children of the container, and
      * instantiate mixitup.Target instances for each one
+     *
+     * @private
+     * @since   3.0.0
+     * @return  {void}
      */
 
     _indexTargets: function() {
@@ -458,10 +456,9 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _bindEvents
      * @private
      * @since   3.0.0
-     * @void
+     * @return  {void}
      */
 
     _bindEvents: function() {
@@ -475,6 +472,11 @@ h.extend(mixitup.Mixer.prototype, {
             i               = -1;
 
         self._execAction('_bindEvents', 0);
+
+        /**
+         * @param   {Event} e
+         * @return  {*}
+         */
 
         self.handler = function(e) {
             return self._eventBus(e);
@@ -512,10 +514,9 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _unbindEvents
      * @private
      * @since   3.0.0
-     * @void
+     * @return  {void}
      */
 
     _unbindEvents: function() {
@@ -535,7 +536,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _eventBus
      * @private
      * @param   {object}            e
      * @return  {(Boolean|void)}
@@ -551,12 +551,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * handleClick
      * @private
      * @since   3.0.0
-     * @param   {object}    button
-     * @param   {string}    type
-     * @void
+     * @param   {Event}  e
+     * @return  {void}
      *
      * Determines the type of operation needed and the
      * appropriate parameters when a button is clicked
@@ -772,13 +770,12 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _trackClick
      * @private
      * @since   3.0.0
      * @param   {Element}   button
      * @param   {string}    method
      * @param   {boolean}   isTogglingOff
-     * @void
+     * @return  {void}
      */
 
     _trackClick: function(button, method, isTogglingOff) {
@@ -809,12 +806,12 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _buildToggleArray
+     * Combines the selectors of toggled buttons into an array
+     *
      * @private
      * @since   2.0.0
-     * @void
+     * @return  {void}
      *
-     * Combines the selectors of toggled buttons into an array
      */
 
     _buildToggleArray: function() {
@@ -845,14 +842,13 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _updateControls
+     * Updates buttons to their active/deactive state based
+     * on the command or current state of the instance
+     *
      * @private
      * @since   2.0.0
      * @param   {object} command
-     * @void
-     *
-     * Updates buttons to their active/deactive state based
-     * on the command or current state of the instance
+     * @return  {void}
      */
 
     _updateControls: function(command) {
@@ -936,12 +932,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _insert
      * @private
      * @since   3.0.0
      * @param   {object}        command
      * @param   {Operation}     operation
-     * @param   {*[]}           arguments
      * @return  {Promise} ->    {State}
      */
 
@@ -986,7 +980,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _getNextSibling
      * @private
      * @since   3.0.0
      * @param   {Number}      [index]
@@ -1015,11 +1008,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _filter
      * @private
-     * @since 2.0.0
+     * @since   2.0.0
      * @param   {Operation}     operation
-     * @void
+     * @return  {void}
      */
 
     _filter: function(operation) {
@@ -1096,14 +1088,13 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _evaluateHideShow
      * @private
      * @since   3.0.0
      * @param   {boolean}   condition
      * @param   {Element}   target
      * @param   {boolean}   isRemoving
      * @param   {Operation} operation
-     * @void
+     * @return  {void}
      */
 
     _evaluateHideShow: function(condition, target, isRemoving, operation) {
@@ -1130,11 +1121,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _sort
      * @private
-     * @since 2.0.0
+     * @since   2.0.0
      * @param   {Operation}     operation
-     * @void
+     * @return  {void}
      */
 
     _sort: function(operation) {
@@ -1177,7 +1167,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _compare
      * @private
      * @since   2.0.0
      * @param   {String|Number}     a
@@ -1219,14 +1208,14 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _getAttributeValue
+     * Reads the values of sort attributes
+     *
      * @private
      * @since   3.0.0
      * @param   {Element}           target
+     * @param   {number}            depth
      * @param   {ParsedSort}        [sort]
      * @return  {(String|Number)}
-     *
-     * Reads the values of sort attributes
      */
 
     _getAttributeValue: function(target, depth, sort) {
@@ -1257,16 +1246,15 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _printSort
+     * Inserts elements into the DOM in the appropriate
+     * order using a document fragment for minimal
+     * DOM thrashing
+     *
      * @private
      * @since   2.0.0
      * @param   {boolean}   isResetting
      * @param   {Operation} operation
-     * @void
-     *
-     * Inserts elements into the DOM in the appropriate
-     * order using a document fragment for minimal
-     * DOM thrashing
+     * @return  {void}
      */
 
     _printSort: function(isResetting, operation) {
@@ -1316,14 +1304,13 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _parseSort
+     * Parse user-defined sort strings into useable values
+     * or "rules"
+     *
      * @private
      * @since   2.0.0
      * @param   {string}    sortString
      * @return  {String[]}
-     *
-     * Parse user-defined sort strings into useable values
-     * or "rules"
      */
 
     _parseSort: function(sortString) {
@@ -1350,13 +1337,12 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _parseEffects
-     * @private
-     * @since   2.0.0
-     * @void
-     *
      * Parse the user-defined effects string into values
      * and units, and create transform strings
+     *
+     * @private
+     * @since   2.0.0
+     * @return  {void}
      */
 
     _parseEffects: function() {
@@ -1385,7 +1371,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _parseEffect
      * @private
      * @since   2.0.0
      * @param   {string}    effectName
@@ -1506,7 +1491,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _buildState
      * @private
      * @since   2.0.0
      * @param   {Operation}     operation
@@ -1555,12 +1539,11 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _goMix
      * @private
      * @since   2.0.0
      * @param   {boolean}   shouldAnimate
      * @param   {Operation} operation
-     * @void
+     * @return  {void}
      */
 
     _goMix: function(shouldAnimate, operation) {
@@ -1660,11 +1643,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _getStartMixData
      * @private
      * @since   2.0.0
      * @param   {Operation}     operation
-     * @void
+     * @return  {void}
      */
 
     _getStartMixData: function(operation) {
@@ -1716,11 +1698,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _setInter
      * @private
      * @since   2.0.0
      * @param   {Operation}     operation
-     * @void
+     * @return  {void}
      */
 
     _setInter: function(operation) {
@@ -1743,11 +1724,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _getInterMixData
      * @private
      * @since   2.0.0
      * @param   {Operation}     operation
-     * @void
+     * @return  {void}
      */
 
     _getInterMixData: function(operation) {
@@ -1781,11 +1761,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _setFinal
      * @private
      * @since   2.0.0
      * @param   {Operation}     operation
-     * @void
+     * @return  {void}
      */
 
     _setFinal: function(operation) {
@@ -1805,11 +1784,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _getFinalMixData
      * @private
      * @since   2.0.0
      * @param   {Operation}     operation
-     * @void
+     * @return  {void}
      */
 
     _getFinalMixData: function(operation) {
@@ -1870,10 +1848,9 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     *  _getTweenData
      * @private
      * @since    3.0.0
-     * @param   {Operation}     operation
+     * @param    {Operation}     operation
      */
 
     _getTweenData: function(operation) {
@@ -2027,11 +2004,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _moveTargets
      * @private
      * @since   3.0.0
      * @param   {Operation}     operation
-     * @void
+     * @return  {void}
      */
 
     _moveTargets: function(operation) {
@@ -2115,7 +2091,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * hasEffect
      * @private
      * @return  {boolean}
      */
@@ -2150,16 +2125,17 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _willTransition
+     * Determines if a target element will transition in
+     * some fasion and therefore requires binding of
+     * transitionEnd
+     *
      * @private
+     * @since   3.0.0
+     * @param   {string}        hideOrShow
      * @param   {boolean}       hasEffect
      * @param   {StyleData}     posIn
      * @param   {StyleData}     posOut
      * @return  {boolean}
-     *
-     * Determines if a target element will transition in
-     * some fasion and therefore requires binding of
-     * transitionEnd
      */
 
     _willTransition: function(hideOrShow, hasEffect, posIn, posOut) {
@@ -2195,11 +2171,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _checkProgress
      * @private
      * @since   2.0.0
      * @param   {Operation}     operation
-     * @void
+     * @return  {void}
      */
 
     _checkProgress: function(operation) {
@@ -2213,11 +2188,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _cleanUp
      * @private
      * @since   2.0.0
      * @param   {Operation}     operation
-     * @void
+     * @return  {void}
      */
 
     _cleanUp: function(operation) {
@@ -2321,7 +2295,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _parseMultiMixArgs
      * @private
      * @since   2.0.0
      * @param   {*[]}       args
@@ -2354,7 +2327,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _parseInsertArgs
      * @private
      * @since   2.0.0
      * @param   {*[]}       args
@@ -2425,7 +2397,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _parseRemoveArgs
      * @private
      * @since   3.0.0
      * @param   {*[]}       args
@@ -2491,12 +2462,11 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * _deferMix
      * @private
      * @since   3.0.0
-     * @param   {*[]}           args
-     * @param   {object}        parsedArgs
-     * @return  {Promise} ->    {State}
+     * @param   {*[]}                       args
+     * @param   {mixitup.UserInstruction}   instruction
+     * @return  {Promise} ->                {State}
      */
 
     _deferMix: function(args, instruction) {
@@ -2541,9 +2511,8 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * init
      * @public
-     * @since 3.0.0
+     * @since  3.0.0
      * @return {Promise} -> {State}
      */
 
@@ -2556,7 +2525,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * show
      * @public
      * @since   3.0.0
      * @return  {Promise} ->    {State}
@@ -2569,9 +2537,8 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * hide
      * @public
-     * @since 3.0.0
+     * @since  3.0.0
      * @return {Promise} -> {State}
      */
 
@@ -2582,7 +2549,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * isMixing
      * @public
      * @since   2.0.0
      * @return  {boolean}
@@ -2595,11 +2561,8 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * filter
      * @public
      * @since       2.0.0
-     * @shorthand   self.multiMix
-     * @param       {*[]}           arguments
      * @return      {Promise} ->    {State}
      */
 
@@ -2615,11 +2578,8 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * sort
      * @public
      * @since       2.0.0
-     * @shorthand   self.multiMix
-     * @param       {*[]}           arguments
      * @return      {Promise} ->    {State}
      */
 
@@ -2633,24 +2593,20 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * changeLayout
      * @public
      * @since       2.0.0
-     * @shorthand   self.multiMix
-     * @param       {*[]} arguments
      * @return      {Promise} ->    {State}
      */
 
     changeLayout: function() {
-        // TODO: parse args, and map to multiMix
+        // TODO: parse arguments, and map to multiMix
     },
 
     /**
-     * getOperation
      * @public
      * @since   3.0.0
-     * @param   {Command}   command
-     * @return  {Operation}
+     * @param   {Command}           command
+     * @return  {Operation|null}
      */
 
     getOperation: function(command) {
@@ -2756,10 +2712,8 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * multiMix
      * @public
      * @since   2.0.0
-     * @param   {*[]}           arguments
      * @return  {Promise} ->    {State}
      */
 
@@ -2810,12 +2764,11 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * tween
      * @public
      * @since   3.0.0
      * @param   {Operation}     operation
      * @param   {Float}         multiplier
-     * @void
+     * @return  {void}
      */
 
     tween: function(operation, multiplier) {
@@ -2852,11 +2805,8 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * insert
      * @public
      * @since       2.0.0
-     * @param       {*[]} arguments
-     * @shorthand   multiMix
      * @return      {Promise} ->    {State}
      */
 
@@ -2870,11 +2820,8 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * insertBefore
      * @public
      * @since       3.0.0
-     * @shorthand   insert
-     * @param       {*[]}           arguments
      * @return      {Promise} ->    {State}
      */
 
@@ -2886,11 +2833,8 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * insertAfter
      * @public
      * @since       3.0.0
-     * @shorthand   insert
-     * @param       {*[]}           arguments
      * @return      {Promise} ->    {State}
      */
 
@@ -2902,11 +2846,8 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * prepend
      * @public
      * @since       2.0.0
-     * @shorthand   insert
-     * @param       {*[]}           arguments
      * @return      {Promise} ->    {State}
      */
 
@@ -2918,11 +2859,8 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * append
      * @public
      * @since       2.0.0
-     * @shorthand   insert
-     * @param       {*[]}           arguments
      * @return      {Promise} ->    {State}
      */
 
@@ -2934,10 +2872,8 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * remove
+     * @public
      * @since       3.0.0
-     * @shorthand   multiMix
-     * @param       {*[]}           arguments
      * @return      {Promise} ->    {State}
      */
 
@@ -2951,10 +2887,9 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * getOption
      * @public
      * @since       2.0.0
-     * @param       {string}    string
+     * @param       {string}    stringKey
      * @return      {*}
      */
 
@@ -2963,7 +2898,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * setOptions
      * @public
      * @since       2.0.0
      * @param       {object}    config
@@ -2980,7 +2914,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * getState
      * @public
      * @since       2.0.0
      * @return      {State}
@@ -2993,7 +2926,6 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * forceRefresh
      * @public
      * @since 2.1.2
      */
@@ -3005,11 +2937,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * destroy
      * @public
      * @since   2.0.0
      * @param   {boolean}   hideAll
-     * @void
+     * @return  {void}
      */
 
     destroy: function(hideAll) {

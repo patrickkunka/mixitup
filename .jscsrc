@@ -81,6 +81,16 @@
     "disallowMultipleLineBreaks": true,
     "disallowOperatorBeforeLineBreak": ["."],
     "requireSpaceBeforeObjectValues": true,
-    "validateIndentation": 4,
-    "validateQuoteMarks": "'"
+    "validateQuoteMarks": "'",
+    "jsDoc": {
+        "checkAnnotations": true,
+        "requireParamTypes": true,
+        "checkParamNames": true,
+        "checkParamExistence": true,
+        "checkRedundantParams": true,
+        "checkReturnTypes": true,
+        "enforceExistence": true,
+        "requireNewlineAfterDescription": true,
+        // "requireParamDescription": true
+    }
 }
