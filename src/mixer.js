@@ -1,9 +1,11 @@
 /* global mixitup, h */
 
 /**
- * @since       3.0.0
  * @constructor
  * @namespace
+ * @memberof    mixitup
+ * @public
+ * @since       3.0.0
  */
 
 mixitup.Mixer = function() {
@@ -136,7 +138,9 @@ mixitup.Mixer = function() {
 
 mixitup.Mixer.prototype = Object.create(mixitup.basePrototype);
 
-h.extend(mixitup.Mixer.prototype, {
+h.extend(mixitup.Mixer.prototype,
+/** @lends mixitup.Mixer */
+{
     constructor: mixitup.Mixer,
 
     _actions: {},
@@ -190,11 +194,11 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     _is: {},
-    has: {},
+    _has: {},
 
     _instances: {},
 
-    handled: {
+    _handled: {
         _filterToggle: {},
         _multiMix: {},
         _filter: {},
@@ -209,9 +213,11 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * Performs all neccessary feature detection on evalulation
+     * Performs all neccessary feature detection on the first evalulation of
+     * the library.
      *
      * @private
+     * @static
      * @since 2.0.0
      */
 
@@ -228,9 +234,9 @@ h.extend(mixitup.Mixer.prototype, {
 
         self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a seperate test
 
-        mixitup.Mixer.prototype.has._promises      = typeof Promise === 'function';
-        mixitup.Mixer.prototype.has._transitions   = transitionPrefix !== 'unsupported';
-        mixitup.Mixer.prototype._is._crapIe         = window.atob ? false : true;
+        mixitup.Mixer.prototype._has._promises      = typeof Promise === 'function';
+        mixitup.Mixer.prototype._has._transitions   = transitionPrefix !== 'unsupported';
+        mixitup.Mixer.prototype._is._crapIe        = window.atob ? false : true;
 
         mixitup.Mixer.prototype._transitionProp =
             transitionPrefix ? transitionPrefix + 'Transition' : 'transition';
@@ -259,9 +265,6 @@ h.extend(mixitup.Mixer.prototype, {
 
         if (typeof testEl.nextElementSibling === 'undefined') {
             Object.defineProperty(Element.prototype, 'nextElementSibling', {
-
-                /** @return {Element|null} */
-
                 get: function() {
                     var el = this.nextSibling;
 
@@ -303,6 +306,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {Element}   el
      * @param   {object}    config
@@ -322,7 +326,7 @@ h.extend(mixitup.Mixer.prototype, {
 
         self.layout.containerClass && h.addClass(el, self.layout.containerClass);
 
-        self.animation.enable = self.animation.enable && mixitup.Mixer.prototype.has._transitions;
+        self.animation.enable = self.animation.enable && mixitup.Mixer.prototype._has._transitions;
 
         self._indexTargets();
 
@@ -372,9 +376,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * Cache references of all neccessary DOM elements
+     * Caches references of DOM elements neccessary for the mixer's functionality.
      *
      * @private
+     * @instance
      * @since   3.0.0
      * @param   {Element} el
      * @return  {void}
@@ -410,10 +415,11 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * Index matching children of the container, and
-     * instantiate mixitup.Target instances for each one
+     * Indexes all child elements of the mixer matching the `selectors.target`
+     * selector, instantiating a mixitup.Target for each one.
      *
      * @private
+     * @instance
      * @since   3.0.0
      * @return  {void}
      */
@@ -457,6 +463,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   3.0.0
      * @return  {void}
      */
@@ -472,11 +479,6 @@ h.extend(mixitup.Mixer.prototype, {
             i               = -1;
 
         self._execAction('_bindEvents', 0);
-
-        /**
-         * @param   {Event} e
-         * @return  {*}
-         */
 
         self.handler = function(e) {
             return self._eventBus(e);
@@ -515,6 +517,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   3.0.0
      * @return  {void}
      */
@@ -537,6 +540,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @param   {object}            e
      * @return  {(Boolean|void)}
      */
@@ -552,6 +556,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   3.0.0
      * @param   {Event}  e
      * @return  {void}
@@ -771,6 +776,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   3.0.0
      * @param   {Element}   button
      * @param   {string}    method
@@ -790,28 +796,28 @@ h.extend(mixitup.Mixer.prototype, {
 
         method = '_' + method;
 
-        proto.handled[method][selector] =
-            (typeof proto.handled[method][selector] === 'undefined') ?
-                1 : proto.handled[method][selector] + 1;
+        proto._handled[method][selector] =
+            (typeof proto._handled[method][selector] === 'undefined') ?
+                1 : proto._handled[method][selector] + 1;
 
-        if (proto.handled[method][selector] === proto._bound[method][selector]) {
+        if (proto._handled[method][selector] === proto._bound[method][selector]) {
             if (isTogglingOff) {
                 h.removeClass(button, self.controls.activeClass);
             } else {
                 h.addClass(button, self.controls.activeClass);
             }
 
-            delete proto.handled[method][selector];
+            delete proto._handled[method][selector];
         }
     },
 
     /**
-     * Combines the selectors of toggled buttons into an array
+     * Combines the selectors of active toggle controls into an array.
      *
      * @private
+     * @instance
      * @since   2.0.0
      * @return  {void}
-     *
      */
 
     _buildToggleArray: function() {
@@ -842,10 +848,11 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * Updates buttons to their active/deactive state based
-     * on the command or current state of the instance
+     * Updates controls to their active/inactive state based on the command or
+     * current state of the mixer.
      *
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {object} command
      * @return  {void}
@@ -933,6 +940,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   3.0.0
      * @param   {object}        command
      * @param   {Operation}     operation
@@ -981,6 +989,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   3.0.0
      * @param   {Number}      [index]
      * @param   {Element}     [sibling]
@@ -1009,6 +1018,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {Operation}     operation
      * @return  {void}
@@ -1089,6 +1099,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   3.0.0
      * @param   {boolean}   condition
      * @param   {Element}   target
@@ -1122,6 +1133,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {Operation}     operation
      * @return  {void}
@@ -1168,6 +1180,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {String|Number}     a
      * @param   {String|Number}     b
@@ -1208,9 +1221,11 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * Reads the values of sort attributes
+     * Reads the values of any data attributes present the provided target element
+     * which match the current sort command.
      *
      * @private
+     * @instance
      * @since   3.0.0
      * @param   {Element}           target
      * @param   {number}            depth
@@ -1251,6 +1266,7 @@ h.extend(mixitup.Mixer.prototype, {
      * DOM thrashing
      *
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {boolean}   isResetting
      * @param   {Operation} operation
@@ -1304,10 +1320,10 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * Parse user-defined sort strings into useable values
-     * or "rules"
+     * Parses user-defined sort commands (i.e. `default:asc`) into useable "rules".
      *
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {string}    sortString
      * @return  {String[]}
@@ -1337,10 +1353,11 @@ h.extend(mixitup.Mixer.prototype, {
     },
 
     /**
-     * Parse the user-defined effects string into values
-     * and units, and create transform strings
+     * Parses all effects out of the user-defined `animation.effects` string into
+     * their respective properties and units.
      *
      * @private
+     * @instance
      * @since   2.0.0
      * @return  {void}
      */
@@ -1372,6 +1389,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {string}    effectName
      * @param   {string}    effectString
@@ -1492,6 +1510,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {Operation}     operation
      * @return  {State}
@@ -1540,6 +1559,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {boolean}   shouldAnimate
      * @param   {Operation} operation
@@ -1607,7 +1627,7 @@ h.extend(mixitup.Mixer.prototype, {
             instance: self
         }, self._dom.document);
 
-        if (shouldAnimate && mixitup.Mixer.prototype.has._transitions) {
+        if (shouldAnimate && mixitup.Mixer.prototype._has._transitions) {
             // If we should animate and the platform supports
             // transitions, go for it
 
@@ -1644,6 +1664,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {Operation}     operation
      * @return  {void}
@@ -1699,6 +1720,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {Operation}     operation
      * @return  {void}
@@ -1725,6 +1747,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {Operation}     operation
      * @return  {void}
@@ -1762,6 +1785,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {Operation}     operation
      * @return  {void}
@@ -1785,6 +1809,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {Operation}     operation
      * @return  {void}
@@ -1849,6 +1874,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since    3.0.0
      * @param    {Operation}     operation
      */
@@ -2005,6 +2031,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   3.0.0
      * @param   {Operation}     operation
      * @return  {void}
@@ -2092,6 +2119,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @return  {boolean}
      */
 
@@ -2130,6 +2158,7 @@ h.extend(mixitup.Mixer.prototype, {
      * transitionEnd
      *
      * @private
+     * @instance
      * @since   3.0.0
      * @param   {string}        hideOrShow
      * @param   {boolean}       hasEffect
@@ -2172,6 +2201,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {Operation}     operation
      * @return  {void}
@@ -2189,6 +2219,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
      * @param   {Operation}     operation
      * @return  {void}
@@ -2296,8 +2327,9 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
-     * @param   {*[]}       args
+     * @param   {Array<*>}  args
      * @return  {object}
      */
 
@@ -2328,8 +2360,9 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   2.0.0
-     * @param   {*[]}       args
+     * @param   {Array<*>}  args
      * @return  {object}
      */
 
@@ -2398,8 +2431,9 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since   3.0.0
-     * @param   {*[]}       args
+     * @param   {Array<*>}  args
      * @return  {object}
      */
 
@@ -2463,8 +2497,9 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @private
+     * @instance
      * @since       3.0.0
-     * @param       {*[]}                       args
+     * @param       {Array<*>}                  args
      * @param       {mixitup.UserInstruction}   instruction
      * @return      {Promise.<mixitup.State>}
      */
@@ -2512,6 +2547,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       3.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2526,6 +2562,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       3.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2538,6 +2575,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       3.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2550,6 +2588,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since   2.0.0
      * @return  {boolean}
      */
@@ -2562,6 +2601,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       2.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2579,6 +2619,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       2.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2594,6 +2635,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       2.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2604,6 +2646,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since   3.0.0
      * @param   {Command}           command
      * @return  {Operation|null}
@@ -2713,6 +2756,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       2.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2765,6 +2809,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since   3.0.0
      * @param   {Operation}     operation
      * @param   {Float}         multiplier
@@ -2806,6 +2851,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       2.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2821,6 +2867,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       3.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2834,6 +2881,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       3.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2847,6 +2895,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       2.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2860,6 +2909,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       2.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2873,6 +2923,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       3.0.0
      * @return      {Promise.<mixitup.State>}
      */
@@ -2888,6 +2939,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       2.0.0
      * @param       {string}    stringKey
      * @return      {*}
@@ -2899,6 +2951,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       2.0.0
      * @param       {object}    config
      */
@@ -2915,6 +2968,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since       2.0.0
      * @return      {State}
      */
@@ -2927,6 +2981,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since 2.1.2
      */
 
@@ -2938,6 +2993,7 @@ h.extend(mixitup.Mixer.prototype, {
 
     /**
      * @public
+     * @instance
      * @since   2.0.0
      * @param   {boolean}   hideAll
      * @return  {void}

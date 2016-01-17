@@ -1,8 +1,15 @@
 /* global mixitup, h:true */
 
+/**
+ * @global
+ * @namespace
+ * @private
+ */
+
 h = {
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    cls
@@ -14,6 +21,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    cls
@@ -25,6 +33,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    cls
@@ -40,6 +49,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {object}    destination
      * @param   {object}    source
@@ -65,6 +75,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    type
@@ -79,8 +90,6 @@ h = {
         if (el.attachEvent) {
             el['e' + type + fn] = fn;
 
-            /** @return {void} */
-
             el[type + fn] = function() {
                 el['e' + type + fn](window.event);
             };
@@ -92,6 +101,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    type
@@ -111,6 +121,7 @@ h = {
     },
 
     /**
+     * @private
      * @param   {Element}   el
      * @param   {string}    eventName
      * @param   {object}    data
@@ -136,6 +147,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    selector
@@ -155,6 +167,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   2.0.0
      * @param   {string} str
      * @return  {string}
@@ -167,6 +180,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   2.1.3
      * @param   {Element}   el
      * @param   {Document}  [doc]
@@ -197,6 +211,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {string}            htmlString
      * @param   {Document}          [doc]
@@ -222,6 +237,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {Element}   el
      * @return  {void}
@@ -234,9 +250,10 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
-     * @param   {*[]}       a
-     * @param   {*[]}       b
+     * @param   {Array<*>}  a
+     * @param   {Array<*>}  b
      * @return  {boolean}
      */
 
@@ -253,9 +270,10 @@ h = {
     },
 
     /**
+     * @private
      * @since   2.0.0
-     * @param   {*[]}   oldArray
-     * @return  {*[]}
+     * @param   {Array<*>}  oldArray
+     * @return  {Array<*>}
      */
 
     arrayShuffle: function(oldArray) {
@@ -277,6 +295,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {function}  func
      * @param   {Number}    wait
@@ -292,8 +311,6 @@ h = {
                 args     = arguments,
                 callNow  = immediate && !timeout,
                 later    = null;
-
-            /** @return void */
 
             later = function() {
                 timeout  = null;
@@ -312,6 +329,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {Element}   element
      * @return  {object}
@@ -343,6 +361,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {object}    node1
      * @param  {object}    node2
@@ -360,6 +379,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {object}        el
      * @param   {string}        selector
@@ -398,6 +418,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    selector
@@ -429,8 +450,9 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
-     * @param   {*[]}       items
+     * @param   {Array<*>}  items
      * @param   {function}  callback
      * @return  {void}
      */
@@ -445,9 +467,10 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
-     * @param   {*[]} originalArray
-     * @return  {*[]}
+     * @param   {Array<*>} originalArray
+     * @return  {Array<*>}
      */
 
     clean: function(originalArray) {
@@ -464,6 +487,7 @@ h = {
     },
 
     /**
+     * @private
      * @since  3.0.0
      * @param  {object}         libraries
      * @return {object|null}
@@ -499,6 +523,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {object}  [config]
      * @return  {boolean}
@@ -513,6 +538,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   2.0.0
      * @param   {Element}   el
      * @param   {string}    property
@@ -536,6 +562,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @return  {string}
      */
@@ -550,6 +577,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {Document}  [doc]
      * @return  {object}
@@ -566,6 +594,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {object}    obj
      * @param   {function}  fn
@@ -579,6 +608,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {Element}   el
      * @return  {boolean}
@@ -606,6 +636,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {object}    obj
      */
@@ -617,6 +648,7 @@ h = {
     },
 
     /**
+     * @private
      * @since   3.0.0
      * @param   {string}    control
      * @param   {string}    specimen

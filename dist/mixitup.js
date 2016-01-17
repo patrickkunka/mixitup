@@ -19,15 +19,19 @@
         h               = null;
 
     /**
-     * The `mixitup` factory function is the main empty point for the v3 API,
+     * The `mixitup` factory function is the main entry point for the v3 API,
      * abstracting away the functionality of instantiating `Mixer` objects.
      *
-     * @since   3.0.0
-     * @param   {(Element|Element[]|string)}        container
-     * @param   {object}                            [config]
-     * @param   {object}                            [foreignDoc]
-     * @param   {boolean}                           [returnCollection]
-     * @return  {mixitup.Mixer|mixitup.Collection}
+     * @global
+     * @namespace
+     * @public
+     * @kind        function
+     * @since       3.0.0
+     * @param       {(Element|Element[]|string)}        container
+     * @param       {object}                            [config]
+     * @param       {object}                            [foreignDoc]
+     * @param       {boolean}                           [returnCollection]
+     * @return      {mixitup.Mixer|mixitup.Collection}
      */
 
     mixitup = function(container, config, foreignDoc, returnCollection) {
@@ -117,25 +121,33 @@
 
     /**
      * Returns a mixitup.Collection of one or more instances
-     * that can be operated on simultaneously, similar
-     * to a jQuery mixitup.Collection.
+     * that can be operated on simultaneously, similar to a jQuery collection.
+     * If the user specifically wants to control a collection, they should use this.
      *
-     * @since   3.0.0
-     * @param   {(Element|Element[]|string)}  container
-     * @param   {object}                      [config]
-     * @param   {object}                      [foreignDoc]
-     * @return  {mixitup.Collection}
+     * @memberof    mixitup
+     * @since       3.0.0
+     * @param       {(Element|Element[]|string)}  container
+     * @param       {object}                      [config]
+     * @param       {object}                      [foreignDoc]
+     * @return      {mixitup.Collection}
      */
 
-    mixitup.prototype.all = function(container, config, foreignDoc) {
+    mixitup.all = function(container, config, foreignDoc) {
         var self = this;
 
-        return self.constructor(container, config, foreignDoc, true);
+        return self(container, config, foreignDoc, true);
     };
+
+    /**
+     * @global
+     * @namespace
+     * @private
+     */
 
     h = {
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    cls
@@ -147,6 +159,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    cls
@@ -158,6 +171,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    cls
@@ -173,6 +187,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {object}    destination
          * @param   {object}    source
@@ -198,6 +213,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    type
@@ -212,8 +228,6 @@
             if (el.attachEvent) {
                 el['e' + type + fn] = fn;
 
-                /** @return {void} */
-
                 el[type + fn] = function() {
                     el['e' + type + fn](window.event);
                 };
@@ -225,6 +239,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    type
@@ -244,6 +259,7 @@
         },
 
         /**
+         * @private
          * @param   {Element}   el
          * @param   {string}    eventName
          * @param   {object}    data
@@ -269,6 +285,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    selector
@@ -288,6 +305,7 @@
         },
 
         /**
+         * @private
          * @since   2.0.0
          * @param   {string} str
          * @return  {string}
@@ -300,6 +318,7 @@
         },
 
         /**
+         * @private
          * @since   2.1.3
          * @param   {Element}   el
          * @param   {Document}  [doc]
@@ -330,6 +349,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {string}            htmlString
          * @param   {Document}          [doc]
@@ -355,6 +375,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {Element}   el
          * @return  {void}
@@ -367,9 +388,10 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
-         * @param   {*[]}       a
-         * @param   {*[]}       b
+         * @param   {Array<*>}  a
+         * @param   {Array<*>}  b
          * @return  {boolean}
          */
 
@@ -386,9 +408,10 @@
         },
 
         /**
+         * @private
          * @since   2.0.0
-         * @param   {*[]}   oldArray
-         * @return  {*[]}
+         * @param   {Array<*>}  oldArray
+         * @return  {Array<*>}
          */
 
         arrayShuffle: function(oldArray) {
@@ -410,6 +433,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {function}  func
          * @param   {Number}    wait
@@ -425,8 +449,6 @@
                     args     = arguments,
                     callNow  = immediate && !timeout,
                     later    = null;
-
-                /** @return void */
 
                 later = function() {
                     timeout  = null;
@@ -445,6 +467,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {Element}   element
          * @return  {object}
@@ -476,6 +499,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {object}    node1
          * @param  {object}    node2
@@ -493,6 +517,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {object}        el
          * @param   {string}        selector
@@ -531,6 +556,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    selector
@@ -562,8 +588,9 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
-         * @param   {*[]}       items
+         * @param   {Array<*>}  items
          * @param   {function}  callback
          * @return  {void}
          */
@@ -578,9 +605,10 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
-         * @param   {*[]} originalArray
-         * @return  {*[]}
+         * @param   {Array<*>} originalArray
+         * @return  {Array<*>}
          */
 
         clean: function(originalArray) {
@@ -597,6 +625,7 @@
         },
 
         /**
+         * @private
          * @since  3.0.0
          * @param  {object}         libraries
          * @return {object|null}
@@ -632,6 +661,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {object}  [config]
          * @return  {boolean}
@@ -646,6 +676,7 @@
         },
 
         /**
+         * @private
          * @since   2.0.0
          * @param   {Element}   el
          * @param   {string}    property
@@ -669,6 +700,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @return  {string}
          */
@@ -683,6 +715,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {Document}  [doc]
          * @return  {object}
@@ -699,6 +732,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {object}    obj
          * @param   {function}  fn
@@ -712,6 +746,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {Element}   el
          * @return  {boolean}
@@ -739,6 +774,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {object}    obj
          */
@@ -750,6 +786,7 @@
         },
 
         /**
+         * @private
          * @since   3.0.0
          * @param   {string}    control
          * @param   {string}    specimen
@@ -778,12 +815,25 @@
         }
     };
 
+    /**
+     * The basePrototype includes a set of static methods which are applied to all
+     * MixItUp classes as a means of integrating extensions via the addition of new
+     * methods and/or actions and hooks.
+     *
+     * @namespace
+     * @memberof    mixitup
+     * @public
+     * @since       3.0.0
+     */
+
     mixitup.basePrototype = {
 
         /**
-         * Shallow extend the base prototype with new methods
+         * Performs a shallow extend on the class's prototype, enabling the addition of
+         * multiple new members to the class in a single operation.
          *
          * @public
+         * @static
          * @since   2.1.0
          * @param   {object} extension
          * @return  {void}
@@ -803,9 +853,10 @@
         },
 
         /**
-         * Register a named action hook on the prototype
+         * Registers an action function to be executed at a predefined hook.
          *
          * @public
+         * @static
          * @since   2.1.0
          * @param   {string}    hook
          * @param   {string}    name
@@ -819,9 +870,10 @@
         },
 
         /**
-         * Register a named action hook on the prototype
+         * Registers a filter function to be executed at a predefined hook.
          *
          * @public
+         * @static
          * @since   2.1.0
          * @param   {string}    hook
          * @param   {string}    name
@@ -834,9 +886,11 @@
         },
 
         /**
-         * Add a hook to the object's prototype
+         * Registers a filter or action to be executed at a predefined hook. The
+         * lower-level call used by `addAction` and `addFiler`.
          *
          * @private
+         * @static
          * @since   2.1.0
          * @param   {string}    type
          * @param   {string}    hook
@@ -860,11 +914,14 @@
         },
 
         /**
+         * Executes any registered actions for the respective hook.
+         *
          * @private
+         * @static
          * @since   2.0.0
          * @param   {string}    methodName
          * @param   {boolean}   isPost
-         * @param   {*[]}       args
+         * @param   {Array<*>}  args
          * @return  {void}
          */
 
@@ -881,11 +938,14 @@
         },
 
         /**
+         * Executes any registered filters for the respective hook.
+         *
          * @private
+         * @static
          * @since   2.0.0
          * @param   {string}    methodName
          * @param   {*}         value
-         * @param   {*[]}       args
+         * @param   {Array<*>}  args
          * @return  {*}
          */
 
@@ -904,9 +964,11 @@
     };
 
     /**
-     * @since       3.0.0
      * @constructor
      * @namespace
+     * @memberof    mixitup
+     * @public
+     * @since       3.0.0
      */
 
     mixitup.Mixer = function() {
@@ -1039,7 +1101,9 @@
 
     mixitup.Mixer.prototype = Object.create(mixitup.basePrototype);
 
-    h.extend(mixitup.Mixer.prototype, {
+    h.extend(mixitup.Mixer.prototype,
+    /** @lends mixitup.Mixer */
+    {
         constructor: mixitup.Mixer,
 
         _actions: {},
@@ -1093,11 +1157,11 @@
         },
 
         _is: {},
-        has: {},
+        _has: {},
 
         _instances: {},
 
-        handled: {
+        _handled: {
             _filterToggle: {},
             _multiMix: {},
             _filter: {},
@@ -1112,9 +1176,11 @@
         },
 
         /**
-         * Performs all neccessary feature detection on evalulation
+         * Performs all neccessary feature detection on the first evalulation of
+         * the library.
          *
          * @private
+         * @static
          * @since 2.0.0
          */
 
@@ -1131,9 +1197,9 @@
 
             self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a seperate test
 
-            mixitup.Mixer.prototype.has._promises      = typeof Promise === 'function';
-            mixitup.Mixer.prototype.has._transitions   = transitionPrefix !== 'unsupported';
-            mixitup.Mixer.prototype._is._crapIe         = window.atob ? false : true;
+            mixitup.Mixer.prototype._has._promises      = typeof Promise === 'function';
+            mixitup.Mixer.prototype._has._transitions   = transitionPrefix !== 'unsupported';
+            mixitup.Mixer.prototype._is._crapIe        = window.atob ? false : true;
 
             mixitup.Mixer.prototype._transitionProp =
                 transitionPrefix ? transitionPrefix + 'Transition' : 'transition';
@@ -1162,9 +1228,6 @@
 
             if (typeof testEl.nextElementSibling === 'undefined') {
                 Object.defineProperty(Element.prototype, 'nextElementSibling', {
-
-                    /** @return {Element|null} */
-
                     get: function() {
                         var el = this.nextSibling;
 
@@ -1206,6 +1269,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {Element}   el
          * @param   {object}    config
@@ -1225,7 +1289,7 @@
 
             self.layout.containerClass && h.addClass(el, self.layout.containerClass);
 
-            self.animation.enable = self.animation.enable && mixitup.Mixer.prototype.has._transitions;
+            self.animation.enable = self.animation.enable && mixitup.Mixer.prototype._has._transitions;
 
             self._indexTargets();
 
@@ -1275,9 +1339,10 @@
         },
 
         /**
-         * Cache references of all neccessary DOM elements
+         * Caches references of DOM elements neccessary for the mixer's functionality.
          *
          * @private
+         * @instance
          * @since   3.0.0
          * @param   {Element} el
          * @return  {void}
@@ -1313,10 +1378,11 @@
         },
 
         /**
-         * Index matching children of the container, and
-         * instantiate mixitup.Target instances for each one
+         * Indexes all child elements of the mixer matching the `selectors.target`
+         * selector, instantiating a mixitup.Target for each one.
          *
          * @private
+         * @instance
          * @since   3.0.0
          * @return  {void}
          */
@@ -1360,6 +1426,7 @@
 
         /**
          * @private
+         * @instance
          * @since   3.0.0
          * @return  {void}
          */
@@ -1375,11 +1442,6 @@
                 i               = -1;
 
             self._execAction('_bindEvents', 0);
-
-            /**
-             * @param   {Event} e
-             * @return  {*}
-             */
 
             self.handler = function(e) {
                 return self._eventBus(e);
@@ -1418,6 +1480,7 @@
 
         /**
          * @private
+         * @instance
          * @since   3.0.0
          * @return  {void}
          */
@@ -1440,6 +1503,7 @@
 
         /**
          * @private
+         * @instance
          * @param   {object}            e
          * @return  {(Boolean|void)}
          */
@@ -1455,6 +1519,7 @@
 
         /**
          * @private
+         * @instance
          * @since   3.0.0
          * @param   {Event}  e
          * @return  {void}
@@ -1674,6 +1739,7 @@
 
         /**
          * @private
+         * @instance
          * @since   3.0.0
          * @param   {Element}   button
          * @param   {string}    method
@@ -1693,28 +1759,28 @@
 
             method = '_' + method;
 
-            proto.handled[method][selector] =
-                (typeof proto.handled[method][selector] === 'undefined') ?
-                    1 : proto.handled[method][selector] + 1;
+            proto._handled[method][selector] =
+                (typeof proto._handled[method][selector] === 'undefined') ?
+                    1 : proto._handled[method][selector] + 1;
 
-            if (proto.handled[method][selector] === proto._bound[method][selector]) {
+            if (proto._handled[method][selector] === proto._bound[method][selector]) {
                 if (isTogglingOff) {
                     h.removeClass(button, self.controls.activeClass);
                 } else {
                     h.addClass(button, self.controls.activeClass);
                 }
 
-                delete proto.handled[method][selector];
+                delete proto._handled[method][selector];
             }
         },
 
         /**
-         * Combines the selectors of toggled buttons into an array
+         * Combines the selectors of active toggle controls into an array.
          *
          * @private
+         * @instance
          * @since   2.0.0
          * @return  {void}
-         *
          */
 
         _buildToggleArray: function() {
@@ -1745,10 +1811,11 @@
         },
 
         /**
-         * Updates buttons to their active/deactive state based
-         * on the command or current state of the instance
+         * Updates controls to their active/inactive state based on the command or
+         * current state of the mixer.
          *
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {object} command
          * @return  {void}
@@ -1836,6 +1903,7 @@
 
         /**
          * @private
+         * @instance
          * @since   3.0.0
          * @param   {object}        command
          * @param   {Operation}     operation
@@ -1884,6 +1952,7 @@
 
         /**
          * @private
+         * @instance
          * @since   3.0.0
          * @param   {Number}      [index]
          * @param   {Element}     [sibling]
@@ -1912,6 +1981,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {Operation}     operation
          * @return  {void}
@@ -1992,6 +2062,7 @@
 
         /**
          * @private
+         * @instance
          * @since   3.0.0
          * @param   {boolean}   condition
          * @param   {Element}   target
@@ -2025,6 +2096,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {Operation}     operation
          * @return  {void}
@@ -2071,6 +2143,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {String|Number}     a
          * @param   {String|Number}     b
@@ -2111,9 +2184,11 @@
         },
 
         /**
-         * Reads the values of sort attributes
+         * Reads the values of any data attributes present the provided target element
+         * which match the current sort command.
          *
          * @private
+         * @instance
          * @since   3.0.0
          * @param   {Element}           target
          * @param   {number}            depth
@@ -2154,6 +2229,7 @@
          * DOM thrashing
          *
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {boolean}   isResetting
          * @param   {Operation} operation
@@ -2207,10 +2283,10 @@
         },
 
         /**
-         * Parse user-defined sort strings into useable values
-         * or "rules"
+         * Parses user-defined sort commands (i.e. `default:asc`) into useable "rules".
          *
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {string}    sortString
          * @return  {String[]}
@@ -2240,10 +2316,11 @@
         },
 
         /**
-         * Parse the user-defined effects string into values
-         * and units, and create transform strings
+         * Parses all effects out of the user-defined `animation.effects` string into
+         * their respective properties and units.
          *
          * @private
+         * @instance
          * @since   2.0.0
          * @return  {void}
          */
@@ -2275,6 +2352,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {string}    effectName
          * @param   {string}    effectString
@@ -2395,6 +2473,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {Operation}     operation
          * @return  {State}
@@ -2443,6 +2522,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {boolean}   shouldAnimate
          * @param   {Operation} operation
@@ -2510,7 +2590,7 @@
                 instance: self
             }, self._dom.document);
 
-            if (shouldAnimate && mixitup.Mixer.prototype.has._transitions) {
+            if (shouldAnimate && mixitup.Mixer.prototype._has._transitions) {
                 // If we should animate and the platform supports
                 // transitions, go for it
 
@@ -2547,6 +2627,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {Operation}     operation
          * @return  {void}
@@ -2602,6 +2683,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {Operation}     operation
          * @return  {void}
@@ -2628,6 +2710,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {Operation}     operation
          * @return  {void}
@@ -2665,6 +2748,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {Operation}     operation
          * @return  {void}
@@ -2688,6 +2772,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {Operation}     operation
          * @return  {void}
@@ -2752,6 +2837,7 @@
 
         /**
          * @private
+         * @instance
          * @since    3.0.0
          * @param    {Operation}     operation
          */
@@ -2908,6 +2994,7 @@
 
         /**
          * @private
+         * @instance
          * @since   3.0.0
          * @param   {Operation}     operation
          * @return  {void}
@@ -2995,6 +3082,7 @@
 
         /**
          * @private
+         * @instance
          * @return  {boolean}
          */
 
@@ -3033,6 +3121,7 @@
          * transitionEnd
          *
          * @private
+         * @instance
          * @since   3.0.0
          * @param   {string}        hideOrShow
          * @param   {boolean}       hasEffect
@@ -3075,6 +3164,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {Operation}     operation
          * @return  {void}
@@ -3092,6 +3182,7 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
          * @param   {Operation}     operation
          * @return  {void}
@@ -3199,8 +3290,9 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
-         * @param   {*[]}       args
+         * @param   {Array<*>}  args
          * @return  {object}
          */
 
@@ -3231,8 +3323,9 @@
 
         /**
          * @private
+         * @instance
          * @since   2.0.0
-         * @param   {*[]}       args
+         * @param   {Array<*>}  args
          * @return  {object}
          */
 
@@ -3301,8 +3394,9 @@
 
         /**
          * @private
+         * @instance
          * @since   3.0.0
-         * @param   {*[]}       args
+         * @param   {Array<*>}  args
          * @return  {object}
          */
 
@@ -3366,8 +3460,9 @@
 
         /**
          * @private
+         * @instance
          * @since       3.0.0
-         * @param       {*[]}                       args
+         * @param       {Array<*>}                  args
          * @param       {mixitup.UserInstruction}   instruction
          * @return      {Promise.<mixitup.State>}
          */
@@ -3415,6 +3510,7 @@
 
         /**
          * @public
+         * @instance
          * @since       3.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3429,6 +3525,7 @@
 
         /**
          * @public
+         * @instance
          * @since       3.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3441,6 +3538,7 @@
 
         /**
          * @public
+         * @instance
          * @since       3.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3453,6 +3551,7 @@
 
         /**
          * @public
+         * @instance
          * @since   2.0.0
          * @return  {boolean}
          */
@@ -3465,6 +3564,7 @@
 
         /**
          * @public
+         * @instance
          * @since       2.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3482,6 +3582,7 @@
 
         /**
          * @public
+         * @instance
          * @since       2.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3497,6 +3598,7 @@
 
         /**
          * @public
+         * @instance
          * @since       2.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3507,6 +3609,7 @@
 
         /**
          * @public
+         * @instance
          * @since   3.0.0
          * @param   {Command}           command
          * @return  {Operation|null}
@@ -3616,6 +3719,7 @@
 
         /**
          * @public
+         * @instance
          * @since       2.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3668,6 +3772,7 @@
 
         /**
          * @public
+         * @instance
          * @since   3.0.0
          * @param   {Operation}     operation
          * @param   {Float}         multiplier
@@ -3709,6 +3814,7 @@
 
         /**
          * @public
+         * @instance
          * @since       2.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3724,6 +3830,7 @@
 
         /**
          * @public
+         * @instance
          * @since       3.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3737,6 +3844,7 @@
 
         /**
          * @public
+         * @instance
          * @since       3.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3750,6 +3858,7 @@
 
         /**
          * @public
+         * @instance
          * @since       2.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3763,6 +3872,7 @@
 
         /**
          * @public
+         * @instance
          * @since       2.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3776,6 +3886,7 @@
 
         /**
          * @public
+         * @instance
          * @since       3.0.0
          * @return      {Promise.<mixitup.State>}
          */
@@ -3791,6 +3902,7 @@
 
         /**
          * @public
+         * @instance
          * @since       2.0.0
          * @param       {string}    stringKey
          * @return      {*}
@@ -3802,6 +3914,7 @@
 
         /**
          * @public
+         * @instance
          * @since       2.0.0
          * @param       {object}    config
          */
@@ -3818,6 +3931,7 @@
 
         /**
          * @public
+         * @instance
          * @since       2.0.0
          * @return      {State}
          */
@@ -3830,6 +3944,7 @@
 
         /**
          * @public
+         * @instance
          * @since 2.1.2
          */
 
@@ -3841,6 +3956,7 @@
 
         /**
          * @public
+         * @instance
          * @since   2.0.0
          * @param   {boolean}   hideAll
          * @return  {void}
@@ -3881,6 +3997,8 @@
     /**
      * @constructor
      * @namespace
+     * @memberof    mixitup
+     * @private
      * @since       3.0.0
      */
 
@@ -3919,12 +4037,14 @@
         _filters: {},
 
         /**
+         * Initialises a newly instantiated Target.
+         *
+         * @private
+         * @instance
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {object}    mixer
          * @return  {void}
-         *
-         * Initialize a newly instantiated mixitup.Target
          */
 
         _init: function(el, mixer) {
@@ -3944,11 +4064,13 @@
         },
 
         /**
+         * Caches references of DOM elements neccessary for the target's functionality.
+         *
+         * @private
+         * @instance
          * @since   3.0.0
          * @param   {Element} el
          * @return  {void}
-         *
-         * Cache any DOM elements from the target context inwards
          */
 
         _cacheDom: function(el) {
@@ -3962,6 +4084,8 @@
         },
 
         /**
+         * @private
+         * @instance
          * @since   3.0.0
          * @param   {string}    attributeName
          * @return  {void}
@@ -3983,6 +4107,8 @@
         },
 
         /**
+         * @private
+         * @instance
          * @since   3.0.0
          * @param   {string}   display
          * @return  {void}
@@ -4001,6 +4127,8 @@
         },
 
         /**
+         * @private
+         * @instance
          * @since   3.0.0
          * @return  {void}
          */
@@ -4016,6 +4144,8 @@
         },
 
         /**
+         * @private
+         * @instance
          * @since   3.0.0
          * @param   {object}    options
          * @return  {void}
@@ -4043,6 +4173,8 @@
         },
 
         /**
+         * @private
+         * @instance
          * @since   3.0.0
          * @param   {object}    posData
          * @param   {number}    multiplier
@@ -4111,9 +4243,11 @@
         },
 
         /**
-         * Applies starting styles to a target element
-         * before any transition is applied
+         * Applies the initial styling to a target element before any transition
+         * is applied.
          *
+         * @private
+         * @instance
          * @param   {object}    options
          * @return  {void}
          */
@@ -4143,9 +4277,11 @@
         },
 
         /**
-         * Applies a transition and the corresponding styles to
-         * transition towards
+         * Applies a transition followed by the final styles for the element to
+         * transition towards.
          *
+         * @private
+         * @instance
          * @param   {object}    options
          * @return  {void}
          */
@@ -4281,9 +4417,11 @@
         },
 
         /**
-         * Combines the name of a rule with duration and delay values
-         * to produce a valid transition value
+         * Combines the name of a CSS property with the appropriate duration and delay
+         * values to created a valid transition rule.
          *
+         * @private
+         * @instance
          * @since   3.0.0
          * @param   {string}    rule
          * @param   {number}    staggerIndex
@@ -4305,8 +4443,13 @@
         },
 
         /**
-         * Allow for the manipulation of target indices via a user specified function
+         * Calculates the transition delay for each target element based on its index, if
+         * staggering is applied. If defined, A custom `animation.staggerSeqeuence`
+         * function can be used to manipulate the order of indices to produce custom
+         * stagger effects (e.g. for use in a grid with irregular row lengths).
          *
+         * @private
+         * @instance
          * @since   2.0.0
          * @param   {number}    index
          * @return  {number}
@@ -4326,6 +4469,8 @@
         },
 
         /**
+         * @private
+         * @instance
          * @since   3.0.0
          * @param   {string[]}  rules
          * @return  {void}
@@ -4343,6 +4488,8 @@
         },
 
         /**
+         * @private
+         * @instance
          * @since   3.0.0
          * @param   {Event} e
          * @return  {void}
@@ -4377,6 +4524,8 @@
         },
 
         /**
+         * @private
+         * @instance
          * @since   3.0.0
          * @param   {Event}     e
          * @return  {void}
@@ -4397,6 +4546,8 @@
         },
 
         /**
+         * @private
+         * @instance
          * @since   3.0.0
          * @return  {void}
          */
@@ -4413,6 +4564,8 @@
         },
 
         /**
+         * @private
+         * @instance
          * @since   3.0.0
          * @return  {void}
          */
@@ -4425,11 +4578,6 @@
 
             self._execAction('_bindEvents', 0, arguments);
 
-            /**
-             * @param {Event} e
-             * @return {*}
-             */
-
             self.handler = function(e) {
                 return self._eventBus(e);
             };
@@ -4440,6 +4588,8 @@
         },
 
         /**
+         * @private
+         * @instance
          * @since   3.0.0
          * @return  {PosData}
          */
@@ -4471,7 +4621,10 @@
         },
 
         /**
-         * @return {void}
+         * @private
+         * @instance
+         * @since       3.0.0
+         * @return      {void}
          */
 
         _cleanUp: function() {
@@ -4495,9 +4648,11 @@
     });
 
     /**
-     * @since 3.0.0
      * @constructor
      * @namespace
+     * @memberof    mixitup
+     * @public
+     * @since       3.0.0
      * @param       {mixitup.Mixer[]}   instances
      */
 
@@ -4512,57 +4667,52 @@
         this.length = instances.length;
     };
 
-    mixitup.Collection.prototype = {
-        constructor: mixitup.Collection,
+    /**
+     * Provides a jQueryUI-like API for controlling one or more MixItUp instances.
+     *
+     * @memberof    mixitup.Collection
+     * @public
+     * @instance
+     * @since       3.0.0
+     * @param       {string}            methodName
+     * @return      {Promise}
+     */
 
-        /**
-         * Provides a jQueryUI-like API for controlling one or more
-         * MixItUp instances. Used as a shim for v2.0 compatibility.
-         *
-         * @param   {string}    methodName
-         * @return  {Promise}
-         */
+    mixitup.Collection.prototype.do = function(methodName) {
+        var self        = this,
+            instance    = null,
+            args        = Array.prototype.slice.call(arguments),
+            tasks       = [],
+            q           = null,
+            i           = -1;
 
-        mixitup: function(methodName) {
-            var self        = this,
-                instance    = null,
-                args        = Array.prototype.slice.call(arguments),
-                tasks       = [],
-                q           = null,
-                i           = -1;
+        args.shift();
 
-            args.shift();
-
-            for (i = 0; instance = self[i]; i++) {
-                if (!q && instance.libraries.q) {
-                    q = instance.libraries.q;
-                }
-
-                tasks.push(instance[methodName].apply(instance, args));
+        for (i = 0; instance = self[i]; i++) {
+            if (!q && instance.libraries.q) {
+                q = instance.libraries.q;
             }
 
-            if (q) {
-                return q.all(tasks);
-            } else if (mixitup.Mixer.prototype._has._promises) {
-                return Promise.all(tasks);
-            }
-        },
+            tasks.push(instance[methodName].apply(instance, args));
+        }
 
-        /**
-         * @alias mixitup.Collection.prototype.mixitup
-         */
-
-        mixItUp: function() {
-            return self.mixitup(arguments);
+        if (q) {
+            return q.all(tasks);
+        } else if (mixitup.Mixer.prototype._has._promises) {
+            return Promise.all(tasks);
         }
     };
 
     /**
-     * @since       3.0.0
-     * @constructor
+     * `Operation` objects contain all data neccessary to describe the full lifecycle of
+     * any MixItUp operation. They can be used to compute and store an operation for use
+     * at a later time (e.g. programmatic tweening).
      *
-     * Operation objects contain all data neccessary to describe
-     * the full lifecycle of any individual MixItUp operation
+     * @constructor
+     * @namespace
+     * @memberof    mixitup
+     * @public
+     * @since       3.0.0
      */
 
     mixitup.Operation = function() {
@@ -4619,33 +4769,199 @@
     });
 
     /**
-     * State objects form part of the public API and are provided
-     * at the start and end of any operation. The most recent state
-     * object is stored between operations and can also be retrieved
-     * via the API.
+     * State objects form part of the public API and are provided at the start and
+     * end of any operation. The most recent state  object is stored between
+     * operations and can also be retrieved via the API.
      *
-     * @since       3.0.0
      * @constructor
      * @namespace
+     * @memberof    mixitup
+     * @public
+     * @since       3.0.0
      */
 
     mixitup.State = function() {
         this._execAction('_constructor', 0);
 
-        this.activeFilter         = '';
-        this.activeSort           = '';
-        this.activeDisplay        = '';
+        /**
+         * The currently active filter selector as set by a control click or the API
+         * call.
+         *
+         * @name        activeFilter
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {string}
+         * @default     ''
+         */
+
+        this.activeFilter = '';
+
+        /**
+         * The currently active sort as set by a control click or API call.
+         *
+         * @name        activeSort
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {string}
+         * @default     ''
+         */
+
+        this.activeSort = '';
+
+        /**
+         * The currently active CSS display value for target elements as defined in the
+         * configuration object.
+         *
+         * @name        activeDisplay
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {string}
+         * @default     ''
+         */
+
+        this.activeDisplay = '';
+
+        /**
+         * The currently active containerClass, if applied.
+         *
+         * @name        activeContainerClass
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {string}
+         * @default     ''
+         */
+
         this.activeContainerClass = '';
-        this.targets              = [];
-        this.hide                 = [];
-        this.show                 = [];
-        this.matching             = [];
-        this.totalTargets         = -1;
-        this.totalShow            = -1;
-        this.totalHide            = -1;
-        this.totalMatching        = -1;
-        this.hasFailed            = false;
-        this.triggerElement       = null;
+
+        /**
+         * An array of all target elements indexed by the mixer.
+         *
+         * @name        targets
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {Array.<Element>}
+         * @default     []
+         */
+
+        this.targets = [];
+
+        /**
+         * An array of all target elements not matching the current filter.
+         *
+         * @name        hide
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {Array.<Element>}
+         * @default     []
+         */
+
+        this.hide = [];
+
+        /**
+         * An array of all target elements matching the current filter and any additional
+         * limits applied such as pagination.
+         *
+         * @name        show
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {Array.<Element>}
+         * @default     []
+         */
+
+        this.show = [];
+
+        /**
+         * An array of all target elements matching the current filter irrespective of
+         * any additional limits applied such as pagination.
+         *
+         * @name        matching
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {Array.<Element>}
+         * @default     []
+         */
+
+        this.matching = [];
+
+        /**
+         * An integer representing the total number of target elements indexed by the
+         * mixer. Equivalent to `state.targets.length`.
+         *
+         * @name        totalTargets
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {number}
+         * @default     -1
+         */
+
+        this.totalTargets = -1;
+
+        /**
+         * An integer representing the total number of target elements matching the
+         * current filter and any additional limits applied such as pagination.
+         * Equivalent to `state.show.length`.
+         *
+         * @name        totalShow
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {number}
+         * @default     -1
+         */
+
+        this.totalShow = -1;
+
+        /**
+         * An integer representing the total number of target elements not matching
+         * the current filter. Equivalent to `state.hide.length`.
+         *
+         * @name        totalHide
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {number}
+         * @default     -1
+         */
+
+        this.totalHide = -1;
+
+        /**
+         * An integer representing the total number of target elements matching the
+         * current filter irrespective of any other limits applied such as pagination.
+         * Equivalent to `state.matching.length`.
+         *
+         * @name        totalMatching
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {number}
+         * @default     -1
+         */
+
+        this.totalMatching = -1;
+
+        /**
+         * A boolean indicating whether the last operation "failed", i.e. no targets
+         * could be found matching the filter.
+         *
+         * @name        hasFailed
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {boolean}
+         * @default     false
+         */
+
+        this.hasFailed = false;
+
+        /**
+         * The DOM element that was clicked if the last oepration was triggered by the
+         * clicking of a control and not an API call.
+         *
+         * @name        triggerElement
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {Element|null}
+         * @default     null
+         */
+
+        this.triggerElement = null;
 
         this._execAction('_constructor', 1);
 
@@ -4660,8 +4976,10 @@
     });
 
     /**
-     * @since       3.0.0
      * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
      */
 
     mixitup.StyleData = function() {
@@ -4696,8 +5014,10 @@
     });
 
     /**
-     * @since       3.0.0
      * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
      */
 
     mixitup.TransformData = function() {
@@ -4719,8 +5039,10 @@
     });
 
     /**
-     * @since       3.0.0
      * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
      */
 
     mixitup.UserInstruction = function() {

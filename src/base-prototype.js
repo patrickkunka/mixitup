@@ -1,11 +1,24 @@
 /* global mixitup, h */
 
+/**
+ * The basePrototype includes a set of static methods which are applied to all
+ * MixItUp classes as a means of integrating extensions via the addition of new
+ * methods and/or actions and hooks.
+ *
+ * @namespace
+ * @memberof    mixitup
+ * @public
+ * @since       3.0.0
+ */
+
 mixitup.basePrototype = {
 
     /**
-     * Shallow extend the base prototype with new methods
+     * Performs a shallow extend on the class's prototype, enabling the addition of
+     * multiple new members to the class in a single operation.
      *
      * @public
+     * @static
      * @since   2.1.0
      * @param   {object} extension
      * @return  {void}
@@ -25,9 +38,10 @@ mixitup.basePrototype = {
     },
 
     /**
-     * Register a named action hook on the prototype
+     * Registers an action function to be executed at a predefined hook.
      *
      * @public
+     * @static
      * @since   2.1.0
      * @param   {string}    hook
      * @param   {string}    name
@@ -41,9 +55,10 @@ mixitup.basePrototype = {
     },
 
     /**
-     * Register a named action hook on the prototype
+     * Registers a filter function to be executed at a predefined hook.
      *
      * @public
+     * @static
      * @since   2.1.0
      * @param   {string}    hook
      * @param   {string}    name
@@ -56,9 +71,11 @@ mixitup.basePrototype = {
     },
 
     /**
-     * Add a hook to the object's prototype
+     * Registers a filter or action to be executed at a predefined hook. The
+     * lower-level call used by `addAction` and `addFiler`.
      *
      * @private
+     * @static
      * @since   2.1.0
      * @param   {string}    type
      * @param   {string}    hook
@@ -82,11 +99,14 @@ mixitup.basePrototype = {
     },
 
     /**
+     * Executes any registered actions for the respective hook.
+     *
      * @private
+     * @static
      * @since   2.0.0
      * @param   {string}    methodName
      * @param   {boolean}   isPost
-     * @param   {*[]}       args
+     * @param   {Array<*>}  args
      * @return  {void}
      */
 
@@ -103,11 +123,14 @@ mixitup.basePrototype = {
     },
 
     /**
+     * Executes any registered filters for the respective hook.
+     *
      * @private
+     * @static
      * @since   2.0.0
      * @param   {string}    methodName
      * @param   {*}         value
-     * @param   {*[]}       args
+     * @param   {Array<*>}  args
      * @return  {*}
      */
 

@@ -1,8 +1,10 @@
 /* global mixitup, h */
 
 /**
- * @since       3.0.0
  * @constructor
+ * @memberof    mixitup
+ * @private
+ * @since       3.0.0
  */
 
 mixitup.TransformData = function() {

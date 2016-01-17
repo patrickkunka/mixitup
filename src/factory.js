@@ -1,15 +1,19 @@
 /* global mixitup:true, h */
 
 /**
- * The `mixitup` factory function is the main empty point for the v3 API,
+ * The `mixitup` factory function is the main entry point for the v3 API,
  * abstracting away the functionality of instantiating `Mixer` objects.
  *
- * @since   3.0.0
- * @param   {(Element|Element[]|string)}        container
- * @param   {object}                            [config]
- * @param   {object}                            [foreignDoc]
- * @param   {boolean}                           [returnCollection]
- * @return  {mixitup.Mixer|mixitup.Collection}
+ * @global
+ * @namespace
+ * @public
+ * @kind        function
+ * @since       3.0.0
+ * @param       {(Element|Element[]|string)}        container
+ * @param       {object}                            [config]
+ * @param       {object}                            [foreignDoc]
+ * @param       {boolean}                           [returnCollection]
+ * @return      {mixitup.Mixer|mixitup.Collection}
  */
 
 mixitup = function(container, config, foreignDoc, returnCollection) {
@@ -99,18 +103,19 @@ mixitup = function(container, config, foreignDoc, returnCollection) {
 
 /**
  * Returns a mixitup.Collection of one or more instances
- * that can be operated on simultaneously, similar
- * to a jQuery mixitup.Collection.
+ * that can be operated on simultaneously, similar to a jQuery collection.
+ * If the user specifically wants to control a collection, they should use this.
  *
- * @since   3.0.0
- * @param   {(Element|Element[]|string)}  container
- * @param   {object}                      [config]
- * @param   {object}                      [foreignDoc]
- * @return  {mixitup.Collection}
+ * @memberof    mixitup
+ * @since       3.0.0
+ * @param       {(Element|Element[]|string)}  container
+ * @param       {object}                      [config]
+ * @param       {object}                      [foreignDoc]
+ * @return      {mixitup.Collection}
  */
 
-mixitup.prototype.all = function(container, config, foreignDoc) {
+mixitup.all = function(container, config, foreignDoc) {
     var self = this;
 
-    return self.constructor(container, config, foreignDoc, true);
+    return self(container, config, foreignDoc, true);
 };

@@ -1,9 +1,11 @@
 /* global mixitup, h */
 
 /**
- * @since 3.0.0
  * @constructor
  * @namespace
+ * @memberof    mixitup
+ * @public
+ * @since       3.0.0
  * @param       {mixitup.Mixer[]}   instances
  */
 
@@ -18,47 +20,38 @@ mixitup.Collection = function(instances) {
     this.length = instances.length;
 };
 
-mixitup.Collection.prototype = {
-    constructor: mixitup.Collection,
+/**
+ * Provides a jQueryUI-like API for controlling one or more MixItUp instances.
+ *
+ * @memberof    mixitup.Collection
+ * @public
+ * @instance
+ * @since       3.0.0
+ * @param       {string}            methodName
+ * @return      {Promise}
+ */
 
-    /**
-     * Provides a jQueryUI-like API for controlling one or more
-     * MixItUp instances. Used as a shim for v2.0 compatibility.
-     *
-     * @param   {string}    methodName
-     * @return  {Promise}
-     */
+mixitup.Collection.prototype.do = function(methodName) {
+    var self        = this,
+        instance    = null,
+        args        = Array.prototype.slice.call(arguments),
+        tasks       = [],
+        q           = null,
+        i           = -1;
 
-    mixitup: function(methodName) {
-        var self        = this,
-            instance    = null,
-            args        = Array.prototype.slice.call(arguments),
-            tasks       = [],
-            q           = null,
-            i           = -1;
+    args.shift();
 
-        args.shift();
-
-        for (i = 0; instance = self[i]; i++) {
-            if (!q && instance.libraries.q) {
-                q = instance.libraries.q;
-            }
-
-            tasks.push(instance[methodName].apply(instance, args));
+    for (i = 0; instance = self[i]; i++) {
+        if (!q && instance.libraries.q) {
+            q = instance.libraries.q;
         }
 
-        if (q) {
-            return q.all(tasks);
-        } else if (mixitup.Mixer.prototype._has._promises) {
-            return Promise.all(tasks);
-        }
-    },
+        tasks.push(instance[methodName].apply(instance, args));
+    }
 
-    /**
-     * @alias mixitup.Collection.prototype.mixitup
-     */
-
-    mixItUp: function() {
-        return self.mixitup(arguments);
+    if (q) {
+        return q.all(tasks);
+    } else if (mixitup.Mixer.prototype._has._promises) {
+        return Promise.all(tasks);
     }
 };

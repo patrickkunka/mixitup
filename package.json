@@ -13,6 +13,7 @@
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "~1.5.1",
     "handlebars": "^4.0.5",
+    "jsdoc-parse": "^1.2.6",
     "jshint-stylish": "~1.0.0",
     "merge-stream": "^0.1.7",
     "q": "^1.4.1",

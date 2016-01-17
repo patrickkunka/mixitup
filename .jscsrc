@@ -89,8 +89,8 @@
         "checkParamExistence": true,
         "checkRedundantParams": true,
         "checkReturnTypes": true,
-        "enforceExistence": true,
         "requireNewlineAfterDescription": true,
-        // "requireParamDescription": true
+        // "requireParamDescription": true,
+        "requireDescriptionCompleteSentence": true
     }
 }

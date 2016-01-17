@@ -1,3 +1,4 @@
+/* global process */
 var gulp            = require('gulp'),
     merge           = require('merge-stream'),
     jshint          = require('gulp-jshint'),
@@ -7,6 +8,7 @@ var gulp            = require('gulp'),
     uglify          = require('gulp-uglify'),
     livereload      = require('gulp-livereload'),
     sourcemaps      = require('gulp-sourcemaps'),
+    parse           = require('jsdoc-parse'),
     exec            = require('child_process').exec,
     p               = require('./package.json');
 
@@ -83,6 +85,13 @@ gulp.task('build', ['lint', 'code-style'], function(done) {
 
         done(e);
     });
+});
+
+gulp.task('parse-docs', function() {
+    parse({
+        src: './dist/mixitup.js'
+    })
+        .pipe(process.stdout);
 });
 
 gulp.task('prod', ['uglify']);
