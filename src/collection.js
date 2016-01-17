@@ -1,6 +1,9 @@
 /* global mixitup, h */
 
 /**
+ * A jQuery-like wrapper object for one or more `mixitup.Mixer` instances
+ * allowing simultaneous control of multiple instances.
+ *
  * @constructor
  * @namespace
  * @memberof    mixitup
@@ -21,7 +24,8 @@ mixitup.Collection = function(instances) {
 };
 
 /**
- * Provides a jQueryUI-like API for controlling one or more MixItUp instances.
+ * A jQueryUI-like API for calling a method on all instances in the collection
+ * by passing the method name as a string followed by an neccessary parameters.
  *
  * @memberof    mixitup.Collection
  * @public

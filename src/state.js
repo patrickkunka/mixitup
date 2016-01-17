@@ -1,9 +1,10 @@
 /* global mixitup, h */
 
 /**
- * State objects form part of the public API and are provided at the start and
- * end of any operation. The most recent state  object is stored between
- * operations and can also be retrieved via the API.
+ * `mixitup.State` objects expose various pieces of data detailing the state of
+ * a MixItUp instance. They are provided at the start and end of any operation via
+ * callbacks and events, with the most recent state stored between operations
+ * for retrieval at any time via the API.
  *
  * @constructor
  * @namespace

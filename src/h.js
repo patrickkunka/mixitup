@@ -1,6 +1,11 @@
 /* global mixitup, h:true */
 
 /**
+ * A small library of commonly-used helper functions. This is just a subset of
+ * the complete "h" library, with some additional functions added specifically
+ * for MixItUp.
+ *
+ * @author      Kunkalabs Limited
  * @global
  * @namespace
  * @private

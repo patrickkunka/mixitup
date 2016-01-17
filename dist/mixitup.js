@@ -139,6 +139,11 @@
     };
 
     /**
+     * A small library of commonly-used helper functions. This is just a subset of
+     * the complete "h" library, with some additional functions added specifically
+     * for MixItUp.
+     *
+     * @author      Kunkalabs Limited
      * @global
      * @namespace
      * @private
@@ -964,6 +969,12 @@
     };
 
     /**
+     * The `mixitup.Mixer` class is used to construct discreet user-configured
+     * instances of MixItUp around the provided container element(s). Other
+     * than the intial `mixitup()` factory function call, which returns an
+     * instance of a mixer, all other public API functionality is performed
+     * on mixer instances.
+     *
      * @constructor
      * @namespace
      * @memberof    mixitup
@@ -4648,6 +4659,9 @@
     });
 
     /**
+     * A jQuery-like wrapper object for one or more `mixitup.Mixer` instances
+     * allowing simultaneous control of multiple instances.
+     *
      * @constructor
      * @namespace
      * @memberof    mixitup
@@ -4668,7 +4682,8 @@
     };
 
     /**
-     * Provides a jQueryUI-like API for controlling one or more MixItUp instances.
+     * A jQueryUI-like API for calling a method on all instances in the collection
+     * by passing the method name as a string followed by an neccessary parameters.
      *
      * @memberof    mixitup.Collection
      * @public
@@ -4704,9 +4719,9 @@
     };
 
     /**
-     * `Operation` objects contain all data neccessary to describe the full lifecycle of
-     * any MixItUp operation. They can be used to compute and store an operation for use
-     * at a later time (e.g. programmatic tweening).
+     * `mixitup.Operation` objects contain all data neccessary to describe the full
+     * lifecycle of any MixItUp operation. They can be used to compute and store an
+     * operation for use at a later time (e.g. programmatic tweening).
      *
      * @constructor
      * @namespace
@@ -4769,9 +4784,10 @@
     });
 
     /**
-     * State objects form part of the public API and are provided at the start and
-     * end of any operation. The most recent state  object is stored between
-     * operations and can also be retrieved via the API.
+     * `mixitup.State` objects expose various pieces of data detailing the state of
+     * a MixItUp instance. They are provided at the start and end of any operation via
+     * callbacks and events, with the most recent state stored between operations
+     * for retrieval at any time via the API.
      *
      * @constructor
      * @namespace
