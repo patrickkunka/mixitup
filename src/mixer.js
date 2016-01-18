@@ -242,7 +242,7 @@ h.extend(mixitup.Mixer.prototype,
 
         mixitup.Mixer.prototype._has._promises      = typeof Promise === 'function';
         mixitup.Mixer.prototype._has._transitions   = transitionPrefix !== 'unsupported';
-        mixitup.Mixer.prototype._is._crapIe        = window.atob ? false : true;
+        mixitup.Mixer.prototype._is._crapIe         = window.atob ? false : true;
 
         mixitup.Mixer.prototype._transitionProp =
             transitionPrefix ? transitionPrefix + 'Transition' : 'transition';
