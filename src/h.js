@@ -507,7 +507,7 @@ h = {
             },
             defered = null;
 
-        if (mixitup.Mixer.prototype.has._promises) {
+        if (mixitup.Mixer.prototype._has._promises) {
             promise.promise     = new Promise(function(resolve, reject) {
                 promise.resolve = resolve;
                 promise.reject  = reject;
@@ -535,10 +535,10 @@ h = {
      */
 
     canReportErrors: function(config) {
-        if (!config || config && !config.debug) {
+        if (!config || !config.debug) {
             return true;
-        } else if (config && config.debug && config.debug.enable === false) {
-            return false;
+        } else {
+            return config.debug.enable;
         }
     },
 

@@ -452,7 +452,7 @@ h.extend(mixitup.Mixer.prototype,
             for (i = 0; el = self._dom.targets[i]; i++) {
                 target = new mixitup.Target();
 
-                target._init(el, self);
+                target.init(el, self);
 
                 self._targets.push(target);
             }
@@ -587,6 +587,21 @@ h.extend(mixitup.Mixer.prototype,
             i               = -1;
 
         self._execAction('handleClick', 0, arguments);
+
+        if (
+            self._isMixing &&
+            (!self.animation.queue || self._queue.length >= self.animation.queueLimit)
+        ) {
+            if (h.canReportErrors(self)) {
+                console.warn(
+                    '[MixItUp] An operation was requested but the MixItUp ' +
+                    'instance was busy. The operation was rejected because ' +
+                    'queueing is disabled or the queue is full.'
+                );
+            }
+
+            return;
+        }
 
         for (key in self.selectors) {
             selectors.push(self.selectors[key]);
@@ -976,7 +991,7 @@ h.extend(mixitup.Mixer.prototype,
 
                 target = new mixitup.Target();
 
-                target._init(el, self);
+                target.init(el, self);
 
                 self._targets.splice(command.index, 0, target);
 
@@ -1044,7 +1059,7 @@ h.extend(mixitup.Mixer.prototype,
                 // show via selector
 
                 condition = operation.newFilter === '' ?
-                    false : target._dom.el.matches(operation.newFilter);
+                    false : target.dom.el.matches(operation.newFilter);
 
                 self._evaluateHideShow(
                     condition,
@@ -1059,7 +1074,7 @@ h.extend(mixitup.Mixer.prototype,
                 // show via element
 
                 self._evaluateHideShow(
-                    target._dom.el === operation.newFilter,
+                    target.dom.el === operation.newFilter,
                     target,
                     false,
                     operation
@@ -1071,7 +1086,7 @@ h.extend(mixitup.Mixer.prototype,
                 // show via collection
 
                 self._evaluateHideShow(
-                    operation.newFilter.indexOf(target._dom.el) > -1,
+                    operation.newFilter.indexOf(target.dom.el) > -1,
                     target,
                     false,
                     operation
@@ -1120,7 +1135,7 @@ h.extend(mixitup.Mixer.prototype,
         if (condition) {
             if (isRemoving && typeof operation.startFilter === 'string') {
                 self._evaluateHideShow(
-                    target._dom.el.matches(operation.startFilter),
+                    target.dom.el.matches(operation.startFilter),
                     target,
                     false,
                     operation
@@ -1128,12 +1143,12 @@ h.extend(mixitup.Mixer.prototype,
             } else {
                 operation.show.push(target);
 
-                !target._isShown && operation.toShow.push(target);
+                !target.isShown && operation.toShow.push(target);
             }
         } else {
             operation.hide.push(target);
 
-            target._isShown && operation.toHide.push(target);
+            target.isShown && operation.toHide.push(target);
         }
     },
 
@@ -1245,7 +1260,7 @@ h.extend(mixitup.Mixer.prototype,
 
         sort = sort ? sort : self._newSort;
 
-        value = target._dom.el.getAttribute('data-' + sort[depth].sortBy);
+        value = target.dom.el.getAttribute('data-' + sort[depth].sortBy);
 
         if (value === null) {
             if (h.canReportErrors(self)) {
@@ -1309,7 +1324,7 @@ h.extend(mixitup.Mixer.prototype,
         for (i = 0; target = order[i]; i++) {
             // Add targets into a document fragment
 
-            el = target._dom.el;
+            el = target.dom.el;
 
             frag.appendChild(el);
             frag.appendChild(self._dom.document.createTextNode(' '));
@@ -1534,19 +1549,19 @@ h.extend(mixitup.Mixer.prototype,
         // the real target objects should never be exposed
 
         for (i = 0; target = self._targets[i]; i++) {
-            state.targets.push(target._dom.el);
+            state.targets.push(target.dom.el);
         }
 
         for (i = 0; target = operation.matching[i]; i++) {
-            state.matching.push(target._dom.el);
+            state.matching.push(target.dom.el);
         }
 
         for (i = 0; target = operation.show[i]; i++) {
-            state.show.push(target._dom.el);
+            state.show.push(target.dom.el);
         }
 
         for (i = 0; target = operation.hide[i]; i++) {
-            state.hide.push(target._dom.el);
+            state.hide.push(target.dom.el);
         }
 
         state.activeFilter         = operation.newFilter;
@@ -1690,7 +1705,7 @@ h.extend(mixitup.Mixer.prototype,
         self._execAction('_getStartMixData', 0);
 
         for (i = 0; target = operation.show[i]; i++) {
-            data = target._getPosData();
+            data = target.getPosData();
 
             operation.showPosData[i] = {
                 startPosData: data
@@ -1698,7 +1713,7 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         for (i = 0; target = operation.toHide[i]; i++) {
-            data = target._getPosData();
+            data = target.getPosData();
 
             operation.toHidePosData[i] = {
                 startPosData: data
@@ -1740,7 +1755,7 @@ h.extend(mixitup.Mixer.prototype,
         self._execAction('_setInter', 0);
 
         for (i = 0; target = operation.toShow[i]; i++) {
-            target._show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
+            target.show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
         }
 
         if (operation.willChangeLayout) {
@@ -1766,27 +1781,15 @@ h.extend(mixitup.Mixer.prototype,
 
         self._execAction('_getInterMixData', 0);
 
-        if (operation) {
-            for (i = 0; target = operation.show[i]; i++) {
-                operation.showPosData[i].interPosData = target._getPosData();
-            }
-
-            for (i = 0; target = operation.toHide[i]; i++) {
-                operation.toHidePosData[i].interPosData = target._getPosData();
-            }
-
-            self._execAction('_getInterMixData', 1);
-
-            return;
+        for (i = 0; target = operation.show[i]; i++) {
+            operation.showPosData[i].interPosData = target.getPosData();
         }
 
-        for (i = 0; target = self._show[i]; i++) {
-            target._interPosData = target._getPosData();
+        for (i = 0; target = operation.toHide[i]; i++) {
+            operation.toHidePosData[i].interPosData = target.getPosData();
         }
 
-        for (i = 0; target = self._toHide[i]; i++) {
-            target._interPosData = target._getPosData();
-        }
+        self._execAction('_getInterMixData', 1);
     },
 
     /**
@@ -1807,7 +1810,7 @@ h.extend(mixitup.Mixer.prototype,
         operation.willSort && self._printSort(false, operation);
 
         for (i = 0; target = operation.toHide[i]; i++) {
-            target._hide();
+            target.hide();
         }
 
         self._execAction('_setFinal', 1);
@@ -1835,11 +1838,11 @@ h.extend(mixitup.Mixer.prototype,
         self._execAction('_getFinalMixData', 0, arguments);
 
         for (i = 0; target = operation.show[i]; i++) {
-            operation.showPosData[i].finalPosData = target._getPosData();
+            operation.showPosData[i].finalPosData = target.getPosData();
         }
 
         for (i = 0; target = operation.toHide[i]; i++) {
-            operation.toHidePosData[i].finalPosData = target._getPosData();
+            operation.toHidePosData[i].finalPosData = target.getPosData();
         }
 
         operation.newHeight = self._incPadding ?
@@ -1863,11 +1866,11 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         for (i = 0; target = operation.toShow[i]; i++) {
-            target._hide();
+            target.hide();
         }
 
         for (i = 0; target = operation.toHide[i]; i++) {
-            target._show(self.layout.display);
+            target.show(self.layout.display);
         }
 
         if (operation.willChangeLayout && self.animation.animateChangeLayout) {
@@ -1903,25 +1906,25 @@ h.extend(mixitup.Mixer.prototype,
 
             // Process x and y
 
-            posData.posIn.x     = target._isShown ? posData.startPosData.x - posData.interPosData.x : 0;
-            posData.posIn.y     = target._isShown ? posData.startPosData.y - posData.interPosData.y : 0;
+            posData.posIn.x     = target.isShown ? posData.startPosData.x - posData.interPosData.x : 0;
+            posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
             posData.posOut.x    = posData.finalPosData.x - posData.interPosData.x;
             posData.posOut.y    = posData.finalPosData.y - posData.interPosData.y;
 
             // Process display
 
-            posData.posIn.display   = target._isShown ? self.layout.display : 'none';
+            posData.posIn.display   = target.isShown ? self.layout.display : 'none';
             posData.posOut.display  = self.layout.display;
 
             // Process opacity
 
-            posData.posIn.opacity       = target._isShown ? 1 : self._effectsIn.opacity;
+            posData.posIn.opacity       = target.isShown ? 1 : self._effectsIn.opacity;
             posData.posOut.opacity      = 1;
             posData.tweenData.opacity   = posData.posOut.opacity - posData.posIn.opacity;
 
             // Adjust x and y if not nudging
 
-            if (!target._isShown && !self.animation.nudgeOut) {
+            if (!target.isShown && !self.animation.nudgeOut) {
                 posData.posIn.x = posData.posOut.x;
                 posData.posIn.y = posData.posOut.y;
             }
@@ -1996,8 +1999,8 @@ h.extend(mixitup.Mixer.prototype,
 
             // Process x and y
 
-            posData.posIn.x     = target._isShown ? posData.startPosData.x - posData.interPosData.x : 0;
-            posData.posIn.y     = target._isShown ? posData.startPosData.y - posData.interPosData.y : 0;
+            posData.posIn.x     = target.isShown ? posData.startPosData.x - posData.interPosData.x : 0;
+            posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
             posData.posOut.x    = self.animation.nudgeOut ? 0 : posData.posIn.x;
             posData.posOut.y    = self.animation.nudgeOut ? 0 : posData.posIn.y;
             posData.tweenData.x = posData.posOut.x - posData.posIn.x;
@@ -2059,7 +2062,7 @@ h.extend(mixitup.Mixer.prototype,
         for (i = 0; target = operation.show[i]; i++) {
             posData = operation.showPosData[i];
 
-            hideOrShow = target._isShown ? false : 'show'; // TODO: can we not mix types here?
+            hideOrShow = target.isShown ? false : 'show'; // TODO: can we not mix types here?
 
             willTransition = self._willTransition(
                 hideOrShow,
@@ -2074,9 +2077,9 @@ h.extend(mixitup.Mixer.prototype,
                 staggerIndex++;
             }
 
-            target._show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
+            target.show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
 
-            target._move({
+            target.move({
                 posIn: posData.posIn,
                 posOut: posData.posOut,
                 hideOrShow: hideOrShow,
@@ -2093,7 +2096,7 @@ h.extend(mixitup.Mixer.prototype,
 
             willTransition = self._willTransition(hideOrShow, posData.posIn, posData.posOut);
 
-            target._move({
+            target.move({
                 posIn: posData.posIn,
                 posOut: posData.posOut,
                 hideOrShow: hideOrShow,
@@ -2247,17 +2250,17 @@ h.extend(mixitup.Mixer.prototype,
         self._targetsDone = 0;
 
         for (i = 0; target = operation.show[i]; i++) {
-            target._cleanUp();
+            target.cleanUp();
 
-            target._show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
-            target._isShown = true;
+            target.show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
+            target.isShown = true;
         }
 
         for (i = 0; target = operation.toHide[i]; i++) {
-            target._cleanUp();
+            target.cleanUp();
 
-            target._hide();
-            target._isShown = false;
+            target.hide();
+            target.isShown = false;
         }
 
         if (operation.willSort) {
@@ -2283,7 +2286,7 @@ h.extend(mixitup.Mixer.prototype,
         if (operation.toRemove.length) {
             for (i = 0; target = self._targets[i]; i++) {
                 if (operation.toRemove.indexOf(target) > -1) {
-                    h.deleteElement(target._dom.el);
+                    h.deleteElement(target.dom.el);
 
                     self._targets.splice(i, 1);
 
@@ -2492,7 +2495,7 @@ h.extend(mixitup.Mixer.prototype,
 
         if (collection.length) {
             for (i = 0; target = self._targets[i]; i++) {
-                if (collection.indexOf(target._dom.el) > -1) {
+                if (collection.indexOf(target.dom.el) > -1) {
                     instruction.command.targets.push(target);
                 }
             }
@@ -2835,22 +2838,22 @@ h.extend(mixitup.Mixer.prototype,
         for (i = 0; target = operation.show[i]; i++) {
             posData = operation.showPosData[i];
 
-            target._applyTween(posData, multiplier);
+            target.applyTween(posData, multiplier);
         }
 
         for (i = 0; target = operation.hide[i]; i++) {
-            if (target._dom.el.style.display) {
-                target._hide();
+            if (target.dom.el.style.display) {
+                target.hide();
             }
 
             if ((toHideIndex = operation.toHide.indexOf(target)) > -1) {
                 posData = operation.toHidePosData[toHideIndex];
 
-                if (!target._dom.el.style.display) {
-                    target._show(self.layout.display);
+                if (!target.dom.el.style.display) {
+                    target.show(self.layout.display);
                 }
 
-                target._applyTween(posData, multiplier);
+                target.applyTween(posData, multiplier);
             }
         }
     },
@@ -3016,9 +3019,9 @@ h.extend(mixitup.Mixer.prototype,
         self._unbindEvents();
 
         for (i = 0; target = self._targets[i]; i++) {
-            hideAll && target._hide();
+            hideAll && target.hide();
 
-            target._unbindEvents();
+            target.unbindEvents();
         }
 
         for (i = 0; button = self._dom.allButtons[i]; i++) {
