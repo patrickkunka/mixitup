@@ -821,27 +821,37 @@
     };
 
     /**
-     * The basePrototype includes a set of static methods which are applied to all
-     * MixItUp classes as a means of integrating extensions via the addition of new
+     * The BasePrototype class exposes a set of static methods which all other MixItUp
+     * classes inherit as a means of integrating extensions via the addition of new
      * methods and/or actions and hooks.
      *
+     * @constructor
      * @namespace
      * @memberof    mixitup
      * @public
      * @since       3.0.0
      */
 
-    mixitup.basePrototype = {
+    mixitup.BasePrototype = function() {
+        this._actions = {};
+        this._filters = {};
+    };
+
+    mixitup.BasePrototype.prototype =
+    /** @lends mixitup.BasePrototype */
+    {
+        constructor: mixitup.BasePrototype,
 
         /**
          * Performs a shallow extend on the class's prototype, enabling the addition of
          * multiple new members to the class in a single operation.
          *
+         * @memberof    mixitup.BasePrototype
          * @public
          * @static
-         * @since   2.1.0
-         * @param   {object} extension
-         * @return  {void}
+         * @since       2.1.0
+         * @param       {object} extension
+         * @return      {void}
          */
 
         extend: function(extension) {
@@ -860,14 +870,15 @@
         /**
          * Registers an action function to be executed at a predefined hook.
          *
+         * @memberof    mixitup.BasePrototype
          * @public
          * @static
-         * @since   2.1.0
-         * @param   {string}    hook
-         * @param   {string}    name
-         * @param   {function}  func
-         * @param   {number}    priority
-         * @return  {void}
+         * @since       2.1.0
+         * @param       {string}    hook
+         * @param       {string}    name
+         * @param       {function}  func
+         * @param       {number}    priority
+         * @return      {void}
          */
 
         addAction: function(hook, name, func, priority) {
@@ -877,13 +888,14 @@
         /**
          * Registers a filter function to be executed at a predefined hook.
          *
+         * @memberof    mixitup.BasePrototype
          * @public
          * @static
-         * @since   2.1.0
-         * @param   {string}    hook
-         * @param   {string}    name
-         * @param   {function}  func
-         * @return  {void}
+         * @since       2.1.0
+         * @param       {string}    hook
+         * @param       {string}    name
+         * @param       {function}  func
+         * @return      {void}
          */
 
         addFilter: function(hook, name, func) {
@@ -894,15 +906,16 @@
          * Registers a filter or action to be executed at a predefined hook. The
          * lower-level call used by `addAction` and `addFiler`.
          *
+         * @memberof    mixitup.BasePrototype
          * @private
          * @static
-         * @since   2.1.0
-         * @param   {string}    type
-         * @param   {string}    hook
-         * @param   {string}    name
-         * @param   {function}  func
-         * @param   {number}    priority
-         * @return  {void}
+         * @since       2.1.0
+         * @param       {string}    type
+         * @param       {string}    hook
+         * @param       {string}    name
+         * @param       {function}  func
+         * @param       {number}    priority
+         * @return      {void}
          */
 
         _addHook: function(type, hook, name, func, priority) {
@@ -921,13 +934,14 @@
         /**
          * Executes any registered actions for the respective hook.
          *
+         * @memberof    mixitup.BasePrototype
          * @private
          * @static
-         * @since   2.0.0
-         * @param   {string}    methodName
-         * @param   {boolean}   isPost
-         * @param   {Array<*>}  args
-         * @return  {void}
+         * @since       2.0.0
+         * @param       {string}    methodName
+         * @param       {boolean}   isPost
+         * @param       {Array<*>}  args
+         * @return      {void}
          */
 
         _execAction: function(methodName, isPost, args) {
@@ -945,13 +959,14 @@
         /**
          * Executes any registered filters for the respective hook.
          *
+         * @memberof    mixitup.BasePrototype
          * @private
          * @static
-         * @since   2.0.0
-         * @param   {string}    methodName
-         * @param   {*}         value
-         * @param   {Array<*>}  args
-         * @return  {*}
+         * @since       2.0.0
+         * @param       {string}    methodName
+         * @param       {*}         value
+         * @param       {Array<*>}  args
+         * @return      {*}
          */
 
         _execFilter: function(methodName, value, args) {
@@ -1110,15 +1125,12 @@
         h.seal(this._dom);
     };
 
-    mixitup.Mixer.prototype = Object.create(mixitup.basePrototype);
+    mixitup.Mixer.prototype = new mixitup.BasePrototype();
 
     h.extend(mixitup.Mixer.prototype,
     /** @lends mixitup.Mixer */
     {
         constructor: mixitup.Mixer,
-
-        _actions: {},
-        _filters: {},
 
         _transformProp: 'transform',
         _transformRule: 'transform',
@@ -1210,7 +1222,7 @@
 
             mixitup.Mixer.prototype._has._promises      = typeof Promise === 'function';
             mixitup.Mixer.prototype._has._transitions   = transitionPrefix !== 'unsupported';
-            mixitup.Mixer.prototype._is._crapIe        = window.atob ? false : true;
+            mixitup.Mixer.prototype._is._crapIe         = window.atob ? false : true;
 
             mixitup.Mixer.prototype._transitionProp =
                 transitionPrefix ? transitionPrefix + 'Transition' : 'transition';
@@ -1542,19 +1554,21 @@
         handleClick: function(e) {
             var self            = this,
                 selectors       = [],
-                selector        = '',
-                toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '',
-                button          = null,
                 command         = {},
+                toggleSeperator = '',
                 filterString    = '',
                 sortString      = '',
+                selector        = '',
                 method          = '',
-                isTogglingOff   = false,
-                el              = null,
                 key             = '',
+                isTogglingOff   = false,
+                button          = null,
+                el              = null,
                 i               = -1;
 
             self._execAction('handleClick', 0, arguments);
+
+            toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '';
 
             if (
                 self._isMixing &&
@@ -1810,14 +1824,15 @@
          */
 
         _buildToggleArray: function() {
-            var self = this,
-                activeFilter = self._state.activeFilter.replace(/\s/g, ''),
-                filter = '',
-                i = -1;
-
-            activeFilter = activeFilter === self.selectors.target ? '' : activeFilter;
+            var self            = this,
+                activeFilter    = '',
+                filter          = '',
+                i               = -1;
 
             self._execAction('_buildToggleArray', 0, arguments);
+
+            activeFilter = self._state.activeFilter.replace(/\s/g, '');
+            activeFilter = activeFilter === self.selectors.target ? '' : activeFilter;
 
             if (self.controls.toggleLogic === 'or') {
                 self._toggleArray = activeFilter.split(',');
@@ -1849,9 +1864,9 @@
 
         _updateControls: function(command) {
             var self                = this,
-                output              = null,
                 filterToggleButton  = null,
                 activeButton        = null,
+                output              = null,
                 button              = null,
                 selector            = '',
                 i                   = -1,
@@ -1938,13 +1953,16 @@
 
         _insert: function(command, operation) {
             var self        = this,
-                nextSibling = self._getNextSibling(command.index, command.sibling, command.position),
-                frag        = self._dom.document.createDocumentFragment(),
+                nextSibling = null,
+                frag        = null,
                 target      = null,
                 el          = null,
                 i           = -1;
 
             self._execAction('insert', 0, arguments);
+
+            nextSibling = self._getNextSibling(command.index, command.sibling, command.position);
+            frag        = self._dom.document.createDocumentFragment();
 
             if (command.targets) {
                 for (i = 0; el = command.targets[i]; i++) {
@@ -1996,10 +2014,10 @@
                 }
             }
 
-            if (typeof self._targets.length && index !== 'undefined') {
+            if (self._targets.length && typeof index !== 'undefined') {
                 return (index < self._targets.length || !self._targets.length) ?
-                    self._targets[index]._dom.el :
-                    self._targets[self._targets.length - 1]._dom.el.nextElementSibling;
+                    self._targets[index].dom.el :
+                    self._targets[self._targets.length - 1].dom.el.nextElementSibling;
             } else {
                 return self._dom.parent.children.length ? self._dom.parent.children[0] : null;
             }
@@ -2186,6 +2204,8 @@
                 attrA       = self._getAttributeValue(a, depth, sort),
                 attrB       = self._getAttributeValue(b, depth, sort);
 
+            // TODO: Can we read data-attributes before the compare algorithm is called?
+
             if (isNaN(attrA * 1) || isNaN(attrB * 1)) {
                 attrA = attrA.toLowerCase();
                 attrB = attrB.toLowerCase();
@@ -2237,8 +2257,8 @@
                     // types are mixed
 
                     console.warn(
-                        '[MixItUp] The attribute "data-' +
-                        self._newSort[depth].sortBy +
+                        '[MixItUp] The sorting attribute "data-' +
+                        sort[depth].sortBy +
                         '" was not present on one or more target elements'
                     );
                 }
@@ -2517,7 +2537,9 @@
             // the real target objects should never be exposed
 
             for (i = 0; target = self._targets[i]; i++) {
-                state.targets.push(target.dom.el);
+                if (!operation.toRemove.length || operation.toRemove.indexOf(target) < 0) {
+                    state.targets.push(target.dom.el);
+                }
             }
 
             for (i = 0; target = operation.matching[i]; i++) {
@@ -2529,7 +2551,9 @@
             }
 
             for (i = 0; target = operation.hide[i]; i++) {
-                state.hide.push(target.dom.el);
+                if (!operation.toRemove.length || operation.toRemove.indexOf(target) < 0) {
+                    state.hide.push(target.dom.el);
+                }
             }
 
             state.activeFilter         = operation.newFilter;
@@ -3203,19 +3227,19 @@
          */
 
         _cleanUp: function(operation) {
-            var self = this,
-                target = null,
-                firstInQueue = null,
-                i = -1;
+            var self        = this,
+                target      = null,
+                nextInQueue = null,
+                i           = -1;
 
             self._isMixing = false;
 
             self._execAction('_cleanUp', 0);
 
-            self._targetsMoved = 0;
-            self._targetsImmovable = 0;
-            self._targetsBound = 0;
-            self._targetsDone = 0;
+            self._targetsMoved          =
+                self._targetsImmovable  =
+                self._targetsBound      =
+                self._targetsDone       = 0;
 
             for (i = 0; target = operation.show[i]; i++) {
                 target.cleanUp();
@@ -3254,6 +3278,7 @@
             if (operation.toRemove.length) {
                 for (i = 0; target = self._targets[i]; i++) {
                     if (operation.toRemove.indexOf(target) > -1) {
+
                         h.deleteElement(target.dom.el);
 
                         self._targets.splice(i, 1);
@@ -3292,11 +3317,11 @@
             if (self._queue.length) {
                 self._execAction('_queue', 0);
 
-                firstInQueue = self._queue.shift();
+                nextInQueue = self._queue.shift();
 
-                self._userPromise = firstInQueue[3];
+                self._userPromise = nextInQueue[3];
 
-                self.multiMix.apply(self, firstInQueue);
+                self.multiMix.apply(self, nextInQueue);
             }
 
             self._execAction('_cleanUp', 1);
@@ -3365,10 +3390,15 @@
                     // Insert index
 
                     instruction.command.index = arg;
-                } else if (typeof arg === 'string') {
+                } else if (typeof arg === 'string' && ['before', 'after'].indexOf(arg) > -1) {
                     // 'before'/'after'
 
                     instruction.command.position = arg;
+                } else if (typeof arg === 'string') {
+                    // Markup
+
+                    instruction.command.targets =
+                        Array.prototype.slice.call(h.createElement(arg).children);
                 } else if (typeof arg === 'object' && h.isElement(arg, self._dom.document)) {
                     // Single element
 
@@ -3650,14 +3680,28 @@
             // filter is the best alternative
 
             if (self._isMixing) {
+                if (h.canReportErrors(self)) {
+                    console.warn(
+                        '[MixItUp] Operations cannot be requested while MixItUp is busy.'
+                    );
+                }
+
                 return null;
             }
 
             if (insertCommand) {
+                if (typeof insertCommand.targets === 'undefined') {
+                    insertCommand = self._parseInsertArgs([insertCommand]).command;
+                }
+
                 self._insert(insertCommand, operation);
             }
 
             if (removeCommand) {
+                if (typeof removeCommand.targets === 'undefined') {
+                    removeCommand = self._parseRemoveArgs([removeCommand]).command;
+                }
+
                 operation.toRemove = removeCommand.targets;
             }
 
@@ -3953,6 +3997,9 @@
         getState: function() {
             var self = this;
 
+            // TODO: would be safer to build a new state on
+            // each request so that users cannot override the state
+
             return self._execFilter('getState', self._state, self);
         },
 
@@ -4042,13 +4089,10 @@
         h.seal(this.dom);
     };
 
-    mixitup.Target.prototype = Object.create(mixitup.basePrototype);
+    mixitup.Target.prototype = new mixitup.BasePrototype();
 
     h.extend(mixitup.Target.prototype, {
         constructor: mixitup.Target,
-
-        _actions: {},
-        _filters: {},
 
         /**
          * Initialises a newly instantiated Target.
@@ -4746,7 +4790,7 @@
      */
 
     mixitup.Operation = function() {
-        this._execAction('_constructor', 0);
+        this._execAction('constructor', 0);
 
         this.id                  = '';
 
@@ -4786,17 +4830,12 @@
         this.newContainerClass   = '';
         this.newDisplay          = '';
 
-        this._execAction('_constructor', 1);
+        this._execAction('constructor', 1);
 
         h.seal(this);
     };
 
-    mixitup.Operation.prototype = Object.create(mixitup.basePrototype);
-
-    h.extend(mixitup.Operation.prototype, {
-        _actions: {},
-        _filters: {}
-    });
+    mixitup.Operation.prototype = new mixitup.BasePrototype();
 
     /**
      * `mixitup.State` objects expose various pieces of data detailing the state of
@@ -4812,7 +4851,7 @@
      */
 
     mixitup.State = function() {
-        this._execAction('_constructor', 0);
+        this._execAction('constructor', 0);
 
         /**
          * The currently active filter selector as set by a control click or the API
@@ -4994,17 +5033,12 @@
 
         this.triggerElement = null;
 
-        this._execAction('_constructor', 1);
+        this._execAction('constructor', 1);
 
         h.seal(this);
     };
 
-    mixitup.State.prototype = Object.create(mixitup.basePrototype);
-
-    h.extend(mixitup.State.prototype, {
-        _actions: {},
-        _filters: {}
-    });
+    mixitup.State.prototype = new mixitup.BasePrototype();
 
     /**
      * @constructor
@@ -5014,7 +5048,7 @@
      */
 
     mixitup.StyleData = function() {
-        this._execAction('_constructor', 0);
+        this._execAction('constructor', 0);
 
         this.x              = 0;
         this.y              = 0;
@@ -5032,17 +5066,12 @@
         this.rotateY        = new mixitup.TransformData();
         this.rotateZ        = new mixitup.TransformData();
 
-        this._execAction('_constructor', 1);
+        this._execAction('constructor', 1);
 
         h.seal(this);
     };
 
-    mixitup.StyleData.prototype = Object.create(mixitup.basePrototype);
-
-    h.extend(mixitup.StyleData.prototype, {
-        _actions: {},
-        _filters: {}
-    });
+    mixitup.StyleData.prototype = new mixitup.BasePrototype();
 
     /**
      * @constructor
@@ -5052,22 +5081,17 @@
      */
 
     mixitup.TransformData = function() {
-        this._execAction('_constructor', 0);
+        this._execAction('constructor', 0);
 
         this.value  = 0;
         this.unit   = '';
 
-        this._execAction('_constructor', 1);
+        this._execAction('cconstructor', 1);
 
         h.seal(this);
     };
 
-    mixitup.TransformData.prototype = Object.create(mixitup.basePrototype);
-
-    h.extend(mixitup.TransformData.prototype, {
-        _actions: {},
-        _filters: {}
-    });
+    mixitup.TransformData.prototype = new mixitup.BasePrototype();
 
     /**
      * @constructor
@@ -5077,23 +5101,18 @@
      */
 
     mixitup.UserInstruction = function() {
-        this._execAction('_constructor', 0);
+        this._execAction('constructor', 0);
 
         this.command    = {};
         this.animate    = false;
         this.callback   = null;
 
-        this._execAction('_constructor', 1);
+        this._execAction('constructor', 1);
 
         h.seal(this);
     };
 
-    mixitup.UserInstruction.prototype = Object.create(mixitup.basePrototype);
-
-    h.extend(mixitup.UserInstruction.prototype, {
-        _actions: {},
-        _filters: {}
-    });
+    mixitup.UserInstruction.prototype = new mixitup.BasePrototype();
     mixitup.CORE_VERSION    = '3.0.0-beta';
     mixitup.h               = h;
 

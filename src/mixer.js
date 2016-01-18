@@ -142,15 +142,12 @@ mixitup.Mixer = function() {
     h.seal(this._dom);
 };
 
-mixitup.Mixer.prototype = Object.create(mixitup.basePrototype);
+mixitup.Mixer.prototype = new mixitup.BasePrototype();
 
 h.extend(mixitup.Mixer.prototype,
 /** @lends mixitup.Mixer */
 {
     constructor: mixitup.Mixer,
-
-    _actions: {},
-    _filters: {},
 
     _transformProp: 'transform',
     _transformRule: 'transform',
@@ -574,19 +571,21 @@ h.extend(mixitup.Mixer.prototype,
     handleClick: function(e) {
         var self            = this,
             selectors       = [],
-            selector        = '',
-            toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '',
-            button          = null,
             command         = {},
+            toggleSeperator = '',
             filterString    = '',
             sortString      = '',
+            selector        = '',
             method          = '',
-            isTogglingOff   = false,
-            el              = null,
             key             = '',
+            isTogglingOff   = false,
+            button          = null,
+            el              = null,
             i               = -1;
 
         self._execAction('handleClick', 0, arguments);
+
+        toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '';
 
         if (
             self._isMixing &&
@@ -842,14 +841,15 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     _buildToggleArray: function() {
-        var self = this,
-            activeFilter = self._state.activeFilter.replace(/\s/g, ''),
-            filter = '',
-            i = -1;
-
-        activeFilter = activeFilter === self.selectors.target ? '' : activeFilter;
+        var self            = this,
+            activeFilter    = '',
+            filter          = '',
+            i               = -1;
 
         self._execAction('_buildToggleArray', 0, arguments);
+
+        activeFilter = self._state.activeFilter.replace(/\s/g, '');
+        activeFilter = activeFilter === self.selectors.target ? '' : activeFilter;
 
         if (self.controls.toggleLogic === 'or') {
             self._toggleArray = activeFilter.split(',');
@@ -881,9 +881,9 @@ h.extend(mixitup.Mixer.prototype,
 
     _updateControls: function(command) {
         var self                = this,
-            output              = null,
             filterToggleButton  = null,
             activeButton        = null,
+            output              = null,
             button              = null,
             selector            = '',
             i                   = -1,
@@ -970,13 +970,16 @@ h.extend(mixitup.Mixer.prototype,
 
     _insert: function(command, operation) {
         var self        = this,
-            nextSibling = self._getNextSibling(command.index, command.sibling, command.position),
-            frag        = self._dom.document.createDocumentFragment(),
+            nextSibling = null,
+            frag        = null,
             target      = null,
             el          = null,
             i           = -1;
 
         self._execAction('insert', 0, arguments);
+
+        nextSibling = self._getNextSibling(command.index, command.sibling, command.position);
+        frag        = self._dom.document.createDocumentFragment();
 
         if (command.targets) {
             for (i = 0; el = command.targets[i]; i++) {
@@ -1028,10 +1031,10 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        if (typeof self._targets.length && index !== 'undefined') {
+        if (self._targets.length && typeof index !== 'undefined') {
             return (index < self._targets.length || !self._targets.length) ?
-                self._targets[index]._dom.el :
-                self._targets[self._targets.length - 1]._dom.el.nextElementSibling;
+                self._targets[index].dom.el :
+                self._targets[self._targets.length - 1].dom.el.nextElementSibling;
         } else {
             return self._dom.parent.children.length ? self._dom.parent.children[0] : null;
         }
@@ -1218,6 +1221,8 @@ h.extend(mixitup.Mixer.prototype,
             attrA       = self._getAttributeValue(a, depth, sort),
             attrB       = self._getAttributeValue(b, depth, sort);
 
+        // TODO: Can we read data-attributes before the compare algorithm is called?
+
         if (isNaN(attrA * 1) || isNaN(attrB * 1)) {
             attrA = attrA.toLowerCase();
             attrB = attrB.toLowerCase();
@@ -1269,8 +1274,8 @@ h.extend(mixitup.Mixer.prototype,
                 // types are mixed
 
                 console.warn(
-                    '[MixItUp] The attribute "data-' +
-                    self._newSort[depth].sortBy +
+                    '[MixItUp] The sorting attribute "data-' +
+                    sort[depth].sortBy +
                     '" was not present on one or more target elements'
                 );
             }
@@ -1549,7 +1554,9 @@ h.extend(mixitup.Mixer.prototype,
         // the real target objects should never be exposed
 
         for (i = 0; target = self._targets[i]; i++) {
-            state.targets.push(target.dom.el);
+            if (!operation.toRemove.length || operation.toRemove.indexOf(target) < 0) {
+                state.targets.push(target.dom.el);
+            }
         }
 
         for (i = 0; target = operation.matching[i]; i++) {
@@ -1561,7 +1568,9 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         for (i = 0; target = operation.hide[i]; i++) {
-            state.hide.push(target.dom.el);
+            if (!operation.toRemove.length || operation.toRemove.indexOf(target) < 0) {
+                state.hide.push(target.dom.el);
+            }
         }
 
         state.activeFilter         = operation.newFilter;
@@ -2235,19 +2244,19 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     _cleanUp: function(operation) {
-        var self = this,
-            target = null,
-            firstInQueue = null,
-            i = -1;
+        var self        = this,
+            target      = null,
+            nextInQueue = null,
+            i           = -1;
 
         self._isMixing = false;
 
         self._execAction('_cleanUp', 0);
 
-        self._targetsMoved = 0;
-        self._targetsImmovable = 0;
-        self._targetsBound = 0;
-        self._targetsDone = 0;
+        self._targetsMoved          =
+            self._targetsImmovable  =
+            self._targetsBound      =
+            self._targetsDone       = 0;
 
         for (i = 0; target = operation.show[i]; i++) {
             target.cleanUp();
@@ -2286,6 +2295,7 @@ h.extend(mixitup.Mixer.prototype,
         if (operation.toRemove.length) {
             for (i = 0; target = self._targets[i]; i++) {
                 if (operation.toRemove.indexOf(target) > -1) {
+
                     h.deleteElement(target.dom.el);
 
                     self._targets.splice(i, 1);
@@ -2324,11 +2334,11 @@ h.extend(mixitup.Mixer.prototype,
         if (self._queue.length) {
             self._execAction('_queue', 0);
 
-            firstInQueue = self._queue.shift();
+            nextInQueue = self._queue.shift();
 
-            self._userPromise = firstInQueue[3];
+            self._userPromise = nextInQueue[3];
 
-            self.multiMix.apply(self, firstInQueue);
+            self.multiMix.apply(self, nextInQueue);
         }
 
         self._execAction('_cleanUp', 1);
@@ -2397,10 +2407,15 @@ h.extend(mixitup.Mixer.prototype,
                 // Insert index
 
                 instruction.command.index = arg;
-            } else if (typeof arg === 'string') {
+            } else if (typeof arg === 'string' && ['before', 'after'].indexOf(arg) > -1) {
                 // 'before'/'after'
 
                 instruction.command.position = arg;
+            } else if (typeof arg === 'string') {
+                // Markup
+
+                instruction.command.targets =
+                    Array.prototype.slice.call(h.createElement(arg).children);
             } else if (typeof arg === 'object' && h.isElement(arg, self._dom.document)) {
                 // Single element
 
@@ -2682,14 +2697,28 @@ h.extend(mixitup.Mixer.prototype,
         // filter is the best alternative
 
         if (self._isMixing) {
+            if (h.canReportErrors(self)) {
+                console.warn(
+                    '[MixItUp] Operations cannot be requested while MixItUp is busy.'
+                );
+            }
+
             return null;
         }
 
         if (insertCommand) {
+            if (typeof insertCommand.targets === 'undefined') {
+                insertCommand = self._parseInsertArgs([insertCommand]).command;
+            }
+
             self._insert(insertCommand, operation);
         }
 
         if (removeCommand) {
+            if (typeof removeCommand.targets === 'undefined') {
+                removeCommand = self._parseRemoveArgs([removeCommand]).command;
+            }
+
             operation.toRemove = removeCommand.targets;
         }
 
@@ -2984,6 +3013,9 @@ h.extend(mixitup.Mixer.prototype,
 
     getState: function() {
         var self = this;
+
+        // TODO: would be safer to build a new state on
+        // each request so that users cannot override the state
 
         return self._execFilter('getState', self._state, self);
     },

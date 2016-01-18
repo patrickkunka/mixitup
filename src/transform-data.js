@@ -8,19 +8,14 @@
  */
 
 mixitup.TransformData = function() {
-    this._execAction('_constructor', 0);
+    this._execAction('constructor', 0);
 
     this.value  = 0;
     this.unit   = '';
 
-    this._execAction('_constructor', 1);
+    this._execAction('cconstructor', 1);
 
     h.seal(this);
 };
 
-mixitup.TransformData.prototype = Object.create(mixitup.basePrototype);
-
-h.extend(mixitup.TransformData.prototype, {
-    _actions: {},
-    _filters: {}
-});
+mixitup.TransformData.prototype = new mixitup.BasePrototype();

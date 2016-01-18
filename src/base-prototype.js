@@ -1,27 +1,37 @@
 /* global mixitup, h */
 
 /**
- * The basePrototype includes a set of static methods which are applied to all
- * MixItUp classes as a means of integrating extensions via the addition of new
+ * The BasePrototype class exposes a set of static methods which all other MixItUp
+ * classes inherit as a means of integrating extensions via the addition of new
  * methods and/or actions and hooks.
  *
+ * @constructor
  * @namespace
  * @memberof    mixitup
  * @public
  * @since       3.0.0
  */
 
-mixitup.basePrototype = {
+mixitup.BasePrototype = function() {
+    this._actions = {};
+    this._filters = {};
+};
+
+mixitup.BasePrototype.prototype =
+/** @lends mixitup.BasePrototype */
+{
+    constructor: mixitup.BasePrototype,
 
     /**
      * Performs a shallow extend on the class's prototype, enabling the addition of
      * multiple new members to the class in a single operation.
      *
+     * @memberof    mixitup.BasePrototype
      * @public
      * @static
-     * @since   2.1.0
-     * @param   {object} extension
-     * @return  {void}
+     * @since       2.1.0
+     * @param       {object} extension
+     * @return      {void}
      */
 
     extend: function(extension) {
@@ -40,14 +50,15 @@ mixitup.basePrototype = {
     /**
      * Registers an action function to be executed at a predefined hook.
      *
+     * @memberof    mixitup.BasePrototype
      * @public
      * @static
-     * @since   2.1.0
-     * @param   {string}    hook
-     * @param   {string}    name
-     * @param   {function}  func
-     * @param   {number}    priority
-     * @return  {void}
+     * @since       2.1.0
+     * @param       {string}    hook
+     * @param       {string}    name
+     * @param       {function}  func
+     * @param       {number}    priority
+     * @return      {void}
      */
 
     addAction: function(hook, name, func, priority) {
@@ -57,13 +68,14 @@ mixitup.basePrototype = {
     /**
      * Registers a filter function to be executed at a predefined hook.
      *
+     * @memberof    mixitup.BasePrototype
      * @public
      * @static
-     * @since   2.1.0
-     * @param   {string}    hook
-     * @param   {string}    name
-     * @param   {function}  func
-     * @return  {void}
+     * @since       2.1.0
+     * @param       {string}    hook
+     * @param       {string}    name
+     * @param       {function}  func
+     * @return      {void}
      */
 
     addFilter: function(hook, name, func) {
@@ -74,15 +86,16 @@ mixitup.basePrototype = {
      * Registers a filter or action to be executed at a predefined hook. The
      * lower-level call used by `addAction` and `addFiler`.
      *
+     * @memberof    mixitup.BasePrototype
      * @private
      * @static
-     * @since   2.1.0
-     * @param   {string}    type
-     * @param   {string}    hook
-     * @param   {string}    name
-     * @param   {function}  func
-     * @param   {number}    priority
-     * @return  {void}
+     * @since       2.1.0
+     * @param       {string}    type
+     * @param       {string}    hook
+     * @param       {string}    name
+     * @param       {function}  func
+     * @param       {number}    priority
+     * @return      {void}
      */
 
     _addHook: function(type, hook, name, func, priority) {
@@ -101,13 +114,14 @@ mixitup.basePrototype = {
     /**
      * Executes any registered actions for the respective hook.
      *
+     * @memberof    mixitup.BasePrototype
      * @private
      * @static
-     * @since   2.0.0
-     * @param   {string}    methodName
-     * @param   {boolean}   isPost
-     * @param   {Array<*>}  args
-     * @return  {void}
+     * @since       2.0.0
+     * @param       {string}    methodName
+     * @param       {boolean}   isPost
+     * @param       {Array<*>}  args
+     * @return      {void}
      */
 
     _execAction: function(methodName, isPost, args) {
@@ -125,13 +139,14 @@ mixitup.basePrototype = {
     /**
      * Executes any registered filters for the respective hook.
      *
+     * @memberof    mixitup.BasePrototype
      * @private
      * @static
-     * @since   2.0.0
-     * @param   {string}    methodName
-     * @param   {*}         value
-     * @param   {Array<*>}  args
-     * @return  {*}
+     * @since       2.0.0
+     * @param       {string}    methodName
+     * @param       {*}         value
+     * @param       {Array<*>}  args
+     * @return      {*}
      */
 
     _execFilter: function(methodName, value, args) {

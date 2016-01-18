@@ -13,7 +13,7 @@
  */
 
 mixitup.Operation = function() {
-    this._execAction('_constructor', 0);
+    this._execAction('constructor', 0);
 
     this.id                  = '';
 
@@ -53,14 +53,9 @@ mixitup.Operation = function() {
     this.newContainerClass   = '';
     this.newDisplay          = '';
 
-    this._execAction('_constructor', 1);
+    this._execAction('constructor', 1);
 
     h.seal(this);
 };
 
-mixitup.Operation.prototype = Object.create(mixitup.basePrototype);
-
-h.extend(mixitup.Operation.prototype, {
-    _actions: {},
-    _filters: {}
-});
+mixitup.Operation.prototype = new mixitup.BasePrototype();

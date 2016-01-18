@@ -6,32 +6,44 @@
     </head>
     <body>
         <menu>
+            <h2>Native Controls</h2>
+
             <h3>Filters</h3>
 
-            <menuitem class="filter control" data-filter="all">All</menuitem>
-            <menuitem class="filter control" data-filter="none">None</menuitem>
-            <menuitem class="filter control" data-filter=".cat-1">Category A</menuitem>
-            <menuitem class="filter control" data-filter=".cat-2">Category B</menuitem>
-            <menuitem class="filter control" data-filter=".cat-3">Category C</menuitem>
+            <div class="filter control" data-filter="all">All</div>
+            <div class="filter control" data-filter="none">None</div>
+            <div class="filter control" data-filter=".cat-1">Category A</div>
+            <div class="filter control" data-filter=".cat-2">Category B</div>
+            <div class="filter control" data-filter=".cat-3">Category C</div>
 
             <h3>Filter Toggles</h3>
 
-            <menuitem class="filter-toggle control" data-filter=".cat-1">Category A</menuitem>
-            <menuitem class="filter-toggle control" data-filter=".cat-2">Category B</menuitem>
-            <menuitem class="filter-toggle control" data-filter=".cat-3">Category C</menuitem>
+            <div class="filter-toggle control" data-filter=".cat-1">Category A</div>
+            <div class="filter-toggle control" data-filter=".cat-2">Category B</div>
+            <div class="filter-toggle control" data-filter=".cat-3">Category C</div>
 
             <h3>Sorts</h3>
 
-            <menuitem class="sort control" data-sort="default:asc">Ascending</menuitem>
-            <menuitem class="sort control" data-sort="default:desc">Descending</menuitem> |
+            <div class="sort control" data-sort="default:asc">Ascending</div>
+            <div class="sort control" data-sort="default:desc">Descending</div> |
 
-            <menuitem class="sort control" data-sort="order:asc">Custom Ascending</menuitem>
-            <menuitem class="sort control" data-sort="order:desc">Custom Descending</menuitem>
+            <div class="sort control" data-sort="order:asc">Custom Ascending</div>
+            <div class="sort control" data-sort="order:desc">Custom Descending</div>
 
             <h3>MultiMix</h3>
 
-            <menuitem class="multi-mix control" data-filter=".cat-1" data-sort="default:asc">Category A / Ascending</menuitem>
-            <menuitem class="multi-mix control" data-filter=".cat-3" data-sort="order:desc">Category C / Custom Descending</menuitem>
+            <div class="multi-mix control" data-filter=".cat-1" data-sort="default:asc">Category A / Ascending</div>
+            <div class="multi-mix control" data-filter=".cat-3" data-sort="order:desc">Category C / Custom Descending</div>
+
+            <h2>API Methods</h2>
+
+            <div class="control js-append">Append</div>
+            <div class="control js-prepend">Prepend</div>
+            <div class="control js-insert-at-index">Insert at index (5)</div>
+            <div class="control js-remove-via-element">Remove by element reference (0)</div>
+            <div class="control js-remove-via-index">Remove by index (3)</div>
+            <div class="control js-insert-multiple-via-markup">Insert Multiple via markup</div>
+            <div class="control js-insert-multiple-via-elements">Insert Multiple via elements</div>
         </menu>
 
         <section class="sandbox">

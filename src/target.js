@@ -34,13 +34,10 @@ mixitup.Target = function() {
     h.seal(this.dom);
 };
 
-mixitup.Target.prototype = Object.create(mixitup.basePrototype);
+mixitup.Target.prototype = new mixitup.BasePrototype();
 
 h.extend(mixitup.Target.prototype, {
     constructor: mixitup.Target,
-
-    _actions: {},
-    _filters: {},
 
     /**
      * Initialises a newly instantiated Target.

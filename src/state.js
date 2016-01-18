@@ -14,7 +14,7 @@
  */
 
 mixitup.State = function() {
-    this._execAction('_constructor', 0);
+    this._execAction('constructor', 0);
 
     /**
      * The currently active filter selector as set by a control click or the API
@@ -196,14 +196,9 @@ mixitup.State = function() {
 
     this.triggerElement = null;
 
-    this._execAction('_constructor', 1);
+    this._execAction('constructor', 1);
 
     h.seal(this);
 };
 
-mixitup.State.prototype = Object.create(mixitup.basePrototype);
-
-h.extend(mixitup.State.prototype, {
-    _actions: {},
-    _filters: {}
-});
+mixitup.State.prototype = new mixitup.BasePrototype();

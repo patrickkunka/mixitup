@@ -8,7 +8,7 @@
  */
 
 mixitup.StyleData = function() {
-    this._execAction('_constructor', 0);
+    this._execAction('constructor', 0);
 
     this.x              = 0;
     this.y              = 0;
@@ -26,14 +26,9 @@ mixitup.StyleData = function() {
     this.rotateY        = new mixitup.TransformData();
     this.rotateZ        = new mixitup.TransformData();
 
-    this._execAction('_constructor', 1);
+    this._execAction('constructor', 1);
 
     h.seal(this);
 };
 
-mixitup.StyleData.prototype = Object.create(mixitup.basePrototype);
-
-h.extend(mixitup.StyleData.prototype, {
-    _actions: {},
-    _filters: {}
-});
+mixitup.StyleData.prototype = new mixitup.BasePrototype();

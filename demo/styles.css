@@ -18,13 +18,17 @@ body {
     width: 100px;
     height: 100px;
     margin: 10px;
-    background: blue;
+    background: skyblue;
 }
 
 .mix.cat-2 {
-    background: red;
+    background: violet;
 }
 
 .mix.cat-3 {
     background: yellow;
+}
+
+.mix.cat-4 {
+    background: aquamarine;
 }
