@@ -1409,6 +1409,9 @@ h.extend(mixitup.Mixer.prototype,
             self._parseEffect(transformName, effectsOut, self._effectsOut, self._transformOut, true);
         }
 
+        // TODO: fix issue where staggering is disabled via the setting
+        // of a new effects string (stagger is currently persisted).
+
         self._parseEffect('stagger', effectsIn, self._effectsIn, self._transformIn);
         self._parseEffect('stagger', effectsOut, self._effectsOut, self._transformOut, true);
     },
@@ -1672,6 +1675,10 @@ h.extend(mixitup.Mixer.prototype,
 
             self._dom.parent.style[mixitup.Mixer.prototype._perspectiveOriginProp] =
                 self.animation.perspectiveOrigin;
+
+            // TODO: even if animate resize container is disabled, the container
+            // height/width should still be locked during an operation
+            // (if not changing).
 
             if (self.animation.animateResizeContainer) {
                 self._dom.parent.style.height = operation.startHeight + 'px';
