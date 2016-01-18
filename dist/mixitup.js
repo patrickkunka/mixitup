@@ -1089,7 +1089,7 @@
             _transformIn: [],
             _transformOut: [],
             _queue: [],
-            handler: null,
+            _handler: null,
             _state: null,
             _lastOperation: null,
             _lastClicked: null,
@@ -1454,15 +1454,15 @@
 
             self._execAction('_bindEvents', 0);
 
-            self.handler = function(e) {
+            self._handler = function(e) {
                 return self._eventBus(e);
             };
 
             if (self.controls.live) {
-                h.on(window, 'click', self.handler);
+                h.on(window, 'click', self._handler);
             } else {
                 for (i = 0; button = self._dom.allButtons[i]; i++) {
-                    h.on(button, 'click', self.handler);
+                    h.on(button, 'click', self._handler);
                 }
             }
 
@@ -1503,10 +1503,10 @@
 
             self._execAction('_unbindEvents', 0);
 
-            h.off(window, 'click', self.handler);
+            h.off(window, 'click', self._handler);
 
             for (i = 0; button = self._dom.allButtons[i]; i++) {
-                h.on(button, 'click', self.handler);
+                h.on(button, 'click', self._handler);
             }
 
             self._execAction('_unbindEvents', 1);
@@ -4025,7 +4025,7 @@
             _isShown: false,
             _isBound: false,
             _isExcluded: false,
-            handler: null,
+            _handler: null,
             _operation: null,
 
             _dom: {
@@ -4568,8 +4568,8 @@
 
             self._execAction('_unbindEvents', 0, arguments);
 
-            h.off(self._dom.el, 'webkitTransitionEnd', self.handler);
-            h.off(self._dom.el, 'transitionEnd', self.handler);
+            h.off(self._dom.el, 'webkitTransitionEnd', self._handler);
+            h.off(self._dom.el, 'transitionEnd', self._handler);
 
             self._execAction('_unbindEvents', 1, arguments);
         },
@@ -4589,11 +4589,11 @@
 
             self._execAction('_bindEvents', 0, arguments);
 
-            self.handler = function(e) {
+            self._handler = function(e) {
                 return self._eventBus(e);
             };
 
-            h.on(self._dom.el, transitionEndEvent, self.handler);
+            h.on(self._dom.el, transitionEndEvent, self._handler);
 
             self._execAction('_bindEvents', 1, arguments);
         },

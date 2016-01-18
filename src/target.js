@@ -20,7 +20,7 @@ mixitup.Target = function() {
         _isShown: false,
         _isBound: false,
         _isExcluded: false,
-        handler: null,
+        _handler: null,
         _operation: null,
 
         _dom: {
@@ -563,8 +563,8 @@ h.extend(mixitup.Target.prototype, {
 
         self._execAction('_unbindEvents', 0, arguments);
 
-        h.off(self._dom.el, 'webkitTransitionEnd', self.handler);
-        h.off(self._dom.el, 'transitionEnd', self.handler);
+        h.off(self._dom.el, 'webkitTransitionEnd', self._handler);
+        h.off(self._dom.el, 'transitionEnd', self._handler);
 
         self._execAction('_unbindEvents', 1, arguments);
     },
@@ -584,11 +584,11 @@ h.extend(mixitup.Target.prototype, {
 
         self._execAction('_bindEvents', 0, arguments);
 
-        self.handler = function(e) {
+        self._handler = function(e) {
             return self._eventBus(e);
         };
 
-        h.on(self._dom.el, transitionEndEvent, self.handler);
+        h.on(self._dom.el, transitionEndEvent, self._handler);
 
         self._execAction('_bindEvents', 1, arguments);
     },
