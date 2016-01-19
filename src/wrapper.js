@@ -28,6 +28,8 @@
 
     {{>user-instruction}}
 
+    {{>feature-detection}}
+
     mixitup.CORE_VERSION    = '{{version}}';
     mixitup.h               = h;
 
