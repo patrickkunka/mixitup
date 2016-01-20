@@ -174,14 +174,21 @@ h = {
     /**
      * @private
      * @since   2.0.0
-     * @param   {string} str
+     * @param   {string}    str
+     * @param   {boolean}   [isPascal]
      * @return  {string}
      */
 
-    camelCase: function(str) {
-        return str.replace(/-([a-z])/g, function(g) {
+    camelCase: function(str, isPascal) {
+        var output = str.replace(/-([a-z])/g, function(g) {
             return g[1].toUpperCase();
         });
+
+        if (isPascal) {
+            return output.charAt(0).toUpperCase() + output.slice(1);
+        } else {
+            return output;
+        }
     },
 
     /**

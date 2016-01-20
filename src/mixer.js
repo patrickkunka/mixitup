@@ -1720,7 +1720,7 @@ h.extend(mixitup.Mixer.prototype,
             target      = null,
             data        = {},
             i           = -1,
-            boxSizing   = parentStyle.boxSizing || parentStyle[self._vendor + 'BoxSizing'];
+            boxSizing   = parentStyle[mixitup.features.boxSizingProp];
 
         self._incPadding = (boxSizing === 'border-box');
 
