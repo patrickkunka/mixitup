@@ -12,7 +12,6 @@ mixitup.ConfigLibraries = function() {
     this._execAction('constructor', 0);
 
     this.q          = null;
-    this.bluebird   = null;
     this.jQuery     = null;
 
     this._execAction('constructor', 1);

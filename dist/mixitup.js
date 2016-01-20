@@ -598,7 +598,7 @@
         },
 
         /**
-         * Abstracts the ES6 native promise into a Q-like "defered promise" interface.
+         * Abstracts various promise implementations into a Q-like "defered promise" interface.
          *
          * @private
          * @param  {object} libraries
@@ -606,35 +606,42 @@
          */
 
         getPromise: function(libraries) {
-            var defered         = null,
-                promiseWrapper  = null;
+            var deferred         = null,
+                promiseWrapper  = null,
+                $               = null;
 
             promiseWrapper = new this.PromiseWrapper();
 
             if (mixitup.features.has.promises) {
+                // ES6 native promise or polyfill (bluebird etc)
+
                 promiseWrapper.promise = new Promise(function(resolve, reject) {
                     promiseWrapper.resolve = resolve;
                     promiseWrapper.reject  = reject;
                 });
             } else if (libraries.q && typeof libraries.q === 'function') {
-                defered = libraries.q.defer();
+                // Q
 
-                promiseWrapper.promise = defered.promise;
-                promiseWrapper.resolve = defered.resolve;
-                promiseWrapper.reject  = defered.reject;
-            } else if (libraries.bluebird && typeof libraries.bluebird === 'function') {
-                // TODO: Implement bluebird promise
+                deferred = libraries.q.defer();
 
-                '';
-            } else if (window.jQuery || (libraries.jQuery && typeof libraries.jQuery === 'function')) {
-                // TODO: Implement jQuery promise
+                promiseWrapper.promise = deferred.promise;
+                promiseWrapper.resolve = deferred.resolve;
+                promiseWrapper.reject  = deferred.reject;
+            } else if (
+                ($ = window.jQuery || libraries.jQuery) &&
+                typeof $.Deferred === 'function'
+            ) {
+                // jQuery
 
-                '';
+                deferred = $.Deferred();
+
+                promiseWrapper.promise = deferred.promise();
+                promiseWrapper.resolve = deferred.resolve;
+                promiseWrapper.reject  = deferred.reject;
             } else {
-                console.warn(
-                    '[MixItUp] WARNING: No available Promise implementations were found. Please ' +
-                    'provide a promise library to the configuration object.'
-                );
+                // No implementation
+
+                console.warn(mixitup.messages[203]);
 
                 return null;
             }
@@ -1105,7 +1112,6 @@
         this._execAction('constructor', 0);
 
         this.q          = null;
-        this.bluebird   = null;
         this.jQuery     = null;
 
         this._execAction('constructor', 1);
@@ -5240,6 +5246,9 @@
 
         this[202] = '[MixItUp] 202 WARNING: Operations cannot be requested while MixItUp ' +
                     'is busy.';
+
+        this[203] = '[MixItUp] 203 WARNING: No available Promise implementations were found. ' +
+                    'Please provide a promise library to the configuration object.';
 
         /* 250-299: Public API method-specific warnings
         ----------------------------------------------------------------------------- */

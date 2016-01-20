@@ -41,6 +41,9 @@ mixitup.Messages = function() {
     this[202] = '[MixItUp] 202 WARNING: Operations cannot be requested while MixItUp ' +
                 'is busy.';
 
+    this[203] = '[MixItUp] 203 WARNING: No available Promise implementations were found. ' +
+                'Please provide a promise library to the configuration object.';
+
     /* 250-299: Public API method-specific warnings
     ----------------------------------------------------------------------------- */
 
