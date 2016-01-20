@@ -445,22 +445,6 @@ h = {
 
     /**
      * @private
-     * @param   {Array<*>}  items
-     * @param   {function}  callback
-     * @return  {void}
-     */
-
-    forEach: function(items, callback) {
-        var i       = -1,
-            item    = null;
-
-        for (i = 0; item = items[i]; i++) {
-            (typeof callback === 'function') && callback.call(this, item);
-        }
-    },
-
-    /**
-     * @private
      * @param   {Array<*>} originalArray
      * @return  {Array<*>}
      */
@@ -503,6 +487,14 @@ h = {
             promiseWrapper.promise = defered.promise;
             promiseWrapper.resolve = defered.resolve;
             promiseWrapper.reject  = defered.reject;
+        } else if (libraries.bluebird && typeof libraries.bluebird === 'function') {
+            // TODO: Implement bluebird promise
+
+            '';
+        } else if (window.jQuery || (libraries.jQuery && typeof libraries.jQuery === 'function')) {
+            // TODO: Implement jQuery promise
+
+            '';
         } else {
             console.warn(
                 '[MixItUp] WARNING: No available Promise implementations were found. Please ' +
