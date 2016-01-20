@@ -1445,6 +1445,12 @@ h.extend(mixitup.Mixer.prototype,
         if (effectString.indexOf(effectName) < 0) {
             // The effect is not present in the effects string
 
+            if (effectName === 'stagger') {
+                // Reset stagger to 0
+
+                self._staggerDuration = 0;
+            }
+
             return;
         }
 
