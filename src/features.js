@@ -2,9 +2,9 @@
 
 /**
  * The `mixitup.Features` class performs all feature and CSS prefix detection
- * neccessary for MixItUp to function correctly. This is done on evaluation of
- * the library and stored in a singleton instance for use by other
- * internal classes.
+ * neccessary for MixItUp to function correctly, as well as storing various
+ * string and array constants. All feature decection is on evaluation of the
+ * library and stored in a singleton instance for use by other internal classes.
  *
  * @constructor
  * @namespace
@@ -15,16 +15,6 @@
 
 mixitup.Features = function() {
     this._execAction('constructor', 0);
-
-    this.has                        = new mixitup.Has();
-    this.is                         = new mixitup.Is();
-
-    this.BOX_SIZING_PROP            = 'boxSizing';
-    this.TRANSITION_PROP            = 'transition';
-    this.TRANSFORM_PROP             = 'transform';
-    this.PERSPECTIVE_PROP           = 'perspective';
-    this.PERSPECTIVE_ORIGIN_PROP    = 'perspectiveOrigin';
-    this.VENDORS                    = ['Webkit', 'moz', 'O', 'ms'];
 
     this.boxSizingPrefix            = '';
     this.transformPrefix            = '';
@@ -37,7 +27,27 @@ mixitup.Features = function() {
     this.perspectiveProp            = '';
     this.perspectiveOriginProp      = '';
 
+    this.has                        = new mixitup.Has();
+    this.is                         = new mixitup.Is();
+
     this.canary                     = null;
+
+    this.BOX_SIZING_PROP            = 'boxSizing';
+    this.TRANSITION_PROP            = 'transition';
+    this.TRANSFORM_PROP             = 'transform';
+    this.PERSPECTIVE_PROP           = 'perspective';
+    this.PERSPECTIVE_ORIGIN_PROP    = 'perspectiveOrigin';
+    this.VENDORS                    = ['Webkit', 'moz', 'O', 'ms'];
+
+    this.TWEENABLE = [
+        'opacity',
+        'width', 'height',
+        'marginRight', 'marginBottom',
+        'x', 'y',
+        'scale',
+        'translateX', 'translateY', 'translateZ',
+        'rotateX', 'rotateY', 'rotateZ'
+    ];
 
     this._execAction('constructor', 1);
 };

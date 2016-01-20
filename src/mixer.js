@@ -15,131 +15,54 @@
  */
 
 mixitup.Mixer = function() {
-    var self = this;
+    this._execAction('constructor', 0);
 
-    self._execAction('_constructor', 0);
+    this.animation          = new mixitup.ConfigAnimation();
+    this.callbacks          = new mixitup.ConfigCallbacks();
+    this.controls           = new mixitup.ConfigControls();
+    this.debug              = new mixitup.ConfigDebug();
+    this.layout             = new mixitup.ConfigLayout();
+    this.libraries          = new mixitup.ConfigLibraries();
+    this.load               = new mixitup.ConfigLoad();
+    this.selectors          = new mixitup.ConfigSelectors();
 
-    h.extend(self, {
-        selectors: {
-            target: '.mix',
-            filter: '.filter',
-            filterToggle: '.filter-toggle',
-            multiMix: '.multi-mix',
-            sort: '.sort'
-        },
+    this._id                = '';
 
-        animation: {
-            enable: true,
-            effects: 'fade scale',
-            effectsIn: '',
-            effectsOut: '',
-            duration: 600,
-            easing: 'ease',
-            perspectiveDistance: '3000',
-            perspectiveOrigin: '50% 50%',
-            queue: true,
-            queueLimit: 3,
-            animateChangeLayout: false,
-            animateResizeContainer: true,
-            animateResizeTargets: false,
-            staggerSequence: null,
-            reverseOut: false,
-            nudgeOut: true
-        },
+    this._isMixing          = false;
+    this._isClicking        = false;
+    this._isLoading         = true;
+    this._incPadding        = true;
 
-        callbacks: {
-            onMixLoad: null,
-            onMixStart: null,
-            onMixBusy: null,
-            onMixEnd: null,
-            onMixFail: null,
-            onMixClick: null
-        },
+    this._targets           = [];
+    this._origOrder         = [];
 
-        controls: {
-            enable: true,
-            live: false,
-            toggleLogic: 'or',
-            toggleDefault: 'all',
-            activeClass: 'active'
-        },
+    this._toggleArray       = [];
+    this._toggleString      = '';
 
-        layout: {
-            allowNestedTargets: false,
-            display: 'inline-block',
-            containerClass: '',
-            containerClassFail: 'fail'
-        },
+    this._targetsMoved      = 0;
+    this._targetsImmovable  = 0;
+    this._targetsBound      = 0;
+    this._targetsDone       = 0;
 
-        load: {
-            filter: 'all',
-            sort: 'default:asc'
-        },
+    this._staggerDuration   = 0;
+    this._effectsIn         = null;
+    this._effectsOut        = null;
+    this._transformIn       = [];
+    this._transformOut      = [];
+    this._queue             = [];
 
-        libraries: {
-            q: null
-        },
+    this._handler           = null;
+    this._state             = null;
+    this._lastOperation     = null;
+    this._lastClicked       = null;
+    this._userCallback      = null;
+    this._userPromise       = null;
 
-        debug: {
-            enable: true
-        },
+    this._dom               = new mixitup.MixerDom();
 
-        document: null,
-        extensions: null,
-
-        _dom: {
-            document: null,
-            body: null,
-            container: null,
-            targets: [],
-            parent: null,
-            sortButtons: [],
-            filterButtons: [],
-            filterToggleButtons: [],
-            multiMixButtons: [],
-            allButtons: []
-        },
-
-        _id: '',
-        _isMixing: false,
-        _isClicking: false,
-        _isLoading: true,
-        _targets: [],
-        _origOrder: [],
-        _toggleArray: [],
-        _toggleString: '',
-        _staggerDuration: 0,
-        _incPadding: true,
-        _targetsMoved: 0,
-        _targetsImmovable: 0,
-        _targetsBound: 0,
-        _targetsDone: 0,
-        _userPromise: null,
-        _userCallback: null,
-        _effectsIn: null,
-        _effectsOut: null,
-        _transformIn: [],
-        _transformOut: [],
-        _queue: [],
-        _handler: null,
-        _state: null,
-        _lastOperation: null,
-        _lastClicked: null,
-        _vendor: ''
-    });
-
-    self._execAction('_constructor', 1);
+    this._execAction('constructor', 1);
 
     h.seal(this);
-    h.seal(this.selectors);
-    h.seal(this.animation);
-    h.seal(this.callbacks);
-    h.seal(this.controls);
-    h.seal(this.layout);
-    h.seal(this.load);
-    h.seal(this.libraries);
-    h.seal(this.debug);
-    h.seal(this._dom);
 };
 
 mixitup.Mixer.prototype = new mixitup.BasePrototype();
@@ -149,62 +72,43 @@ h.extend(mixitup.Mixer.prototype,
 {
     constructor: mixitup.Mixer,
 
-    _tweenable: [
-        'opacity',
-        'width', 'height',
-        'marginRight', 'marginBottom',
-        'x', 'y',
-        'scale',
-        'translateX', 'translateY', 'translateZ',
-        'rotateX', 'rotateY', 'rotateZ'
-    ],
-
-    _transformDefaults: {
-        scale: {
-            value: 0.01,
-            unit: ''
-        },
-        translateX: {
-            value: 20,
-            unit: 'px'
-        },
-        translateY: {
-            value: 20,
-            unit: 'px'
-        },
-        translateZ: {
-            value: 20,
-            unit: 'px'
-        },
-        rotateX: {
-            value: 90,
-            unit: 'deg'
-        },
-        rotateY: {
-            value: 90,
-            unit: 'deg'
-        },
-        rotateZ: {
-            value: 180,
-            unit: 'deg'
-        }
-    },
+    /**
+     * Stores all current instances of MixItUp in the current session, using their IDs as keys.
+     *
+     * @private
+     * @static
+     * @since   2.0.0
+     * @type    {object}
+     */
 
     _instances: {},
 
-    _handled: {
-        _filterToggle: {},
-        _multiMix: {},
-        _filter: {},
-        _sort: {}
-    },
+    /**
+     * @private
+     * @static
+     * @since   3.0.0
+     * @type    {mixitup.TransformDefaults}
+     */
 
-    _bound: {
-        _filterToggle: {},
-        _multiMix: {},
-        _filter: {},
-        _sort: {}
-    },
+    _transformDefaults: new mixitup.TransformDefaults(),
+
+    /**
+     * @private
+     * @static
+     * @since   2.0.0
+     * @type    {mixitup.ClickTracker}
+     */
+
+    _handled: new mixitup.ClickTracker(),
+
+    /**
+     * @private
+     * @static
+     * @since   2.0.0
+     * @type    {mixitup.ClickTracker}
+     */
+
+    _bound: new mixitup.ClickTracker(),
 
     /**
      * @private
@@ -373,10 +277,10 @@ h.extend(mixitup.Mixer.prototype,
     _bindEvents: function() {
         var self            = this,
             proto           = mixitup.Mixer.prototype,
-            filterToggles   = proto._bound._filterToggle,
-            multiMixs       = proto._bound._multiMix,
-            filters         = proto._bound._filter,
-            sorts           = proto._bound._sort,
+            filterToggles   = proto._bound.filterToggle,
+            multiMixs       = proto._bound.multiMix,
+            filters         = proto._bound.filter,
+            sorts           = proto._bound.sort,
             button          = null,
             i               = -1;
 
@@ -469,6 +373,7 @@ h.extend(mixitup.Mixer.prototype,
 
     handleClick: function(e) {
         var self            = this,
+            selectorKeys    = [],
             selectors       = [],
             command         = {},
             toggleSeperator = '',
@@ -497,7 +402,11 @@ h.extend(mixitup.Mixer.prototype,
             return;
         }
 
-        for (key in self.selectors) {
+        // Build a compound selector from all config control selector values
+
+        selectorKeys = Object.getOwnPropertyNames(self.selectors);
+
+        for (i = 0; key = selectorKeys[i]; i++) {
             selectors.push(self.selectors[key]);
         }
 
@@ -708,8 +617,6 @@ h.extend(mixitup.Mixer.prototype,
 
         // Add the active class to a button only once
         // all mixitup.Mixer instances have handled the click
-
-        method = '_' + method;
 
         proto._handled[method][selector] =
             (typeof proto._handled[method][selector] === 'undefined') ?

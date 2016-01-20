@@ -1,4 +1,4 @@
-/* global define */
+/* global module, mixitup, define */
 
 if (typeof exports === 'object' && typeof module === 'object') {
     module.exports = mixitup;

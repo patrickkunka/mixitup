@@ -975,6 +975,343 @@
     };
 
     /**
+     * @constructor
+     * @memberof    mixitup
+     * @namespace
+     * @public
+     * @since       2.0.0
+     */
+
+    mixitup.ConfigAnimation = function() {
+        this._execAction('constructor', 0);
+
+        this.enable                 = true;
+        this.effects                = 'fade scale';
+        this.effectsIn              = '';
+        this.effectsOut             = '';
+        this.duration               = 600;
+        this.easing                 = 'ease';
+        this.perspectiveDistance    = '3000';
+        this.perspectiveOrigin      = '50% 50%';
+        this.queue                  = true;
+        this.queueLimit             = 3;
+        this.animateChangeLayout    = false;
+        this.animateResizeContainer = true;
+        this.animateResizeTargets   = false;
+        this.staggerSequence        = null;
+        this.reverseOut             = false;
+        this.nudgeOut               = true;
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.ConfigAnimation.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @namespace
+     * @public
+     * @since       2.0.0
+     */
+
+    mixitup.ConfigCallbacks = function() {
+        this._execAction('constructor', 0);
+
+        this.onMixLoad  = null;
+        this.onMixStart = null;
+        this.onMixBusy  = null;
+        this.onMixEnd   = null;
+        this.onMixFail  = null;
+        this.onMixClick = null;
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.ConfigCallbacks.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @namespace
+     * @public
+     * @since       2.0.0
+     */
+
+    mixitup.ConfigControls = function() {
+        this._execAction('constructor', 0);
+
+        this.enable         = true;
+        this.live           = false;
+        this.toggleLogic    = 'or';
+        this.toggleDefault  = 'all';
+        this.activeClass    = 'active';
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.ConfigControls.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @namespace
+     * @public
+     * @since       3.0.0
+     */
+
+    mixitup.ConfigDebug = function() {
+        this._execAction('constructor', 0);
+
+        this.enable = true;
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.ConfigDebug.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @namespace
+     * @public
+     * @since       3.0.0
+     */
+
+    mixitup.ConfigLayout = function() {
+        this._execAction('constructor', 0);
+
+        this.allowNestedTargets = false;
+        this.display            = 'inline-block';
+        this.containerClass     = '';
+        this.containerClassFail = 'fail';
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.ConfigLayout.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @namespace
+     * @public
+     * @since       3.0.0
+     */
+
+    mixitup.ConfigLibraries = function() {
+        this._execAction('constructor', 0);
+
+        this.q          = null;
+        this.bluebird   = null;
+        this.jQuery     = null;
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.ConfigLibraries.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @namespace
+     * @public
+     * @since       2.0.0
+     */
+
+    mixitup.ConfigLoad = function() {
+        this._execAction('constructor', 0);
+
+        this.filter = 'all';
+        this.sort   = 'default:asc';
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.ConfigLoad.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @namespace
+     * @public
+     * @since       3.0.0
+     */
+
+    mixitup.ConfigSelectors = function() {
+        this._execAction('constructor', 0);
+
+        this.target         = '.mix';
+        this.filter         = '.filter';
+        this.filterToggle   = '.filter-toggle';
+        this.multiMix       = '.multi-mix';
+        this.sort           = '.sort';
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.ConfigSelectors.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.MixerDom = function() {
+        this._execAction('constructor', 0);
+
+        this.document               = null;
+        this.body                   = null;
+        this.container              = null;
+        this.parent                 = null;
+        this.targets                = [];
+        this.sortButtons            = [];
+        this.filterButtons          = [];
+        this.filterToggleButtons    = [];
+        this.multiMixButtons        = [];
+        this.allButtons             = [];
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.MixerDom.prototype = new mixitup.BasePrototype();
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       2.0.0
+     */
+
+    mixitup.ClickTracker = function() {
+        this._execAction('constructor', 0);
+
+        this.filterToggle   = {};
+        this.multiMix       = {};
+        this.filter         = {};
+        this.sort           = {};
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.ClickTracker.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.StyleData = function() {
+        this._execAction('constructor', 0);
+
+        this.x              = 0;
+        this.y              = 0;
+        this.width          = 0;
+        this.height         = 0;
+        this.marginRight    = 0;
+        this.marginBottom   = 0;
+        this.opacity        = 0;
+        this.display        = '';
+        this.scale          = new mixitup.TransformData();
+        this.translateX     = new mixitup.TransformData();
+        this.translateY     = new mixitup.TransformData();
+        this.translateZ     = new mixitup.TransformData();
+        this.rotateX        = new mixitup.TransformData();
+        this.rotateY        = new mixitup.TransformData();
+        this.rotateZ        = new mixitup.TransformData();
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.StyleData.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.TransformData = function() {
+        this._execAction('constructor', 0);
+
+        this.value  = 0;
+        this.unit   = '';
+
+        this._execAction('cconstructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.TransformData.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.TransformDefaults = function() {
+        this._execAction('constructor', 0);
+
+        mixitup.StyleData.apply(this);
+
+        this.scale.value        = 0.01;
+        this.scale.unit         = '';
+
+        this.translateX.value   = 20;
+        this.translateX.unit    = 'px';
+
+        this.translateY.value   = 20;
+        this.translateY.unit    = 'px';
+
+        this.translateZ.value   = 20;
+        this.translateZ.unit    = 'px';
+
+        this.rotateX.value      = 90;
+        this.rotateX.unit       = 'deg';
+
+        this.rotateY.value      = 90;
+        this.rotateY.unit       = 'deg';
+
+        this.rotateX.value      = 90;
+        this.rotateX.unit       = 'deg';
+
+        this.rotateZ.value      = 180;
+        this.rotateZ.unit       = 'deg';
+
+        this._execAction('constructor', 1);
+    };
+
+    mixitup.TransformDefaults.prototype = new mixitup.BasePrototype();
+
+    /**
      * The `mixitup.Mixer` class is used to construct discreet user-configured
      * instances of MixItUp around the provided container element(s). Other
      * than the intial `mixitup()` factory function call, which returns an
@@ -989,131 +1326,54 @@
      */
 
     mixitup.Mixer = function() {
-        var self = this;
+        this._execAction('constructor', 0);
 
-        self._execAction('_constructor', 0);
+        this.animation          = new mixitup.ConfigAnimation();
+        this.callbacks          = new mixitup.ConfigCallbacks();
+        this.controls           = new mixitup.ConfigControls();
+        this.debug              = new mixitup.ConfigDebug();
+        this.layout             = new mixitup.ConfigLayout();
+        this.libraries          = new mixitup.ConfigLibraries();
+        this.load               = new mixitup.ConfigLoad();
+        this.selectors          = new mixitup.ConfigSelectors();
 
-        h.extend(self, {
-            selectors: {
-                target: '.mix',
-                filter: '.filter',
-                filterToggle: '.filter-toggle',
-                multiMix: '.multi-mix',
-                sort: '.sort'
-            },
+        this._id                = '';
 
-            animation: {
-                enable: true,
-                effects: 'fade scale',
-                effectsIn: '',
-                effectsOut: '',
-                duration: 600,
-                easing: 'ease',
-                perspectiveDistance: '3000',
-                perspectiveOrigin: '50% 50%',
-                queue: true,
-                queueLimit: 3,
-                animateChangeLayout: false,
-                animateResizeContainer: true,
-                animateResizeTargets: false,
-                staggerSequence: null,
-                reverseOut: false,
-                nudgeOut: true
-            },
+        this._isMixing          = false;
+        this._isClicking        = false;
+        this._isLoading         = true;
+        this._incPadding        = true;
 
-            callbacks: {
-                onMixLoad: null,
-                onMixStart: null,
-                onMixBusy: null,
-                onMixEnd: null,
-                onMixFail: null,
-                onMixClick: null
-            },
+        this._targets           = [];
+        this._origOrder         = [];
 
-            controls: {
-                enable: true,
-                live: false,
-                toggleLogic: 'or',
-                toggleDefault: 'all',
-                activeClass: 'active'
-            },
+        this._toggleArray       = [];
+        this._toggleString      = '';
 
-            layout: {
-                allowNestedTargets: false,
-                display: 'inline-block',
-                containerClass: '',
-                containerClassFail: 'fail'
-            },
+        this._targetsMoved      = 0;
+        this._targetsImmovable  = 0;
+        this._targetsBound      = 0;
+        this._targetsDone       = 0;
 
-            load: {
-                filter: 'all',
-                sort: 'default:asc'
-            },
+        this._staggerDuration   = 0;
+        this._effectsIn         = null;
+        this._effectsOut        = null;
+        this._transformIn       = [];
+        this._transformOut      = [];
+        this._queue             = [];
 
-            libraries: {
-                q: null
-            },
+        this._handler           = null;
+        this._state             = null;
+        this._lastOperation     = null;
+        this._lastClicked       = null;
+        this._userCallback      = null;
+        this._userPromise       = null;
 
-            debug: {
-                enable: true
-            },
+        this._dom               = new mixitup.MixerDom();
 
-            document: null,
-            extensions: null,
-
-            _dom: {
-                document: null,
-                body: null,
-                container: null,
-                targets: [],
-                parent: null,
-                sortButtons: [],
-                filterButtons: [],
-                filterToggleButtons: [],
-                multiMixButtons: [],
-                allButtons: []
-            },
-
-            _id: '',
-            _isMixing: false,
-            _isClicking: false,
-            _isLoading: true,
-            _targets: [],
-            _origOrder: [],
-            _toggleArray: [],
-            _toggleString: '',
-            _staggerDuration: 0,
-            _incPadding: true,
-            _targetsMoved: 0,
-            _targetsImmovable: 0,
-            _targetsBound: 0,
-            _targetsDone: 0,
-            _userPromise: null,
-            _userCallback: null,
-            _effectsIn: null,
-            _effectsOut: null,
-            _transformIn: [],
-            _transformOut: [],
-            _queue: [],
-            _handler: null,
-            _state: null,
-            _lastOperation: null,
-            _lastClicked: null,
-            _vendor: ''
-        });
-
-        self._execAction('_constructor', 1);
+        this._execAction('constructor', 1);
 
         h.seal(this);
-        h.seal(this.selectors);
-        h.seal(this.animation);
-        h.seal(this.callbacks);
-        h.seal(this.controls);
-        h.seal(this.layout);
-        h.seal(this.load);
-        h.seal(this.libraries);
-        h.seal(this.debug);
-        h.seal(this._dom);
     };
 
     mixitup.Mixer.prototype = new mixitup.BasePrototype();
@@ -1123,62 +1383,43 @@
     {
         constructor: mixitup.Mixer,
 
-        _tweenable: [
-            'opacity',
-            'width', 'height',
-            'marginRight', 'marginBottom',
-            'x', 'y',
-            'scale',
-            'translateX', 'translateY', 'translateZ',
-            'rotateX', 'rotateY', 'rotateZ'
-        ],
-
-        _transformDefaults: {
-            scale: {
-                value: 0.01,
-                unit: ''
-            },
-            translateX: {
-                value: 20,
-                unit: 'px'
-            },
-            translateY: {
-                value: 20,
-                unit: 'px'
-            },
-            translateZ: {
-                value: 20,
-                unit: 'px'
-            },
-            rotateX: {
-                value: 90,
-                unit: 'deg'
-            },
-            rotateY: {
-                value: 90,
-                unit: 'deg'
-            },
-            rotateZ: {
-                value: 180,
-                unit: 'deg'
-            }
-        },
+        /**
+         * Stores all current instances of MixItUp in the current session, using their IDs as keys.
+         *
+         * @private
+         * @static
+         * @since   2.0.0
+         * @type    {object}
+         */
 
         _instances: {},
 
-        _handled: {
-            _filterToggle: {},
-            _multiMix: {},
-            _filter: {},
-            _sort: {}
-        },
+        /**
+         * @private
+         * @static
+         * @since   3.0.0
+         * @type    {mixitup.TransformDefaults}
+         */
 
-        _bound: {
-            _filterToggle: {},
-            _multiMix: {},
-            _filter: {},
-            _sort: {}
-        },
+        _transformDefaults: new mixitup.TransformDefaults(),
+
+        /**
+         * @private
+         * @static
+         * @since   2.0.0
+         * @type    {mixitup.ClickTracker}
+         */
+
+        _handled: new mixitup.ClickTracker(),
+
+        /**
+         * @private
+         * @static
+         * @since   2.0.0
+         * @type    {mixitup.ClickTracker}
+         */
+
+        _bound: new mixitup.ClickTracker(),
 
         /**
          * @private
@@ -1347,10 +1588,10 @@
         _bindEvents: function() {
             var self            = this,
                 proto           = mixitup.Mixer.prototype,
-                filterToggles   = proto._bound._filterToggle,
-                multiMixs       = proto._bound._multiMix,
-                filters         = proto._bound._filter,
-                sorts           = proto._bound._sort,
+                filterToggles   = proto._bound.filterToggle,
+                multiMixs       = proto._bound.multiMix,
+                filters         = proto._bound.filter,
+                sorts           = proto._bound.sort,
                 button          = null,
                 i               = -1;
 
@@ -1443,6 +1684,7 @@
 
         handleClick: function(e) {
             var self            = this,
+                selectorKeys    = [],
                 selectors       = [],
                 command         = {},
                 toggleSeperator = '',
@@ -1471,7 +1713,11 @@
                 return;
             }
 
-            for (key in self.selectors) {
+            // Build a compound selector from all config control selector values
+
+            selectorKeys = Object.getOwnPropertyNames(self.selectors);
+
+            for (i = 0; key = selectorKeys[i]; i++) {
                 selectors.push(self.selectors[key]);
             }
 
@@ -1682,8 +1928,6 @@
 
             // Add the active class to a button only once
             // all mixitup.Mixer instances have handled the click
-
-            method = '_' + method;
 
             proto._handled[method][selector] =
                 (typeof proto._handled[method][selector] === 'undefined') ?
@@ -3948,6 +4192,25 @@
 
     /**
      * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.TargetDom = function() {
+        this._execAction('constructor', 0);
+
+        this.el = null;
+
+        this._execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.TargetDom.prototype = new mixitup.BasePrototype();
+
+    /**
+     * @constructor
      * @namespace
      * @memberof    mixitup
      * @private
@@ -3955,29 +4218,22 @@
      */
 
     mixitup.Target = function() {
-        var self = this;
+        this._execAction('constructor', 0);
 
-        self._execAction('constructor', 0, arguments);
+        this.sortString = '';
+        this.mixer      = null;
+        this.callback   = null;
+        this.isShown    = false;
+        this.isBound    = false;
+        this.isExcluded = false;
+        this.handler    = null;
+        this.operation  = null;
 
-        h.extend(self, {
-            sortString: '',
-            mixer: null,
-            callback: null,
-            isShown: false,
-            isBound: false,
-            isExcluded: false,
-            handler: null,
-            operation: null,
+        this.dom        = new mixitup.TargetDom();
 
-            dom: {
-                el: null
-            }
-        });
-
-        self._execAction('constructor', 1, arguments);
+        this._execAction('constructor', 1);
 
         h.seal(this);
-        h.seal(this.dom);
     };
 
     mixitup.Target.prototype = new mixitup.BasePrototype();
@@ -4153,7 +4409,7 @@
                 self.show(self.mixer.layout.display);
             }
 
-            for (i = 0; propertyName = self.mixer._tweenable[i]; i++) {
+            for (i = 0; propertyName = mixitup.features.TWEENABLE[i]; i++) {
                 tweenData = posData.tweenData[propertyName];
 
                 if (propertyName === 'x') {
@@ -4938,59 +5194,6 @@
      * @since       3.0.0
      */
 
-    mixitup.StyleData = function() {
-        this._execAction('constructor', 0);
-
-        this.x              = 0;
-        this.y              = 0;
-        this.width          = 0;
-        this.height         = 0;
-        this.marginRight    = 0;
-        this.marginBottom   = 0;
-        this.opacity        = 0;
-        this.display        = '';
-        this.scale          = new mixitup.TransformData();
-        this.translateX     = new mixitup.TransformData();
-        this.translateY     = new mixitup.TransformData();
-        this.translateZ     = new mixitup.TransformData();
-        this.rotateX        = new mixitup.TransformData();
-        this.rotateY        = new mixitup.TransformData();
-        this.rotateZ        = new mixitup.TransformData();
-
-        this._execAction('constructor', 1);
-
-        h.seal(this);
-    };
-
-    mixitup.StyleData.prototype = new mixitup.BasePrototype();
-
-    /**
-     * @constructor
-     * @memberof    mixitup
-     * @private
-     * @since       3.0.0
-     */
-
-    mixitup.TransformData = function() {
-        this._execAction('constructor', 0);
-
-        this.value  = 0;
-        this.unit   = '';
-
-        this._execAction('cconstructor', 1);
-
-        h.seal(this);
-    };
-
-    mixitup.TransformData.prototype = new mixitup.BasePrototype();
-
-    /**
-     * @constructor
-     * @memberof    mixitup
-     * @private
-     * @since       3.0.0
-     */
-
     mixitup.UserInstruction = function() {
         this._execAction('constructor', 0);
 
@@ -5004,6 +5207,7 @@
     };
 
     mixitup.UserInstruction.prototype = new mixitup.BasePrototype();
+
     /**
      * @constructor
      * @memberof    mixitup
@@ -5053,6 +5257,8 @@
                     'sort output';
 
         this._execAction('constructor', 1);
+
+        h.seal(this);
     };
 
     mixitup.Messages.prototype = new mixitup.BasePrototype();
@@ -5063,9 +5269,9 @@
 
     /**
      * The `mixitup.Features` class performs all feature and CSS prefix detection
-     * neccessary for MixItUp to function correctly. This is done on evaluation of
-     * the library and stored in a singleton instance for use by other
-     * internal classes.
+     * neccessary for MixItUp to function correctly, as well as storing various
+     * string and array constants. All feature decection is on evaluation of the
+     * library and stored in a singleton instance for use by other internal classes.
      *
      * @constructor
      * @namespace
@@ -5076,16 +5282,6 @@
 
     mixitup.Features = function() {
         this._execAction('constructor', 0);
-
-        this.has                        = new mixitup.Has();
-        this.is                         = new mixitup.Is();
-
-        this.BOX_SIZING_PROP            = 'boxSizing';
-        this.TRANSITION_PROP            = 'transition';
-        this.TRANSFORM_PROP             = 'transform';
-        this.PERSPECTIVE_PROP           = 'perspective';
-        this.PERSPECTIVE_ORIGIN_PROP    = 'perspectiveOrigin';
-        this.VENDORS                    = ['Webkit', 'moz', 'O', 'ms'];
 
         this.boxSizingPrefix            = '';
         this.transformPrefix            = '';
@@ -5098,7 +5294,27 @@
         this.perspectiveProp            = '';
         this.perspectiveOriginProp      = '';
 
+        this.has                        = new mixitup.Has();
+        this.is                         = new mixitup.Is();
+
         this.canary                     = null;
+
+        this.BOX_SIZING_PROP            = 'boxSizing';
+        this.TRANSITION_PROP            = 'transition';
+        this.TRANSFORM_PROP             = 'transform';
+        this.PERSPECTIVE_PROP           = 'perspective';
+        this.PERSPECTIVE_ORIGIN_PROP    = 'perspectiveOrigin';
+        this.VENDORS                    = ['Webkit', 'moz', 'O', 'ms'];
+
+        this.TWEENABLE = [
+            'opacity',
+            'width', 'height',
+            'marginRight', 'marginBottom',
+            'x', 'y',
+            'scale',
+            'translateX', 'translateY', 'translateZ',
+            'rotateX', 'rotateY', 'rotateZ'
+        ];
 
         this._execAction('constructor', 1);
     };

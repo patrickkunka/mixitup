@@ -1,3 +1,5 @@
+/* global mixitup, h */
+
 /**
  * @constructor
  * @memberof    mixitup
@@ -47,6 +49,8 @@ mixitup.Messages = function() {
                 'sort output';
 
     this._execAction('constructor', 1);
+
+    h.seal(this);
 };
 
 mixitup.Messages.prototype = new mixitup.BasePrototype();

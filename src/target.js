@@ -9,29 +9,22 @@
  */
 
 mixitup.Target = function() {
-    var self = this;
+    this._execAction('constructor', 0);
 
-    self._execAction('constructor', 0, arguments);
+    this.sortString = '';
+    this.mixer      = null;
+    this.callback   = null;
+    this.isShown    = false;
+    this.isBound    = false;
+    this.isExcluded = false;
+    this.handler    = null;
+    this.operation  = null;
 
-    h.extend(self, {
-        sortString: '',
-        mixer: null,
-        callback: null,
-        isShown: false,
-        isBound: false,
-        isExcluded: false,
-        handler: null,
-        operation: null,
+    this.dom        = new mixitup.TargetDom();
 
-        dom: {
-            el: null
-        }
-    });
-
-    self._execAction('constructor', 1, arguments);
+    this._execAction('constructor', 1);
 
     h.seal(this);
-    h.seal(this.dom);
 };
 
 mixitup.Target.prototype = new mixitup.BasePrototype();
@@ -207,7 +200,7 @@ h.extend(mixitup.Target.prototype, {
             self.show(self.mixer.layout.display);
         }
 
-        for (i = 0; propertyName = self.mixer._tweenable[i]; i++) {
+        for (i = 0; propertyName = mixitup.features.TWEENABLE[i]; i++) {
             tweenData = posData.tweenData[propertyName];
 
             if (propertyName === 'x') {
