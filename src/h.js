@@ -15,7 +15,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    cls
      * @return  {boolean}
@@ -27,7 +26,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    cls
      * @return  {void}
@@ -39,7 +37,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    cls
      * @return  {void}
@@ -55,7 +52,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {object}    destination
      * @param   {object}    source
      * @return  {void}
@@ -81,7 +77,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    type
      * @param   {function}  fn
@@ -107,7 +102,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    type
      * @param   {function}  fn
@@ -153,7 +147,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    selector
      * @return  {Number}
@@ -173,7 +166,6 @@ h = {
 
     /**
      * @private
-     * @since   2.0.0
      * @param   {string}    str
      * @param   {boolean}   [isPascal]
      * @return  {string}
@@ -193,7 +185,6 @@ h = {
 
     /**
      * @private
-     * @since   2.1.3
      * @param   {Element}   el
      * @param   {Document}  [doc]
      * @return  {boolean}
@@ -224,7 +215,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {string}            htmlString
      * @param   {Document}          [doc]
      * @return  {DocumentFragment}
@@ -250,7 +240,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Element}   el
      * @return  {void}
      */
@@ -263,7 +252,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Array<*>}  a
      * @param   {Array<*>}  b
      * @return  {boolean}
@@ -283,7 +271,6 @@ h = {
 
     /**
      * @private
-     * @since   2.0.0
      * @param   {Array<*>}  oldArray
      * @return  {Array<*>}
      */
@@ -308,7 +295,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {function}  func
      * @param   {Number}    wait
      * @param   {boolean}   immediate
@@ -342,7 +328,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Element}   element
      * @return  {object}
      */
@@ -374,9 +359,8 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {object}    node1
-     * @param  {object}    node2
+     * @param   {object}    node2
      * @return  {Number}
      */
 
@@ -392,7 +376,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {object}        el
      * @param   {string}        selector
      * @param   {boolean}       [includeSelf]
@@ -431,7 +414,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Element}   el
      * @param   {string}    selector
      * @param   {Document}  [doc]
@@ -463,7 +445,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Array<*>}  items
      * @param   {function}  callback
      * @return  {void}
@@ -480,7 +461,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Array<*>} originalArray
      * @return  {Array<*>}
      */
@@ -499,44 +479,44 @@ h = {
     },
 
     /**
+     * Abstracts the ES6 native promise into a Q-like "defered promise" interface.
+     *
      * @private
-     * @since  3.0.0
-     * @param  {object}         libraries
-     * @return {object|null}
+     * @param  {object} libraries
+     * @return {mixitup.PromiseWrapper|null}
      */
 
     getPromise: function(libraries) {
-        var promise = {
-                promise: null,
-                resolve: null,
-                reject: null,
-                isResolved: false
-            },
-            defered = null;
+        var defered         = null,
+            promiseWrapper  = null;
 
-        if (mixitup.Mixer.prototype._has._promises) {
-            promise.promise     = new Promise(function(resolve, reject) {
-                promise.resolve = resolve;
-                promise.reject  = reject;
+        promiseWrapper = new this.PromiseWrapper();
+
+        if (mixitup.features.has.promises) {
+            promiseWrapper.promise = new Promise(function(resolve, reject) {
+                promiseWrapper.resolve = resolve;
+                promiseWrapper.reject  = reject;
             });
         } else if (libraries.q && typeof libraries.q === 'function') {
             defered = libraries.q.defer();
 
-            promise.promise = defered.promise;
-            promise.resolve = defered.resolve;
-            promise.reject  = defered.reject;
+            promiseWrapper.promise = defered.promise;
+            promiseWrapper.resolve = defered.resolve;
+            promiseWrapper.reject  = defered.reject;
         } else {
-            console.warn('[MixItUp] WARNING: No available Promises implementations were found');
+            console.warn(
+                '[MixItUp] WARNING: No available Promise implementations were found. Please ' +
+                'provide a promise library to the configuration object.'
+            );
 
             return null;
         }
 
-        return promise;
+        return promiseWrapper;
     },
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {object}  [config]
      * @return  {boolean}
      */
@@ -551,7 +531,6 @@ h = {
 
     /**
      * @private
-     * @since   2.0.0
      * @param   {Element}   el
      * @param   {string}    property
      * @param   {String[]}  vendors
@@ -575,7 +554,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @return  {string}
      */
 
@@ -590,7 +568,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Document}  [doc]
      * @return  {object}
      */
@@ -607,7 +584,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {object}    obj
      * @param   {function}  fn
      * @return  {function}
@@ -621,7 +597,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {Element}   el
      * @return  {boolean}
      */
@@ -649,7 +624,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {object}    obj
      */
 
@@ -661,7 +635,6 @@ h = {
 
     /**
      * @private
-     * @since   3.0.0
      * @param   {string}    control
      * @param   {string}    specimen
      * @return  {boolean}
@@ -686,5 +659,17 @@ h = {
         }
 
         return true;
+    },
+
+    /**
+     * @private
+     * @constructor
+     */
+
+    PromiseWrapper: function() {
+        this.promise    = null;
+        this.resolve    = null;
+        this.reject     = null;
+        this.isResolved = false;
     }
 };

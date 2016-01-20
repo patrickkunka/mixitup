@@ -62,7 +62,7 @@
             ) &&
             h.canReportErrors(config)
         ) {
-            throw new Error('[MixItUp] Invalid selector or element');
+            throw new Error(mixitup.messages[100]);
         }
 
         switch (typeof container) {
@@ -102,10 +102,7 @@
                 instance = mixitup.Mixer.prototype._instances[id];
 
                 if (config && h.canReportErrors(config)) {
-                    console.warn(
-                        '[MixItUp] This element already has an active instance.' +
-                        'Config will be ignored.'
-                    );
+                    console.warn(mixitup.messages[200]);
                 }
             }
 
@@ -153,7 +150,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    cls
          * @return  {boolean}
@@ -165,7 +161,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    cls
          * @return  {void}
@@ -177,7 +172,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    cls
          * @return  {void}
@@ -193,7 +187,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {object}    destination
          * @param   {object}    source
          * @return  {void}
@@ -219,7 +212,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    type
          * @param   {function}  fn
@@ -245,7 +237,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    type
          * @param   {function}  fn
@@ -291,7 +282,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    selector
          * @return  {Number}
@@ -311,7 +301,6 @@
 
         /**
          * @private
-         * @since   2.0.0
          * @param   {string}    str
          * @param   {boolean}   [isPascal]
          * @return  {string}
@@ -331,7 +320,6 @@
 
         /**
          * @private
-         * @since   2.1.3
          * @param   {Element}   el
          * @param   {Document}  [doc]
          * @return  {boolean}
@@ -362,7 +350,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {string}            htmlString
          * @param   {Document}          [doc]
          * @return  {DocumentFragment}
@@ -388,7 +375,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Element}   el
          * @return  {void}
          */
@@ -401,7 +387,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Array<*>}  a
          * @param   {Array<*>}  b
          * @return  {boolean}
@@ -421,7 +406,6 @@
 
         /**
          * @private
-         * @since   2.0.0
          * @param   {Array<*>}  oldArray
          * @return  {Array<*>}
          */
@@ -446,7 +430,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {function}  func
          * @param   {Number}    wait
          * @param   {boolean}   immediate
@@ -480,7 +463,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Element}   element
          * @return  {object}
          */
@@ -512,9 +494,8 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {object}    node1
-         * @param  {object}    node2
+         * @param   {object}    node2
          * @return  {Number}
          */
 
@@ -530,7 +511,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {object}        el
          * @param   {string}        selector
          * @param   {boolean}       [includeSelf]
@@ -569,7 +549,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Element}   el
          * @param   {string}    selector
          * @param   {Document}  [doc]
@@ -601,7 +580,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Array<*>}  items
          * @param   {function}  callback
          * @return  {void}
@@ -618,7 +596,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Array<*>} originalArray
          * @return  {Array<*>}
          */
@@ -637,44 +614,44 @@
         },
 
         /**
+         * Abstracts the ES6 native promise into a Q-like "defered promise" interface.
+         *
          * @private
-         * @since  3.0.0
-         * @param  {object}         libraries
-         * @return {object|null}
+         * @param  {object} libraries
+         * @return {mixitup.PromiseWrapper|null}
          */
 
         getPromise: function(libraries) {
-            var promise = {
-                    promise: null,
-                    resolve: null,
-                    reject: null,
-                    isResolved: false
-                },
-                defered = null;
+            var defered         = null,
+                promiseWrapper  = null;
 
-            if (mixitup.Mixer.prototype._has._promises) {
-                promise.promise     = new Promise(function(resolve, reject) {
-                    promise.resolve = resolve;
-                    promise.reject  = reject;
+            promiseWrapper = new this.PromiseWrapper();
+
+            if (mixitup.features.has.promises) {
+                promiseWrapper.promise = new Promise(function(resolve, reject) {
+                    promiseWrapper.resolve = resolve;
+                    promiseWrapper.reject  = reject;
                 });
             } else if (libraries.q && typeof libraries.q === 'function') {
                 defered = libraries.q.defer();
 
-                promise.promise = defered.promise;
-                promise.resolve = defered.resolve;
-                promise.reject  = defered.reject;
+                promiseWrapper.promise = defered.promise;
+                promiseWrapper.resolve = defered.resolve;
+                promiseWrapper.reject  = defered.reject;
             } else {
-                console.warn('[MixItUp] WARNING: No available Promises implementations were found');
+                console.warn(
+                    '[MixItUp] WARNING: No available Promise implementations were found. Please ' +
+                    'provide a promise library to the configuration object.'
+                );
 
                 return null;
             }
 
-            return promise;
+            return promiseWrapper;
         },
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {object}  [config]
          * @return  {boolean}
          */
@@ -689,7 +666,6 @@
 
         /**
          * @private
-         * @since   2.0.0
          * @param   {Element}   el
          * @param   {string}    property
          * @param   {String[]}  vendors
@@ -713,7 +689,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @return  {string}
          */
 
@@ -728,7 +703,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Document}  [doc]
          * @return  {object}
          */
@@ -745,7 +719,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {object}    obj
          * @param   {function}  fn
          * @return  {function}
@@ -759,7 +732,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {Element}   el
          * @return  {boolean}
          */
@@ -787,7 +759,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {object}    obj
          */
 
@@ -799,7 +770,6 @@
 
         /**
          * @private
-         * @since   3.0.0
          * @param   {string}    control
          * @param   {string}    specimen
          * @return  {boolean}
@@ -824,8 +794,22 @@
             }
 
             return true;
+        },
+
+        /**
+         * @private
+         * @constructor
+         */
+
+        PromiseWrapper: function() {
+            this.promise    = null;
+            this.resolve    = null;
+            this.reject     = null;
+            this.isResolved = false;
         }
     };
+    mixitup.CORE_VERSION    = '3.0.0-beta';
+    mixitup.h               = h;
 
     /**
      * The BasePrototype class exposes a set of static methods which all other MixItUp
@@ -1139,12 +1123,6 @@
     {
         constructor: mixitup.Mixer,
 
-        _transformProp: 'transform',
-        _transformRule: 'transform',
-        _transitionProp: 'transition',
-        _perspectiveProp: 'perspective',
-        _perspectiveOriginProp: 'perspectiveOrigin',
-
         _tweenable: [
             'opacity',
             'width', 'height',
@@ -1186,9 +1164,6 @@
             }
         },
 
-        _is: {},
-        _has: {},
-
         _instances: {},
 
         _handled: {
@@ -1203,98 +1178,6 @@
             _multiMix: {},
             _filter: {},
             _sort: {}
-        },
-
-        /**
-         * Performs all neccessary feature detection on the first evalulation of
-         * the library.
-         *
-         * @private
-         * @static
-         * @since 2.0.0
-         */
-
-        _featureDetect: function() {
-            var self                = this,
-                testEl              = document.createElement('div'),
-                vendorsTrans        = ['Webkit', 'Moz', 'O', 'ms'],
-                vendorsRAF          = ['webkit', 'moz'],
-                transitionPrefix    = h.getPrefix(testEl, 'Transition', vendorsTrans),
-                transformPrefix     = h.getPrefix(testEl, 'Transform', vendorsTrans),
-                i                   = -1;
-
-            self._execAction('_featureDetect', 0);
-
-            self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a seperate test
-
-            mixitup.Mixer.prototype._has._promises      = typeof Promise === 'function';
-            mixitup.Mixer.prototype._has._transitions   = transitionPrefix !== 'unsupported';
-            mixitup.Mixer.prototype._is._crapIe         = window.atob ? false : true;
-
-            mixitup.Mixer.prototype._transitionProp =
-                transitionPrefix ? transitionPrefix + 'Transition' : 'transition';
-
-            mixitup.Mixer.prototype._transformProp =
-                transformPrefix ? transformPrefix + 'Transform' : 'transform';
-
-            mixitup.Mixer.prototype._transformRule =
-                transformPrefix ? '-' + transformPrefix + '-transform' : 'transform';
-
-            mixitup.Mixer.prototype._perspectiveProp =
-                transformPrefix ? transformPrefix + 'Perspective' : 'perspective';
-
-            mixitup.Mixer.prototype._perspectiveOriginProp =
-                transformPrefix ? transformPrefix + 'PerspectiveOrigin' : 'perspectiveOrigin';
-
-            // Apply polyfills:
-
-            // window.requestAnimationFrame
-
-            for (i = 0; i < vendorsRAF.length && !window.requestAnimationFrame; i++) {
-                window.requestAnimationFrame = window[vendorsRAF[i] + 'RequestAnimationFrame'];
-            }
-
-            // Element.nextElementSibling
-
-            if (typeof testEl.nextElementSibling === 'undefined') {
-                Object.defineProperty(Element.prototype, 'nextElementSibling', {
-                    get: function() {
-                        var el = this.nextSibling;
-
-                        while (el) {
-                            if (el.nodeType === 1) {
-                                return el;
-                            }
-
-                            el = el.nextSibling;
-                        }
-
-                        return null;
-                    }
-                });
-            }
-
-            // Element.matches
-
-            (function(ElementPrototype) {
-                ElementPrototype.matches =
-                    ElementPrototype.matches ||
-                    ElementPrototype.machesSelector ||
-                    ElementPrototype.mozMatchesSelector ||
-                    ElementPrototype.msMatchesSelector ||
-                    ElementPrototype.oMatchesSelector ||
-                    ElementPrototype.webkitMatchesSelector ||
-                    function (selector) {
-                        var nodes = (this.parentNode || this.doc).querySelectorAll(selector),
-                            i = -1;
-
-                        while (nodes[++i] && nodes[i] != this) {
-                            return !!nodes[i];
-                        }
-                    };
-            })(Element.prototype);
-
-            self._execAction('_featureDetect', 1);
         },
 
         /**
@@ -1319,7 +1202,7 @@
 
             self.layout.containerClass && h.addClass(el, self.layout.containerClass);
 
-            self.animation.enable = self.animation.enable && mixitup.Mixer.prototype._has._transitions;
+            self.animation.enable = self.animation.enable && mixitup.features.has.transitions;
 
             self._indexTargets();
 
@@ -1582,11 +1465,7 @@
                 (!self.animation.queue || self._queue.length >= self.animation.queueLimit)
             ) {
                 if (h.canReportErrors(self)) {
-                    console.warn(
-                        '[MixItUp] An operation was requested but the MixItUp ' +
-                        'instance was busy. The operation was rejected because ' +
-                        'queueing is disabled or the queue is full.'
-                    );
+                    console.warn(mixitup.messages[201]);
                 }
 
                 return;
@@ -1968,13 +1847,15 @@
 
             self._execAction('insert', 0, arguments);
 
+            if (typeof command.index === 'undefined') command.index = 0;
+
             nextSibling = self._getNextSibling(command.index, command.sibling, command.position);
             frag        = self._dom.document.createDocumentFragment();
 
             if (command.targets) {
                 for (i = 0; el = command.targets[i]; i++) {
                     if (self._dom.targets.indexOf(el) > -1) {
-                        throw new Error('[MixItUp] An inserted element already exists in the container');
+                        throw new Error(mixitup.messages[151]);
                     }
 
                     frag.appendChild(el);
@@ -2263,11 +2144,7 @@
                     // targets to avoid erroneous sorting when
                     // types are mixed
 
-                    console.warn(
-                        '[MixItUp] The sorting attribute "data-' +
-                        sort[depth].sortBy +
-                        '" was not present on one or more target elements'
-                    );
+                    console.warn(mixitup.messages[250]);
                 }
             }
 
@@ -2429,7 +2306,7 @@
                 i           = -1;
 
             if (!effectString || typeof effectString !== 'string') {
-                throw new Error('[MixItUp] Invalid effects string');
+                throw new Error(mixitup.messages[101]);
             }
 
             if (effectString.indexOf(effectName) < 0) {
@@ -2656,7 +2533,7 @@
                 instance: self
             }, self._dom.document);
 
-            if (shouldAnimate && mixitup.Mixer.prototype._has._transitions) {
+            if (shouldAnimate && mixitup.features.has.transitions) {
                 // If we should animate and the platform supports
                 // transitions, go for it
 
@@ -2666,10 +2543,10 @@
                     window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
                 }
 
-                self._dom.parent.style[mixitup.Mixer.prototype._perspectiveProp] =
+                self._dom.parent.style[mixitup.features.perspectiveProp] =
                     self.animation.perspective;
 
-                self._dom.parent.style[mixitup.Mixer.prototype._perspectiveOriginProp] =
+                self._dom.parent.style[mixitup.features.perspectiveOriginProp] =
                     self.animation.perspectiveOrigin;
 
                 // TODO: even if animate resize container is disabled, the container
@@ -3122,7 +2999,7 @@
             self._dom.parent.style.perspectiveOrigin = self.animation.perspectiveOrigin;
 
             if (self.animation.animateResizeContainer) {
-                self._dom.parent.style[mixitup.Mixer.prototype._transitionProp] =
+                self._dom.parent.style[mixitup.features.transitionProp] =
                     'height ' + self.animation.duration + 'ms ease, ' +
                     'width ' + self.animation.duration + 'ms ease, ';
 
@@ -3282,13 +3159,13 @@
             }
 
             if (self.animation.animateResizeContainer) {
-                self._dom.parent.style[mixitup.Mixer.prototype._transitionProp] = '';
+                self._dom.parent.style[mixitup.features.transitionProp] = '';
                 self._dom.parent.style.height = '';
                 self._dom.parent.style.width = '';
             }
 
-            self._dom.parent.style[mixitup.Mixer.prototype._perspectiveProp] = '';
-            self._dom.parent.style[mixitup.Mixer.prototype._perspectiveOriginProp] = '';
+            self._dom.parent.style[mixitup.features.perspectiveProp] = '';
+            self._dom.parent.style[mixitup.features.perspectiveOriginProp] = '';
 
             if (operation.willChangeLayout) {
                 h.removeClass(self._dom.container, operation.startContainerClass);
@@ -3450,7 +3327,7 @@
             }
 
             if (!instruction.command.targets.length && h.canReportErrors(self)) {
-                throw new Error('[MixItUp] No elements were passed to "insert"');
+                throw new Error(mixitup.messages[102]);
             }
 
             return self._execFilter('_parseInsertArgs', instruction, arguments);
@@ -3547,11 +3424,7 @@
                 self._execAction('multiMixQueue', 1, args);
             } else {
                 if (h.canReportErrors(self)) {
-                    console.warn(
-                        '[MixItUp] An operation was requested but the MixItUp ' +
-                        'instance was busy. The operation was rejected because ' +
-                        'queueing is disabled or the queue is full.'
-                    );
+                    console.warn(mixitup.messages[201]);
                 }
 
                 promise.resolve(self._state);
@@ -3701,9 +3574,7 @@
 
             if (self._isMixing) {
                 if (h.canReportErrors(self)) {
-                    console.warn(
-                        '[MixItUp] Operations cannot be requested while MixItUp is busy.'
-                    );
+                    console.warn(mixitup.messages[201]);
                 }
 
                 return null;
@@ -4318,7 +4189,7 @@
             }
 
             if (currentTransformValues.length) {
-                self.dom.el.style[mixitup.Mixer.prototype._transformProp] = currentTransformValues.join(' ');
+                self.dom.el.style[mixitup.features.transformProp] = currentTransformValues.join(' ');
             }
 
             self._execAction('applyTween', 1, arguments);
@@ -4357,7 +4228,7 @@
                 transformValues = transformValues.concat(self.mixer._transformIn);
             }
 
-            self.dom.el.style[mixitup.Mixer.prototype._transformProp] = transformValues.join(' ');
+            self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
 
             self._execAction('applyStylesIn', 1, arguments);
         },
@@ -4384,7 +4255,7 @@
             // Build the transition rules
 
             transitionRules.push(self.writeTransitionRule(
-                mixitup.Mixer.prototype._transformRule,
+                mixitup.features.transformRule,
                 options.staggerIndex
             ));
 
@@ -4501,7 +4372,7 @@
 
             // Apply transforms
 
-            self.dom.el.style[mixitup.Mixer.prototype._transformProp] = transformValues.join(' ');
+            self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
 
             self._execAction('applyStylesOut', 1, arguments);
         },
@@ -4572,7 +4443,7 @@
 
             self._execAction('applyTransition', 0, arguments);
 
-            self.dom.el.style[mixitup.Mixer.prototype._transitionProp] = transitionString;
+            self.dom.el.style[mixitup.features.transitionProp] = transitionString;
 
             self._execAction('applyTransition', 1, arguments);
         },
@@ -4722,8 +4593,8 @@
 
             self._execAction('cleanUp', 0, arguments);
 
-            self.dom.el.style[mixitup.Mixer.prototype._transformProp]  = '';
-            self.dom.el.style[mixitup.Mixer.prototype._transitionProp] = '';
+            self.dom.el.style[mixitup.features.transformProp]  = '';
+            self.dom.el.style[mixitup.features.transitionProp] = '';
             self.dom.el.style.opacity                                  = '';
 
             if (self.mixer.animation.animateResizeTargets) {
@@ -5133,17 +5004,79 @@
     };
 
     mixitup.UserInstruction.prototype = new mixitup.BasePrototype();
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
 
-    mixitup.Has = function() {
-        this.transitions    = false;
-        this.promises       = false;
+    mixitup.Messages = function() {
+        this._execAction('constructor', 0);
+
+        /* 100 - 149: General errors
+        ----------------------------------------------------------------------------- */
+
+        this[100] = '[MixItUp] 100 ERROR: An invalid selector or element was passed to ' +
+                    'the mixitup factory function.';
+
+        this[101] = '[MixItUp] 101 ERROR: Invalid effects string';
+
+        /* 150-199: Public API method-specific errors
+        ----------------------------------------------------------------------------- */
+
+        this[150] = '[MixItUp] 102 ERROR: No elements were passed to "insert"';
+
+        this[151] = '[MixItUp] 103 ERROR: An element to be inserted already exists in ' +
+                    'the container';
+
+        /* 200-249: General warnings
+        ----------------------------------------------------------------------------- */
+
+        this[200] = '[MixItUp] 200 WARNING: This element already has an active MixItUp ' +
+                    'instance. The provided configuration object will be ignored. If you ' +
+                    'wish to perform additional methods on this instance, please create ' +
+                    'a reference.';
+
+        this[201] = '[MixItUp] 201 WARNING: An operation was requested but the MixItUp ' +
+                    'instance was busy. The operation was rejected because queueing is ' +
+                    'disabled or the queue is full.';
+
+        this[202] = '[MixItUp] 202 WARNING: Operations cannot be requested while MixItUp ' +
+                    'is busy.';
+
+        /* 250-299: Public API method-specific warnings
+        ----------------------------------------------------------------------------- */
+
+        this[250] = '[MixItUp] 250 WARNING: The requested sorting data attribute was not ' +
+                    'present on one or more target elements which may product unexpected ' +
+                    'sort output';
+
+        this._execAction('constructor', 1);
     };
 
-    mixitup.Is = function() {
-        this.oldIe          = false;
-    };
+    mixitup.Messages.prototype = new mixitup.BasePrototype();
+
+    // Asign a singleton instance to `mixitup.messages`:
+
+    mixitup.messages = new mixitup.Messages();
+
+    /**
+     * The `mixitup.Features` class performs all feature and CSS prefix detection
+     * neccessary for MixItUp to function correctly. This is done on evaluation of
+     * the library and stored in a singleton instance for use by other
+     * internal classes.
+     *
+     * @constructor
+     * @namespace
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
 
     mixitup.Features = function() {
+        this._execAction('constructor', 0);
+
         this.has                        = new mixitup.Has();
         this.is                         = new mixitup.Is();
 
@@ -5166,31 +5099,60 @@
         this.perspectiveOriginProp      = '';
 
         this.canary                     = null;
+
+        this._execAction('constructor', 1);
     };
 
     mixitup.Features.prototype = new mixitup.BasePrototype();
 
-    h.extend(mixitup.Features.prototype, {
+    h.extend(mixitup.Features.prototype,
+    /** @lends mixitup.Features */
+    {
+        /**
+         * @private
+         * @return  {void}
+         */
+
         init: function() {
             var self = this;
+
+            self._execAction('init', 0);
 
             self.canary = document.createElement('div');
 
             self.runTests();
             self.setPrefixes();
             self.applyPolyfills();
+
+            self._execAction('init', 1);
         },
+
+        /**
+         * @private
+         * @return  {void}
+         */
 
         runTests: function() {
             var self = this;
 
+            self._execAction('runTests', 0);
+
             self.has.promises       = typeof Promise === 'function';
             self.has.transitions    = self.transitionPrefix !== 'unsupported';
             self.is.oldIe           = window.atob ? false : true;
+
+            self._execAction('runTests', 1);
         },
+
+        /**
+         * @private
+         * @return  {void}
+         */
 
         setPrefixes: function() {
             var self = this;
+
+            self._execAction('setPrefixes', 0);
 
             self.transitionPrefix   = h.getPrefix(self.canary, 'Transition', self.VENDORS);
             self.transformPrefix    = h.getPrefix(self.canary, 'Transform', self.VENDORS);
@@ -5214,11 +5176,20 @@
             self.perspectiveOriginProp = self.transformPrefix ?
                 self.transformPrefix + h.camelCase(self.PERSPECTIVE_ORIGIN_PROP, true) :
                 self.PERSPECTIVE_ORIGIN_PROP;
+
+            self._execAction('setPrefixes', 1);
         },
+
+        /**
+         * @private
+         * @return  {void}
+         */
 
         applyPolyfills: function() {
             var self    = this,
                 i       = -1;
+
+            self._execAction('applyPolyfills', 0);
 
             // window.requestAnimationFrame
 
@@ -5265,17 +5236,39 @@
                         }
                     };
             })(Element.prototype);
+
+            self._execAction('applyPolyfills', 1);
         }
     });
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.Has = function() {
+        this.transitions    = false;
+        this.promises       = false;
+    };
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.Is = function() {
+        this.oldIe          = false;
+    };
+
+    // Asign a singleton instance to `mixitup.features` and initialise:
 
     mixitup.features = new mixitup.Features();
 
     mixitup.features.init();
-
-    mixitup.CORE_VERSION    = '3.0.0-beta';
-    mixitup.h               = h;
-
-    mixitup.Mixer.prototype._featureDetect();
 
     if (typeof exports === 'object' && typeof module === 'object') {
         module.exports = mixitup;
@@ -5285,5 +5278,4 @@
         });
     } else if (typeof window.mixitup === 'undefined' || typeof window.mixitup !== 'function') {
         window.mixitup = window.mixItUp = mixitup;
-    }
-})(window);
+    }})(window);

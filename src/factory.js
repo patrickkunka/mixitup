@@ -44,7 +44,7 @@ mixitup = function(container, config, foreignDoc, returnCollection) {
         ) &&
         h.canReportErrors(config)
     ) {
-        throw new Error('[MixItUp] Invalid selector or element');
+        throw new Error(mixitup.messages[100]);
     }
 
     switch (typeof container) {
@@ -84,10 +84,7 @@ mixitup = function(container, config, foreignDoc, returnCollection) {
             instance = mixitup.Mixer.prototype._instances[id];
 
             if (config && h.canReportErrors(config)) {
-                console.warn(
-                    '[MixItUp] This element already has an active instance.' +
-                    'Config will be ignored.'
-                );
+                console.warn(mixitup.messages[200]);
             }
         }
 

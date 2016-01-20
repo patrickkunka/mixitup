@@ -1,15 +1,21 @@
 /* global mixitup, h */
 
-mixitup.Has = function() {
-    this.transitions    = false;
-    this.promises       = false;
-};
-
-mixitup.Is = function() {
-    this.oldIe          = false;
-};
+/**
+ * The `mixitup.Features` class performs all feature and CSS prefix detection
+ * neccessary for MixItUp to function correctly. This is done on evaluation of
+ * the library and stored in a singleton instance for use by other
+ * internal classes.
+ *
+ * @constructor
+ * @namespace
+ * @memberof    mixitup
+ * @private
+ * @since       3.0.0
+ */
 
 mixitup.Features = function() {
+    this._execAction('constructor', 0);
+
     this.has                        = new mixitup.Has();
     this.is                         = new mixitup.Is();
 
@@ -32,31 +38,60 @@ mixitup.Features = function() {
     this.perspectiveOriginProp      = '';
 
     this.canary                     = null;
+
+    this._execAction('constructor', 1);
 };
 
 mixitup.Features.prototype = new mixitup.BasePrototype();
 
-h.extend(mixitup.Features.prototype, {
+h.extend(mixitup.Features.prototype,
+/** @lends mixitup.Features */
+{
+    /**
+     * @private
+     * @return  {void}
+     */
+
     init: function() {
         var self = this;
+
+        self._execAction('init', 0);
 
         self.canary = document.createElement('div');
 
         self.runTests();
         self.setPrefixes();
         self.applyPolyfills();
+
+        self._execAction('init', 1);
     },
+
+    /**
+     * @private
+     * @return  {void}
+     */
 
     runTests: function() {
         var self = this;
 
+        self._execAction('runTests', 0);
+
         self.has.promises       = typeof Promise === 'function';
         self.has.transitions    = self.transitionPrefix !== 'unsupported';
         self.is.oldIe           = window.atob ? false : true;
+
+        self._execAction('runTests', 1);
     },
+
+    /**
+     * @private
+     * @return  {void}
+     */
 
     setPrefixes: function() {
         var self = this;
+
+        self._execAction('setPrefixes', 0);
 
         self.transitionPrefix   = h.getPrefix(self.canary, 'Transition', self.VENDORS);
         self.transformPrefix    = h.getPrefix(self.canary, 'Transform', self.VENDORS);
@@ -80,11 +115,20 @@ h.extend(mixitup.Features.prototype, {
         self.perspectiveOriginProp = self.transformPrefix ?
             self.transformPrefix + h.camelCase(self.PERSPECTIVE_ORIGIN_PROP, true) :
             self.PERSPECTIVE_ORIGIN_PROP;
+
+        self._execAction('setPrefixes', 1);
     },
+
+    /**
+     * @private
+     * @return  {void}
+     */
 
     applyPolyfills: function() {
         var self    = this,
             i       = -1;
+
+        self._execAction('applyPolyfills', 0);
 
         // window.requestAnimationFrame
 
@@ -131,8 +175,35 @@ h.extend(mixitup.Features.prototype, {
                     }
                 };
         })(Element.prototype);
+
+        self._execAction('applyPolyfills', 1);
     }
 });
+
+/**
+ * @constructor
+ * @memberof    mixitup
+ * @private
+ * @since       3.0.0
+ */
+
+mixitup.Has = function() {
+    this.transitions    = false;
+    this.promises       = false;
+};
+
+/**
+ * @constructor
+ * @memberof    mixitup
+ * @private
+ * @since       3.0.0
+ */
+
+mixitup.Is = function() {
+    this.oldIe          = false;
+};
+
+// Asign a singleton instance to `mixitup.features` and initialise:
 
 mixitup.features = new mixitup.Features();
 

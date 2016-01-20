@@ -243,7 +243,7 @@ h.extend(mixitup.Target.prototype, {
         }
 
         if (currentTransformValues.length) {
-            self.dom.el.style[mixitup.Mixer.prototype._transformProp] = currentTransformValues.join(' ');
+            self.dom.el.style[mixitup.features.transformProp] = currentTransformValues.join(' ');
         }
 
         self._execAction('applyTween', 1, arguments);
@@ -282,7 +282,7 @@ h.extend(mixitup.Target.prototype, {
             transformValues = transformValues.concat(self.mixer._transformIn);
         }
 
-        self.dom.el.style[mixitup.Mixer.prototype._transformProp] = transformValues.join(' ');
+        self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
 
         self._execAction('applyStylesIn', 1, arguments);
     },
@@ -309,7 +309,7 @@ h.extend(mixitup.Target.prototype, {
         // Build the transition rules
 
         transitionRules.push(self.writeTransitionRule(
-            mixitup.Mixer.prototype._transformRule,
+            mixitup.features.transformRule,
             options.staggerIndex
         ));
 
@@ -426,7 +426,7 @@ h.extend(mixitup.Target.prototype, {
 
         // Apply transforms
 
-        self.dom.el.style[mixitup.Mixer.prototype._transformProp] = transformValues.join(' ');
+        self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
 
         self._execAction('applyStylesOut', 1, arguments);
     },
@@ -497,7 +497,7 @@ h.extend(mixitup.Target.prototype, {
 
         self._execAction('applyTransition', 0, arguments);
 
-        self.dom.el.style[mixitup.Mixer.prototype._transitionProp] = transitionString;
+        self.dom.el.style[mixitup.features.transitionProp] = transitionString;
 
         self._execAction('applyTransition', 1, arguments);
     },
@@ -647,8 +647,8 @@ h.extend(mixitup.Target.prototype, {
 
         self._execAction('cleanUp', 0, arguments);
 
-        self.dom.el.style[mixitup.Mixer.prototype._transformProp]  = '';
-        self.dom.el.style[mixitup.Mixer.prototype._transitionProp] = '';
+        self.dom.el.style[mixitup.features.transformProp]  = '';
+        self.dom.el.style[mixitup.features.transitionProp] = '';
         self.dom.el.style.opacity                                  = '';
 
         if (self.mixer.animation.animateResizeTargets) {

@@ -149,12 +149,6 @@ h.extend(mixitup.Mixer.prototype,
 {
     constructor: mixitup.Mixer,
 
-    _transformProp: 'transform',
-    _transformRule: 'transform',
-    _transitionProp: 'transition',
-    _perspectiveProp: 'perspective',
-    _perspectiveOriginProp: 'perspectiveOrigin',
-
     _tweenable: [
         'opacity',
         'width', 'height',
@@ -196,9 +190,6 @@ h.extend(mixitup.Mixer.prototype,
         }
     },
 
-    _is: {},
-    _has: {},
-
     _instances: {},
 
     _handled: {
@@ -213,98 +204,6 @@ h.extend(mixitup.Mixer.prototype,
         _multiMix: {},
         _filter: {},
         _sort: {}
-    },
-
-    /**
-     * Performs all neccessary feature detection on the first evalulation of
-     * the library.
-     *
-     * @private
-     * @static
-     * @since 2.0.0
-     */
-
-    _featureDetect: function() {
-        var self                = this,
-            testEl              = document.createElement('div'),
-            vendorsTrans        = ['Webkit', 'Moz', 'O', 'ms'],
-            vendorsRAF          = ['webkit', 'moz'],
-            transitionPrefix    = h.getPrefix(testEl, 'Transition', vendorsTrans),
-            transformPrefix     = h.getPrefix(testEl, 'Transform', vendorsTrans),
-            i                   = -1;
-
-        self._execAction('_featureDetect', 0);
-
-        self._vendor = transformPrefix; // TODO: this is only used for box-sizing, make a seperate test
-
-        mixitup.Mixer.prototype._has._promises      = typeof Promise === 'function';
-        mixitup.Mixer.prototype._has._transitions   = transitionPrefix !== 'unsupported';
-        mixitup.Mixer.prototype._is._crapIe         = window.atob ? false : true;
-
-        mixitup.Mixer.prototype._transitionProp =
-            transitionPrefix ? transitionPrefix + 'Transition' : 'transition';
-
-        mixitup.Mixer.prototype._transformProp =
-            transformPrefix ? transformPrefix + 'Transform' : 'transform';
-
-        mixitup.Mixer.prototype._transformRule =
-            transformPrefix ? '-' + transformPrefix + '-transform' : 'transform';
-
-        mixitup.Mixer.prototype._perspectiveProp =
-            transformPrefix ? transformPrefix + 'Perspective' : 'perspective';
-
-        mixitup.Mixer.prototype._perspectiveOriginProp =
-            transformPrefix ? transformPrefix + 'PerspectiveOrigin' : 'perspectiveOrigin';
-
-        // Apply polyfills:
-
-        // window.requestAnimationFrame
-
-        for (i = 0; i < vendorsRAF.length && !window.requestAnimationFrame; i++) {
-            window.requestAnimationFrame = window[vendorsRAF[i] + 'RequestAnimationFrame'];
-        }
-
-        // Element.nextElementSibling
-
-        if (typeof testEl.nextElementSibling === 'undefined') {
-            Object.defineProperty(Element.prototype, 'nextElementSibling', {
-                get: function() {
-                    var el = this.nextSibling;
-
-                    while (el) {
-                        if (el.nodeType === 1) {
-                            return el;
-                        }
-
-                        el = el.nextSibling;
-                    }
-
-                    return null;
-                }
-            });
-        }
-
-        // Element.matches
-
-        (function(ElementPrototype) {
-            ElementPrototype.matches =
-                ElementPrototype.matches ||
-                ElementPrototype.machesSelector ||
-                ElementPrototype.mozMatchesSelector ||
-                ElementPrototype.msMatchesSelector ||
-                ElementPrototype.oMatchesSelector ||
-                ElementPrototype.webkitMatchesSelector ||
-                function (selector) {
-                    var nodes = (this.parentNode || this.doc).querySelectorAll(selector),
-                        i = -1;
-
-                    while (nodes[++i] && nodes[i] != this) {
-                        return !!nodes[i];
-                    }
-                };
-        })(Element.prototype);
-
-        self._execAction('_featureDetect', 1);
     },
 
     /**
@@ -329,7 +228,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.layout.containerClass && h.addClass(el, self.layout.containerClass);
 
-        self.animation.enable = self.animation.enable && mixitup.Mixer.prototype._has._transitions;
+        self.animation.enable = self.animation.enable && mixitup.features.has.transitions;
 
         self._indexTargets();
 
@@ -592,11 +491,7 @@ h.extend(mixitup.Mixer.prototype,
             (!self.animation.queue || self._queue.length >= self.animation.queueLimit)
         ) {
             if (h.canReportErrors(self)) {
-                console.warn(
-                    '[MixItUp] An operation was requested but the MixItUp ' +
-                    'instance was busy. The operation was rejected because ' +
-                    'queueing is disabled or the queue is full.'
-                );
+                console.warn(mixitup.messages[201]);
             }
 
             return;
@@ -978,13 +873,15 @@ h.extend(mixitup.Mixer.prototype,
 
         self._execAction('insert', 0, arguments);
 
+        if (typeof command.index === 'undefined') command.index = 0;
+
         nextSibling = self._getNextSibling(command.index, command.sibling, command.position);
         frag        = self._dom.document.createDocumentFragment();
 
         if (command.targets) {
             for (i = 0; el = command.targets[i]; i++) {
                 if (self._dom.targets.indexOf(el) > -1) {
-                    throw new Error('[MixItUp] An inserted element already exists in the container');
+                    throw new Error(mixitup.messages[151]);
                 }
 
                 frag.appendChild(el);
@@ -1273,11 +1170,7 @@ h.extend(mixitup.Mixer.prototype,
                 // targets to avoid erroneous sorting when
                 // types are mixed
 
-                console.warn(
-                    '[MixItUp] The sorting attribute "data-' +
-                    sort[depth].sortBy +
-                    '" was not present on one or more target elements'
-                );
+                console.warn(mixitup.messages[250]);
             }
         }
 
@@ -1439,7 +1332,7 @@ h.extend(mixitup.Mixer.prototype,
             i           = -1;
 
         if (!effectString || typeof effectString !== 'string') {
-            throw new Error('[MixItUp] Invalid effects string');
+            throw new Error(mixitup.messages[101]);
         }
 
         if (effectString.indexOf(effectName) < 0) {
@@ -1666,7 +1559,7 @@ h.extend(mixitup.Mixer.prototype,
             instance: self
         }, self._dom.document);
 
-        if (shouldAnimate && mixitup.Mixer.prototype._has._transitions) {
+        if (shouldAnimate && mixitup.features.has.transitions) {
             // If we should animate and the platform supports
             // transitions, go for it
 
@@ -1676,10 +1569,10 @@ h.extend(mixitup.Mixer.prototype,
                 window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
             }
 
-            self._dom.parent.style[mixitup.Mixer.prototype._perspectiveProp] =
+            self._dom.parent.style[mixitup.features.perspectiveProp] =
                 self.animation.perspective;
 
-            self._dom.parent.style[mixitup.Mixer.prototype._perspectiveOriginProp] =
+            self._dom.parent.style[mixitup.features.perspectiveOriginProp] =
                 self.animation.perspectiveOrigin;
 
             // TODO: even if animate resize container is disabled, the container
@@ -2132,7 +2025,7 @@ h.extend(mixitup.Mixer.prototype,
         self._dom.parent.style.perspectiveOrigin = self.animation.perspectiveOrigin;
 
         if (self.animation.animateResizeContainer) {
-            self._dom.parent.style[mixitup.Mixer.prototype._transitionProp] =
+            self._dom.parent.style[mixitup.features.transitionProp] =
                 'height ' + self.animation.duration + 'ms ease, ' +
                 'width ' + self.animation.duration + 'ms ease, ';
 
@@ -2292,13 +2185,13 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         if (self.animation.animateResizeContainer) {
-            self._dom.parent.style[mixitup.Mixer.prototype._transitionProp] = '';
+            self._dom.parent.style[mixitup.features.transitionProp] = '';
             self._dom.parent.style.height = '';
             self._dom.parent.style.width = '';
         }
 
-        self._dom.parent.style[mixitup.Mixer.prototype._perspectiveProp] = '';
-        self._dom.parent.style[mixitup.Mixer.prototype._perspectiveOriginProp] = '';
+        self._dom.parent.style[mixitup.features.perspectiveProp] = '';
+        self._dom.parent.style[mixitup.features.perspectiveOriginProp] = '';
 
         if (operation.willChangeLayout) {
             h.removeClass(self._dom.container, operation.startContainerClass);
@@ -2460,7 +2353,7 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         if (!instruction.command.targets.length && h.canReportErrors(self)) {
-            throw new Error('[MixItUp] No elements were passed to "insert"');
+            throw new Error(mixitup.messages[102]);
         }
 
         return self._execFilter('_parseInsertArgs', instruction, arguments);
@@ -2557,11 +2450,7 @@ h.extend(mixitup.Mixer.prototype,
             self._execAction('multiMixQueue', 1, args);
         } else {
             if (h.canReportErrors(self)) {
-                console.warn(
-                    '[MixItUp] An operation was requested but the MixItUp ' +
-                    'instance was busy. The operation was rejected because ' +
-                    'queueing is disabled or the queue is full.'
-                );
+                console.warn(mixitup.messages[201]);
             }
 
             promise.resolve(self._state);
@@ -2711,9 +2600,7 @@ h.extend(mixitup.Mixer.prototype,
 
         if (self._isMixing) {
             if (h.canReportErrors(self)) {
-                console.warn(
-                    '[MixItUp] Operations cannot be requested while MixItUp is busy.'
-                );
+                console.warn(mixitup.messages[201]);
             }
 
             return null;
