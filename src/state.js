@@ -14,7 +14,7 @@
  */
 
 mixitup.State = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     /**
      * The currently active filter selector as set by a control click or the API
@@ -196,7 +196,7 @@ mixitup.State = function() {
 
     this.triggerElement = null;
 
-    this._execAction('constructor', 1);
+    this.execAction('constructor', 1);
 
     h.seal(this);
 };

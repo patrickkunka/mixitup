@@ -8,12 +8,12 @@
  */
 
 mixitup.TransformData = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     this.value  = 0;
     this.unit   = '';
 
-    this._execAction('cconstructor', 1);
+    this.execAction('cconstructor', 1);
 
     h.seal(this);
 };

@@ -9,7 +9,7 @@
  */
 
 mixitup.ConfigCallbacks = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     this.onMixLoad  = null;
     this.onMixStart = null;
@@ -18,7 +18,7 @@ mixitup.ConfigCallbacks = function() {
     this.onMixFail  = null;
     this.onMixClick = null;
 
-    this._execAction('constructor', 1);
+    this.execAction('constructor', 1);
 
     h.seal(this);
 };

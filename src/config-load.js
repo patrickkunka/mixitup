@@ -9,12 +9,12 @@
  */
 
 mixitup.ConfigLoad = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     this.filter = 'all';
     this.sort   = 'default:asc';
 
-    this._execAction('constructor', 1);
+    this.execAction('constructor', 1);
 
     h.seal(this);
 };

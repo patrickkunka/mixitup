@@ -8,7 +8,7 @@
  */
 
 mixitup.StyleData = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     this.x              = 0;
     this.y              = 0;
@@ -26,7 +26,7 @@ mixitup.StyleData = function() {
     this.rotateY        = new mixitup.TransformData();
     this.rotateZ        = new mixitup.TransformData();
 
-    this._execAction('constructor', 1);
+    this.execAction('constructor', 1);
 
     h.seal(this);
 };

@@ -124,7 +124,7 @@ mixitup.BasePrototype.prototype =
      * @return      {void}
      */
 
-    _execAction: function(methodName, isPost, args) {
+    execAction: function(methodName, isPost, args) {
         var self    = this,
             key     = '',
             context = isPost ? 'post' : 'pre';
@@ -149,7 +149,7 @@ mixitup.BasePrototype.prototype =
      * @return      {*}
      */
 
-    _execFilter: function(methodName, value, args) {
+    execFilter: function(methodName, value, args) {
         var self    = this,
             key     = '';
 

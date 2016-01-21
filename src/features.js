@@ -14,7 +14,7 @@
  */
 
 mixitup.Features = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     this.boxSizingPrefix            = '';
     this.transformPrefix            = '';
@@ -49,7 +49,7 @@ mixitup.Features = function() {
         'rotateX', 'rotateY', 'rotateZ'
     ];
 
-    this._execAction('constructor', 1);
+    this.execAction('constructor', 1);
 };
 
 mixitup.Features.prototype = new mixitup.BasePrototype();
@@ -65,7 +65,7 @@ h.extend(mixitup.Features.prototype,
     init: function() {
         var self = this;
 
-        self._execAction('init', 0);
+        self.execAction('init', 0);
 
         self.canary = document.createElement('div');
 
@@ -73,7 +73,7 @@ h.extend(mixitup.Features.prototype,
         self.setPrefixes();
         self.applyPolyfills();
 
-        self._execAction('init', 1);
+        self.execAction('init', 1);
     },
 
     /**
@@ -84,13 +84,13 @@ h.extend(mixitup.Features.prototype,
     runTests: function() {
         var self = this;
 
-        self._execAction('runTests', 0);
+        self.execAction('runTests', 0);
 
         self.has.promises       = typeof Promise === 'function';
         self.has.transitions    = self.transitionPrefix !== 'unsupported';
         self.is.oldIe           = window.atob ? false : true;
 
-        self._execAction('runTests', 1);
+        self.execAction('runTests', 1);
     },
 
     /**
@@ -101,7 +101,7 @@ h.extend(mixitup.Features.prototype,
     setPrefixes: function() {
         var self = this;
 
-        self._execAction('setPrefixes', 0);
+        self.execAction('setPrefixes', 0);
 
         self.transitionPrefix   = h.getPrefix(self.canary, 'Transition', self.VENDORS);
         self.transformPrefix    = h.getPrefix(self.canary, 'Transform', self.VENDORS);
@@ -126,7 +126,7 @@ h.extend(mixitup.Features.prototype,
             self.transformPrefix + h.camelCase(self.PERSPECTIVE_ORIGIN_PROP, true) :
             self.PERSPECTIVE_ORIGIN_PROP;
 
-        self._execAction('setPrefixes', 1);
+        self.execAction('setPrefixes', 1);
     },
 
     /**
@@ -138,7 +138,7 @@ h.extend(mixitup.Features.prototype,
         var self    = this,
             i       = -1;
 
-        self._execAction('applyPolyfills', 0);
+        self.execAction('applyPolyfills', 0);
 
         // window.requestAnimationFrame
 
@@ -186,7 +186,7 @@ h.extend(mixitup.Features.prototype,
                 };
         })(Element.prototype);
 
-        self._execAction('applyPolyfills', 1);
+        self.execAction('applyPolyfills', 1);
     }
 });
 

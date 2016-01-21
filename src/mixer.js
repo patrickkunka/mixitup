@@ -15,7 +15,7 @@
  */
 
 mixitup.Mixer = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     this.animation          = new mixitup.ConfigAnimation();
     this.callbacks          = new mixitup.ConfigCallbacks();
@@ -60,7 +60,7 @@ mixitup.Mixer = function() {
 
     this._dom               = new mixitup.MixerDom();
 
-    this._execAction('constructor', 1);
+    this.execAction('constructor', 1);
 
     h.seal(this);
 };
@@ -124,7 +124,7 @@ h.extend(mixitup.Mixer.prototype,
             state       = new mixitup.State(),
             operation   = new mixitup.Operation();
 
-        self._execAction('_init', 0, arguments);
+        self.execAction('_init', 0, arguments);
 
         config && h.extend(self, config);
 
@@ -178,7 +178,7 @@ h.extend(mixitup.Mixer.prototype,
             self._buildToggleArray();
         }
 
-        self._execAction('_init', 1, arguments);
+        self.execAction('_init', 1, arguments);
     },
 
     /**
@@ -194,7 +194,7 @@ h.extend(mixitup.Mixer.prototype,
     _cacheDom: function(el) {
         var self = this;
 
-        self._execAction('_cacheDom', 0, arguments);
+        self.execAction('_cacheDom', 0, arguments);
 
         self._dom.body      = self._dom.document.getElementsByTagName('body')[0];
         self._dom.container = el;
@@ -217,7 +217,7 @@ h.extend(mixitup.Mixer.prototype,
             .concat(self._dom.filterToggleButtons)
             .concat(self._dom.multiMixButtons);
 
-        self._execAction('_cacheDom', 1, arguments);
+        self.execAction('_cacheDom', 1, arguments);
     },
 
     /**
@@ -236,7 +236,7 @@ h.extend(mixitup.Mixer.prototype,
             el      = null,
             i       = -1;
 
-        self._execAction('_indexTargets', 0, arguments);
+        self.execAction('_indexTargets', 0, arguments);
 
         self._dom.targets = self.layout.allowNestedTargets ?
             self._dom.container.querySelectorAll(self.selectors.target) :
@@ -264,7 +264,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self._origOrder = self._targets;
 
-        self._execAction('_indexTargets', 1, arguments);
+        self.execAction('_indexTargets', 1, arguments);
     },
 
     /**
@@ -284,7 +284,7 @@ h.extend(mixitup.Mixer.prototype,
             button          = null,
             i               = -1;
 
-        self._execAction('_bindEvents', 0);
+        self.execAction('_bindEvents', 0);
 
         self._handler = function(e) {
             return self._eventBus(e);
@@ -318,7 +318,7 @@ h.extend(mixitup.Mixer.prototype,
             (typeof sorts[self.selectors.sort] === 'undefined') ?
                 1 : sorts[self.selectors.sort] + 1;
 
-        self._execAction('_bindEvents', 1);
+        self.execAction('_bindEvents', 1);
     },
 
     /**
@@ -333,7 +333,7 @@ h.extend(mixitup.Mixer.prototype,
             button  = null,
             i       = -1;
 
-        self._execAction('_unbindEvents', 0);
+        self.execAction('_unbindEvents', 0);
 
         h.off(window, 'click', self._handler);
 
@@ -341,7 +341,7 @@ h.extend(mixitup.Mixer.prototype,
             h.on(button, 'click', self._handler);
         }
 
-        self._execAction('_unbindEvents', 1);
+        self.execAction('_unbindEvents', 1);
     },
 
     /**
@@ -387,7 +387,7 @@ h.extend(mixitup.Mixer.prototype,
             el              = null,
             i               = -1;
 
-        self._execAction('handleClick', 0, arguments);
+        self.execAction('handleClick', 0, arguments);
 
         toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '';
 
@@ -438,7 +438,7 @@ h.extend(mixitup.Mixer.prototype,
                 // TODO: trigger event
             }
 
-            self._execAction('handleClickBusy', 1, arguments);
+            self.execAction('handleClickBusy', 1, arguments);
 
             return;
         }
@@ -595,7 +595,7 @@ h.extend(mixitup.Mixer.prototype,
             self.multiMix(command);
         }
 
-        self._execAction('handleClick', 1, arguments);
+        self.execAction('handleClick', 1, arguments);
     },
 
     /**
@@ -648,7 +648,7 @@ h.extend(mixitup.Mixer.prototype,
             filter          = '',
             i               = -1;
 
-        self._execAction('_buildToggleArray', 0, arguments);
+        self.execAction('_buildToggleArray', 0, arguments);
 
         activeFilter = self._state.activeFilter.replace(/\s/g, '');
         activeFilter = activeFilter === self.selectors.target ? '' : activeFilter;
@@ -667,7 +667,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self._toggleArray = h.clean(self._toggleArray);
 
-        self._execAction('_buildToggleArray', 1, arguments);
+        self.execAction('_buildToggleArray', 1, arguments);
     },
 
     /**
@@ -696,7 +696,7 @@ h.extend(mixitup.Mixer.prototype,
             sort: command && command.sort
         };
 
-        self._execAction('_updateControls', 0, arguments);
+        self.execAction('_updateControls', 0, arguments);
 
         (typeof output.filter === 'undefined') && (output.filter = self._state.activeFilter);
         (typeof output.sort === 'undefined') && (output.sort = self._state.activeSort);
@@ -758,7 +758,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        self._execAction('_updateControls', 1, arguments);
+        self.execAction('_updateControls', 1, arguments);
     },
 
     /**
@@ -778,7 +778,7 @@ h.extend(mixitup.Mixer.prototype,
             el          = null,
             i           = -1;
 
-        self._execAction('insert', 0, arguments);
+        self.execAction('insert', 0, arguments);
 
         if (typeof command.index === 'undefined') command.index = 0;
 
@@ -812,7 +812,7 @@ h.extend(mixitup.Mixer.prototype,
 
         operation.startOrder = self._origOrder = self._targets;
 
-        self._execAction('insert', 1, arguments);
+        self.execAction('insert', 1, arguments);
     },
 
     /**
@@ -859,7 +859,7 @@ h.extend(mixitup.Mixer.prototype,
             target      = null,
             i           = -1;
 
-        self._execAction('_filter', 0, arguments);
+        self.execAction('_filter', 0, arguments);
 
         for (i = 0; target = operation.newOrder[i]; i++) {
             if (typeof operation.newFilter === 'string') {
@@ -922,7 +922,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        self._execAction('_filter', 1, arguments);
+        self.execAction('_filter', 1, arguments);
     },
 
     /**
@@ -970,7 +970,7 @@ h.extend(mixitup.Mixer.prototype,
     _sort: function(operation) {
         var self = this;
 
-        self._execAction('_sort', 0, arguments);
+        self.execAction('_sort', 0, arguments);
 
         operation.startOrder = self._targets;
 
@@ -1003,7 +1003,7 @@ h.extend(mixitup.Mixer.prototype,
             operation.willSort = false;
         }
 
-        self._execAction('_sort', 1, arguments);
+        self.execAction('_sort', 1, arguments);
     },
 
     /**
@@ -1110,7 +1110,7 @@ h.extend(mixitup.Mixer.prototype,
             el          = null,
             i           = -1;
 
-        self._execAction('_printSort', 0, arguments);
+        self.execAction('_printSort', 0, arguments);
 
         for (i = 0; el = targets[i]; i++) {
             // Empty the container
@@ -1142,7 +1142,7 @@ h.extend(mixitup.Mixer.prototype,
             self._dom.parent.insertBefore(frag, nextSibling) :
             self._dom.parent.appendChild(frag);
 
-        self._execAction('_printSort', 1, arguments);
+        self.execAction('_printSort', 1, arguments);
     },
 
     /**
@@ -1175,7 +1175,7 @@ h.extend(mixitup.Mixer.prototype,
             if (ruleObj.sortBy === 'default' || ruleObj.sortBy === 'random') break;
         }
 
-        return self._execFilter('_parseSort', newSort, arguments);
+        return self.execFilter('_parseSort', newSort, arguments);
     },
 
     /**
@@ -1357,7 +1357,7 @@ h.extend(mixitup.Mixer.prototype,
             target      = null,
             i           = -1;
 
-        self._execAction('_buildState', 0);
+        self.execAction('_buildState', 0);
 
         // Map target elements into state arrays.
         // the real target objects should never be exposed
@@ -1393,7 +1393,7 @@ h.extend(mixitup.Mixer.prototype,
         state.totalMatching        = operation.matching.length;
         state.triggerElement       = self._lastClicked;
 
-        return self._execFilter('_buildState', state, arguments);
+        return self.execFilter('_buildState', state, arguments);
     },
 
     /**
@@ -1408,7 +1408,7 @@ h.extend(mixitup.Mixer.prototype,
     _goMix: function(shouldAnimate, operation) {
         var self            = this;
 
-        self._execAction('_goMix', 0, arguments);
+        self.execAction('_goMix', 0, arguments);
 
         // If the animation duration is set to 0ms,
         // Or the container is hidden
@@ -1500,7 +1500,7 @@ h.extend(mixitup.Mixer.prototype,
             self._cleanUp(operation);
         }
 
-        self._execAction('_goMix', 1, arguments);
+        self.execAction('_goMix', 1, arguments);
 
         return self._userPromise.promise;
     },
@@ -1524,7 +1524,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self._incPadding = (boxSizing === 'border-box');
 
-        self._execAction('_getStartMixData', 0);
+        self.execAction('_getStartMixData', 0);
 
         for (i = 0; target = operation.show[i]; i++) {
             data = target.getPosData();
@@ -1558,7 +1558,7 @@ h.extend(mixitup.Mixer.prototype,
                 parseFloat(parentStyle.borderLeft) -
                 parseFloat(parentStyle.borderRight);
 
-        self._execAction('_getStartMixData', 1);
+        self.execAction('_getStartMixData', 1);
     },
 
     /**
@@ -1574,7 +1574,7 @@ h.extend(mixitup.Mixer.prototype,
             target  = null,
             i       = -1;
 
-        self._execAction('_setInter', 0);
+        self.execAction('_setInter', 0);
 
         for (i = 0; target = operation.toShow[i]; i++) {
             target.show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
@@ -1585,7 +1585,7 @@ h.extend(mixitup.Mixer.prototype,
             h.addClass(self._dom.container, operation.newContainerClass);
         }
 
-        self._execAction('_setInter', 1);
+        self.execAction('_setInter', 1);
     },
 
     /**
@@ -1601,7 +1601,7 @@ h.extend(mixitup.Mixer.prototype,
             target  = null,
             i       = -1;
 
-        self._execAction('_getInterMixData', 0);
+        self.execAction('_getInterMixData', 0);
 
         for (i = 0; target = operation.show[i]; i++) {
             operation.showPosData[i].interPosData = target.getPosData();
@@ -1611,7 +1611,7 @@ h.extend(mixitup.Mixer.prototype,
             operation.toHidePosData[i].interPosData = target.getPosData();
         }
 
-        self._execAction('_getInterMixData', 1);
+        self.execAction('_getInterMixData', 1);
     },
 
     /**
@@ -1627,7 +1627,7 @@ h.extend(mixitup.Mixer.prototype,
             target  = null,
             i       = -1;
 
-        self._execAction('_setFinal', 0);
+        self.execAction('_setFinal', 0);
 
         operation.willSort && self._printSort(false, operation);
 
@@ -1635,7 +1635,7 @@ h.extend(mixitup.Mixer.prototype,
             target.hide();
         }
 
-        self._execAction('_setFinal', 1);
+        self.execAction('_setFinal', 1);
     },
 
     /**
@@ -1657,7 +1657,7 @@ h.extend(mixitup.Mixer.prototype,
             parentStyle = window.getComputedStyle(self._dom.parent);
         }
 
-        self._execAction('_getFinalMixData', 0, arguments);
+        self.execAction('_getFinalMixData', 0, arguments);
 
         for (i = 0; target = operation.show[i]; i++) {
             operation.showPosData[i].finalPosData = target.getPosData();
@@ -1700,7 +1700,7 @@ h.extend(mixitup.Mixer.prototype,
             h.addClass(self._dom.container, self.layout.containerClass);
         }
 
-        self._execAction('_getFinalMixData', 1, arguments);
+        self.execAction('_getFinalMixData', 1, arguments);
     },
 
     /**
@@ -2064,7 +2064,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self._isMixing = false;
 
-        self._execAction('_cleanUp', 0);
+        self.execAction('_cleanUp', 0);
 
         self._targetsMoved          =
             self._targetsImmovable  =
@@ -2145,7 +2145,7 @@ h.extend(mixitup.Mixer.prototype,
         self._userPromise.isResolved = true;
 
         if (self._queue.length) {
-            self._execAction('_queue', 0);
+            self.execAction('_queue', 0);
 
             nextInQueue = self._queue.shift();
 
@@ -2154,7 +2154,7 @@ h.extend(mixitup.Mixer.prototype,
             self.multiMix.apply(self, nextInQueue);
         }
 
-        self._execAction('_cleanUp', 1);
+        self.execAction('_cleanUp', 1);
     },
 
     /**
@@ -2187,7 +2187,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        return self._execFilter('_parseMultiMixArgs', instruction, arguments);
+        return self.execFilter('_parseMultiMixArgs', instruction, arguments);
     },
 
     /**
@@ -2263,7 +2263,7 @@ h.extend(mixitup.Mixer.prototype,
             throw new Error(mixitup.messages[102]);
         }
 
-        return self._execFilter('_parseInsertArgs', instruction, arguments);
+        return self.execFilter('_parseInsertArgs', instruction, arguments);
     },
 
     /**
@@ -2329,7 +2329,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        return self._execFilter('_parseRemoveArgs', instruction, arguments);
+        return self.execFilter('_parseRemoveArgs', instruction, arguments);
     },
 
     /**
@@ -2354,7 +2354,7 @@ h.extend(mixitup.Mixer.prototype,
 
             (self.controls.enable && !self._isClicking) && self._updateControls(instruction.command);
 
-            self._execAction('multiMixQueue', 1, args);
+            self.execAction('multiMixQueue', 1, args);
         } else {
             if (h.canReportErrors(self)) {
                 console.warn(mixitup.messages[201]);
@@ -2372,7 +2372,7 @@ h.extend(mixitup.Mixer.prototype,
                 instance: self
             });
 
-            self._execAction('multiMixBusy', 1, args);
+            self.execAction('multiMixBusy', 1, args);
         }
 
         return promise.promise;
@@ -2498,7 +2498,7 @@ h.extend(mixitup.Mixer.prototype,
         operation.startState    = self._state;
         operation.id            = h.randomHexKey();
 
-        self._execAction('getOperation', 0, operation);
+        self.execAction('getOperation', 0, operation);
 
         // TODO: passing the operation rather than arguments
         // to the action is non-standard here but essential as
@@ -2596,7 +2596,7 @@ h.extend(mixitup.Mixer.prototype,
 
         operation.newState = self._buildState(operation);
 
-        return self._execFilter('getOperation', operation, arguments);
+        return self.execFilter('getOperation', operation, arguments);
     },
 
     /**
@@ -2612,7 +2612,7 @@ h.extend(mixitup.Mixer.prototype,
             animate     = false,
             instruction = self._parseMultiMixArgs(arguments);
 
-        self._execAction('multiMix', 0, arguments);
+        self.execAction('multiMix', 0, arguments);
 
         if (!self._isClicking) {
             self._lastClicked = null;
@@ -2637,8 +2637,8 @@ h.extend(mixitup.Mixer.prototype,
 
             if (instruction.callback) self._userCallback = instruction.callback;
 
-            self._execFilter('multiMix', operation, self);
-            self._execAction('multiMix', 1, arguments);
+            self.execFilter('multiMix', operation, self);
+            self.execAction('multiMix', 1, arguments);
 
             // Always allow the instruction to override the instance setting
 
@@ -2804,11 +2804,11 @@ h.extend(mixitup.Mixer.prototype,
     setOptions: function(config) {
         var self = this;
 
-        self._execAction('setOptions', 0, arguments);
+        self.execAction('setOptions', 0, arguments);
 
         // TODO (requires deep extend helper)
 
-        self._execAction('setOptions', 1, arguments);
+        self.execAction('setOptions', 1, arguments);
     },
 
     /**
@@ -2824,7 +2824,7 @@ h.extend(mixitup.Mixer.prototype,
         // TODO: would be safer to build a new state on
         // each request so that users cannot override the state
 
-        return self._execFilter('getState', self._state, self);
+        return self.execFilter('getState', self._state, self);
     },
 
     /**
@@ -2853,7 +2853,7 @@ h.extend(mixitup.Mixer.prototype,
             button  = null,
             i       = 0;
 
-        self._execAction('destroy', 0, arguments);
+        self.execAction('destroy', 0, arguments);
 
         self._unbindEvents();
 
@@ -2875,6 +2875,6 @@ h.extend(mixitup.Mixer.prototype,
 
         delete mixitup.Mixer.prototype._instances[self._id];
 
-        self._execAction('destroy', 1, arguments);
+        self.execAction('destroy', 1, arguments);
     }
 });

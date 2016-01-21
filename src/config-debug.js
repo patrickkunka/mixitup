@@ -9,11 +9,11 @@
  */
 
 mixitup.ConfigDebug = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     this.enable = true;
 
-    this._execAction('constructor', 1);
+    this.execAction('constructor', 1);
 
     h.seal(this);
 };

@@ -8,7 +8,7 @@
  */
 
 mixitup.Messages = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     /* 100 - 149: General errors
     ----------------------------------------------------------------------------- */
@@ -51,7 +51,7 @@ mixitup.Messages = function() {
                 'present on one or more target elements which may product unexpected ' +
                 'sort output';
 
-    this._execAction('constructor', 1);
+    this.execAction('constructor', 1);
 
     h.seal(this);
 };

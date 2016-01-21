@@ -8,7 +8,7 @@
  */
 
 mixitup.MixerDom = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     this.document               = null;
     this.body                   = null;
@@ -21,7 +21,7 @@ mixitup.MixerDom = function() {
     this.multiMixButtons        = [];
     this.allButtons             = [];
 
-    this._execAction('constructor', 1);
+    this.execAction('constructor', 1);
 
     h.seal(this);
 };

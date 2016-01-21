@@ -9,7 +9,7 @@
  */
 
 mixitup.ConfigAnimation = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     this.enable                 = true;
     this.effects                = 'fade scale';
@@ -28,7 +28,7 @@ mixitup.ConfigAnimation = function() {
     this.reverseOut             = false;
     this.nudgeOut               = true;
 
-    this._execAction('constructor', 1);
+    this.execAction('constructor', 1);
 
     h.seal(this);
 };

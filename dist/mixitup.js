@@ -934,7 +934,7 @@
          * @return      {void}
          */
 
-        _execAction: function(methodName, isPost, args) {
+        execAction: function(methodName, isPost, args) {
             var self    = this,
                 key     = '',
                 context = isPost ? 'post' : 'pre';
@@ -959,7 +959,7 @@
          * @return      {*}
          */
 
-        _execFilter: function(methodName, value, args) {
+        execFilter: function(methodName, value, args) {
             var self    = this,
                 key     = '';
 
@@ -982,7 +982,7 @@
      */
 
     mixitup.ConfigAnimation = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.enable                 = true;
         this.effects                = 'fade scale';
@@ -1001,7 +1001,7 @@
         this.reverseOut             = false;
         this.nudgeOut               = true;
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1017,7 +1017,7 @@
      */
 
     mixitup.ConfigCallbacks = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.onMixLoad  = null;
         this.onMixStart = null;
@@ -1026,7 +1026,7 @@
         this.onMixFail  = null;
         this.onMixClick = null;
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1042,7 +1042,7 @@
      */
 
     mixitup.ConfigControls = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.enable         = true;
         this.live           = false;
@@ -1050,7 +1050,7 @@
         this.toggleDefault  = 'all';
         this.activeClass    = 'active';
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1066,11 +1066,11 @@
      */
 
     mixitup.ConfigDebug = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.enable = true;
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1086,14 +1086,14 @@
      */
 
     mixitup.ConfigLayout = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.allowNestedTargets = false;
         this.display            = 'inline-block';
         this.containerClass     = '';
         this.containerClassFail = 'fail';
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1109,12 +1109,12 @@
      */
 
     mixitup.ConfigLibraries = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.q          = null;
         this.jQuery     = null;
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1130,12 +1130,12 @@
      */
 
     mixitup.ConfigLoad = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.filter = 'all';
         this.sort   = 'default:asc';
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1151,7 +1151,7 @@
      */
 
     mixitup.ConfigSelectors = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.target         = '.mix';
         this.filter         = '.filter';
@@ -1159,7 +1159,7 @@
         this.multiMix       = '.multi-mix';
         this.sort           = '.sort';
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1174,7 +1174,7 @@
      */
 
     mixitup.MixerDom = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.document               = null;
         this.body                   = null;
@@ -1187,7 +1187,7 @@
         this.multiMixButtons        = [];
         this.allButtons             = [];
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1201,14 +1201,14 @@
      */
 
     mixitup.ClickTracker = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.filterToggle   = {};
         this.multiMix       = {};
         this.filter         = {};
         this.sort           = {};
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1223,7 +1223,7 @@
      */
 
     mixitup.StyleData = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.x              = 0;
         this.y              = 0;
@@ -1241,7 +1241,7 @@
         this.rotateY        = new mixitup.TransformData();
         this.rotateZ        = new mixitup.TransformData();
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1256,12 +1256,12 @@
      */
 
     mixitup.TransformData = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.value  = 0;
         this.unit   = '';
 
-        this._execAction('cconstructor', 1);
+        this.execAction('cconstructor', 1);
 
         h.seal(this);
     };
@@ -1276,7 +1276,7 @@
      */
 
     mixitup.TransformDefaults = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         mixitup.StyleData.apply(this);
 
@@ -1304,7 +1304,7 @@
         this.rotateZ.value      = 180;
         this.rotateZ.unit       = 'deg';
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
     };
 
     mixitup.TransformDefaults.prototype = new mixitup.BasePrototype();
@@ -1324,7 +1324,7 @@
      */
 
     mixitup.Mixer = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.animation          = new mixitup.ConfigAnimation();
         this.callbacks          = new mixitup.ConfigCallbacks();
@@ -1369,7 +1369,7 @@
 
         this._dom               = new mixitup.MixerDom();
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -1433,7 +1433,7 @@
                 state       = new mixitup.State(),
                 operation   = new mixitup.Operation();
 
-            self._execAction('_init', 0, arguments);
+            self.execAction('_init', 0, arguments);
 
             config && h.extend(self, config);
 
@@ -1487,7 +1487,7 @@
                 self._buildToggleArray();
             }
 
-            self._execAction('_init', 1, arguments);
+            self.execAction('_init', 1, arguments);
         },
 
         /**
@@ -1503,7 +1503,7 @@
         _cacheDom: function(el) {
             var self = this;
 
-            self._execAction('_cacheDom', 0, arguments);
+            self.execAction('_cacheDom', 0, arguments);
 
             self._dom.body      = self._dom.document.getElementsByTagName('body')[0];
             self._dom.container = el;
@@ -1526,7 +1526,7 @@
                 .concat(self._dom.filterToggleButtons)
                 .concat(self._dom.multiMixButtons);
 
-            self._execAction('_cacheDom', 1, arguments);
+            self.execAction('_cacheDom', 1, arguments);
         },
 
         /**
@@ -1545,7 +1545,7 @@
                 el      = null,
                 i       = -1;
 
-            self._execAction('_indexTargets', 0, arguments);
+            self.execAction('_indexTargets', 0, arguments);
 
             self._dom.targets = self.layout.allowNestedTargets ?
                 self._dom.container.querySelectorAll(self.selectors.target) :
@@ -1573,7 +1573,7 @@
 
             self._origOrder = self._targets;
 
-            self._execAction('_indexTargets', 1, arguments);
+            self.execAction('_indexTargets', 1, arguments);
         },
 
         /**
@@ -1593,7 +1593,7 @@
                 button          = null,
                 i               = -1;
 
-            self._execAction('_bindEvents', 0);
+            self.execAction('_bindEvents', 0);
 
             self._handler = function(e) {
                 return self._eventBus(e);
@@ -1627,7 +1627,7 @@
                 (typeof sorts[self.selectors.sort] === 'undefined') ?
                     1 : sorts[self.selectors.sort] + 1;
 
-            self._execAction('_bindEvents', 1);
+            self.execAction('_bindEvents', 1);
         },
 
         /**
@@ -1642,7 +1642,7 @@
                 button  = null,
                 i       = -1;
 
-            self._execAction('_unbindEvents', 0);
+            self.execAction('_unbindEvents', 0);
 
             h.off(window, 'click', self._handler);
 
@@ -1650,7 +1650,7 @@
                 h.on(button, 'click', self._handler);
             }
 
-            self._execAction('_unbindEvents', 1);
+            self.execAction('_unbindEvents', 1);
         },
 
         /**
@@ -1696,7 +1696,7 @@
                 el              = null,
                 i               = -1;
 
-            self._execAction('handleClick', 0, arguments);
+            self.execAction('handleClick', 0, arguments);
 
             toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '';
 
@@ -1747,7 +1747,7 @@
                     // TODO: trigger event
                 }
 
-                self._execAction('handleClickBusy', 1, arguments);
+                self.execAction('handleClickBusy', 1, arguments);
 
                 return;
             }
@@ -1904,7 +1904,7 @@
                 self.multiMix(command);
             }
 
-            self._execAction('handleClick', 1, arguments);
+            self.execAction('handleClick', 1, arguments);
         },
 
         /**
@@ -1957,7 +1957,7 @@
                 filter          = '',
                 i               = -1;
 
-            self._execAction('_buildToggleArray', 0, arguments);
+            self.execAction('_buildToggleArray', 0, arguments);
 
             activeFilter = self._state.activeFilter.replace(/\s/g, '');
             activeFilter = activeFilter === self.selectors.target ? '' : activeFilter;
@@ -1976,7 +1976,7 @@
 
             self._toggleArray = h.clean(self._toggleArray);
 
-            self._execAction('_buildToggleArray', 1, arguments);
+            self.execAction('_buildToggleArray', 1, arguments);
         },
 
         /**
@@ -2005,7 +2005,7 @@
                 sort: command && command.sort
             };
 
-            self._execAction('_updateControls', 0, arguments);
+            self.execAction('_updateControls', 0, arguments);
 
             (typeof output.filter === 'undefined') && (output.filter = self._state.activeFilter);
             (typeof output.sort === 'undefined') && (output.sort = self._state.activeSort);
@@ -2067,7 +2067,7 @@
                 }
             }
 
-            self._execAction('_updateControls', 1, arguments);
+            self.execAction('_updateControls', 1, arguments);
         },
 
         /**
@@ -2087,7 +2087,7 @@
                 el          = null,
                 i           = -1;
 
-            self._execAction('insert', 0, arguments);
+            self.execAction('insert', 0, arguments);
 
             if (typeof command.index === 'undefined') command.index = 0;
 
@@ -2121,7 +2121,7 @@
 
             operation.startOrder = self._origOrder = self._targets;
 
-            self._execAction('insert', 1, arguments);
+            self.execAction('insert', 1, arguments);
         },
 
         /**
@@ -2168,7 +2168,7 @@
                 target      = null,
                 i           = -1;
 
-            self._execAction('_filter', 0, arguments);
+            self.execAction('_filter', 0, arguments);
 
             for (i = 0; target = operation.newOrder[i]; i++) {
                 if (typeof operation.newFilter === 'string') {
@@ -2231,7 +2231,7 @@
                 }
             }
 
-            self._execAction('_filter', 1, arguments);
+            self.execAction('_filter', 1, arguments);
         },
 
         /**
@@ -2279,7 +2279,7 @@
         _sort: function(operation) {
             var self = this;
 
-            self._execAction('_sort', 0, arguments);
+            self.execAction('_sort', 0, arguments);
 
             operation.startOrder = self._targets;
 
@@ -2312,7 +2312,7 @@
                 operation.willSort = false;
             }
 
-            self._execAction('_sort', 1, arguments);
+            self.execAction('_sort', 1, arguments);
         },
 
         /**
@@ -2419,7 +2419,7 @@
                 el          = null,
                 i           = -1;
 
-            self._execAction('_printSort', 0, arguments);
+            self.execAction('_printSort', 0, arguments);
 
             for (i = 0; el = targets[i]; i++) {
                 // Empty the container
@@ -2451,7 +2451,7 @@
                 self._dom.parent.insertBefore(frag, nextSibling) :
                 self._dom.parent.appendChild(frag);
 
-            self._execAction('_printSort', 1, arguments);
+            self.execAction('_printSort', 1, arguments);
         },
 
         /**
@@ -2484,7 +2484,7 @@
                 if (ruleObj.sortBy === 'default' || ruleObj.sortBy === 'random') break;
             }
 
-            return self._execFilter('_parseSort', newSort, arguments);
+            return self.execFilter('_parseSort', newSort, arguments);
         },
 
         /**
@@ -2666,7 +2666,7 @@
                 target      = null,
                 i           = -1;
 
-            self._execAction('_buildState', 0);
+            self.execAction('_buildState', 0);
 
             // Map target elements into state arrays.
             // the real target objects should never be exposed
@@ -2702,7 +2702,7 @@
             state.totalMatching        = operation.matching.length;
             state.triggerElement       = self._lastClicked;
 
-            return self._execFilter('_buildState', state, arguments);
+            return self.execFilter('_buildState', state, arguments);
         },
 
         /**
@@ -2717,7 +2717,7 @@
         _goMix: function(shouldAnimate, operation) {
             var self            = this;
 
-            self._execAction('_goMix', 0, arguments);
+            self.execAction('_goMix', 0, arguments);
 
             // If the animation duration is set to 0ms,
             // Or the container is hidden
@@ -2809,7 +2809,7 @@
                 self._cleanUp(operation);
             }
 
-            self._execAction('_goMix', 1, arguments);
+            self.execAction('_goMix', 1, arguments);
 
             return self._userPromise.promise;
         },
@@ -2833,7 +2833,7 @@
 
             self._incPadding = (boxSizing === 'border-box');
 
-            self._execAction('_getStartMixData', 0);
+            self.execAction('_getStartMixData', 0);
 
             for (i = 0; target = operation.show[i]; i++) {
                 data = target.getPosData();
@@ -2867,7 +2867,7 @@
                     parseFloat(parentStyle.borderLeft) -
                     parseFloat(parentStyle.borderRight);
 
-            self._execAction('_getStartMixData', 1);
+            self.execAction('_getStartMixData', 1);
         },
 
         /**
@@ -2883,7 +2883,7 @@
                 target  = null,
                 i       = -1;
 
-            self._execAction('_setInter', 0);
+            self.execAction('_setInter', 0);
 
             for (i = 0; target = operation.toShow[i]; i++) {
                 target.show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
@@ -2894,7 +2894,7 @@
                 h.addClass(self._dom.container, operation.newContainerClass);
             }
 
-            self._execAction('_setInter', 1);
+            self.execAction('_setInter', 1);
         },
 
         /**
@@ -2910,7 +2910,7 @@
                 target  = null,
                 i       = -1;
 
-            self._execAction('_getInterMixData', 0);
+            self.execAction('_getInterMixData', 0);
 
             for (i = 0; target = operation.show[i]; i++) {
                 operation.showPosData[i].interPosData = target.getPosData();
@@ -2920,7 +2920,7 @@
                 operation.toHidePosData[i].interPosData = target.getPosData();
             }
 
-            self._execAction('_getInterMixData', 1);
+            self.execAction('_getInterMixData', 1);
         },
 
         /**
@@ -2936,7 +2936,7 @@
                 target  = null,
                 i       = -1;
 
-            self._execAction('_setFinal', 0);
+            self.execAction('_setFinal', 0);
 
             operation.willSort && self._printSort(false, operation);
 
@@ -2944,7 +2944,7 @@
                 target.hide();
             }
 
-            self._execAction('_setFinal', 1);
+            self.execAction('_setFinal', 1);
         },
 
         /**
@@ -2966,7 +2966,7 @@
                 parentStyle = window.getComputedStyle(self._dom.parent);
             }
 
-            self._execAction('_getFinalMixData', 0, arguments);
+            self.execAction('_getFinalMixData', 0, arguments);
 
             for (i = 0; target = operation.show[i]; i++) {
                 operation.showPosData[i].finalPosData = target.getPosData();
@@ -3009,7 +3009,7 @@
                 h.addClass(self._dom.container, self.layout.containerClass);
             }
 
-            self._execAction('_getFinalMixData', 1, arguments);
+            self.execAction('_getFinalMixData', 1, arguments);
         },
 
         /**
@@ -3373,7 +3373,7 @@
 
             self._isMixing = false;
 
-            self._execAction('_cleanUp', 0);
+            self.execAction('_cleanUp', 0);
 
             self._targetsMoved          =
                 self._targetsImmovable  =
@@ -3454,7 +3454,7 @@
             self._userPromise.isResolved = true;
 
             if (self._queue.length) {
-                self._execAction('_queue', 0);
+                self.execAction('_queue', 0);
 
                 nextInQueue = self._queue.shift();
 
@@ -3463,7 +3463,7 @@
                 self.multiMix.apply(self, nextInQueue);
             }
 
-            self._execAction('_cleanUp', 1);
+            self.execAction('_cleanUp', 1);
         },
 
         /**
@@ -3496,7 +3496,7 @@
                 }
             }
 
-            return self._execFilter('_parseMultiMixArgs', instruction, arguments);
+            return self.execFilter('_parseMultiMixArgs', instruction, arguments);
         },
 
         /**
@@ -3572,7 +3572,7 @@
                 throw new Error(mixitup.messages[102]);
             }
 
-            return self._execFilter('_parseInsertArgs', instruction, arguments);
+            return self.execFilter('_parseInsertArgs', instruction, arguments);
         },
 
         /**
@@ -3638,7 +3638,7 @@
                 }
             }
 
-            return self._execFilter('_parseRemoveArgs', instruction, arguments);
+            return self.execFilter('_parseRemoveArgs', instruction, arguments);
         },
 
         /**
@@ -3663,7 +3663,7 @@
 
                 (self.controls.enable && !self._isClicking) && self._updateControls(instruction.command);
 
-                self._execAction('multiMixQueue', 1, args);
+                self.execAction('multiMixQueue', 1, args);
             } else {
                 if (h.canReportErrors(self)) {
                     console.warn(mixitup.messages[201]);
@@ -3681,7 +3681,7 @@
                     instance: self
                 });
 
-                self._execAction('multiMixBusy', 1, args);
+                self.execAction('multiMixBusy', 1, args);
             }
 
             return promise.promise;
@@ -3807,7 +3807,7 @@
             operation.startState    = self._state;
             operation.id            = h.randomHexKey();
 
-            self._execAction('getOperation', 0, operation);
+            self.execAction('getOperation', 0, operation);
 
             // TODO: passing the operation rather than arguments
             // to the action is non-standard here but essential as
@@ -3905,7 +3905,7 @@
 
             operation.newState = self._buildState(operation);
 
-            return self._execFilter('getOperation', operation, arguments);
+            return self.execFilter('getOperation', operation, arguments);
         },
 
         /**
@@ -3921,7 +3921,7 @@
                 animate     = false,
                 instruction = self._parseMultiMixArgs(arguments);
 
-            self._execAction('multiMix', 0, arguments);
+            self.execAction('multiMix', 0, arguments);
 
             if (!self._isClicking) {
                 self._lastClicked = null;
@@ -3946,8 +3946,8 @@
 
                 if (instruction.callback) self._userCallback = instruction.callback;
 
-                self._execFilter('multiMix', operation, self);
-                self._execAction('multiMix', 1, arguments);
+                self.execFilter('multiMix', operation, self);
+                self.execAction('multiMix', 1, arguments);
 
                 // Always allow the instruction to override the instance setting
 
@@ -4113,11 +4113,11 @@
         setOptions: function(config) {
             var self = this;
 
-            self._execAction('setOptions', 0, arguments);
+            self.execAction('setOptions', 0, arguments);
 
             // TODO (requires deep extend helper)
 
-            self._execAction('setOptions', 1, arguments);
+            self.execAction('setOptions', 1, arguments);
         },
 
         /**
@@ -4133,7 +4133,7 @@
             // TODO: would be safer to build a new state on
             // each request so that users cannot override the state
 
-            return self._execFilter('getState', self._state, self);
+            return self.execFilter('getState', self._state, self);
         },
 
         /**
@@ -4162,7 +4162,7 @@
                 button  = null,
                 i       = 0;
 
-            self._execAction('destroy', 0, arguments);
+            self.execAction('destroy', 0, arguments);
 
             self._unbindEvents();
 
@@ -4184,7 +4184,7 @@
 
             delete mixitup.Mixer.prototype._instances[self._id];
 
-            self._execAction('destroy', 1, arguments);
+            self.execAction('destroy', 1, arguments);
         }
     });
 
@@ -4196,11 +4196,11 @@
      */
 
     mixitup.TargetDom = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.el = null;
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -4216,7 +4216,7 @@
      */
 
     mixitup.Target = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.sortString = '';
         this.mixer      = null;
@@ -4229,7 +4229,7 @@
 
         this.dom        = new mixitup.TargetDom();
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -4253,7 +4253,7 @@
         init: function(el, mixer) {
             var self = this;
 
-            self._execAction('init', 0, arguments);
+            self.execAction('init', 0, arguments);
 
             self.mixer = mixer;
 
@@ -4263,7 +4263,7 @@
 
             !!self.dom.el.style.display && (self.isShown = true);
 
-            self._execAction('init', 1, arguments);
+            self.execAction('init', 1, arguments);
         },
 
         /**
@@ -4279,11 +4279,11 @@
         cacheDom: function(el) {
             var self = this;
 
-            self._execAction('cacheDom', 0, arguments);
+            self.execAction('cacheDom', 0, arguments);
 
             self.dom.el = el;
 
-            self._execAction('cacheDom', 1, arguments);
+            self.execAction('cacheDom', 1, arguments);
         },
 
         /**
@@ -4298,7 +4298,7 @@
             var self    = this,
                 value   = self.dom.el.getAttribute('data-' + attributeName) || '';
 
-            self._execAction('getSortString', 0, arguments);
+            self.execAction('getSortString', 0, arguments);
 
             value = isNaN(value * 1) ?
                 value.toLowerCase() :
@@ -4306,7 +4306,7 @@
 
             self.sortString = value;
 
-            self._execAction('getSortString', 1, arguments);
+            self.execAction('getSortString', 1, arguments);
         },
 
         /**
@@ -4320,13 +4320,13 @@
         show: function(display) {
             var self = this;
 
-            self._execAction('show', 0, arguments);
+            self.execAction('show', 0, arguments);
 
             if (!self.dom.el.style.display || self.dom.el.style.display !== display) {
                 self.dom.el.style.display = display;
             }
 
-            self._execAction('show', 1, arguments);
+            self.execAction('show', 1, arguments);
         },
 
         /**
@@ -4339,11 +4339,11 @@
         hide: function() {
             var self = this;
 
-            self._execAction('hide', 0, arguments);
+            self.execAction('hide', 0, arguments);
 
             self.dom.el.style.display = '';
 
-            self._execAction('hide', 1, arguments);
+            self.execAction('hide', 1, arguments);
         },
 
         /**
@@ -4357,7 +4357,7 @@
         move: function(options) {
             var self = this;
 
-            self._execAction('move', 0, arguments);
+            self.execAction('move', 0, arguments);
 
             if (!self.isExcluded) {
                 self.mixer._targetsMoved++;
@@ -4372,7 +4372,7 @@
                 self.applyStylesOut(options);
             });
 
-            self._execAction('move', 1, arguments);
+            self.execAction('move', 1, arguments);
         },
 
         /**
@@ -4393,7 +4393,7 @@
                 currentValues           = new mixitup.StyleData(),
                 i                       = -1;
 
-            self._execAction('applyTween', 0, arguments);
+            self.execAction('applyTween', 0, arguments);
 
             currentValues.display   = self.mixer.layout.display;
             currentValues.x         = posIn.x;
@@ -4446,7 +4446,7 @@
                 self.dom.el.style[mixitup.features.transformProp] = currentTransformValues.join(' ');
             }
 
-            self._execAction('applyTween', 1, arguments);
+            self.execAction('applyTween', 1, arguments);
         },
 
         /**
@@ -4465,7 +4465,7 @@
                 isFading        = self.mixer._effectsIn.opacity !== 1,
                 transformValues = [];
 
-            self._execAction('applyStylesIn', 0, arguments);
+            self.execAction('applyStylesIn', 0, arguments);
 
             transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
 
@@ -4484,7 +4484,7 @@
 
             self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
 
-            self._execAction('applyStylesIn', 1, arguments);
+            self.execAction('applyStylesIn', 1, arguments);
         },
 
         /**
@@ -4504,7 +4504,7 @@
                 isResizing      = self.mixer.animation.animateResizeTargets,
                 isFading        = typeof self.mixer._effectsIn.opacity !== 'undefined';
 
-            self._execAction('applyStylesOut', 0, arguments);
+            self.execAction('applyStylesOut', 0, arguments);
 
             // Build the transition rules
 
@@ -4628,7 +4628,7 @@
 
             self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
 
-            self._execAction('applyStylesOut', 1, arguments);
+            self.execAction('applyStylesOut', 1, arguments);
         },
 
         /**
@@ -4654,7 +4654,7 @@
                 delay + 'ms ' +
                 (rule === 'opacity' ? 'linear' : self.mixer.animation.easing);
 
-            return self._execFilter('writeTransitionRule', output, arguments);
+            return self.execFilter('writeTransitionRule', output, arguments);
         },
 
         /**
@@ -4680,7 +4680,7 @@
 
             delay = !!self.mixer._staggerDuration ? index * self.mixer._staggerDuration : 0;
 
-            return self._execFilter('getDelay', delay, arguments);
+            return self.execFilter('getDelay', delay, arguments);
         },
 
         /**
@@ -4695,11 +4695,11 @@
             var self                = this,
                 transitionString    = rules.join(', ');
 
-            self._execAction('applyTransition', 0, arguments);
+            self.execAction('applyTransition', 0, arguments);
 
             self.dom.el.style[mixitup.features.transitionProp] = transitionString;
 
-            self._execAction('applyTransition', 1, arguments);
+            self.execAction('applyTransition', 1, arguments);
         },
 
         /**
@@ -4715,7 +4715,7 @@
                 propName    = e.propertyName,
                 canResize   = self.mixer.animation.animateResizeTargets;
 
-            self._execAction('handleTransitionEnd', 0, arguments);
+            self.execAction('handleTransitionEnd', 0, arguments);
 
             if (
                 self.isBound &&
@@ -4735,7 +4735,7 @@
                 self.operation = null;
             }
 
-            self._execAction('handleTransitionEnd', 1, arguments);
+            self.execAction('handleTransitionEnd', 1, arguments);
         },
 
         /**
@@ -4749,7 +4749,7 @@
         eventBus: function(e) {
             var self = this;
 
-            self._execAction('eventBus', 0, arguments);
+            self.execAction('eventBus', 0, arguments);
 
             switch (e.type) {
                 case 'webkitTransitionEnd':
@@ -4757,7 +4757,7 @@
                     self.handleTransitionEnd(e);
             }
 
-            self._execAction('eventBus', 1, arguments);
+            self.execAction('eventBus', 1, arguments);
         },
 
         /**
@@ -4770,12 +4770,12 @@
         unbindEvents: function() {
             var self = this;
 
-            self._execAction('unbindEvents', 0, arguments);
+            self.execAction('unbindEvents', 0, arguments);
 
             h.off(self.dom.el, 'webkitTransitionEnd', self.handler);
             h.off(self.dom.el, 'transitionEnd', self.handler);
 
-            self._execAction('unbindEvents', 1, arguments);
+            self.execAction('unbindEvents', 1, arguments);
         },
 
         /**
@@ -4791,7 +4791,7 @@
                     'webkitTransitionEnd' :
                     'transitionend';
 
-            self._execAction('bindEvents', 0, arguments);
+            self.execAction('bindEvents', 0, arguments);
 
             self.handler = function(e) {
                 return self.eventBus(e);
@@ -4799,7 +4799,7 @@
 
             h.on(self.dom.el, transitionEndEvent, self.handler);
 
-            self._execAction('bindEvents', 1, arguments);
+            self.execAction('bindEvents', 1, arguments);
         },
 
         /**
@@ -4815,7 +4815,7 @@
                 rect    = null,
                 posData = new mixitup.StyleData();
 
-            self._execAction('getPosData', 0, arguments);
+            self.execAction('getPosData', 0, arguments);
 
             posData.x               = self.dom.el.offsetLeft;
             posData.y               = self.dom.el.offsetTop;
@@ -4832,7 +4832,7 @@
                 posData.marginRight     = parseFloat(styles.marginRight);
             }
 
-            return self._execFilter('getPosData', posData, arguments);
+            return self.execFilter('getPosData', posData, arguments);
         },
 
         /**
@@ -4845,7 +4845,7 @@
         cleanUp: function() {
             var self = this;
 
-            self._execAction('cleanUp', 0, arguments);
+            self.execAction('cleanUp', 0, arguments);
 
             self.dom.el.style[mixitup.features.transformProp]  = '';
             self.dom.el.style[mixitup.features.transitionProp] = '';
@@ -4858,7 +4858,7 @@
                 self.dom.el.style.marginBottom = '';
             }
 
-            self._execAction('cleanUp', 1, arguments);
+            self.execAction('cleanUp', 1, arguments);
         }
     });
 
@@ -4935,7 +4935,7 @@
      */
 
     mixitup.Operation = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.id                  = '';
 
@@ -4975,7 +4975,7 @@
         this.newContainerClass   = '';
         this.newDisplay          = '';
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -4996,7 +4996,7 @@
      */
 
     mixitup.State = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         /**
          * The currently active filter selector as set by a control click or the API
@@ -5178,7 +5178,7 @@
 
         this.triggerElement = null;
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -5193,13 +5193,13 @@
      */
 
     mixitup.UserInstruction = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.command    = {};
         this.animate    = false;
         this.callback   = null;
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -5214,7 +5214,7 @@
      */
 
     mixitup.Messages = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         /* 100 - 149: General errors
         ----------------------------------------------------------------------------- */
@@ -5257,7 +5257,7 @@
                     'present on one or more target elements which may product unexpected ' +
                     'sort output';
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
 
         h.seal(this);
     };
@@ -5282,7 +5282,7 @@
      */
 
     mixitup.Features = function() {
-        this._execAction('constructor', 0);
+        this.execAction('constructor', 0);
 
         this.boxSizingPrefix            = '';
         this.transformPrefix            = '';
@@ -5317,7 +5317,7 @@
             'rotateX', 'rotateY', 'rotateZ'
         ];
 
-        this._execAction('constructor', 1);
+        this.execAction('constructor', 1);
     };
 
     mixitup.Features.prototype = new mixitup.BasePrototype();
@@ -5333,7 +5333,7 @@
         init: function() {
             var self = this;
 
-            self._execAction('init', 0);
+            self.execAction('init', 0);
 
             self.canary = document.createElement('div');
 
@@ -5341,7 +5341,7 @@
             self.setPrefixes();
             self.applyPolyfills();
 
-            self._execAction('init', 1);
+            self.execAction('init', 1);
         },
 
         /**
@@ -5352,13 +5352,13 @@
         runTests: function() {
             var self = this;
 
-            self._execAction('runTests', 0);
+            self.execAction('runTests', 0);
 
             self.has.promises       = typeof Promise === 'function';
             self.has.transitions    = self.transitionPrefix !== 'unsupported';
             self.is.oldIe           = window.atob ? false : true;
 
-            self._execAction('runTests', 1);
+            self.execAction('runTests', 1);
         },
 
         /**
@@ -5369,7 +5369,7 @@
         setPrefixes: function() {
             var self = this;
 
-            self._execAction('setPrefixes', 0);
+            self.execAction('setPrefixes', 0);
 
             self.transitionPrefix   = h.getPrefix(self.canary, 'Transition', self.VENDORS);
             self.transformPrefix    = h.getPrefix(self.canary, 'Transform', self.VENDORS);
@@ -5394,7 +5394,7 @@
                 self.transformPrefix + h.camelCase(self.PERSPECTIVE_ORIGIN_PROP, true) :
                 self.PERSPECTIVE_ORIGIN_PROP;
 
-            self._execAction('setPrefixes', 1);
+            self.execAction('setPrefixes', 1);
         },
 
         /**
@@ -5406,7 +5406,7 @@
             var self    = this,
                 i       = -1;
 
-            self._execAction('applyPolyfills', 0);
+            self.execAction('applyPolyfills', 0);
 
             // window.requestAnimationFrame
 
@@ -5454,7 +5454,7 @@
                     };
             })(Element.prototype);
 
-            self._execAction('applyPolyfills', 1);
+            self.execAction('applyPolyfills', 1);
         }
     });
 

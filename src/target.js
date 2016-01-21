@@ -9,7 +9,7 @@
  */
 
 mixitup.Target = function() {
-    this._execAction('constructor', 0);
+    this.execAction('constructor', 0);
 
     this.sortString = '';
     this.mixer      = null;
@@ -22,7 +22,7 @@ mixitup.Target = function() {
 
     this.dom        = new mixitup.TargetDom();
 
-    this._execAction('constructor', 1);
+    this.execAction('constructor', 1);
 
     h.seal(this);
 };
@@ -46,7 +46,7 @@ h.extend(mixitup.Target.prototype, {
     init: function(el, mixer) {
         var self = this;
 
-        self._execAction('init', 0, arguments);
+        self.execAction('init', 0, arguments);
 
         self.mixer = mixer;
 
@@ -56,7 +56,7 @@ h.extend(mixitup.Target.prototype, {
 
         !!self.dom.el.style.display && (self.isShown = true);
 
-        self._execAction('init', 1, arguments);
+        self.execAction('init', 1, arguments);
     },
 
     /**
@@ -72,11 +72,11 @@ h.extend(mixitup.Target.prototype, {
     cacheDom: function(el) {
         var self = this;
 
-        self._execAction('cacheDom', 0, arguments);
+        self.execAction('cacheDom', 0, arguments);
 
         self.dom.el = el;
 
-        self._execAction('cacheDom', 1, arguments);
+        self.execAction('cacheDom', 1, arguments);
     },
 
     /**
@@ -91,7 +91,7 @@ h.extend(mixitup.Target.prototype, {
         var self    = this,
             value   = self.dom.el.getAttribute('data-' + attributeName) || '';
 
-        self._execAction('getSortString', 0, arguments);
+        self.execAction('getSortString', 0, arguments);
 
         value = isNaN(value * 1) ?
             value.toLowerCase() :
@@ -99,7 +99,7 @@ h.extend(mixitup.Target.prototype, {
 
         self.sortString = value;
 
-        self._execAction('getSortString', 1, arguments);
+        self.execAction('getSortString', 1, arguments);
     },
 
     /**
@@ -113,13 +113,13 @@ h.extend(mixitup.Target.prototype, {
     show: function(display) {
         var self = this;
 
-        self._execAction('show', 0, arguments);
+        self.execAction('show', 0, arguments);
 
         if (!self.dom.el.style.display || self.dom.el.style.display !== display) {
             self.dom.el.style.display = display;
         }
 
-        self._execAction('show', 1, arguments);
+        self.execAction('show', 1, arguments);
     },
 
     /**
@@ -132,11 +132,11 @@ h.extend(mixitup.Target.prototype, {
     hide: function() {
         var self = this;
 
-        self._execAction('hide', 0, arguments);
+        self.execAction('hide', 0, arguments);
 
         self.dom.el.style.display = '';
 
-        self._execAction('hide', 1, arguments);
+        self.execAction('hide', 1, arguments);
     },
 
     /**
@@ -150,7 +150,7 @@ h.extend(mixitup.Target.prototype, {
     move: function(options) {
         var self = this;
 
-        self._execAction('move', 0, arguments);
+        self.execAction('move', 0, arguments);
 
         if (!self.isExcluded) {
             self.mixer._targetsMoved++;
@@ -165,7 +165,7 @@ h.extend(mixitup.Target.prototype, {
             self.applyStylesOut(options);
         });
 
-        self._execAction('move', 1, arguments);
+        self.execAction('move', 1, arguments);
     },
 
     /**
@@ -186,7 +186,7 @@ h.extend(mixitup.Target.prototype, {
             currentValues           = new mixitup.StyleData(),
             i                       = -1;
 
-        self._execAction('applyTween', 0, arguments);
+        self.execAction('applyTween', 0, arguments);
 
         currentValues.display   = self.mixer.layout.display;
         currentValues.x         = posIn.x;
@@ -239,7 +239,7 @@ h.extend(mixitup.Target.prototype, {
             self.dom.el.style[mixitup.features.transformProp] = currentTransformValues.join(' ');
         }
 
-        self._execAction('applyTween', 1, arguments);
+        self.execAction('applyTween', 1, arguments);
     },
 
     /**
@@ -258,7 +258,7 @@ h.extend(mixitup.Target.prototype, {
             isFading        = self.mixer._effectsIn.opacity !== 1,
             transformValues = [];
 
-        self._execAction('applyStylesIn', 0, arguments);
+        self.execAction('applyStylesIn', 0, arguments);
 
         transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
 
@@ -277,7 +277,7 @@ h.extend(mixitup.Target.prototype, {
 
         self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
 
-        self._execAction('applyStylesIn', 1, arguments);
+        self.execAction('applyStylesIn', 1, arguments);
     },
 
     /**
@@ -297,7 +297,7 @@ h.extend(mixitup.Target.prototype, {
             isResizing      = self.mixer.animation.animateResizeTargets,
             isFading        = typeof self.mixer._effectsIn.opacity !== 'undefined';
 
-        self._execAction('applyStylesOut', 0, arguments);
+        self.execAction('applyStylesOut', 0, arguments);
 
         // Build the transition rules
 
@@ -421,7 +421,7 @@ h.extend(mixitup.Target.prototype, {
 
         self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
 
-        self._execAction('applyStylesOut', 1, arguments);
+        self.execAction('applyStylesOut', 1, arguments);
     },
 
     /**
@@ -447,7 +447,7 @@ h.extend(mixitup.Target.prototype, {
             delay + 'ms ' +
             (rule === 'opacity' ? 'linear' : self.mixer.animation.easing);
 
-        return self._execFilter('writeTransitionRule', output, arguments);
+        return self.execFilter('writeTransitionRule', output, arguments);
     },
 
     /**
@@ -473,7 +473,7 @@ h.extend(mixitup.Target.prototype, {
 
         delay = !!self.mixer._staggerDuration ? index * self.mixer._staggerDuration : 0;
 
-        return self._execFilter('getDelay', delay, arguments);
+        return self.execFilter('getDelay', delay, arguments);
     },
 
     /**
@@ -488,11 +488,11 @@ h.extend(mixitup.Target.prototype, {
         var self                = this,
             transitionString    = rules.join(', ');
 
-        self._execAction('applyTransition', 0, arguments);
+        self.execAction('applyTransition', 0, arguments);
 
         self.dom.el.style[mixitup.features.transitionProp] = transitionString;
 
-        self._execAction('applyTransition', 1, arguments);
+        self.execAction('applyTransition', 1, arguments);
     },
 
     /**
@@ -508,7 +508,7 @@ h.extend(mixitup.Target.prototype, {
             propName    = e.propertyName,
             canResize   = self.mixer.animation.animateResizeTargets;
 
-        self._execAction('handleTransitionEnd', 0, arguments);
+        self.execAction('handleTransitionEnd', 0, arguments);
 
         if (
             self.isBound &&
@@ -528,7 +528,7 @@ h.extend(mixitup.Target.prototype, {
             self.operation = null;
         }
 
-        self._execAction('handleTransitionEnd', 1, arguments);
+        self.execAction('handleTransitionEnd', 1, arguments);
     },
 
     /**
@@ -542,7 +542,7 @@ h.extend(mixitup.Target.prototype, {
     eventBus: function(e) {
         var self = this;
 
-        self._execAction('eventBus', 0, arguments);
+        self.execAction('eventBus', 0, arguments);
 
         switch (e.type) {
             case 'webkitTransitionEnd':
@@ -550,7 +550,7 @@ h.extend(mixitup.Target.prototype, {
                 self.handleTransitionEnd(e);
         }
 
-        self._execAction('eventBus', 1, arguments);
+        self.execAction('eventBus', 1, arguments);
     },
 
     /**
@@ -563,12 +563,12 @@ h.extend(mixitup.Target.prototype, {
     unbindEvents: function() {
         var self = this;
 
-        self._execAction('unbindEvents', 0, arguments);
+        self.execAction('unbindEvents', 0, arguments);
 
         h.off(self.dom.el, 'webkitTransitionEnd', self.handler);
         h.off(self.dom.el, 'transitionEnd', self.handler);
 
-        self._execAction('unbindEvents', 1, arguments);
+        self.execAction('unbindEvents', 1, arguments);
     },
 
     /**
@@ -584,7 +584,7 @@ h.extend(mixitup.Target.prototype, {
                 'webkitTransitionEnd' :
                 'transitionend';
 
-        self._execAction('bindEvents', 0, arguments);
+        self.execAction('bindEvents', 0, arguments);
 
         self.handler = function(e) {
             return self.eventBus(e);
@@ -592,7 +592,7 @@ h.extend(mixitup.Target.prototype, {
 
         h.on(self.dom.el, transitionEndEvent, self.handler);
 
-        self._execAction('bindEvents', 1, arguments);
+        self.execAction('bindEvents', 1, arguments);
     },
 
     /**
@@ -608,7 +608,7 @@ h.extend(mixitup.Target.prototype, {
             rect    = null,
             posData = new mixitup.StyleData();
 
-        self._execAction('getPosData', 0, arguments);
+        self.execAction('getPosData', 0, arguments);
 
         posData.x               = self.dom.el.offsetLeft;
         posData.y               = self.dom.el.offsetTop;
@@ -625,7 +625,7 @@ h.extend(mixitup.Target.prototype, {
             posData.marginRight     = parseFloat(styles.marginRight);
         }
 
-        return self._execFilter('getPosData', posData, arguments);
+        return self.execFilter('getPosData', posData, arguments);
     },
 
     /**
@@ -638,7 +638,7 @@ h.extend(mixitup.Target.prototype, {
     cleanUp: function() {
         var self = this;
 
-        self._execAction('cleanUp', 0, arguments);
+        self.execAction('cleanUp', 0, arguments);
 
         self.dom.el.style[mixitup.features.transformProp]  = '';
         self.dom.el.style[mixitup.features.transitionProp] = '';
@@ -651,6 +651,6 @@ h.extend(mixitup.Target.prototype, {
             self.dom.el.style.marginBottom = '';
         }
 
-        self._execAction('cleanUp', 1, arguments);
+        self.execAction('cleanUp', 1, arguments);
     }
 });
