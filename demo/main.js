@@ -2,7 +2,11 @@
 var sandbox = document.querySelector('.sandbox');
 var mixer   = null;
 
-mixer = mixItUp(sandbox);
+mixer = mixItUp(sandbox, {
+    animation: {
+        duration: 100
+    }
+});
 
 document.querySelector('.js-append').addEventListener('click', function() {
    mixer.append('<div class="mix cat-3" data-order="3">C 3</div>');

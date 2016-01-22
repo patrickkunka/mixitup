@@ -117,3 +117,14 @@ mixitup.all = function(container, config, foreignDoc) {
 
     return self(container, config, foreignDoc, true);
 };
+
+/**
+ * Stores all current instances of MixItUp in the current session, using their IDs as keys.
+ *
+ * @private
+ * @static
+ * @since   2.0.0
+ * @type    {object}
+ */
+
+mixitup.instances = {};

@@ -1164,7 +1164,7 @@ h.extend(mixitup.Mixer.prototype,
         self._parseEffect('fade', effectsIn, self._effectsIn, self._transformIn);
         self._parseEffect('fade', effectsOut, self._effectsOut, self._transformOut, true);
 
-        for (transformName in self._transformDefaults) {
+        for (transformName in mixitup.transformDefaults) {
             self._parseEffect(transformName, effectsIn, self._effectsIn, self._transformIn);
             self._parseEffect(transformName, effectsOut, self._effectsOut, self._transformOut, true);
         }
@@ -1285,12 +1285,12 @@ h.extend(mixitup.Mixer.prototype,
                     // Transforms
 
                     if (isOut && self.animation.reverseOut && effectName !== 'scale') {
-                        effects[effectName].value = self._transformDefaults[effectName].value * -1;
+                        effects[effectName].value = mixitup.transformDefaults[effectName].value * -1;
                     } else {
-                        effects[effectName].value = self._transformDefaults[effectName].value;
+                        effects[effectName].value = mixitup.transformDefaults[effectName].value;
                     }
 
-                    effects[effectName].unit = self._transformDefaults[effectName].unit;
+                    effects[effectName].unit = mixitup.transformDefaults[effectName].unit;
 
                     transform.push(
                         effectName +

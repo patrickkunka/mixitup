@@ -10,9 +10,6 @@
 
     {{>h}}
 
-    mixitup.CORE_VERSION    = '{{version}}';
-    mixitup.h               = h;
-
     {{>base-prototype}}
 
     {{>config-animation}}
@@ -59,43 +56,7 @@
 
     {{>features}}
 
-    /**
-     * Stores all current instances of MixItUp in the current session, using their IDs as keys.
-     *
-     * @private
-     * @static
-     * @since   2.0.0
-     * @type    {object}
-     */
-
-    mixitup.instances = {};
-
-    /**
-     * @private
-     * @static
-     * @since   3.0.0
-     * @type    {mixitup.TransformDefaults}
-     */
-
-    mixitup.transformDefaults = new mixitup.TransformDefaults();
-
-    /**
-     * @private
-     * @static
-     * @since   2.0.0
-     * @type    {mixitup.ClickTracker}
-     */
-
-    mixitup.handled = new mixitup.ClickTracker();
-
-    /**
-     * @private
-     * @static
-     * @since   2.0.0
-     * @type    {mixitup.ClickTracker}
-     */
-
-    mixitup.bound = new mixitup.ClickTracker();
-
     {{>module-definitions}}
+
+    mixitup.CORE_VERSION = '{{version}}';
 })(window);

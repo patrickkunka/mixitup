@@ -672,3 +672,5 @@ h = {
         this.isResolved = false;
     }
 };
+
+mixitup.h = h;

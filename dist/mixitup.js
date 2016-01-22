@@ -137,6 +137,17 @@
     };
 
     /**
+     * Stores all current instances of MixItUp in the current session, using their IDs as keys.
+     *
+     * @private
+     * @static
+     * @since   2.0.0
+     * @type    {object}
+     */
+
+    mixitup.instances = {};
+
+    /**
      * A small library of commonly-used helper functions. This is just a subset of
      * the complete "h" library, with some additional functions added specifically
      * for MixItUp.
@@ -808,8 +819,8 @@
             this.isResolved = false;
         }
     };
-    mixitup.CORE_VERSION    = '3.0.0-beta';
-    mixitup.h               = h;
+
+    mixitup.h = h;
 
     /**
      * The BasePrototype class exposes a set of static methods which all other MixItUp
@@ -1237,6 +1248,24 @@
     mixitup.ClickTracker.prototype.constructor = mixitup.ClickTracker;
 
     /**
+     * @private
+     * @static
+     * @since   2.0.0
+     * @type    {mixitup.ClickTracker}
+     */
+
+    mixitup.handled = new mixitup.ClickTracker();
+
+    /**
+     * @private
+     * @static
+     * @since   2.0.0
+     * @type    {mixitup.ClickTracker}
+     */
+
+    mixitup.bound = new mixitup.ClickTracker();
+
+    /**
      * @constructor
      * @memberof    mixitup
      * @private
@@ -1335,6 +1364,15 @@
     mixitup.TransformDefaults.prototype = Object.create(new mixitup.BasePrototype());
 
     mixitup.TransformDefaults.prototype.constructor = mixitup.TransformDefaults;
+
+    /**
+     * @private
+     * @static
+     * @since   3.0.0
+     * @type    {mixitup.TransformDefaults}
+     */
+
+    mixitup.transformDefaults = new mixitup.TransformDefaults();
 
     /**
      * The `mixitup.Mixer` class is used to construct discreet user-configured
@@ -2500,7 +2538,7 @@
             self._parseEffect('fade', effectsIn, self._effectsIn, self._transformIn);
             self._parseEffect('fade', effectsOut, self._effectsOut, self._transformOut, true);
 
-            for (transformName in self._transformDefaults) {
+            for (transformName in mixitup.transformDefaults) {
                 self._parseEffect(transformName, effectsIn, self._effectsIn, self._transformIn);
                 self._parseEffect(transformName, effectsOut, self._effectsOut, self._transformOut, true);
             }
@@ -2621,12 +2659,12 @@
                         // Transforms
 
                         if (isOut && self.animation.reverseOut && effectName !== 'scale') {
-                            effects[effectName].value = self._transformDefaults[effectName].value * -1;
+                            effects[effectName].value = mixitup.transformDefaults[effectName].value * -1;
                         } else {
-                            effects[effectName].value = self._transformDefaults[effectName].value;
+                            effects[effectName].value = mixitup.transformDefaults[effectName].value;
                         }
 
-                        effects[effectName].unit = self._transformDefaults[effectName].unit;
+                        effects[effectName].unit = mixitup.transformDefaults[effectName].unit;
 
                         transform.push(
                             effectName +
@@ -5485,43 +5523,6 @@
     mixitup.features = new mixitup.Features();
 
     mixitup.features.init();
-    /**
-     * Stores all current instances of MixItUp in the current session, using their IDs as keys.
-     *
-     * @private
-     * @static
-     * @since   2.0.0
-     * @type    {object}
-     */
-
-    mixitup.instances = {};
-
-    /**
-     * @private
-     * @static
-     * @since   3.0.0
-     * @type    {mixitup.TransformDefaults}
-     */
-
-    mixitup.transformDefaults = new mixitup.TransformDefaults();
-
-    /**
-     * @private
-     * @static
-     * @since   2.0.0
-     * @type    {mixitup.ClickTracker}
-     */
-
-    mixitup.handled = new mixitup.ClickTracker();
-
-    /**
-     * @private
-     * @static
-     * @since   2.0.0
-     * @type    {mixitup.ClickTracker}
-     */
-
-    mixitup.bound = new mixitup.ClickTracker();
 
     if (typeof exports === 'object' && typeof module === 'object') {
         module.exports = mixitup;
@@ -5531,4 +5532,6 @@
         });
     } else if (typeof window.mixitup === 'undefined' || typeof window.mixitup !== 'function') {
         window.mixitup = window.mixItUp = mixitup;
-    }})(window);
+    }
+    mixitup.CORE_VERSION = '3.0.0-beta';
+})(window);

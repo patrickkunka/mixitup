@@ -42,3 +42,12 @@ mixitup.TransformDefaults = function() {
 mixitup.TransformDefaults.prototype = Object.create(new mixitup.BasePrototype());
 
 mixitup.TransformDefaults.prototype.constructor = mixitup.TransformDefaults;
+
+/**
+ * @private
+ * @static
+ * @since   3.0.0
+ * @type    {mixitup.TransformDefaults}
+ */
+
+mixitup.transformDefaults = new mixitup.TransformDefaults();
