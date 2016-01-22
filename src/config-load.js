@@ -19,4 +19,6 @@ mixitup.ConfigLoad = function() {
     h.seal(this);
 };
 
-mixitup.ConfigLoad.prototype = new mixitup.BasePrototype();
+mixitup.ConfigLoad.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.ConfigLoad.prototype.constructor = mixitup.ConfigLoad;

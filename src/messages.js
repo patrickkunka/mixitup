@@ -56,7 +56,9 @@ mixitup.Messages = function() {
     h.seal(this);
 };
 
-mixitup.Messages.prototype = new mixitup.BasePrototype();
+mixitup.Messages.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.Messages.prototype.constructor = mixitup.Messages;
 
 // Asign a singleton instance to `mixitup.messages`:
 

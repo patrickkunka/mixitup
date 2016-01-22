@@ -22,4 +22,6 @@ mixitup.ConfigControls = function() {
     h.seal(this);
 };
 
-mixitup.ConfigControls.prototype = new mixitup.BasePrototype();
+mixitup.ConfigControls.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.ConfigControls.prototype.constructor = mixitup.ConfigControls;

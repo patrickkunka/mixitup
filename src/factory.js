@@ -71,7 +71,7 @@ mixitup = function(container, config, foreignDoc, returnCollection) {
             id = el.id;
         }
 
-        if (typeof mixitup.Mixer.prototype._instances[id] === 'undefined') {
+        if (typeof mixitup.instances[id] === 'undefined') {
             instance = new mixitup.Mixer();
 
             instance._id            = id;
@@ -79,9 +79,9 @@ mixitup = function(container, config, foreignDoc, returnCollection) {
 
             instance._init(el, config);
 
-            mixitup.Mixer.prototype._instances[id] = instance;
-        } else if (mixitup.Mixer.prototype._instances[id] instanceof mixitup.Mixer) {
-            instance = mixitup.Mixer.prototype._instances[id];
+            mixitup.instances[id] = instance;
+        } else if (mixitup.instances[id] instanceof mixitup.Mixer) {
+            instance = mixitup.instances[id];
 
             if (config && h.canReportErrors(config)) {
                 console.warn(mixitup.messages[200]);
@@ -104,6 +104,7 @@ mixitup = function(container, config, foreignDoc, returnCollection) {
  * If the user specifically wants to control a collection, they should use this.
  *
  * @memberof    mixitup
+ * @public
  * @since       3.0.0
  * @param       {(Element|Element[]|string)}  container
  * @param       {object}                      [config]

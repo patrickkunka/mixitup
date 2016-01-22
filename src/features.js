@@ -52,11 +52,13 @@ mixitup.Features = function() {
     this.execAction('constructor', 1);
 };
 
-mixitup.Features.prototype = new mixitup.BasePrototype();
+mixitup.Features.prototype = Object.create(new mixitup.BasePrototype());
 
 h.extend(mixitup.Features.prototype,
 /** @lends mixitup.Features */
 {
+    constructor: mixitup.Features,
+
     /**
      * @private
      * @return  {void}

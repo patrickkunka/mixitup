@@ -18,4 +18,6 @@ mixitup.ConfigDebug = function() {
     h.seal(this);
 };
 
-mixitup.ConfigDebug.prototype = new mixitup.BasePrototype();
+mixitup.ConfigDebug.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.ConfigDebug.prototype.constructor = mixitup.ConfigDebug;

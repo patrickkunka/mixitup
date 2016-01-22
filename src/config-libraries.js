@@ -19,4 +19,6 @@ mixitup.ConfigLibraries = function() {
     h.seal(this);
 };
 
-mixitup.ConfigLibraries.prototype = new mixitup.BasePrototype();
+mixitup.ConfigLibraries.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.ConfigLibraries.prototype.constructor = mixitup.ConfigLibraries;

@@ -18,4 +18,6 @@ mixitup.TransformData = function() {
     h.seal(this);
 };
 
-mixitup.TransformData.prototype = new mixitup.BasePrototype();
+mixitup.TransformData.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.TransformData.prototype.constructor = mixitup.TransformData;

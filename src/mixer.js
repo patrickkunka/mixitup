@@ -65,50 +65,12 @@ mixitup.Mixer = function() {
     h.seal(this);
 };
 
-mixitup.Mixer.prototype = new mixitup.BasePrototype();
+mixitup.Mixer.prototype = Object.create(new mixitup.BasePrototype());
 
 h.extend(mixitup.Mixer.prototype,
 /** @lends mixitup.Mixer */
 {
     constructor: mixitup.Mixer,
-
-    /**
-     * Stores all current instances of MixItUp in the current session, using their IDs as keys.
-     *
-     * @private
-     * @static
-     * @since   2.0.0
-     * @type    {object}
-     */
-
-    _instances: {},
-
-    /**
-     * @private
-     * @static
-     * @since   3.0.0
-     * @type    {mixitup.TransformDefaults}
-     */
-
-    _transformDefaults: new mixitup.TransformDefaults(),
-
-    /**
-     * @private
-     * @static
-     * @since   2.0.0
-     * @type    {mixitup.ClickTracker}
-     */
-
-    _handled: new mixitup.ClickTracker(),
-
-    /**
-     * @private
-     * @static
-     * @since   2.0.0
-     * @type    {mixitup.ClickTracker}
-     */
-
-    _bound: new mixitup.ClickTracker(),
 
     /**
      * @private
@@ -276,11 +238,10 @@ h.extend(mixitup.Mixer.prototype,
 
     _bindEvents: function() {
         var self            = this,
-            proto           = mixitup.Mixer.prototype,
-            filterToggles   = proto._bound.filterToggle,
-            multiMixs       = proto._bound.multiMix,
-            filters         = proto._bound.filter,
-            sorts           = proto._bound.sort,
+            filterToggles   = mixitup.bound.filterToggle,
+            multiMixs       = mixitup.bound.multiMix,
+            filters         = mixitup.bound.filter,
+            sorts           = mixitup.bound.sort,
             button          = null,
             i               = -1;
 
@@ -610,7 +571,6 @@ h.extend(mixitup.Mixer.prototype,
 
     _trackClick: function(button, method, isTogglingOff) {
         var self        = this,
-            proto       = mixitup.Mixer.prototype,
             selector    = self.selectors[method];
 
         self._lastClicked = button;
@@ -618,18 +578,18 @@ h.extend(mixitup.Mixer.prototype,
         // Add the active class to a button only once
         // all mixitup.Mixer instances have handled the click
 
-        proto._handled[method][selector] =
-            (typeof proto._handled[method][selector] === 'undefined') ?
-                1 : proto._handled[method][selector] + 1;
+        mixitup.handled[method][selector] =
+            (typeof mixitup.handled[method][selector] === 'undefined') ?
+                1 : mixitup.handled[method][selector] + 1;
 
-        if (proto._handled[method][selector] === proto._bound[method][selector]) {
+        if (mixitup.handled[method][selector] === mixitup.bound[method][selector]) {
             if (isTogglingOff) {
                 h.removeClass(button, self.controls.activeClass);
             } else {
                 h.addClass(button, self.controls.activeClass);
             }
 
-            delete proto._handled[method][selector];
+            delete mixitup.handled[method][selector];
         }
     },
 

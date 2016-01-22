@@ -201,4 +201,6 @@ mixitup.State = function() {
     h.seal(this);
 };
 
-mixitup.State.prototype = new mixitup.BasePrototype();
+mixitup.State.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.State.prototype.constructor = mixitup.State;

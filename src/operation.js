@@ -58,4 +58,6 @@ mixitup.Operation = function() {
     h.seal(this);
 };
 
-mixitup.Operation.prototype = new mixitup.BasePrototype();
+mixitup.Operation.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.Operation.prototype.constructor = mixitup.Operation;

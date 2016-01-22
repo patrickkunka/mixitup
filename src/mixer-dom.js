@@ -26,4 +26,6 @@ mixitup.MixerDom = function() {
     h.seal(this);
 };
 
-mixitup.MixerDom.prototype = new mixitup.BasePrototype();
+mixitup.MixerDom.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.MixerDom.prototype.constructor = mixitup.MixerDom;

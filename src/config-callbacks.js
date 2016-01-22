@@ -23,4 +23,6 @@ mixitup.ConfigCallbacks = function() {
     h.seal(this);
 };
 
-mixitup.ConfigCallbacks.prototype = new mixitup.BasePrototype();
+mixitup.ConfigCallbacks.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.ConfigCallbacks.prototype.constructor = mixitup.ConfigCallbacks;

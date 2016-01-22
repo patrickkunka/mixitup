@@ -18,4 +18,6 @@ mixitup.ClickTracker = function() {
     h.seal(this);
 };
 
-mixitup.ClickTracker.prototype = new mixitup.BasePrototype();
+mixitup.ClickTracker.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.ClickTracker.prototype.constructor = mixitup.ClickTracker;

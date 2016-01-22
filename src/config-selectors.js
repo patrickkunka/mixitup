@@ -22,4 +22,6 @@ mixitup.ConfigSelectors = function() {
     h.seal(this);
 };
 
-mixitup.ConfigSelectors.prototype = new mixitup.BasePrototype();
+mixitup.ConfigSelectors.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.ConfigSelectors.prototype.constructor = mixitup.ConfigSelectors;

@@ -19,4 +19,6 @@ mixitup.UserInstruction = function() {
     h.seal(this);
 };
 
-mixitup.UserInstruction.prototype = new mixitup.BasePrototype();
+mixitup.UserInstruction.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.UserInstruction.prototype.constructor = mixitup.UserInstruction;

@@ -33,4 +33,6 @@ mixitup.ConfigAnimation = function() {
     h.seal(this);
 };
 
-mixitup.ConfigAnimation.prototype = new mixitup.BasePrototype();
+mixitup.ConfigAnimation.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.ConfigAnimation.prototype.constructor = mixitup.ConfigAnimation;

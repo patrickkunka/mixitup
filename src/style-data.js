@@ -31,4 +31,6 @@ mixitup.StyleData = function() {
     h.seal(this);
 };
 
-mixitup.StyleData.prototype = new mixitup.BasePrototype();
+mixitup.StyleData.prototype = Object.create(new mixitup.BasePrototype());
+
+mixitup.StyleData.prototype.constructor = mixitup.StyleData;

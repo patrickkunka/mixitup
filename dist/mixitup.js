@@ -89,7 +89,7 @@
                 id = el.id;
             }
 
-            if (typeof mixitup.Mixer.prototype._instances[id] === 'undefined') {
+            if (typeof mixitup.instances[id] === 'undefined') {
                 instance = new mixitup.Mixer();
 
                 instance._id            = id;
@@ -97,9 +97,9 @@
 
                 instance._init(el, config);
 
-                mixitup.Mixer.prototype._instances[id] = instance;
-            } else if (mixitup.Mixer.prototype._instances[id] instanceof mixitup.Mixer) {
-                instance = mixitup.Mixer.prototype._instances[id];
+                mixitup.instances[id] = instance;
+            } else if (mixitup.instances[id] instanceof mixitup.Mixer) {
+                instance = mixitup.instances[id];
 
                 if (config && h.canReportErrors(config)) {
                     console.warn(mixitup.messages[200]);
@@ -122,6 +122,7 @@
      * If the user specifically wants to control a collection, they should use this.
      *
      * @memberof    mixitup
+     * @public
      * @since       3.0.0
      * @param       {(Element|Element[]|string)}  container
      * @param       {object}                      [config]
@@ -1006,7 +1007,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigAnimation.prototype = new mixitup.BasePrototype();
+    mixitup.ConfigAnimation.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.ConfigAnimation.prototype.constructor = mixitup.ConfigAnimation;
 
     /**
      * @constructor
@@ -1031,7 +1034,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigCallbacks.prototype = new mixitup.BasePrototype();
+    mixitup.ConfigCallbacks.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.ConfigCallbacks.prototype.constructor = mixitup.ConfigCallbacks;
 
     /**
      * @constructor
@@ -1055,7 +1060,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigControls.prototype = new mixitup.BasePrototype();
+    mixitup.ConfigControls.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.ConfigControls.prototype.constructor = mixitup.ConfigControls;
 
     /**
      * @constructor
@@ -1075,7 +1082,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigDebug.prototype = new mixitup.BasePrototype();
+    mixitup.ConfigDebug.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.ConfigDebug.prototype.constructor = mixitup.ConfigDebug;
 
     /**
      * @constructor
@@ -1098,7 +1107,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigLayout.prototype = new mixitup.BasePrototype();
+    mixitup.ConfigLayout.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.ConfigLayout.prototype.constructor = mixitup.ConfigLayout;
 
     /**
      * @constructor
@@ -1119,7 +1130,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigLibraries.prototype = new mixitup.BasePrototype();
+    mixitup.ConfigLibraries.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.ConfigLibraries.prototype.constructor = mixitup.ConfigLibraries;
 
     /**
      * @constructor
@@ -1140,7 +1153,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigLoad.prototype = new mixitup.BasePrototype();
+    mixitup.ConfigLoad.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.ConfigLoad.prototype.constructor = mixitup.ConfigLoad;
 
     /**
      * @constructor
@@ -1164,7 +1179,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigSelectors.prototype = new mixitup.BasePrototype();
+    mixitup.ConfigSelectors.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.ConfigSelectors.prototype.constructor = mixitup.ConfigSelectors;
 
     /**
      * @constructor
@@ -1192,7 +1209,9 @@
         h.seal(this);
     };
 
-    mixitup.MixerDom.prototype = new mixitup.BasePrototype();
+    mixitup.MixerDom.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.MixerDom.prototype.constructor = mixitup.MixerDom;
     /**
      * @constructor
      * @memberof    mixitup
@@ -1213,7 +1232,9 @@
         h.seal(this);
     };
 
-    mixitup.ClickTracker.prototype = new mixitup.BasePrototype();
+    mixitup.ClickTracker.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.ClickTracker.prototype.constructor = mixitup.ClickTracker;
 
     /**
      * @constructor
@@ -1246,7 +1267,9 @@
         h.seal(this);
     };
 
-    mixitup.StyleData.prototype = new mixitup.BasePrototype();
+    mixitup.StyleData.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.StyleData.prototype.constructor = mixitup.StyleData;
 
     /**
      * @constructor
@@ -1266,7 +1289,9 @@
         h.seal(this);
     };
 
-    mixitup.TransformData.prototype = new mixitup.BasePrototype();
+    mixitup.TransformData.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.TransformData.prototype.constructor = mixitup.TransformData;
 
     /**
      * @constructor
@@ -1307,7 +1332,9 @@
         this.execAction('constructor', 1);
     };
 
-    mixitup.TransformDefaults.prototype = new mixitup.BasePrototype();
+    mixitup.TransformDefaults.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.TransformDefaults.prototype.constructor = mixitup.TransformDefaults;
 
     /**
      * The `mixitup.Mixer` class is used to construct discreet user-configured
@@ -1374,50 +1401,12 @@
         h.seal(this);
     };
 
-    mixitup.Mixer.prototype = new mixitup.BasePrototype();
+    mixitup.Mixer.prototype = Object.create(new mixitup.BasePrototype());
 
     h.extend(mixitup.Mixer.prototype,
     /** @lends mixitup.Mixer */
     {
         constructor: mixitup.Mixer,
-
-        /**
-         * Stores all current instances of MixItUp in the current session, using their IDs as keys.
-         *
-         * @private
-         * @static
-         * @since   2.0.0
-         * @type    {object}
-         */
-
-        _instances: {},
-
-        /**
-         * @private
-         * @static
-         * @since   3.0.0
-         * @type    {mixitup.TransformDefaults}
-         */
-
-        _transformDefaults: new mixitup.TransformDefaults(),
-
-        /**
-         * @private
-         * @static
-         * @since   2.0.0
-         * @type    {mixitup.ClickTracker}
-         */
-
-        _handled: new mixitup.ClickTracker(),
-
-        /**
-         * @private
-         * @static
-         * @since   2.0.0
-         * @type    {mixitup.ClickTracker}
-         */
-
-        _bound: new mixitup.ClickTracker(),
 
         /**
          * @private
@@ -1585,11 +1574,10 @@
 
         _bindEvents: function() {
             var self            = this,
-                proto           = mixitup.Mixer.prototype,
-                filterToggles   = proto._bound.filterToggle,
-                multiMixs       = proto._bound.multiMix,
-                filters         = proto._bound.filter,
-                sorts           = proto._bound.sort,
+                filterToggles   = mixitup.bound.filterToggle,
+                multiMixs       = mixitup.bound.multiMix,
+                filters         = mixitup.bound.filter,
+                sorts           = mixitup.bound.sort,
                 button          = null,
                 i               = -1;
 
@@ -1919,7 +1907,6 @@
 
         _trackClick: function(button, method, isTogglingOff) {
             var self        = this,
-                proto       = mixitup.Mixer.prototype,
                 selector    = self.selectors[method];
 
             self._lastClicked = button;
@@ -1927,18 +1914,18 @@
             // Add the active class to a button only once
             // all mixitup.Mixer instances have handled the click
 
-            proto._handled[method][selector] =
-                (typeof proto._handled[method][selector] === 'undefined') ?
-                    1 : proto._handled[method][selector] + 1;
+            mixitup.handled[method][selector] =
+                (typeof mixitup.handled[method][selector] === 'undefined') ?
+                    1 : mixitup.handled[method][selector] + 1;
 
-            if (proto._handled[method][selector] === proto._bound[method][selector]) {
+            if (mixitup.handled[method][selector] === mixitup.bound[method][selector]) {
                 if (isTogglingOff) {
                     h.removeClass(button, self.controls.activeClass);
                 } else {
                     h.addClass(button, self.controls.activeClass);
                 }
 
-                delete proto._handled[method][selector];
+                delete mixitup.handled[method][selector];
             }
         },
 
@@ -4205,7 +4192,9 @@
         h.seal(this);
     };
 
-    mixitup.TargetDom.prototype = new mixitup.BasePrototype();
+    mixitup.TargetDom.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.TargetDom.prototype.constructor = mixitup.TargetDom;
 
     /**
      * @constructor
@@ -4234,7 +4223,7 @@
         h.seal(this);
     };
 
-    mixitup.Target.prototype = new mixitup.BasePrototype();
+    mixitup.Target.prototype = Object.create(new mixitup.BasePrototype());
 
     h.extend(mixitup.Target.prototype, {
         constructor: mixitup.Target,
@@ -4980,7 +4969,9 @@
         h.seal(this);
     };
 
-    mixitup.Operation.prototype = new mixitup.BasePrototype();
+    mixitup.Operation.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.Operation.prototype.constructor = mixitup.Operation;
 
     /**
      * `mixitup.State` objects expose various pieces of data detailing the state of
@@ -5183,7 +5174,9 @@
         h.seal(this);
     };
 
-    mixitup.State.prototype = new mixitup.BasePrototype();
+    mixitup.State.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.State.prototype.constructor = mixitup.State;
 
     /**
      * @constructor
@@ -5204,7 +5197,9 @@
         h.seal(this);
     };
 
-    mixitup.UserInstruction.prototype = new mixitup.BasePrototype();
+    mixitup.UserInstruction.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.UserInstruction.prototype.constructor = mixitup.UserInstruction;
 
     /**
      * @constructor
@@ -5262,7 +5257,9 @@
         h.seal(this);
     };
 
-    mixitup.Messages.prototype = new mixitup.BasePrototype();
+    mixitup.Messages.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.Messages.prototype.constructor = mixitup.Messages;
 
     // Asign a singleton instance to `mixitup.messages`:
 
@@ -5320,11 +5317,13 @@
         this.execAction('constructor', 1);
     };
 
-    mixitup.Features.prototype = new mixitup.BasePrototype();
+    mixitup.Features.prototype = Object.create(new mixitup.BasePrototype());
 
     h.extend(mixitup.Features.prototype,
     /** @lends mixitup.Features */
     {
+        constructor: mixitup.Features,
+
         /**
          * @private
          * @return  {void}
@@ -5486,6 +5485,43 @@
     mixitup.features = new mixitup.Features();
 
     mixitup.features.init();
+    /**
+     * Stores all current instances of MixItUp in the current session, using their IDs as keys.
+     *
+     * @private
+     * @static
+     * @since   2.0.0
+     * @type    {object}
+     */
+
+    mixitup.instances = {};
+
+    /**
+     * @private
+     * @static
+     * @since   3.0.0
+     * @type    {mixitup.TransformDefaults}
+     */
+
+    mixitup.transformDefaults = new mixitup.TransformDefaults();
+
+    /**
+     * @private
+     * @static
+     * @since   2.0.0
+     * @type    {mixitup.ClickTracker}
+     */
+
+    mixitup.handled = new mixitup.ClickTracker();
+
+    /**
+     * @private
+     * @static
+     * @since   2.0.0
+     * @type    {mixitup.ClickTracker}
+     */
+
+    mixitup.bound = new mixitup.ClickTracker();
 
     if (typeof exports === 'object' && typeof module === 'object') {
         module.exports = mixitup;
