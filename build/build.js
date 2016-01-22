@@ -26,7 +26,6 @@ Build = function() {
 
 Build.prototype = {
     /**
-     * init
      * @public
      * @param   {string}    version
      * @param   {string}    fileName
@@ -70,7 +69,6 @@ Private = function() {
 
 Private.prototype = {
     /**
-     * getParamter
      * @param   {string}    param
      * @return  {string}
      */
@@ -90,7 +88,6 @@ Private.prototype = {
     },
 
     /**
-     * readPartials
      * @private
      * @return  {Promise} -> {string[]}
      */
@@ -115,7 +112,6 @@ Private.prototype = {
     },
 
     /**
-     * registerPartials
      * @private
      * @param {string[]} fileNames
      * @void
@@ -146,7 +142,6 @@ Private.prototype = {
     },
 
     /**
-     * cleanPartial
      * @private
      * @param {string} buffer
      * @return {string}
@@ -161,7 +156,6 @@ Private.prototype = {
     },
 
     /**
-     * mapScope
      * @private
      * @param   {string}    version
      * @return  {BuildData}
@@ -185,7 +179,6 @@ Private.prototype = {
     },
 
     /**
-     * render
      * @private
      * @param   {BuildData}     scope
      * @return  {string}
@@ -202,7 +195,6 @@ Private.prototype = {
     },
 
     /**
-     * cleanBuild
      * @private
      * @param {string} buffer
      * @return {string}
@@ -221,7 +213,6 @@ Private.prototype = {
     },
 
     /**
-     * writeFile
      * @private
      * @param   {string} code
      * @param   {string} fileName
