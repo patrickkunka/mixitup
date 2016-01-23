@@ -10,15 +10,22 @@ methods and/or actions and hooks.
 
 ### <a id="mixitup.BasePrototype.extend">mixitup.BasePrototype.extend</a>
 
+
+
+Performs a shallow extend on the class's prototype, enabling the addition of
+multiple new members to the class in a single operation.
+
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`object` | `extension` | 
 |Returns |`void` | 
 
-Performs a shallow extend on the class's prototype, enabling the addition of
-multiple new members to the class in a single operation.
 
 ### <a id="mixitup.BasePrototype.addAction">mixitup.BasePrototype.addAction</a>
+
+
+
+Registers an action function to be executed at a predefined hook.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
@@ -28,9 +35,12 @@ multiple new members to the class in a single operation.
 |Param   |`number` | `priority` | 
 |Returns |`void` | 
 
-Registers an action function to be executed at a predefined hook.
 
 ### <a id="mixitup.BasePrototype.addFilter">mixitup.BasePrototype.addFilter</a>
+
+
+
+Registers a filter function to be executed at a predefined hook.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
@@ -39,4 +49,3 @@ Registers an action function to be executed at a predefined hook.
 |Param   |`function` | `func` | 
 |Returns |`void` | 
 
-Registers a filter function to be executed at a predefined hook.

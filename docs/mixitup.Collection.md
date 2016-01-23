@@ -9,10 +9,13 @@ allowing simultaneous control of multiple instances.
 
 ### <a id="mixitup.Collection#do">mixitup.Collection.do</a>
 
+
+
+A jQueryUI-like API for calling a method on all instances in the collection
+by passing the method name as a string followed by an neccessary parameters.
+
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`string` | `methodName` | 
 |Returns |`Promise` | 
 
-A jQueryUI-like API for calling a method on all instances in the collection
-by passing the method name as a string followed by an neccessary parameters.

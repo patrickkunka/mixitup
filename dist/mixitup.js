@@ -3735,6 +3735,12 @@
         },
 
         /**
+         * Initialises a newly instantiated mixer by filtering in all targets, or those
+         * specified via the `load.filter` configuration option.
+         *
+         * @example
+         * .init()
+         *
          * @public
          * @instance
          * @since       3.0.0
@@ -3750,6 +3756,11 @@
         },
 
         /**
+         * A shorthand method for `.filter('all')`.
+         *
+         * @example
+         * .show()
+         *
          * @public
          * @instance
          * @since       3.0.0
@@ -3763,6 +3774,11 @@
         },
 
         /**
+         * A shorthand method for `.filter('none')`.
+         *
+         * @example
+         * .hide()
+         *
          * @public
          * @instance
          * @since       3.0.0
@@ -3776,6 +3792,12 @@
         },
 
         /**
+         * Returns a boolean indicating whether or not a MixItUp operation is
+         * currently in progress.
+         *
+         * @example
+         * .isMixing()
+         *
          * @public
          * @instance
          * @since   2.0.0
@@ -3789,13 +3811,21 @@
         },
 
         /**
+         * Filters the mixer according to the specified filter command.
+         *
+         * @example
+         * .filter(filterCommand [,animate] [,callback])
+         *
          * @public
          * @instance
          * @since       2.0.0
+         * @param       {string}                    filterCommand   Any valid CSS selector (i.e. `'.category-2'`), or the strings `'all'` or `'none'`.
+         * @param       {boolean}                   [animate]
+         * @param       {function}                  [callback]
          * @return      {Promise.<mixitup.State>}
          */
 
-        filter: function() {
+        filter: function(filterCommand) {
             var self = this,
                 args = self._parseMultiMixArgs(arguments);
 
@@ -3807,13 +3837,21 @@
         },
 
         /**
+         * Sorts the mixer according to the specified sort command.
+         *
+         * @example
+         * .sort(sortCommand [,animate] [,callback])
+         *
          * @public
          * @instance
          * @since       2.0.0
+         * @param       {string}                    sortCommand     A colon-seperated "sorting pair", or the string `'random'`.
+         * @param       {boolean}                   [animate]
+         * @param       {function}                  [callback]
          * @return      {Promise.<mixitup.State>}
          */
 
-        sort: function() {
+        sort: function(sortCommand) {
             var self = this,
                 args = self._parseMultiMixArgs(arguments);
 
@@ -3956,10 +3994,15 @@
         },
 
         /**
+         * Performs simultaneous `filter`, `sort`, `insert`, `remove` and `changeLayout` operations as requested.
+         *
+         * @example
+         * .multiMix(multiMixCommand [,animate] [,callback])
+         *
          * @public
          * @instance
          * @since       2.0.0
-         * @param       {object}                        multiMixCommand
+         * @param       {object}                        multiMixCommand     An object containing one or more operation commands
          * @param       {boolean}                       [animate=true]
          * @param       {function}                      [callback=null]
          * @return      {Promise.<mixitup.State>}
@@ -4015,11 +4058,17 @@
         },
 
         /**
+         * Renders a previously created operation at a specific point in its path, as
+         * determined by a multiplier between 0 and 1.
+         *
+         * @example
+         * .tween(operation, multiplier)
+         *
          * @public
          * @instance
          * @since   3.0.0
-         * @param   {Operation}     operation
-         * @param   {Float}         multiplier
+         * @param   {mixitup.Operation}     operation   An operation object created via the `getOperation` method
+         * @param   {Float}                 multiplier  Any number between 0 and 1 representing the percentage complete of the operation
          * @return  {void}
          */
 
