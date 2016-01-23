@@ -817,6 +817,28 @@
             this.resolve    = null;
             this.reject     = null;
             this.isResolved = false;
+        },
+
+        /**
+         * @private
+         * @param   {object}  obj
+         * @return  {boolean}
+         */
+
+        isEmptyObject: function(obj) {
+            var key = '';
+
+            if (typeof Object.keys === 'function') {
+                return Object.keys(obj).length === 0;
+            }
+
+            for (key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     };
 
@@ -951,7 +973,7 @@
                 key     = '',
                 context = isPost ? 'post' : 'pre';
 
-            if (!self._actions.isEmptyObject && self._actions.hasOwnProperty(methodName)) {
+            if (!h.isEmptyObject(self._actions) && self._actions.hasOwnProperty(methodName)) {
                 for (key in self._actions[methodName][context]) {
                     self._actions[methodName][context][key].call(self, args);
                 }
@@ -975,7 +997,7 @@
             var self    = this,
                 key     = '';
 
-            if (!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)) {
+            if (h.isEmptyObject(self._filters) && self._filters.hasOwnProperty(methodName)) {
                 for (key in self._filters[methodName].pre) {
                     return self._filters[methodName].pre[key].call(self, value, args);
                 }

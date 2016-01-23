@@ -670,6 +670,28 @@ h = {
         this.resolve    = null;
         this.reject     = null;
         this.isResolved = false;
+    },
+
+    /**
+     * @private
+     * @param   {object}  obj
+     * @return  {boolean}
+     */
+
+    isEmptyObject: function(obj) {
+        var key = '';
+
+        if (typeof Object.keys === 'function') {
+            return Object.keys(obj).length === 0;
+        }
+
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 };
 

@@ -19,9 +19,9 @@ Build = function() {
     version     = this._.getParameter('-v');
     fileName    = this._.getParameter('-o');
 
-    this.init(version, fileName);
-
     Object.seal(this);
+
+    this.init(version, fileName);
 };
 
 Build.prototype = {

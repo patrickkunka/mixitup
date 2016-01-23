@@ -129,7 +129,7 @@ mixitup.BasePrototype.prototype =
             key     = '',
             context = isPost ? 'post' : 'pre';
 
-        if (!self._actions.isEmptyObject && self._actions.hasOwnProperty(methodName)) {
+        if (!h.isEmptyObject(self._actions) && self._actions.hasOwnProperty(methodName)) {
             for (key in self._actions[methodName][context]) {
                 self._actions[methodName][context][key].call(self, args);
             }
@@ -153,7 +153,7 @@ mixitup.BasePrototype.prototype =
         var self    = this,
             key     = '';
 
-        if (!self._filters.isEmptyObject && self._filters.hasOwnProperty(methodName)) {
+        if (h.isEmptyObject(self._filters) && self._filters.hasOwnProperty(methodName)) {
             for (key in self._filters[methodName].pre) {
                 return self._filters[methodName].pre[key].call(self, value, args);
             }

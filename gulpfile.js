@@ -35,7 +35,7 @@ gulp.task('reload-js', ['prod'], function() {
     return livereload.changed();
 });
 
-gulp.task('uglify', ['build'], function() {
+gulp.task('uglify', ['build-script'], function() {
     return gulp.src([
         './dist/mixitup.js',
     ])
@@ -75,10 +75,20 @@ gulp.task('code-style', function() {
         .pipe(jscs.reporter());
 });
 
-gulp.task('build', ['lint', 'code-style'], function(done) {
+gulp.task('build-script', ['lint', 'code-style'], function(done) {
     var version = p.version;
 
-    exec('node build/build.js -v ' + version + ' -o mixitup.js', function(e, out) {
+    exec('node build/build-script.js -v ' + version + ' -o mixitup.js', function(e, out) {
+        if (out) {
+            console.log(out);
+        }
+
+        done(e);
+    });
+});
+
+gulp.task('build-docs', function(done) {
+    exec('node build/build-docs.js', function(e, out) {
         if (out) {
             console.log(out);
         }
