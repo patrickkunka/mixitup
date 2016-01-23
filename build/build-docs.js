@@ -6,7 +6,8 @@ var parse       = require('jsdoc-parse'),
     q           = require('q'),
     Docs        = null,
     Namespace   = null,
-    docs        = null;
+    docs        = null,
+    Doclet      = null;
 
 Namespace = function(doclet) {
     this.doclet = doclet;
@@ -80,13 +81,18 @@ Docs.prototype = {
         });
 
         doclets.forEach(function(doclet) {
-            var namespace = null;
+            var namespace = null,
+                model     = new Doclet();
+
+            console.log(doclet);
 
             if (
                 doclet.memberof &&
                 typeof (namespace = self.namespaces[doclet.memberof]) !== 'undefined'
             ) {
-                namespace.members.push(doclet);
+                Object.assign(model, doclet);
+
+                namespace.members.push(model);
             } else if (doclet.scope === 'global') {
                 self.factory = doclet;
             }
@@ -156,6 +162,44 @@ Docs.prototype = {
 
         return q.all(tasks);
     }
+};
+
+Doclet = function() {
+    this.id             = '';
+    this.name           = '';
+    this.access         = '';
+    this.longname       = '';
+    this.scope          = '';
+    this.kind           = '';
+    this.description    = '';
+    this.memberof       = '';
+    this.since          = '';
+    this.order          = -1;
+    this.type           = {};
+    this.meta           = {};
+    this.defaultvalue   = [];
+    this.params         = [];
+    this.returns        = [];
+
+    Object.defineProperties(this, {
+        'isFactory': {
+            get: function() {
+                return this.kind === 'function' && !this.memberof;
+            }
+        },
+        'isMethod': {
+            get: function() {
+                return this.kind === 'function' && this.memberof;
+            }
+        },
+        'isProperty': {
+            get: function() {
+                return this.kind === 'member'
+            }
+        }
+    });
+
+    Object.seal(this);
 };
 
 module.exports = new Docs();

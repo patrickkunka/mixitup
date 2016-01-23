@@ -2563,14 +2563,20 @@ h.extend(mixitup.Mixer.prototype,
      * @public
      * @instance
      * @since       2.0.0
+     * @param       {object}                        multiMixCommand
+     * @param       {boolean}                       [animate=true]
+     * @param       {function}                      [callback=null]
      * @return      {Promise.<mixitup.State>}
      */
 
-    multiMix: function() {
+    multiMix: function(multiMixCommand) {
         var self        = this,
             operation   = null,
             animate     = false,
             instruction = self._parseMultiMixArgs(arguments);
+
+        // multiMixCommand argument passed purely to please jscs, all params
+        // actually derived via arguments list
 
         self.execAction('multiMix', 0, arguments);
 
@@ -2759,6 +2765,7 @@ h.extend(mixitup.Mixer.prototype,
      * @instance
      * @since       2.0.0
      * @param       {object}    config
+     * @return      {void}
      */
 
     setOptions: function(config) {
@@ -2775,7 +2782,7 @@ h.extend(mixitup.Mixer.prototype,
      * @public
      * @instance
      * @since       2.0.0
-     * @return      {State}
+     * @return      {mixitup.State}
      */
 
     getState: function() {
@@ -2791,6 +2798,7 @@ h.extend(mixitup.Mixer.prototype,
      * @public
      * @instance
      * @since 2.1.2
+     * @return {void}
      */
 
     forceRefresh: function() {

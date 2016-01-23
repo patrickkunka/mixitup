@@ -23,10 +23,24 @@ gulp.task('watch', function() {
         .on('change', function(e) {
             console.log(
                 '[gulp-watch] Javascript file ' +
-                e.path.replace(/.*(?=tpl)/, '') +
+                e.path.replace(/.*(?=js)/, '') +
                 ' was ' +
                 e.type +
                 ', linting...'
+            );
+        });
+
+    gulp.watch([
+        './build/build-docs.js',
+        './build/*.md'
+    ], ['build-docs'])
+        .on('change', function(e) {
+            console.log(
+                '[gulp-watch] Template file ' +
+                e.path.replace(/.*(?=md)/, '') +
+                ' was ' +
+                e.type +
+                ', building docs...'
             );
         });
 });
