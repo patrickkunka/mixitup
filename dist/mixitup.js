@@ -34,8 +34,7 @@
      * @kind        function
      * @since       3.0.0
      * @param       {(Element|Element[]|string)}        container
-     *      A DOM element, NodeList, jQuery collection, or selector string representing
-     * the container element(s) on which to instantiate MixItUp.
+     * An element, collection, or selector string representing the container(s) on which to instantiate MixItUp.
      * @param       {object}                            [config]
      *      An optional "configuration object" used to customize the behavior of the MixItUp instance.
      * @param       {object}                            [foreignDoc]
