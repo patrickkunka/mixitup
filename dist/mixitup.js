@@ -25,6 +25,10 @@
      * It is the first entry point for the v3 API, and abstracts away the
      * functionality of instantiating `Mixer` objects directly.
      *
+     * The factory function also checks whether or not a MixItUp instance is
+     * already active on specified element, and if so, returns that instance
+     * rather than creating a duplicate.
+     *
      * @example
      * mixitup(container [,config] [,foreignDoc])
      *
@@ -34,29 +38,33 @@
      * @kind        function
      * @since       3.0.0
      * @param       {(Element|Element[]|string)}        container
-     * An element, collection, or selector string representing the container(s) on which to instantiate MixItUp.
+     *      An element, element array, or selector string representing the container(s) on which to instantiate MixItUp.
      * @param       {object}                            [config]
      *      An optional "configuration object" used to customize the behavior of the MixItUp instance.
      * @param       {object}                            [foreignDoc]
      *      An optional reference to a `document`, which can be used to control a MixItUp instance in an iframe.
-     * @param       {boolean}                           [returnCollection]
-     *
      * @return      {mixitup.Mixer|mixitup.Collection}
-     *      A "mixer" object representing the instance of MixItUp, or a collection of
-     * mixers if instantiating on multiple containers.
+     *      An object representing the instance of MixItUp, or a "collection" if instantiating multiple mixers.
      */
 
-    mixitup = function(container, config, foreignDoc, returnCollection) {
-        var el          = null,
-            instance    = null,
-            doc         = null,
-            instances   = [],
-            id          = '',
-            name        = '',
-            elements    = [],
-            i           = -1;
+    mixitup = function(container, config, foreignDoc) {
+        var el                  = null,
+            returnCollection    = false,
+            instance            = null,
+            doc                 = null,
+            instances           = [],
+            id                  = '',
+            name                = '',
+            elements            = [],
+            i                   = -1;
 
         doc = foreignDoc || window.document;
+
+        if (returnCollection = arguments[3]) {
+            // A non-documented 4th paramater set only if the V2 API is in-use via a jQuery shim
+
+            returnCollection = typeof returnCollection === 'boolean';
+        }
 
         if (config && typeof config.extensions === 'object') {
             for (name in config.extensions) {
@@ -1376,6 +1384,37 @@
     mixitup.ConfigDebug.prototype.constructor = mixitup.ConfigDebug;
 
     /**
+     * An group of references to any mixitup extensions to be applied to the
+     * instance. This is only neccessary when loading mixitup via a module
+     * loader such as Browserify or RequireJS, where a reference to the
+     * extension cannot be acessed from the global `window` scope.
+     *
+     * @constructor
+     * @memberof    mixitup
+     * @memberof    mixitup.Config
+     * @name        extensions
+     * @namespace
+     * @public
+     * @since       3.0.0
+     */
+
+    mixitup.ConfigExtensions = function() {
+        this.execAction('constructor', 0);
+
+        this.pagination     = null;
+        this.dragndrop      = null;
+        this.multiFilter    = null;
+
+        this.execAction('constructor', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.ConfigExtensions.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.ConfigExtensions.prototype.constructor = mixitup.ConfigExtensions;
+
+    /**
      * @constructor
      * @memberof    mixitup.Config
      * @name        layout
@@ -1506,6 +1545,7 @@
         this.libraries          = new mixitup.ConfigLibraries();
         this.load               = new mixitup.ConfigLoad();
         this.selectors          = new mixitup.ConfigSelectors();
+        this.extensions         = new mixitup.ConfigExtensions();
 
         this.execAction('constructor', 1);
 
@@ -1719,6 +1759,7 @@
         this.callbacks          = new mixitup.ConfigCallbacks();
         this.controls           = new mixitup.ConfigControls();
         this.debug              = new mixitup.ConfigDebug();
+        this.extensions         = new mixitup.ConfigExtensions();
         this.layout             = new mixitup.ConfigLayout();
         this.libraries          = new mixitup.ConfigLibraries();
         this.load               = new mixitup.ConfigLoad();

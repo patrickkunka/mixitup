@@ -21,7 +21,7 @@ A group of configurable properties related to MixItUp's animation and effects op
 
 
 
-**Added v2.0.0**
+**Version added: 2.0.0**
 ### <a id="mixitup.Config.callbacks">mixitup.Config.callbacks</a>
 
 
@@ -30,7 +30,7 @@ A group of configurable properties related to MixItUp's animation and effects op
 
 
 
-**Added v2.0.0**
+**Version added: 2.0.0**
 ### <a id="mixitup.Config.controls">mixitup.Config.controls</a>
 
 
@@ -39,7 +39,7 @@ A group of configurable properties related to MixItUp's animation and effects op
 
 
 
-**Added v2.0.0**
+**Version added: 2.0.0**
 ### <a id="mixitup.Config.debug">mixitup.Config.debug</a>
 
 
@@ -48,7 +48,19 @@ A group of configurable properties related to MixItUp's animation and effects op
 
 
 
-**Added v3.0.0**
+**Version added: 3.0.0**
+### <a id="mixitup.Config.extensions">mixitup.Config.extensions</a>
+
+
+
+An group of references to any mixitup extensions to be applied to the
+instance. This is only neccessary when loading mixitup via a module
+loader such as Browserify or RequireJS, where a reference to the
+extension cannot be acessed from the global `window` scope.
+
+
+
+**Version added: 3.0.0**
 ### <a id="mixitup.Config.layout">mixitup.Config.layout</a>
 
 
@@ -57,7 +69,7 @@ A group of configurable properties related to MixItUp's animation and effects op
 
 
 
-**Added v3.0.0**
+**Version added: 3.0.0**
 ### <a id="mixitup.Config.libraries">mixitup.Config.libraries</a>
 
 
@@ -66,7 +78,7 @@ A group of configurable properties related to MixItUp's animation and effects op
 
 
 
-**Added v3.0.0**
+**Version added: 3.0.0**
 ### <a id="mixitup.Config.load">mixitup.Config.load</a>
 
 
@@ -75,7 +87,7 @@ A group of configurable properties related to MixItUp's animation and effects op
 
 
 
-**Added v2.0.0**
+**Version added: 2.0.0**
 ### <a id="mixitup.Config.selectors">mixitup.Config.selectors</a>
 
 
@@ -84,4 +96,4 @@ A group of configurable properties related to MixItUp's animation and effects op
 
 
 
-**Added v3.0.0**
+**Version added: 3.0.0**

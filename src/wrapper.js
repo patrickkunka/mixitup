@@ -20,6 +20,8 @@
 
     {{>config-debug}}
 
+    {{>config-extensions}}
+
     {{>config-layout}}
 
     {{>config-libraries}}
@@ -27,6 +29,7 @@
     {{>config-load}}
 
     {{>config-selectors}}
+
 
     {{>config}}
 

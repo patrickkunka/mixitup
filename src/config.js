@@ -28,6 +28,7 @@ mixitup.Config = function() {
     this.libraries          = new mixitup.ConfigLibraries();
     this.load               = new mixitup.ConfigLoad();
     this.selectors          = new mixitup.ConfigSelectors();
+    this.extensions         = new mixitup.ConfigExtensions();
 
     this.execAction('constructor', 1);
 

@@ -20,4 +20,4 @@ by passing the method name as a string followed by an neccessary parameters.
 |Returns |`Promise` | 
 
 
-**Added v3.0.0**
+**Version added: 3.0.0**

@@ -21,6 +21,7 @@ mixitup.Mixer = function() {
     this.callbacks          = new mixitup.ConfigCallbacks();
     this.controls           = new mixitup.ConfigControls();
     this.debug              = new mixitup.ConfigDebug();
+    this.extensions         = new mixitup.ConfigExtensions();
     this.layout             = new mixitup.ConfigLayout();
     this.libraries          = new mixitup.ConfigLibraries();
     this.load               = new mixitup.ConfigLoad();
