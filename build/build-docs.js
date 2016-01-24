@@ -91,7 +91,9 @@ Docs.prototype = {
 
                 namespace.members.push(model);
             } else if (doclet.scope === 'global') {
-                self.factory = doclet;
+                Object.assign(model, doclet);
+
+                self.factory = model;
             }
         });
     },
@@ -197,14 +199,14 @@ Doclet = function() {
         },
         syntax: {
             get: function() {
-                if (this.isMethod) {
+                if (this.isMethod || this.isFactory) {
                     return this.examples[0];
                 }
             }
         },
         codeExamples: {
             get: function() {
-                if (this.isMethod) {
+                if (this.isMethod || this.isFactory) {
                     return this.examples.slice(1);
                 } else {
                     return this.examples;

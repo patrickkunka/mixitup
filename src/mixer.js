@@ -2451,7 +2451,7 @@ h.extend(mixitup.Mixer.prototype,
      * @instance
      * @since       2.0.0
      * @param       {string}    sortCommand
-     *      A colon-seperated "sorting pair", or the string `'random'`.
+     *      A colon-seperated "sorting pair" (e.g. `'published:asc'`, or `'random'`.
      * @param       {boolean}   [animate]
      * @param       {function}  [callback]
      * @return      {Promise.<mixitup.State>}

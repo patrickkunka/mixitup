@@ -19,8 +19,14 @@
         h               = null;
 
     /**
-     * The `mixitup` factory function is the first entry point for the v3 API,
-     * abstracting away the functionality of instantiating `Mixer` objects.
+     * The `mixitup` factory function is used to create discreet instances
+     * of MixItUp, also known as "Mixers" in v3.
+     *
+     * It is the first entry point for the v3 API, and abstracts away the
+     * functionality of instantiating `Mixer` objects directly.
+     *
+     * @example
+     * mixitup(container [,config] [,foreignDoc])
      *
      * @global
      * @namespace
@@ -28,10 +34,17 @@
      * @kind        function
      * @since       3.0.0
      * @param       {(Element|Element[]|string)}        container
+     *      A DOM element, NodeList, jQuery collection, or selector string representing
+     * the container element(s) on which to instantiate MixItUp.
      * @param       {object}                            [config]
+     *      An optional "configuration object" used to customize the behavior of the MixItUp instance.
      * @param       {object}                            [foreignDoc]
+     *      An optional reference to a `document`, which can be used to control a MixItUp instance in an iframe.
      * @param       {boolean}                           [returnCollection]
+     *
      * @return      {mixitup.Mixer|mixitup.Collection}
+     *      A "mixer" object representing the instance of MixItUp, or a collection of
+     * mixers if instantiating on multiple containers.
      */
 
     mixitup = function(container, config, foreignDoc, returnCollection) {
@@ -4137,7 +4150,7 @@
          * @instance
          * @since       2.0.0
          * @param       {string}    sortCommand
-         *      A colon-seperated "sorting pair", or the string `'random'`.
+         *      A colon-seperated "sorting pair" (e.g. `'published:asc'`, or `'random'`.
          * @param       {boolean}   [animate]
          * @param       {function}  [callback]
          * @return      {Promise.<mixitup.State>}

@@ -95,7 +95,7 @@ Sorts the mixer according to the specified sort command.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`string` | `sortCommand` | A colon-seperated "sorting pair", or the string `'random'`.
+|Param   |`string` | `sortCommand` | A colon-seperated "sorting pair" (e.g. `'published:asc'`, or `'random'`.
 |Param   |`boolean` | `[animate]` | 
 |Param   |`function` | `[callback]` | 
 |Returns |`Promise.<mixitup.State>` | 
