@@ -2,7 +2,8 @@
 
 /**
  * @constructor
- * @memberof    mixitup
+ * @memberof    mixitup.Config
+ * @name        debug
  * @namespace
  * @public
  * @since       3.0.0

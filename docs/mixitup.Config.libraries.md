@@ -1,4 +1,4 @@
-# mixitup.ConfigLoad
+# mixitup.Config.libraries
 
 ## Overview
 

@@ -13,7 +13,6 @@ for retrieval at any time via the API.
 
 
 
-
 The currently active filter selector as set by a control click or the API
 call.
 
@@ -21,11 +20,9 @@ call.
 
 
 
-
 The currently active sort as set by a control click or API call.
 
 ### <a id="mixitup.State#activeDisplay">mixitup.State.activeDisplay</a>
-
 
 
 
@@ -36,11 +33,9 @@ configuration object.
 
 
 
-
 The currently active containerClass, if applied.
 
 ### <a id="mixitup.State#targets">mixitup.State.targets</a>
-
 
 
 
@@ -50,11 +45,9 @@ An array of all target elements indexed by the mixer.
 
 
 
-
 An array of all target elements not matching the current filter.
 
 ### <a id="mixitup.State#show">mixitup.State.show</a>
-
 
 
 
@@ -65,7 +58,6 @@ limits applied such as pagination.
 
 
 
-
 An array of all target elements matching the current filter irrespective of
 any additional limits applied such as pagination.
 
@@ -73,12 +65,10 @@ any additional limits applied such as pagination.
 
 
 
-
 An integer representing the total number of target elements indexed by the
 mixer. Equivalent to `state.targets.length`.
 
 ### <a id="mixitup.State#totalShow">mixitup.State.totalShow</a>
-
 
 
 
@@ -90,12 +80,10 @@ Equivalent to `state.show.length`.
 
 
 
-
 An integer representing the total number of target elements not matching
 the current filter. Equivalent to `state.hide.length`.
 
 ### <a id="mixitup.State#totalMatching">mixitup.State.totalMatching</a>
-
 
 
 
@@ -107,12 +95,10 @@ Equivalent to `state.matching.length`.
 
 
 
-
 A boolean indicating whether the last operation "failed", i.e. no targets
 could be found matching the filter.
 
 ### <a id="mixitup.State#triggerElement">mixitup.State.triggerElement</a>
-
 
 
 

@@ -28,6 +28,8 @@
 
     {{>config-selectors}}
 
+    {{>config}}
+
     {{>mixer-dom}}
 
     {{>click-tracker}}

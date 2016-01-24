@@ -1,4 +1,4 @@
-# mixitup.ConfigLayout
+# mixitup.Config.debug
 
 ## Overview
 

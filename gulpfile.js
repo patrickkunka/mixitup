@@ -18,29 +18,17 @@ gulp.task('watch', function() {
     livereload.listen(35730);
 
     gulp.watch([
-        './src/*.js'
+        './src/*.js',
+        './build/*.js',
+        './build/*.md'
     ], ['reload-js'])
         .on('change', function(e) {
             console.log(
-                '[gulp-watch] Javascript file ' +
-                e.path.replace(/.*(?=js)/, '') +
+                '[gulp-watch] file ' +
+                e.path +
                 ' was ' +
                 e.type +
-                ', linting...'
-            );
-        });
-
-    gulp.watch([
-        './build/build-docs.js',
-        './build/*.md'
-    ], ['build-docs'])
-        .on('change', function(e) {
-            console.log(
-                '[gulp-watch] Template file ' +
-                e.path.replace(/.*(?=md)/, '') +
-                ' was ' +
-                e.type +
-                ', building docs...'
+                ', building'
             );
         });
 });
@@ -49,7 +37,9 @@ gulp.task('reload-js', ['prod'], function() {
     return livereload.changed();
 });
 
-gulp.task('uglify', ['build-script'], function() {
+gulp.task('prod', ['uglify']);
+
+gulp.task('uglify', ['build'], function() {
     return gulp.src([
         './dist/mixitup.js',
     ])
@@ -62,6 +52,28 @@ gulp.task('uglify', ['build-script'], function() {
         })
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./dist/'));
+});
+
+gulp.task('build', ['build-script'], function(done) {
+    exec('node build/build-docs.js', function(e, out) {
+        if (out) {
+            console.log(out);
+        }
+
+        done(e);
+    });
+});
+
+gulp.task('build-script', ['lint', 'code-style'], function(done) {
+    var version = p.version;
+
+    exec('node build/build-script.js -v ' + version + ' -o mixitup.js', function(e, out) {
+        if (out) {
+            console.log(out);
+        }
+
+        done(e);
+    });
 });
 
 gulp.task('lint', function() {
@@ -88,34 +100,3 @@ gulp.task('code-style', function() {
         .pipe(jscs())
         .pipe(jscs.reporter());
 });
-
-gulp.task('build-script', ['lint', 'code-style'], function(done) {
-    var version = p.version;
-
-    exec('node build/build-script.js -v ' + version + ' -o mixitup.js', function(e, out) {
-        if (out) {
-            console.log(out);
-        }
-
-        done(e);
-    });
-});
-
-gulp.task('build-docs', function(done) {
-    exec('node build/build-docs.js', function(e, out) {
-        if (out) {
-            console.log(out);
-        }
-
-        done(e);
-    });
-});
-
-gulp.task('parse-docs', function() {
-    parse({
-        src: './dist/mixitup.js'
-    })
-        .pipe(process.stdout);
-});
-
-gulp.task('prod', ['uglify']);

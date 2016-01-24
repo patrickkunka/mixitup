@@ -1,4 +1,4 @@
-# mixitup.ConfigAnimation
+# mixitup.Config.layout
 
 ## Overview
 

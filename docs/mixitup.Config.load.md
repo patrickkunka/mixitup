@@ -1,4 +1,4 @@
-# mixitup.ConfigSelectors
+# mixitup.Config.load
 
 ## Overview
 

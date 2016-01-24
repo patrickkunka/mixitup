@@ -1,4 +1,4 @@
-# mixitup.ConfigControls
+# mixitup.Config.controls
 
 ## Overview
 

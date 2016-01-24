@@ -17,13 +17,11 @@ on mixer instances.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-
 ### <a id="mixitup.Mixer#show">mixitup.Mixer.show</a>
 
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Returns |`Promise.<mixitup.State>` | 
-
 
 
 ### <a id="mixitup.Mixer#hide">mixitup.Mixer.hide</a>
@@ -33,13 +31,11 @@ on mixer instances.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-
 ### <a id="mixitup.Mixer#isMixing">mixitup.Mixer.isMixing</a>
 
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Returns |`boolean` | 
-
 
 
 ### <a id="mixitup.Mixer#filter">mixitup.Mixer.filter</a>
@@ -49,13 +45,11 @@ on mixer instances.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-
 ### <a id="mixitup.Mixer#sort">mixitup.Mixer.sort</a>
 
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Returns |`Promise.<mixitup.State>` | 
-
 
 
 ### <a id="mixitup.Mixer#changeLayout">mixitup.Mixer.changeLayout</a>
@@ -65,14 +59,12 @@ on mixer instances.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-
 ### <a id="mixitup.Mixer#getOperation">mixitup.Mixer.getOperation</a>
 
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`Command` | `command` | 
 |Returns |`Operation,null` | 
-
 
 
 ### <a id="mixitup.Mixer#multiMix">mixitup.Mixer.multiMix</a>
@@ -85,7 +77,6 @@ on mixer instances.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-
 ### <a id="mixitup.Mixer#tween">mixitup.Mixer.tween</a>
 
 |   |Type | Name | Description
@@ -95,13 +86,11 @@ on mixer instances.
 |Returns |`void` | 
 
 
-
 ### <a id="mixitup.Mixer#insert">mixitup.Mixer.insert</a>
 
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Returns |`Promise.<mixitup.State>` | 
-
 
 
 ### <a id="mixitup.Mixer#insertBefore">mixitup.Mixer.insertBefore</a>
@@ -111,13 +100,11 @@ on mixer instances.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-
 ### <a id="mixitup.Mixer#insertAfter">mixitup.Mixer.insertAfter</a>
 
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Returns |`Promise.<mixitup.State>` | 
-
 
 
 ### <a id="mixitup.Mixer#prepend">mixitup.Mixer.prepend</a>
@@ -127,7 +114,6 @@ on mixer instances.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-
 ### <a id="mixitup.Mixer#append">mixitup.Mixer.append</a>
 
 |   |Type | Name | Description
@@ -135,13 +121,11 @@ on mixer instances.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-
 ### <a id="mixitup.Mixer#remove">mixitup.Mixer.remove</a>
 
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Returns |`Promise.<mixitup.State>` | 
-
 
 
 ### <a id="mixitup.Mixer#getOption">mixitup.Mixer.getOption</a>
@@ -152,14 +136,12 @@ on mixer instances.
 |Returns |`*` | 
 
 
-
 ### <a id="mixitup.Mixer#setOptions">mixitup.Mixer.setOptions</a>
 
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`object` | `config` | 
 |Returns |`void` | 
-
 
 
 ### <a id="mixitup.Mixer#getState">mixitup.Mixer.getState</a>
@@ -169,13 +151,11 @@ on mixer instances.
 |Returns |`mixitup.State` | 
 
 
-
 ### <a id="mixitup.Mixer#forceRefresh">mixitup.Mixer.forceRefresh</a>
 
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Returns |`void` | 
-
 
 
 ### <a id="mixitup.Mixer#destroy">mixitup.Mixer.destroy</a>
@@ -184,4 +164,3 @@ on mixer instances.
 |---|--- | --- | ---
 |Param   |`boolean` | `hideAll` | 
 |Returns |`void` | 
-

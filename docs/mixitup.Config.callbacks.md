@@ -1,4 +1,4 @@
-# mixitup.ConfigCallbacks
+# mixitup.Config.callbacks
 
 ## Overview
 

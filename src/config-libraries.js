@@ -3,6 +3,8 @@
 /**
  * @constructor
  * @memberof    mixitup
+ * @memberof    mixitup.Config
+ * @name        libraries
  * @namespace
  * @public
  * @since       3.0.0

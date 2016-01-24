@@ -84,8 +84,6 @@ Docs.prototype = {
             var namespace = null,
                 model     = new Doclet();
 
-            console.log(doclet);
-
             if (
                 doclet.memberof &&
                 typeof (namespace = self.namespaces[doclet.memberof]) !== 'undefined'

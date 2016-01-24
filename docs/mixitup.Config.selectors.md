@@ -1,4 +1,4 @@
-# mixitup.ConfigLibraries
+# mixitup.Config.selectors
 
 ## Overview
 
