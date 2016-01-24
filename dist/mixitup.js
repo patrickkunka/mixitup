@@ -1868,11 +1868,7 @@
 
             self._state = state;
 
-            if (self._dom.filterToggleButtons.length) {
-                // TODO: what about live toggles? is it worth trawling the dom?
-
-                self._buildToggleArray();
-            }
+            self._buildToggleArray();
 
             self.execAction('_init', 1, arguments);
         },
@@ -1940,8 +1936,6 @@
 
             self._dom.targets = Array.prototype.slice.call(self._dom.targets);
 
-            // TODO: allow querying of all descendants via config option, allowing for nested parent
-
             self._targets = [];
 
             if (self._dom.targets.length) {
@@ -1972,11 +1966,11 @@
 
         _bindEvents: function() {
             var self            = this,
-                filterToggles   = mixitup.bound.filterToggle,
-                multiMixs       = mixitup.bound.multiMix,
-                filters         = mixitup.bound.filter,
-                sorts           = mixitup.bound.sort,
+                controlTypes    = ['filterToggle', 'multiMix', 'filter', 'sort'],
                 button          = null,
+                counter         = null,
+                selector        = '',
+                type            = '',
                 i               = -1;
 
             self.execAction('_bindEvents', 0);
@@ -1993,25 +1987,20 @@
                 }
             }
 
-            // For each mixitup.Mixer instance, increment the bound value for each button type
+            // For each mixitup.Mixer instance, increment the total number of bound
+            // instances. When a button is clicked, all instances must be handled
+            // before a button is changed to its active state.
 
-            // TODO: could be much DRYer
+            for (i = 0; type = controlTypes[i]; i++) {
+                counter     = mixitup.bound[type];
+                selector    = self.selectors[type];
 
-            filterToggles[self.selectors.filterToggle] =
-                (typeof filterToggles[self.selectors.filterToggle] === 'undefined') ?
-                    1 : filterToggles[self.selectors.filterToggle] + 1;
-
-            multiMixs[self.selectors.multiMix] =
-                (typeof multiMixs[self.selectors.multiMix] === 'undefined') ?
-                    1 : multiMixs[self.selectors.multiMix] + 1;
-
-            filters[self.selectors.filter] =
-                (typeof filters[self.selectors.filter] === 'undefined') ?
-                    1 : filters[self.selectors.filter] + 1;
-
-            sorts[self.selectors.sort] =
-                (typeof sorts[self.selectors.sort] === 'undefined') ?
-                    1 : sorts[self.selectors.sort] + 1;
+                if (typeof counter[selector] === 'undefined') {
+                    counter[selector] = 1;
+                } else {
+                    counter[selector]++;
+                }
+            }
 
             self.execAction('_bindEvents', 1);
         },
@@ -2042,17 +2031,21 @@
         /**
          * @private
          * @instance
-         * @param   {object}            e
+         * @param   {Event}            e
          * @return  {(Boolean|void)}
          */
 
         _eventBus: function(e) {
             var self = this;
 
+            self.execAction('_eventBus', 0);
+
             switch(e.type) {
                 case 'click':
-                    return self.handleClick(e);
+                    return self._handleClick(e);
             }
+
+            self.execAction('_eventBus', 1);
         },
 
         /**
@@ -2066,7 +2059,7 @@
          * appropriate parameters when a button is clicked
          */
 
-        handleClick: function(e) {
+        _handleClick: function(e) {
             var self            = this,
                 selectorKeys    = [],
                 selectors       = [],
@@ -2082,7 +2075,7 @@
                 el              = null,
                 i               = -1;
 
-            self.execAction('handleClick', 0, arguments);
+            self.execAction('_handleClick', 0, arguments);
 
             toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '';
 
@@ -2120,7 +2113,10 @@
             if (typeof self.callbacks.onMixClick === 'function') {
                 self.callbacks.onMixClick.call(button, self._state, self);
 
-                // TODO: trigger event
+                h.triggerCustom(self._dom.container, 'mixClick', {
+                    state: self._state,
+                    instance: self
+                }, self._dom.document);
             }
 
             if (
@@ -2130,10 +2126,13 @@
                 if (typeof self.callbacks.onMixBusy === 'function') {
                     self.callbacks.onMixBusy.call(self._dom.container, self._state, self);
 
-                    // TODO: trigger event
+                    h.triggerCustom(self._dom.container, 'mixBusy', {
+                        state: self._state,
+                        instance: self
+                    }, self._dom.document);
                 }
 
-                self.execAction('handleClickBusy', 1, arguments);
+                self.execAction('_handleClickBusy', 1, arguments);
 
                 return;
             }
@@ -2290,7 +2289,7 @@
                 self.multiMix(command);
             }
 
-            self.execAction('handleClick', 1, arguments);
+            self.execAction('_handleClick', 1, arguments);
         },
 
         /**
@@ -2704,8 +2703,8 @@
          * @private
          * @instance
          * @since   2.0.0
-         * @param   {String|Number}     a
-         * @param   {String|Number}     b
+         * @param   {mixitup.Target}    a
+         * @param   {mixitup.Target}    b
          * @param   {Number}            depth
          * @param   {ParsedSort}        sort
          * @return  {Number}
@@ -2718,8 +2717,6 @@
                 order       = sort[depth].order,
                 attrA       = self._getAttributeValue(a, depth, sort),
                 attrB       = self._getAttributeValue(b, depth, sort);
-
-            // TODO: Can we read data-attributes before the compare algorithm is called?
 
             if (isNaN(attrA * 1) || isNaN(attrB * 1)) {
                 attrA = attrA.toLowerCase();
@@ -2903,9 +2900,6 @@
                 self._parseEffect(transformName, effectsOut, self._effectsOut, self._transformOut, true);
             }
 
-            // TODO: fix issue where staggering is disabled via the setting
-            // of a new effects string (stagger is currently persisted).
-
             self._parseEffect('stagger', effectsIn, self._effectsIn, self._transformIn);
             self._parseEffect('stagger', effectsOut, self._effectsOut, self._transformOut, true);
         },
@@ -2975,7 +2969,9 @@
                     case 'stagger':
                         self._staggerDuration = parseFloat(val);
 
-                        // NB: Currently stagger must be applied globally
+                        // TODO: Currently stagger must be applied globally, but
+                        // if seperate values are specified for in/out, this should
+                        // be respected
 
                         break;
                     default:
@@ -3176,12 +3172,9 @@
                 self._dom.parent.style[mixitup.features.perspectiveOriginProp] =
                     self.animation.perspectiveOrigin;
 
-                // TODO: even if animate resize container is disabled, the container
-                // height/width should still be locked during an operation
-                // (if not changing).
-
-                if (self.animation.animateResizeContainer) {
+                if (self.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
                     self._dom.parent.style.height = operation.startHeight + 'px';
+                } else if (self.animationResizeContainer || operation.startWidth === operation.newWidth) {
                     self._dom.parent.style.width = operation.startWidth + 'px';
                 }
 
@@ -3785,14 +3778,13 @@
                 self._targets = operation.newOrder;
             }
 
-            if (self.animation.animateResizeContainer) {
-                self._dom.parent.style[mixitup.features.transitionProp] = '';
-                self._dom.parent.style.height = '';
-                self._dom.parent.style.width = '';
-            }
+            // Remove any styles applied to the parent container
 
-            self._dom.parent.style[mixitup.features.perspectiveProp] = '';
-            self._dom.parent.style[mixitup.features.perspectiveOriginProp] = '';
+            self._dom.parent.style[mixitup.features.transitionProp]             =
+                self._dom.parent.style.height                                   =
+                self._dom.parent.style.width                                    =
+                self._dom.parent.style[mixitup.features.perspectiveProp]        =
+                self._dom.parent.style[mixitup.features.perspectiveOriginProp]  = '';
 
             if (operation.willChangeLayout) {
                 h.removeClass(self._dom.container, operation.startContainerClass);
@@ -4371,9 +4363,11 @@
                 if (self.controls.enable && !self._isClicking) {
                     // Update controls for API calls
 
-                    self._dom.filterToggleButtons.length && self._buildToggleArray();
+                    if (instruction.command.filter) {
+                        // If the command includes filtering, build a toggle array.
 
-                    // TODO: what about "live" toggles?
+                        self._buildToggleArray();
+                    }
 
                     self._updateControls(operation.command);
                 }
@@ -4576,12 +4570,18 @@
          */
 
         getState: function() {
-            var self = this;
+            var self    = this,
+                state   = null;
 
-            // TODO: would be safer to build a new state on
-            // each request so that users cannot override the state
+            if (typeof Object.assign === 'function') {
+                state = new mixitup.State();
 
-            return self.execFilter('getState', self._state, self);
+                Object.assign(state, self._state);
+            } else {
+                state = self._state;
+            }
+
+            return self.execFilter('getState', state, self);
         },
 
         /**
@@ -4625,9 +4625,7 @@
                 h.removeClass(button, self.controls.activeClass);
             }
 
-            if (self._dom.container.id.indexOf('MixItUp') > -1) {
-                // TODO: use a regex
-
+            if (self._dom.container.id.indexOf('MixItUp') === 0) {
                 self._dom.container.removeAttribute('id');
             }
 
