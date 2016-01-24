@@ -16,11 +16,19 @@ for retrieval at any time via the API.
 The currently active filter selector as set by a control click or the API
 call.
 
+
+
+
+
 ### <a id="mixitup.State#activeSort">mixitup.State.activeSort</a>
 
 
 
 The currently active sort as set by a control click or API call.
+
+
+
+
 
 ### <a id="mixitup.State#activeDisplay">mixitup.State.activeDisplay</a>
 
@@ -29,11 +37,19 @@ The currently active sort as set by a control click or API call.
 The currently active CSS display value for target elements as defined in the
 configuration object.
 
+
+
+
+
 ### <a id="mixitup.State#activeContainerClass">mixitup.State.activeContainerClass</a>
 
 
 
 The currently active containerClass, if applied.
+
+
+
+
 
 ### <a id="mixitup.State#targets">mixitup.State.targets</a>
 
@@ -41,11 +57,19 @@ The currently active containerClass, if applied.
 
 An array of all target elements indexed by the mixer.
 
+
+
+
+
 ### <a id="mixitup.State#hide">mixitup.State.hide</a>
 
 
 
 An array of all target elements not matching the current filter.
+
+
+
+
 
 ### <a id="mixitup.State#show">mixitup.State.show</a>
 
@@ -54,6 +78,10 @@ An array of all target elements not matching the current filter.
 An array of all target elements matching the current filter and any additional
 limits applied such as pagination.
 
+
+
+
+
 ### <a id="mixitup.State#matching">mixitup.State.matching</a>
 
 
@@ -61,12 +89,20 @@ limits applied such as pagination.
 An array of all target elements matching the current filter irrespective of
 any additional limits applied such as pagination.
 
+
+
+
+
 ### <a id="mixitup.State#totalTargets">mixitup.State.totalTargets</a>
 
 
 
 An integer representing the total number of target elements indexed by the
 mixer. Equivalent to `state.targets.length`.
+
+
+
+
 
 ### <a id="mixitup.State#totalShow">mixitup.State.totalShow</a>
 
@@ -76,12 +112,20 @@ An integer representing the total number of target elements matching the
 current filter and any additional limits applied such as pagination.
 Equivalent to `state.show.length`.
 
+
+
+
+
 ### <a id="mixitup.State#totalHide">mixitup.State.totalHide</a>
 
 
 
 An integer representing the total number of target elements not matching
 the current filter. Equivalent to `state.hide.length`.
+
+
+
+
 
 ### <a id="mixitup.State#totalMatching">mixitup.State.totalMatching</a>
 
@@ -91,6 +135,10 @@ An integer representing the total number of target elements matching the
 current filter irrespective of any other limits applied such as pagination.
 Equivalent to `state.matching.length`.
 
+
+
+
+
 ### <a id="mixitup.State#hasFailed">mixitup.State.hasFailed</a>
 
 
@@ -98,9 +146,17 @@ Equivalent to `state.matching.length`.
 A boolean indicating whether the last operation "failed", i.e. no targets
 could be found matching the filter.
 
+
+
+
+
 ### <a id="mixitup.State#triggerElement">mixitup.State.triggerElement</a>
 
 
 
 The DOM element that was clicked if the last oepration was triggered by the
 clicking of a control and not an API call.
+
+
+
+

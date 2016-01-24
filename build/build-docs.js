@@ -15,7 +15,6 @@ Namespace = function(doclet) {
 };
 
 Docs = function() {
-
     this.factory    = null;
     this.namespaces = {};
     this.templates  = {};
@@ -178,6 +177,7 @@ Doclet = function() {
     this.defaultvalue   = [];
     this.params         = [];
     this.returns        = [];
+    this.examples       = [];
 
     Object.defineProperties(this, {
         'isFactory': {

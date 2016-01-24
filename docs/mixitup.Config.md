@@ -15,9 +15,17 @@ instance as needed.
 
 ### <a id="mixitup.Config.animation">mixitup.Config.animation</a>
 
+
+
 A group of configurable properties related to MixItUp's animation and effects options.
 
+
+
 ### <a id="mixitup.Config.callbacks">mixitup.Config.callbacks</a>
+
+
+
+
 
 
 
@@ -25,7 +33,15 @@ A group of configurable properties related to MixItUp's animation and effects op
 
 
 
+
+
+
+
 ### <a id="mixitup.Config.debug">mixitup.Config.debug</a>
+
+
+
+
 
 
 
@@ -33,7 +49,15 @@ A group of configurable properties related to MixItUp's animation and effects op
 
 
 
+
+
+
+
 ### <a id="mixitup.Config.libraries">mixitup.Config.libraries</a>
+
+
+
+
 
 
 
@@ -41,5 +65,14 @@ A group of configurable properties related to MixItUp's animation and effects op
 
 
 
+
+
+
+
 ### <a id="mixitup.Config.selectors">mixitup.Config.selectors</a>
+
+
+
+
+
 
