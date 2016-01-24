@@ -30,7 +30,6 @@
 
     {{>config-selectors}}
 
-
     {{>config}}
 
     {{>mixer-dom}}

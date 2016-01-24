@@ -32,10 +32,10 @@ mixitup.ConfigAnimation = function() {
      * A string of one or more space-seperated effects to which transitions will be
      * applied for all filtering animations.
      *
-     * The available properties are `'fade'`,
-     * `'scale'`, `'translateX'`, `'translateY'`, `'translateZ'`, `'rotateX'`, `'rotateY'`,
-     * `'rotateZ'` and `'stagger'`, and can be listed any order or combination, although
-     * they will be applied in a specific predefined order to produce consistent results.
+     * The available properties are `'fade'`, `'scale'`, `'translateX'`, `'translateY'`,
+     * `'translateZ'`, `'rotateX'`, `'rotateY'`, `'rotateZ'` and `'stagger'`, and can
+     * be listed any order or combination, although they will be applied in a specific
+     * predefined order to produce consistent results.
      *
      * Each effect maps directly to the CSS transform of the same name with the exception
      * of `'fade'` which maps to `'opacity'`, and `'stagger'` which maps to an incremental

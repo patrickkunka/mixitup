@@ -1,11 +1,15 @@
 /* global mixitup:true, h */
 
 /**
- * The `mixitup` factory function is used to create discreet instances
- * of MixItUp, also known as "Mixers" in v3.
+ * The `mixitup` "factory" function is used to create discreet instances
+ * of MixItUp, or "mixers". When loading MixItUp via a `<script>` tag, the
+ * factory function is accessed as the global variable `mixitup`. When using
+ * a module loader such as Browserify or RequireJS however, the factory
+ * function is exported directly into your module when you require
+ * the MixItUp library.
  *
  * It is the first entry point for the v3 API, and abstracts away the
- * functionality of instantiating `Mixer` objects directly.
+ * functionality of instantiating mixer objects directly.
  *
  * The factory function also checks whether or not a MixItUp instance is
  * already active on specified element, and if so, returns that instance
@@ -19,14 +23,14 @@
  * @public
  * @kind        function
  * @since       3.0.0
- * @param       {(Element|Element[]|string)}        container
- *      An element, element array, or selector string representing the container(s) on which to instantiate MixItUp.
- * @param       {object}                            [config]
+ * @param       {(Element|string)}  container
+ *      A DOM element or selector string representing the container(s) on which to instantiate MixItUp.
+ * @param       {object}            [config]
  *      An optional "configuration object" used to customize the behavior of the MixItUp instance.
- * @param       {object}                            [foreignDoc]
+ * @param       {object}            [foreignDoc]
  *      An optional reference to a `document`, which can be used to control a MixItUp instance in an iframe.
- * @return      {mixitup.Mixer|mixitup.Collection}
- *      An object representing the instance of MixItUp, or a "collection" if instantiating multiple mixers.
+ * @return      {mixitup.Mixer}
+ *      A "mixer" object representing the instance of MixItUp
  */
 
 mixitup = function(container, config, foreignDoc) {
@@ -34,6 +38,7 @@ mixitup = function(container, config, foreignDoc) {
         returnCollection    = false,
         instance            = null,
         doc                 = null,
+        output              = null,
         instances           = [],
         id                  = '',
         name                = '',
@@ -76,6 +81,10 @@ mixitup = function(container, config, foreignDoc) {
             if (h.isElement(container, doc)) {
                 elements = [container];
             } else if (container.length) {
+                // Although not documented, the container may also be an array-like list of
+                // elements such as a NodeList or jQuery collection. In the case if using the
+                // V2 API via a jQuery shim, the container will typically be passed in this form.
+
                 elements = container;
             }
 
@@ -83,6 +92,8 @@ mixitup = function(container, config, foreignDoc) {
     }
 
     for (i = 0; el = elements[i]; i++) {
+        if (i > 0 && !returnCollection) break;
+
         if (!el.id) {
             id = 'MixItUp' + h.randomHexKey();
 
@@ -112,34 +123,18 @@ mixitup = function(container, config, foreignDoc) {
     }
 
     if (returnCollection) {
-        return new mixitup.Collection(instances);
+        output = new mixitup.Collection(instances);
     } else {
-        return instances[0];
+        // Return the first instance regardless
+
+        output = instances[0];
     }
+
+    return output;
 };
 
 /**
- * Returns a mixitup.Collection of one or more instances
- * that can be operated on simultaneously, similar to a jQuery collection.
- * If the user specifically wants to control a collection, they should use this.
- *
- * @memberof    mixitup
- * @public
- * @since       3.0.0
- * @param       {(Element|Element[]|string)}  container
- * @param       {object}                      [config]
- * @param       {object}                      [foreignDoc]
- * @return      {mixitup.Collection}
- */
-
-mixitup.all = function(container, config, foreignDoc) {
-    var self = this;
-
-    return self(container, config, foreignDoc, true);
-};
-
-/**
- * Stores all current instances of MixItUp in the current session, using their IDs as keys.
+ * Stores all instances of MixItUp in the current session, using their IDs as keys.
  *
  * @private
  * @static
