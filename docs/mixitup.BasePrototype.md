@@ -21,6 +21,7 @@ multiple new members to the class in a single operation.
 |Returns |`void` | 
 
 
+**Added v2.1.0**
 ### <a id="mixitup.BasePrototype.addAction">mixitup.BasePrototype.addAction</a>
 
 
@@ -36,6 +37,7 @@ Registers an action function to be executed at a predefined hook.
 |Returns |`void` | 
 
 
+**Added v2.1.0**
 ### <a id="mixitup.BasePrototype.addFilter">mixitup.BasePrototype.addFilter</a>
 
 
@@ -49,3 +51,5 @@ Registers a filter function to be executed at a predefined hook.
 |Param   |`function` | `func` | 
 |Returns |`void` | 
 
+
+**Added v2.1.0**

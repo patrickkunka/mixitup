@@ -15,8 +15,9 @@ If `false`, all operations will occur instantly and syncronously, although callb
 functions and any returned promises will still be fulfilled.
 
 
-
-
+|Type | Default
+|--- | ---
+`boolean` | `true`
 
 ### <a id="mixitup.Config.animation#effects">mixitup.Config.animation.effects</a>
 
@@ -41,8 +42,9 @@ Experiment with the home page sandbox to find the perfect combination of
 effects for your project.
 
 
-
-
+|Type | Default
+|--- | ---
+`string` | `'fade scale'`
 
 ### <a id="mixitup.Config.animation#effectsIn">mixitup.Config.animation.effectsIn</a>
 
@@ -52,8 +54,9 @@ A string of one or more space-seperated effects to be applied only to filter-in
 animations, overriding `config.animation.effects` if set.
 
 
-
-
+|Type | Default
+|--- | ---
+`string` | `''`
 
 ### <a id="mixitup.Config.animation#effectsIn">mixitup.Config.animation.effectsIn</a>
 
@@ -63,8 +66,9 @@ A string of one or more space-seperated effects to be applied only to filter-out
 animations, overriding `config.animation.effects` if set.
 
 
-
-
+|Type | Default
+|--- | ---
+`string` | `''`
 
 ### <a id="mixitup.Config.animation#duration">mixitup.Config.animation.duration</a>
 
@@ -74,8 +78,9 @@ An integer dictating the duration of all MixItUp animations in milliseconds, not
 including any additional delay apllied via the `'stagger'` effect.
 
 
-
-
+|Type | Default
+|--- | ---
+`number` | `600`
 
 ### <a id="mixitup.Config.animation#easing">mixitup.Config.animation.easing</a>
 
@@ -85,8 +90,9 @@ A valid CSS3 transition-timing function or shorthand. For a full list of accepte
 values, check out easings.net.
 
 
-
-
+|Type | Default
+|--- | ---
+`string` | `'ease'`
 
 ### <a id="mixitup.Config.animation#perspectiveDistance">mixitup.Config.animation.perspectiveDistance</a>
 
@@ -96,8 +102,9 @@ The perspective value in CSS units applied to the container during animations,
 affecting any 3D-transform-based effects.
 
 
-
-
+|Type | Default
+|--- | ---
+`string` | `'3000px'`
 
 ### <a id="mixitup.Config.animation#perspectiveOrigin">mixitup.Config.animation.perspectiveOrigin</a>
 
@@ -107,8 +114,9 @@ The perspective-origin value applied to the container during animations,
 affecting any 3D-transform-based effects.
 
 
-
-
+|Type | Default
+|--- | ---
+`string` | `'50% 50%'`
 
 ### <a id="mixitup.Config.animation#queue">mixitup.Config.animation.queue</a>
 
@@ -120,8 +128,9 @@ be ignored, and the `onMixBusy` callback and `mixBusy` event will be fired. If
 debugging is enabled, a console warning will also occur.
 
 
-
-
+|Type | Default
+|--- | ---
+`boolean` | `true`
 
 ### <a id="mixitup.Config.animation#queueLimit">mixitup.Config.animation.queueLimit</a>
 
@@ -131,8 +140,9 @@ An integer dictacting the maximum number of operations allowed in the queue at
 any time, when queuing is enabled.
 
 
-
-
+|Type | Default
+|--- | ---
+`number` | `3`
 
 ### <a id="mixitup.Config.animation#animateChangeLayout">mixitup.Config.animation.animateChangeLayout</a>
 
@@ -143,8 +153,9 @@ during layout change operations. Depending on the differences in styling between
 layouts this may produce undesirable results and is therefore disabled by default.
 
 
-
-
+|Type | Default
+|--- | ---
+`boolean` | `false`
 
 ### <a id="mixitup.Config.animation#animateResizeContainer">mixitup.Config.animation.animateResizeContainer</a>
 
@@ -158,8 +169,9 @@ It may be desirable to disable this on mobile devices where the CSS `height` and
 `width` properties do not receive GPU-acceleration.
 
 
-
-
+|Type | Default
+|--- | ---
+`boolean` | `true`
 
 ### <a id="mixitup.Config.animation#animateResizeTargets">mixitup.Config.animation.animateResizeTargets</a>
 
@@ -176,8 +188,9 @@ This feature requires additional calculations and DOM manipulation which may
 adversely affect performance on slower devices.
 
 
-
-
+|Type | Default
+|--- | ---
+`boolean` | `false`
 
 ### <a id="mixitup.Config.animation#staggerSequence">mixitup.Config.animation.staggerSequence</a>
 
@@ -191,8 +204,9 @@ The function receives the index of the target element as a parameter, and must
 return an integer which serves as the multiplier for the stagger delay.
 
 
-
-
+|Type | Default
+|--- | ---
+`function` | `null`
 
 ### <a id="mixitup.Config.animation#reverseOut">mixitup.Config.animation.reverseOut</a>
 
@@ -210,8 +224,9 @@ This functionality can also be achieved by providing seperate effects
 strings for `config.animation.effectsIn` and `config.animation.effectsOut`.
 
 
-
-
+|Type | Default
+|--- | ---
+`boolean` | `false`
 
 ### <a id="mixitup.Config.animation#nudgeOut">mixitup.Config.animation.nudgeOut</a>
 
@@ -226,5 +241,7 @@ one exclusive set of targets to a different exclusive set of targets,
 to create a carousel-like effect.
 
 
-
+|Type | Default
+|--- | ---
+`boolean` | `true`
 

@@ -24,6 +24,7 @@ specified via the `load.filter` configuration option.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v3.0.0**
 ### <a id="mixitup.Mixer#show">mixitup.Mixer.show</a>
 
 ```js
@@ -37,6 +38,7 @@ A shorthand method for `.filter('all')`.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v3.0.0**
 ### <a id="mixitup.Mixer#hide">mixitup.Mixer.hide</a>
 
 ```js
@@ -50,6 +52,7 @@ A shorthand method for `.filter('none')`.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v3.0.0**
 ### <a id="mixitup.Mixer#isMixing">mixitup.Mixer.isMixing</a>
 
 ```js
@@ -64,6 +67,7 @@ currently in progress.
 |Returns |`boolean` | 
 
 
+**Added v2.0.0**
 ### <a id="mixitup.Mixer#filter">mixitup.Mixer.filter</a>
 
 ```js
@@ -80,6 +84,7 @@ Filters the mixer according to the specified filter command.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v2.0.0**
 ### <a id="mixitup.Mixer#sort">mixitup.Mixer.sort</a>
 
 ```js
@@ -96,6 +101,7 @@ Sorts the mixer according to the specified sort command.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v2.0.0**
 ### <a id="mixitup.Mixer#changeLayout">mixitup.Mixer.changeLayout</a>
 
 
@@ -107,6 +113,7 @@ Sorts the mixer according to the specified sort command.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v2.0.0**
 ### <a id="mixitup.Mixer#getOperation">mixitup.Mixer.getOperation</a>
 
 
@@ -119,6 +126,7 @@ Sorts the mixer according to the specified sort command.
 |Returns |`Operation,null` | 
 
 
+**Added v3.0.0**
 ### <a id="mixitup.Mixer#multiMix">mixitup.Mixer.multiMix</a>
 
 ```js
@@ -136,6 +144,7 @@ operations as requested.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v2.0.0**
 ### <a id="mixitup.Mixer#tween">mixitup.Mixer.tween</a>
 
 ```js
@@ -152,6 +161,7 @@ determined by a multiplier between 0 and 1.
 |Returns |`void` | 
 
 
+**Added v3.0.0**
 ### <a id="mixitup.Mixer#insert">mixitup.Mixer.insert</a>
 
 
@@ -163,6 +173,7 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v2.0.0**
 ### <a id="mixitup.Mixer#insertBefore">mixitup.Mixer.insertBefore</a>
 
 
@@ -174,6 +185,7 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v3.0.0**
 ### <a id="mixitup.Mixer#insertAfter">mixitup.Mixer.insertAfter</a>
 
 
@@ -185,6 +197,7 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v3.0.0**
 ### <a id="mixitup.Mixer#prepend">mixitup.Mixer.prepend</a>
 
 
@@ -196,6 +209,7 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v2.0.0**
 ### <a id="mixitup.Mixer#append">mixitup.Mixer.append</a>
 
 
@@ -207,6 +221,7 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v2.0.0**
 ### <a id="mixitup.Mixer#remove">mixitup.Mixer.remove</a>
 
 
@@ -218,6 +233,7 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+**Added v3.0.0**
 ### <a id="mixitup.Mixer#getOption">mixitup.Mixer.getOption</a>
 
 
@@ -230,6 +246,7 @@ determined by a multiplier between 0 and 1.
 |Returns |`*` | 
 
 
+**Added v2.0.0**
 ### <a id="mixitup.Mixer#setOptions">mixitup.Mixer.setOptions</a>
 
 
@@ -242,6 +259,7 @@ determined by a multiplier between 0 and 1.
 |Returns |`void` | 
 
 
+**Added v2.0.0**
 ### <a id="mixitup.Mixer#getState">mixitup.Mixer.getState</a>
 
 
@@ -253,6 +271,7 @@ determined by a multiplier between 0 and 1.
 |Returns |`mixitup.State` | 
 
 
+**Added v2.0.0**
 ### <a id="mixitup.Mixer#forceRefresh">mixitup.Mixer.forceRefresh</a>
 
 
@@ -264,6 +283,7 @@ determined by a multiplier between 0 and 1.
 |Returns |`void` | 
 
 
+**Added v2.1.2**
 ### <a id="mixitup.Mixer#destroy">mixitup.Mixer.destroy</a>
 
 
@@ -275,3 +295,5 @@ determined by a multiplier between 0 and 1.
 |Param   |`boolean` | `hideAll` | 
 |Returns |`void` | 
 
+
+**Added v2.0.0**

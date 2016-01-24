@@ -172,7 +172,7 @@ Doclet = function() {
     this.memberof       = '';
     this.since          = '';
     this.order          = -1;
-    this.type           = {};
+    this.type           = '';
     this.meta           = {};
     this.defaultvalue   = [];
     this.params         = [];
@@ -180,19 +180,35 @@ Doclet = function() {
     this.examples       = [];
 
     Object.defineProperties(this, {
-        'isFactory': {
+        isFactory: {
             get: function() {
                 return this.kind === 'function' && !this.memberof;
             }
         },
-        'isMethod': {
+        isMethod: {
             get: function() {
                 return this.kind === 'function' && this.memberof;
             }
         },
-        'isProperty': {
+        isProperty: {
             get: function() {
                 return this.kind === 'member'
+            }
+        },
+        syntax: {
+            get: function() {
+                if (this.isMethod) {
+                    return this.examples[0];
+                }
+            }
+        },
+        codeExamples: {
+            get: function() {
+                if (this.isMethod) {
+                    return this.examples.slice(1);
+                } else {
+                    return this.examples;
+                }
             }
         }
     });

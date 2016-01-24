@@ -1,4 +1,4 @@
-/* global mixitup */
+/* global mixitup, h */
 
 /**
  * @constructor
@@ -37,6 +37,8 @@ mixitup.TransformDefaults = function() {
     this.rotateZ.unit       = 'deg';
 
     this.execAction('constructor', 1);
+
+    h.seal(this);
 };
 
 mixitup.TransformDefaults.prototype = Object.create(new mixitup.BasePrototype());

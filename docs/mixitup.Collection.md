@@ -19,3 +19,5 @@ by passing the method name as a string followed by an neccessary parameters.
 |Param   |`string` | `methodName` | 
 |Returns |`Promise` | 
 
+
+**Added v3.0.0**
