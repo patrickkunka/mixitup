@@ -3,9 +3,7 @@ var sandbox = document.querySelector('.sandbox');
 var mixer   = null;
 
 mixer = mixItUp(sandbox, {
-    animation: {
-        duration: 100
-    }
+
 });
 
 document.querySelector('.js-append').addEventListener('click', function() {
@@ -52,6 +50,18 @@ document.querySelector('.js-insert-multiple-via-elements').addEventListener('cli
     mixer.multiMix({
         insert: elements
     });
+});
+
+document.querySelector('.js-api-filter').addEventListener('click', function() {
+    mixer.filter('.cat-2');
+});
+
+document.querySelector('.js-api-filter-compound').addEventListener('click', function() {
+    mixer.filter('.cat-2, .cat-3');
+});
+
+document.querySelector('.js-api-sort').addEventListener('click', function() {
+    mixer.sort('order:asc');
 });
 
 mixer.init()
