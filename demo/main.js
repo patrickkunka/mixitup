@@ -3,7 +3,11 @@ var sandbox = document.querySelector('.sandbox');
 var mixer   = null;
 
 mixer = mixItUp(sandbox, {
-
+    animation: {
+        effects: 'fade translateZ(-150px) stagger(50ms)',
+        easing: 'cubic-bezier(1, 0, 0, 1)',
+        duration: 1200
+    }
 });
 
 document.querySelector('.js-append').addEventListener('click', function() {

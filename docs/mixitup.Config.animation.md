@@ -98,7 +98,7 @@ values, check out easings.net.
 
 
 
-The perspective value in CSS units applied to the container during animations,
+The perspective distance value applied to the container during animations,
 affecting any 3D-transform-based effects.
 
 

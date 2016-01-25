@@ -51,28 +51,86 @@ h = {
     },
 
     /**
+     * Merges the properties of the source object onto the
+     * target object. Alters the target object.
+     *
      * @private
-     * @param   {object}    destination
+     * @param   {object}    target
      * @param   {object}    source
+     * @param   {boolean}   [deep]
      * @return  {void}
      */
 
-    extend: function(destination, source) {
-        var property = '';
+    extend: function(target, source, deep) {
+        var self        = this,
+            getter      = null,
+            setter      = null,
+            sourceKeys  = [],
+            key         = '',
+            i           = -1;
 
-        for (property in source) {
-            if (
-                typeof source[property] === 'object' &&
-                source[property] !== null &&
-                typeof source[property].length === 'undefined'
+        if (target === null) {
+            throw new Error('Cannot extend into null');
+        }
+
+        if (source === null) {
+            throw new Error('Cannot extend null into object');
+        }
+
+        if (Array.isArray(source)) {
+            for (i = 0; i < source.length; i++) {
+                sourceKeys.push(i);
+            }
+        } else if (source) {
+            sourceKeys = Object.keys(source);
+        }
+
+        for (i = 0; i < sourceKeys.length; i++) {
+            key = sourceKeys[i];
+            getter = source.__lookupGetter__(key);
+            setter = source.__lookupSetter__(key);
+
+            if (getter) {
+                // Getters
+
+                target.__defineGetter__(key, getter);
+            } else if (setter) {
+                // Setters
+
+                target.__defineSetter__(key, setter);
+            } else if (
+                deep &&
+                typeof source[key] === 'object' &&
+                source[key] !== null &&
+                !Array.isArray(source[key]) &&
+                !h.isElement(source[key])
             ) {
-                destination[property] = destination[property] || {};
+                // Objects
 
-                this.extend(destination[property], source[property]);
+                if (
+                    typeof target[key] === 'undefined' ||
+                    target[key] === null
+                ) {
+                    target[key] = {};
+                }
+
+                self.extend(target[key], source[key]);
+            } else if (deep && Array.isArray(source[key])) {
+                // Arrays
+
+                if (typeof target[key] === 'undefined') {
+                    target[key] = [];
+                }
+
+                self.extend(target[key], source[key]);
             } else {
-                destination[property] = source[property];
+                // Strings, booleans, numbers, functions, and object references
+
+                target[key] = source[key];
             }
         }
+
+        return target;
     },
 
     /**

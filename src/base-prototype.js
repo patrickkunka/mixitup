@@ -35,16 +35,7 @@ mixitup.BasePrototype.prototype =
      */
 
     extend: function(extension) {
-        var key = '';
-
-        // TODO: make the h extend helper method more robust with deep/shallow flag,
-        // and call here as shallow
-
-        for (key in extension) {
-            if (extension[key]) {
-                this[key] = extension[key];
-            }
-        }
+        h.extend(this, extension);
     },
 
     /**
@@ -82,34 +73,6 @@ mixitup.BasePrototype.prototype =
         this._addHook('_filters', hook, name, func);
     },
 
-    /**
-     * Registers a filter or action to be executed at a predefined hook. The
-     * lower-level call used by `addAction` and `addFiler`.
-     *
-     * @memberof    mixitup.BasePrototype
-     * @private
-     * @static
-     * @since       2.1.0
-     * @param       {string}    type
-     * @param       {string}    hook
-     * @param       {string}    name
-     * @param       {function}  func
-     * @param       {number}    priority
-     * @return      {void}
-     */
-
-    _addHook: function(type, hook, name, func, priority) {
-        var collection  = this[type],
-            obj         = {};
-
-        priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
-
-        obj[hook]                   = {};
-        obj[hook][priority]         = {};
-        obj[hook][priority][name]   = func;
-
-        h.extend(collection, obj);
-    },
 
     /**
      * Executes any registered actions for the respective hook.
@@ -160,5 +123,34 @@ mixitup.BasePrototype.prototype =
         } else {
             return value;
         }
+    },
+
+    /**
+     * Registers a filter or action to be executed at a predefined hook. The
+     * lower-level call used by `addAction` and `addFiler`.
+     *
+     * @memberof    mixitup.BasePrototype
+     * @private
+     * @static
+     * @since       2.1.0
+     * @param       {string}    type
+     * @param       {string}    hook
+     * @param       {string}    name
+     * @param       {function}  func
+     * @param       {number}    priority
+     * @return      {void}
+     */
+
+    _addHook: function(type, hook, name, func, priority) {
+        var collection  = this[type],
+            obj         = {};
+
+        priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
+
+        obj[hook]                   = {};
+        obj[hook][priority]         = {};
+        obj[hook][priority][name]   = func;
+
+        h.extend(collection, obj, true);
     }
 };

@@ -213,28 +213,86 @@
         },
 
         /**
+         * Merges the properties of the source object onto the
+         * target object. Alters the target object.
+         *
          * @private
-         * @param   {object}    destination
+         * @param   {object}    target
          * @param   {object}    source
+         * @param   {boolean}   [deep]
          * @return  {void}
          */
 
-        extend: function(destination, source) {
-            var property = '';
+        extend: function(target, source, deep) {
+            var self        = this,
+                getter      = null,
+                setter      = null,
+                sourceKeys  = [],
+                key         = '',
+                i           = -1;
 
-            for (property in source) {
-                if (
-                    typeof source[property] === 'object' &&
-                    source[property] !== null &&
-                    typeof source[property].length === 'undefined'
+            if (target === null) {
+                throw new Error('Cannot extend into null');
+            }
+
+            if (source === null) {
+                throw new Error('Cannot extend null into object');
+            }
+
+            if (Array.isArray(source)) {
+                for (i = 0; i < source.length; i++) {
+                    sourceKeys.push(i);
+                }
+            } else if (source) {
+                sourceKeys = Object.keys(source);
+            }
+
+            for (i = 0; i < sourceKeys.length; i++) {
+                key = sourceKeys[i];
+                getter = source.__lookupGetter__(key);
+                setter = source.__lookupSetter__(key);
+
+                if (getter) {
+                    // Getters
+
+                    target.__defineGetter__(key, getter);
+                } else if (setter) {
+                    // Setters
+
+                    target.__defineSetter__(key, setter);
+                } else if (
+                    deep &&
+                    typeof source[key] === 'object' &&
+                    source[key] !== null &&
+                    !Array.isArray(source[key]) &&
+                    !h.isElement(source[key])
                 ) {
-                    destination[property] = destination[property] || {};
+                    // Objects
 
-                    this.extend(destination[property], source[property]);
+                    if (
+                        typeof target[key] === 'undefined' ||
+                        target[key] === null
+                    ) {
+                        target[key] = {};
+                    }
+
+                    self.extend(target[key], source[key]);
+                } else if (deep && Array.isArray(source[key])) {
+                    // Arrays
+
+                    if (typeof target[key] === 'undefined') {
+                        target[key] = [];
+                    }
+
+                    self.extend(target[key], source[key]);
                 } else {
-                    destination[property] = source[property];
+                    // Strings, booleans, numbers, functions, and object references
+
+                    target[key] = source[key];
                 }
             }
+
+            return target;
         },
 
         /**
@@ -894,16 +952,7 @@
          */
 
         extend: function(extension) {
-            var key = '';
-
-            // TODO: make the h extend helper method more robust with deep/shallow flag,
-            // and call here as shallow
-
-            for (key in extension) {
-                if (extension[key]) {
-                    this[key] = extension[key];
-                }
-            }
+            h.extend(this, extension);
         },
 
         /**
@@ -939,35 +988,6 @@
 
         addFilter: function(hook, name, func) {
             this._addHook('_filters', hook, name, func);
-        },
-
-        /**
-         * Registers a filter or action to be executed at a predefined hook. The
-         * lower-level call used by `addAction` and `addFiler`.
-         *
-         * @memberof    mixitup.BasePrototype
-         * @private
-         * @static
-         * @since       2.1.0
-         * @param       {string}    type
-         * @param       {string}    hook
-         * @param       {string}    name
-         * @param       {function}  func
-         * @param       {number}    priority
-         * @return      {void}
-         */
-
-        _addHook: function(type, hook, name, func, priority) {
-            var collection  = this[type],
-                obj         = {};
-
-            priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
-
-            obj[hook]                   = {};
-            obj[hook][priority]         = {};
-            obj[hook][priority][name]   = func;
-
-            h.extend(collection, obj);
         },
 
         /**
@@ -1019,6 +1039,35 @@
             } else {
                 return value;
             }
+        },
+
+        /**
+         * Registers a filter or action to be executed at a predefined hook. The
+         * lower-level call used by `addAction` and `addFiler`.
+         *
+         * @memberof    mixitup.BasePrototype
+         * @private
+         * @static
+         * @since       2.1.0
+         * @param       {string}    type
+         * @param       {string}    hook
+         * @param       {string}    name
+         * @param       {function}  func
+         * @param       {number}    priority
+         * @return      {void}
+         */
+
+        _addHook: function(type, hook, name, func, priority) {
+            var collection  = this[type],
+                obj         = {};
+
+            priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
+
+            obj[hook]                   = {};
+            obj[hook][priority]         = {};
+            obj[hook][priority][name]   = func;
+
+            h.extend(collection, obj, true);
         }
     };
 
@@ -1131,7 +1180,18 @@
         this.easing                 = 'ease';
 
         /**
-         * The perspective value in CSS units applied to the container during animations,
+         * A boolean dictating whether or not to apply perspective to the MixItUp container
+         * during animations. By default, perspective is always applied and creates the
+         * illusion of three-dimensional space for effects such as `translateZ`, `rotateX`,
+         * and `rotateY`.
+         *
+         * You may wish to disable this and define your own perspective settings via CSS.
+         */
+
+        this.applyPerspective       = 'true';
+
+        /**
+         * The perspective distance value applied to the container during animations,
          * affecting any 3D-transform-based effects.
          *
          * @name        perspectiveDistance
@@ -1823,7 +1883,7 @@
 
             self.execAction('_init', 0, arguments);
 
-            config && h.extend(self, config);
+            config && h.extend(self, config, true);
 
             self._cacheDom(el);
 
@@ -3017,6 +3077,10 @@
             self._parseEffect('fade', effectsOut, self._effectsOut, self._transformOut, true);
 
             for (transformName in mixitup.transformDefaults) {
+                if (!(mixitup.transformDefaults[transformName] instanceof mixitup.TransformData)) {
+                    continue;
+                }
+
                 self._parseEffect(transformName, effectsIn, self._effectsIn, self._transformIn);
                 self._parseEffect(transformName, effectsOut, self._effectsOut, self._transformOut, true);
             }
@@ -3067,8 +3131,6 @@
 
             propIndex = effectString.indexOf(effectName + '(');
 
-            // TODO: Can we improve the logic below for DRYness?
-
             if (propIndex > -1) {
                 // The effect has a user defined value in parentheses
 
@@ -3081,23 +3143,33 @@
                 match = re.exec(str);
 
                 val = match[1];
+            }
 
-                switch (effectName) {
-                    case 'fade':
-                        effects.opacity = parseFloat(val);
+            switch (effectName) {
+                case 'fade':
+                    effects.opacity = val ? parseFloat(val) : 0;
 
-                        break;
-                    case 'stagger':
-                        self._staggerDuration = parseFloat(val);
+                    break;
+                case 'stagger':
+                    self._staggerDuration = val ? parseFloat(val) : 100;
 
-                        // TODO: Currently stagger must be applied globally, but
-                        // if seperate values are specified for in/out, this should
-                        // be respected
+                    // TODO: Currently stagger must be applied globally, but
+                    // if seperate values are specified for in/out, this should
+                    // be respected
 
-                        break;
-                    default:
-                        // Transforms
+                    break;
+                default:
+                    // All other effects are transforms following the same structure
 
+                    if (isOut && self.animation.reverseOut && effectName !== 'scale') {
+                        effects[effectName].value =
+                            (val ? parseFloat(val) : mixitup.transformDefaults[effectName].value) * -1;
+                    } else {
+                        effects[effectName].value =
+                            (val ? parseFloat(val) : mixitup.transformDefaults[effectName].value);
+                    }
+
+                    if (val) {
                         for (i = 0; unit = units[i]; i++) {
                             if (val.indexOf(unit) > -1) {
                                 effects[effectName].unit = unit;
@@ -3105,52 +3177,17 @@
                                 break;
                             }
                         }
-
-                        if (isOut && self.animation.reverseOut && effectName !== 'scale') {
-                            effects[effectName].value = parseFloat(val) * -1;
-                        } else {
-                            effects[effectName].value = parseFloat(val);
-                        }
-
-                        transform.push(
-                            effectName +
-                            '(' +
-                            effects[effectName].value +
-                            effects[effectName].unit +
-                            ')'
-                        );
-                }
-            } else {
-                // Else, use the default value for the effect
-
-                switch (effectName) {
-                    case 'fade':
-                        effects.opacity = 0;
-
-                        break;
-                    case 'stagger':
-                        self._staggerDuration = 100;
-
-                        break;
-                    default:
-                        // Transforms
-
-                        if (isOut && self.animation.reverseOut && effectName !== 'scale') {
-                            effects[effectName].value = mixitup.transformDefaults[effectName].value * -1;
-                        } else {
-                            effects[effectName].value = mixitup.transformDefaults[effectName].value;
-                        }
-
+                    } else {
                         effects[effectName].unit = mixitup.transformDefaults[effectName].unit;
+                    }
 
-                        transform.push(
-                            effectName +
-                            '(' +
-                            effects[effectName].value +
-                            effects[effectName].unit +
-                            ')'
-                        );
-                }
+                    transform.push(
+                        effectName +
+                        '(' +
+                        effects[effectName].value +
+                        effects[effectName].unit +
+                        ')'
+                    );
             }
         },
 
@@ -3287,11 +3324,13 @@
                     window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
                 }
 
-                self._dom.parent.style[mixitup.features.perspectiveProp] =
-                    self.animation.perspective;
+                if (self.animation.applyPerspective) {
+                    self._dom.parent.style[mixitup.features.perspectiveProp] =
+                        self.animation.perspectiveDistance;
 
-                self._dom.parent.style[mixitup.features.perspectiveOriginProp] =
-                    self.animation.perspectiveOrigin;
+                    self._dom.parent.style[mixitup.features.perspectiveOriginProp] =
+                        self.animation.perspectiveOrigin;
+                }
 
                 if (self.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
                     self._dom.parent.style.height = operation.startHeight + 'px';
@@ -3735,9 +3774,6 @@
                     callback: willTransition ? checkProgress : null
                 });
             }
-
-            self._dom.parent.style.perspective = self.animation.perspectiveDistance + 'px';
-            self._dom.parent.style.perspectiveOrigin = self.animation.perspectiveOrigin;
 
             if (self.animation.animateResizeContainer) {
                 self._dom.parent.style[mixitup.features.transitionProp] =
@@ -4333,7 +4369,7 @@
          */
 
         getOperation: function(command) {
-            var self = this,
+            var self                = this,
                 sortCommand         = command.sort,
                 filterCommand       = command.filter,
                 changeLayoutCommand = command.changeLayout,
@@ -4683,7 +4719,7 @@
 
             self.execAction('setOptions', 0, arguments);
 
-            // TODO (requires deep extend helper)
+            h.extend(self, config, true);
 
             self.execAction('setOptions', 1, arguments);
         },
@@ -6040,6 +6076,70 @@
             })(Element.prototype);
 
             self.execAction('applyPolyfills', 1);
+
+            // Object.keys
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+
+            if (!Object.keys) {
+                Object.keys = (function() {
+                    var hasOwnProperty      = Object.prototype.hasOwnProperty,
+                        hasDontEnumBug      = false,
+                        dontEnums           = [],
+                        dontEnumsLength     = -1;
+
+                    hasDontEnumBug = !({
+                        toString: null
+                    })
+                        .propertyIsEnumerable('toString');
+
+                    dontEnums = [
+                        'toString',
+                        'toLocaleString',
+                        'valueOf',
+                        'hasOwnProperty',
+                        'isPrototypeOf',
+                        'propertyIsEnumerable',
+                        'constructor'
+                    ];
+
+                    dontEnumsLength = dontEnums.length;
+
+                    return function(obj) {
+                        var result  = [],
+                            prop    = '',
+                            i       = -1;
+
+                        if (typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
+                            throw new TypeError('Object.keys called on non-object');
+                        }
+
+                        for (prop in obj) {
+                            if (hasOwnProperty.call(obj, prop)) {
+                                result.push(prop);
+                            }
+                        }
+
+                        if (hasDontEnumBug) {
+                            for (i = 0; i < dontEnumsLength; i++) {
+                                if (hasOwnProperty.call(obj, dontEnums[i])) {
+                                    result.push(dontEnums[i]);
+                                }
+                            }
+                        }
+
+                        return result;
+                    };
+                }());
+            }
+
+            // Array.isArray
+            // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
+
+            if (!Array.isArray) {
+                Array.isArray = function(arg) {
+                    return Object.prototype.toString.call(arg) === '[object Array]';
+                };
+            }
         }
     });
 

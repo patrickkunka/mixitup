@@ -189,6 +189,70 @@ h.extend(mixitup.Features.prototype,
         })(Element.prototype);
 
         self.execAction('applyPolyfills', 1);
+
+        // Object.keys
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+
+        if (!Object.keys) {
+            Object.keys = (function() {
+                var hasOwnProperty      = Object.prototype.hasOwnProperty,
+                    hasDontEnumBug      = false,
+                    dontEnums           = [],
+                    dontEnumsLength     = -1;
+
+                hasDontEnumBug = !({
+                    toString: null
+                })
+                    .propertyIsEnumerable('toString');
+
+                dontEnums = [
+                    'toString',
+                    'toLocaleString',
+                    'valueOf',
+                    'hasOwnProperty',
+                    'isPrototypeOf',
+                    'propertyIsEnumerable',
+                    'constructor'
+                ];
+
+                dontEnumsLength = dontEnums.length;
+
+                return function(obj) {
+                    var result  = [],
+                        prop    = '',
+                        i       = -1;
+
+                    if (typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
+                        throw new TypeError('Object.keys called on non-object');
+                    }
+
+                    for (prop in obj) {
+                        if (hasOwnProperty.call(obj, prop)) {
+                            result.push(prop);
+                        }
+                    }
+
+                    if (hasDontEnumBug) {
+                        for (i = 0; i < dontEnumsLength; i++) {
+                            if (hasOwnProperty.call(obj, dontEnums[i])) {
+                                result.push(dontEnums[i]);
+                            }
+                        }
+                    }
+
+                    return result;
+                };
+            }());
+        }
+
+        // Array.isArray
+        // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
+
+        if (!Array.isArray) {
+            Array.isArray = function(arg) {
+                return Object.prototype.toString.call(arg) === '[object Array]';
+            };
+        }
     }
 });
 

@@ -90,7 +90,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.execAction('_init', 0, arguments);
 
-        config && h.extend(self, config);
+        config && h.extend(self, config, true);
 
         self._cacheDom(el);
 
@@ -1284,6 +1284,10 @@ h.extend(mixitup.Mixer.prototype,
         self._parseEffect('fade', effectsOut, self._effectsOut, self._transformOut, true);
 
         for (transformName in mixitup.transformDefaults) {
+            if (!(mixitup.transformDefaults[transformName] instanceof mixitup.TransformData)) {
+                continue;
+            }
+
             self._parseEffect(transformName, effectsIn, self._effectsIn, self._transformIn);
             self._parseEffect(transformName, effectsOut, self._effectsOut, self._transformOut, true);
         }
@@ -1334,8 +1338,6 @@ h.extend(mixitup.Mixer.prototype,
 
         propIndex = effectString.indexOf(effectName + '(');
 
-        // TODO: Can we improve the logic below for DRYness?
-
         if (propIndex > -1) {
             // The effect has a user defined value in parentheses
 
@@ -1348,23 +1350,33 @@ h.extend(mixitup.Mixer.prototype,
             match = re.exec(str);
 
             val = match[1];
+        }
 
-            switch (effectName) {
-                case 'fade':
-                    effects.opacity = parseFloat(val);
+        switch (effectName) {
+            case 'fade':
+                effects.opacity = val ? parseFloat(val) : 0;
 
-                    break;
-                case 'stagger':
-                    self._staggerDuration = parseFloat(val);
+                break;
+            case 'stagger':
+                self._staggerDuration = val ? parseFloat(val) : 100;
 
-                    // TODO: Currently stagger must be applied globally, but
-                    // if seperate values are specified for in/out, this should
-                    // be respected
+                // TODO: Currently stagger must be applied globally, but
+                // if seperate values are specified for in/out, this should
+                // be respected
 
-                    break;
-                default:
-                    // Transforms
+                break;
+            default:
+                // All other effects are transforms following the same structure
 
+                if (isOut && self.animation.reverseOut && effectName !== 'scale') {
+                    effects[effectName].value =
+                        (val ? parseFloat(val) : mixitup.transformDefaults[effectName].value) * -1;
+                } else {
+                    effects[effectName].value =
+                        (val ? parseFloat(val) : mixitup.transformDefaults[effectName].value);
+                }
+
+                if (val) {
                     for (i = 0; unit = units[i]; i++) {
                         if (val.indexOf(unit) > -1) {
                             effects[effectName].unit = unit;
@@ -1372,52 +1384,17 @@ h.extend(mixitup.Mixer.prototype,
                             break;
                         }
                     }
-
-                    if (isOut && self.animation.reverseOut && effectName !== 'scale') {
-                        effects[effectName].value = parseFloat(val) * -1;
-                    } else {
-                        effects[effectName].value = parseFloat(val);
-                    }
-
-                    transform.push(
-                        effectName +
-                        '(' +
-                        effects[effectName].value +
-                        effects[effectName].unit +
-                        ')'
-                    );
-            }
-        } else {
-            // Else, use the default value for the effect
-
-            switch (effectName) {
-                case 'fade':
-                    effects.opacity = 0;
-
-                    break;
-                case 'stagger':
-                    self._staggerDuration = 100;
-
-                    break;
-                default:
-                    // Transforms
-
-                    if (isOut && self.animation.reverseOut && effectName !== 'scale') {
-                        effects[effectName].value = mixitup.transformDefaults[effectName].value * -1;
-                    } else {
-                        effects[effectName].value = mixitup.transformDefaults[effectName].value;
-                    }
-
+                } else {
                     effects[effectName].unit = mixitup.transformDefaults[effectName].unit;
+                }
 
-                    transform.push(
-                        effectName +
-                        '(' +
-                        effects[effectName].value +
-                        effects[effectName].unit +
-                        ')'
-                    );
-            }
+                transform.push(
+                    effectName +
+                    '(' +
+                    effects[effectName].value +
+                    effects[effectName].unit +
+                    ')'
+                );
         }
     },
 
@@ -1554,11 +1531,13 @@ h.extend(mixitup.Mixer.prototype,
                 window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
             }
 
-            self._dom.parent.style[mixitup.features.perspectiveProp] =
-                self.animation.perspective;
+            if (self.animation.applyPerspective) {
+                self._dom.parent.style[mixitup.features.perspectiveProp] =
+                    self.animation.perspectiveDistance;
 
-            self._dom.parent.style[mixitup.features.perspectiveOriginProp] =
-                self.animation.perspectiveOrigin;
+                self._dom.parent.style[mixitup.features.perspectiveOriginProp] =
+                    self.animation.perspectiveOrigin;
+            }
 
             if (self.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
                 self._dom.parent.style.height = operation.startHeight + 'px';
@@ -2002,9 +1981,6 @@ h.extend(mixitup.Mixer.prototype,
                 callback: willTransition ? checkProgress : null
             });
         }
-
-        self._dom.parent.style.perspective = self.animation.perspectiveDistance + 'px';
-        self._dom.parent.style.perspectiveOrigin = self.animation.perspectiveOrigin;
 
         if (self.animation.animateResizeContainer) {
             self._dom.parent.style[mixitup.features.transitionProp] =
@@ -2600,7 +2576,7 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     getOperation: function(command) {
-        var self = this,
+        var self                = this,
             sortCommand         = command.sort,
             filterCommand       = command.filter,
             changeLayoutCommand = command.changeLayout,
@@ -2950,7 +2926,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.execAction('setOptions', 0, arguments);
 
-        // TODO (requires deep extend helper)
+        h.extend(self, config, true);
 
         self.execAction('setOptions', 1, arguments);
     },
