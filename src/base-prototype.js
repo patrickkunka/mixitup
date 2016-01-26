@@ -73,7 +73,6 @@ mixitup.BasePrototype.prototype =
         this._addHook('_filters', hook, name, func);
     },
 
-
     /**
      * Executes any registered actions for the respective hook.
      *

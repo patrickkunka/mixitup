@@ -8,13 +8,13 @@
  */
 
 mixitup.UserInstruction = function() {
-    this.execAction('constructor', 0);
+    this.execAction('construct', 0);
 
     this.command    = {};
     this.animate    = false;
     this.callback   = null;
 
-    this.execAction('constructor', 1);
+    this.execAction('construct', 1);
 
     h.seal(this);
 };

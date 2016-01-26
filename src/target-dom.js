@@ -8,11 +8,11 @@
  */
 
 mixitup.TargetDom = function() {
-    this.execAction('constructor', 0);
+    this.execAction('construct', 0);
 
     this.el = null;
 
-    this.execAction('constructor', 1);
+    this.execAction('construct', 1);
 
     h.seal(this);
 };

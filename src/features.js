@@ -14,7 +14,7 @@
  */
 
 mixitup.Features = function() {
-    this.execAction('constructor', 0);
+    this.execAction('construct', 0);
 
     this.boxSizingPrefix            = '';
     this.transformPrefix            = '';
@@ -49,7 +49,7 @@ mixitup.Features = function() {
         'rotateX', 'rotateY', 'rotateZ'
     ];
 
-    this.execAction('constructor', 1);
+    this.execAction('construct', 1);
 };
 
 mixitup.Features.prototype = Object.create(new mixitup.BasePrototype());

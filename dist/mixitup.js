@@ -1083,7 +1083,7 @@
      */
 
     mixitup.ConfigAnimation = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         /**
          * A boolean dictating whether or not animation should be enabled for the MixItUp instance.
@@ -1351,7 +1351,7 @@
 
         this.nudgeOut               = true;
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1370,7 +1370,7 @@
      */
 
     mixitup.ConfigCallbacks = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.onMixLoad  = null;
         this.onMixStart = null;
@@ -1379,7 +1379,7 @@
         this.onMixFail  = null;
         this.onMixClick = null;
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1398,7 +1398,7 @@
      */
 
     mixitup.ConfigControls = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.enable         = true;
         this.live           = false;
@@ -1406,7 +1406,7 @@
         this.toggleDefault  = 'all';
         this.activeClass    = 'active';
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1425,11 +1425,11 @@
      */
 
     mixitup.ConfigDebug = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.enable = true;
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1454,13 +1454,13 @@
      */
 
     mixitup.ConfigExtensions = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.pagination     = null;
         this.dragndrop      = null;
         this.multiFilter    = null;
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1479,14 +1479,14 @@
      */
 
     mixitup.ConfigLayout = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.allowNestedTargets = false;
         this.display            = 'inline-block';
         this.containerClass     = '';
         this.containerClassFail = 'fail';
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1506,12 +1506,12 @@
      */
 
     mixitup.ConfigLibraries = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.q          = null;
         this.jQuery     = null;
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1530,12 +1530,12 @@
      */
 
     mixitup.ConfigLoad = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.filter = 'all';
         this.sort   = 'default:asc';
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1555,7 +1555,7 @@
      */
 
     mixitup.ConfigSelectors = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.target         = '.mix';
         this.filter         = '.filter';
@@ -1563,7 +1563,7 @@
         this.multiMix       = '.multi-mix';
         this.sort           = '.sort';
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1590,7 +1590,7 @@
      */
 
     mixitup.Config = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.animation          = new mixitup.ConfigAnimation();
         this.callbacks          = new mixitup.ConfigCallbacks();
@@ -1602,7 +1602,7 @@
         this.selectors          = new mixitup.ConfigSelectors();
         this.extensions         = new mixitup.ConfigExtensions();
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1619,7 +1619,7 @@
      */
 
     mixitup.MixerDom = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.document               = null;
         this.body                   = null;
@@ -1632,7 +1632,7 @@
         this.multiMixButtons        = [];
         this.allButtons             = [];
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1648,14 +1648,14 @@
      */
 
     mixitup.ClickTracker = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.filterToggle   = {};
         this.multiMix       = {};
         this.filter         = {};
         this.sort           = {};
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1690,7 +1690,7 @@
      */
 
     mixitup.StyleData = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.x              = 0;
         this.y              = 0;
@@ -1708,7 +1708,7 @@
         this.rotateY        = new mixitup.TransformData();
         this.rotateZ        = new mixitup.TransformData();
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1725,12 +1725,12 @@
      */
 
     mixitup.TransformData = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.value  = 0;
         this.unit   = '';
 
-        this.execAction('cconstructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1747,7 +1747,7 @@
      */
 
     mixitup.TransformDefaults = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         mixitup.StyleData.apply(this);
 
@@ -1775,7 +1775,7 @@
         this.rotateZ.value      = 180;
         this.rotateZ.unit       = 'deg';
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -1808,7 +1808,7 @@
      */
 
     mixitup.Mixer = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.animation          = new mixitup.ConfigAnimation();
         this.callbacks          = new mixitup.ConfigCallbacks();
@@ -1855,7 +1855,7 @@
 
         this._dom               = new mixitup.MixerDom();
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -2179,14 +2179,25 @@
 
             if (!button) return;
 
-            if (typeof self.callbacks.onMixClick === 'function') {
-                self.callbacks.onMixClick.call(button, self._state, self);
+            // This will be automatically mapped into the new operaiton's future
+            // state, but that has not been generated at this point, so we manually
+            // add it to the previous state for the following callbacks/events:
 
-                h.triggerCustom(self._dom.container, 'mixClick', {
-                    state: self._state,
-                    instance: self
-                }, self._dom.document);
+            self._state.triggerElement = button;
+
+            // Expose the original event to callbacks and events so that any default
+            // behavior can be cancelled (e.g. an <a> being used as a filter as a
+            // progressive enhancement):
+
+            if (typeof self.callbacks.onMixClick === 'function') {
+                self.callbacks.onMixClick.call(self._dom.container, self._state, self, e);
             }
+
+            h.triggerCustom(self._dom.container, 'mixClick', {
+                state: self._state,
+                instance: self,
+                originalEvent: e
+            }, self._dom.document);
 
             method = self._determineButtonMethod(button);
 
@@ -4386,7 +4397,9 @@
             // TODO: passing the operation rather than arguments
             // to the action is non-standard here but essential as
             // we require a reference to original. Perhaps a "pre"
-            // filter is the best alternative
+            // filter is the best alternative, but as we already use
+            // a filter at the end of this function, we would need a
+            // new syntax
 
             if (self._isMixing) {
                 if (h.canReportErrors(self)) {
@@ -4805,11 +4818,11 @@
      */
 
     mixitup.TargetDom = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.el = null;
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -4827,7 +4840,7 @@
      */
 
     mixitup.Target = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.sortString = '';
         this.mixer      = null;
@@ -4840,7 +4853,7 @@
 
         this.dom        = new mixitup.TargetDom();
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -5546,7 +5559,7 @@
      */
 
     mixitup.Operation = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.id                  = '';
 
@@ -5586,7 +5599,7 @@
         this.newContainerClass   = '';
         this.newDisplay          = '';
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -5609,7 +5622,7 @@
      */
 
     mixitup.State = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         /**
          * The currently active filter selector as set by a control click or the API
@@ -5791,7 +5804,7 @@
 
         this.triggerElement = null;
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -5808,13 +5821,13 @@
      */
 
     mixitup.UserInstruction = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.command    = {};
         this.animate    = false;
         this.callback   = null;
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -5831,7 +5844,7 @@
      */
 
     mixitup.Messages = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         /* 100 - 149: General errors
         ----------------------------------------------------------------------------- */
@@ -5874,7 +5887,7 @@
                     'present on one or more target elements which may product unexpected ' +
                     'sort output';
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
 
         h.seal(this);
     };
@@ -5901,7 +5914,7 @@
      */
 
     mixitup.Features = function() {
-        this.execAction('constructor', 0);
+        this.execAction('construct', 0);
 
         this.boxSizingPrefix            = '';
         this.transformPrefix            = '';
@@ -5936,7 +5949,7 @@
             'rotateX', 'rotateY', 'rotateZ'
         ];
 
-        this.execAction('constructor', 1);
+        this.execAction('construct', 1);
     };
 
     mixitup.Features.prototype = Object.create(new mixitup.BasePrototype());

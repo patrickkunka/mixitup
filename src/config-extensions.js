@@ -16,13 +16,13 @@
  */
 
 mixitup.ConfigExtensions = function() {
-    this.execAction('constructor', 0);
+    this.execAction('construct', 0);
 
     this.pagination     = null;
     this.dragndrop      = null;
     this.multiFilter    = null;
 
-    this.execAction('constructor', 1);
+    this.execAction('construct', 1);
 
     h.seal(this);
 };

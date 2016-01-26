@@ -12,7 +12,7 @@
  */
 
 mixitup.ConfigAnimation = function() {
-    this.execAction('constructor', 0);
+    this.execAction('construct', 0);
 
     /**
      * A boolean dictating whether or not animation should be enabled for the MixItUp instance.
@@ -280,7 +280,7 @@ mixitup.ConfigAnimation = function() {
 
     this.nudgeOut               = true;
 
-    this.execAction('constructor', 1);
+    this.execAction('construct', 1);
 
     h.seal(this);
 };

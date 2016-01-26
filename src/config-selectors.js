@@ -11,7 +11,7 @@
  */
 
 mixitup.ConfigSelectors = function() {
-    this.execAction('constructor', 0);
+    this.execAction('construct', 0);
 
     this.target         = '.mix';
     this.filter         = '.filter';
@@ -19,7 +19,7 @@ mixitup.ConfigSelectors = function() {
     this.multiMix       = '.multi-mix';
     this.sort           = '.sort';
 
-    this.execAction('constructor', 1);
+    this.execAction('construct', 1);
 
     h.seal(this);
 };

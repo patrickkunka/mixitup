@@ -13,7 +13,7 @@
  */
 
 mixitup.Operation = function() {
-    this.execAction('constructor', 0);
+    this.execAction('construct', 0);
 
     this.id                  = '';
 
@@ -53,7 +53,7 @@ mixitup.Operation = function() {
     this.newContainerClass   = '';
     this.newDisplay          = '';
 
-    this.execAction('constructor', 1);
+    this.execAction('construct', 1);
 
     h.seal(this);
 };

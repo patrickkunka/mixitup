@@ -6,14 +6,14 @@
  */
 
 mixitup.ClickTracker = function() {
-    this.execAction('constructor', 0);
+    this.execAction('construct', 0);
 
     this.filterToggle   = {};
     this.multiMix       = {};
     this.filter         = {};
     this.sort           = {};
 
-    this.execAction('constructor', 1);
+    this.execAction('construct', 1);
 
     h.seal(this);
 };

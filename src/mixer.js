@@ -15,7 +15,7 @@
  */
 
 mixitup.Mixer = function() {
-    this.execAction('constructor', 0);
+    this.execAction('construct', 0);
 
     this.animation          = new mixitup.ConfigAnimation();
     this.callbacks          = new mixitup.ConfigCallbacks();
@@ -62,7 +62,7 @@ mixitup.Mixer = function() {
 
     this._dom               = new mixitup.MixerDom();
 
-    this.execAction('constructor', 1);
+    this.execAction('construct', 1);
 
     h.seal(this);
 };
@@ -386,14 +386,25 @@ h.extend(mixitup.Mixer.prototype,
 
         if (!button) return;
 
-        if (typeof self.callbacks.onMixClick === 'function') {
-            self.callbacks.onMixClick.call(button, self._state, self);
+        // This will be automatically mapped into the new operaiton's future
+        // state, but that has not been generated at this point, so we manually
+        // add it to the previous state for the following callbacks/events:
 
-            h.triggerCustom(self._dom.container, 'mixClick', {
-                state: self._state,
-                instance: self
-            }, self._dom.document);
+        self._state.triggerElement = button;
+
+        // Expose the original event to callbacks and events so that any default
+        // behavior can be cancelled (e.g. an <a> being used as a filter as a
+        // progressive enhancement):
+
+        if (typeof self.callbacks.onMixClick === 'function') {
+            self.callbacks.onMixClick.call(self._dom.container, self._state, self, e);
         }
+
+        h.triggerCustom(self._dom.container, 'mixClick', {
+            state: self._state,
+            instance: self,
+            originalEvent: e
+        }, self._dom.document);
 
         method = self._determineButtonMethod(button);
 
@@ -2593,7 +2604,9 @@ h.extend(mixitup.Mixer.prototype,
         // TODO: passing the operation rather than arguments
         // to the action is non-standard here but essential as
         // we require a reference to original. Perhaps a "pre"
-        // filter is the best alternative
+        // filter is the best alternative, but as we already use
+        // a filter at the end of this function, we would need a
+        // new syntax
 
         if (self._isMixing) {
             if (h.canReportErrors(self)) {

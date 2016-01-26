@@ -10,14 +10,14 @@
  */
 
 mixitup.ConfigLayout = function() {
-    this.execAction('constructor', 0);
+    this.execAction('construct', 0);
 
     this.allowNestedTargets = false;
     this.display            = 'inline-block';
     this.containerClass     = '';
     this.containerClassFail = 'fail';
 
-    this.execAction('constructor', 1);
+    this.execAction('construct', 1);
 
     h.seal(this);
 };
