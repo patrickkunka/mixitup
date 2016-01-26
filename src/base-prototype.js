@@ -115,7 +115,7 @@ mixitup.BasePrototype.prototype =
         var self    = this,
             key     = '';
 
-        if (h.isEmptyObject(self._filters) && self._filters.hasOwnProperty(methodName)) {
+        if (!h.isEmptyObject(self._filters) && self._filters.hasOwnProperty(methodName)) {
             for (key in self._filters[methodName].pre) {
                 return self._filters[methodName].pre[key].call(self, value, args);
             }

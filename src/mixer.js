@@ -78,9 +78,9 @@ h.extend(mixitup.Mixer.prototype,
      * @private
      * @instance
      * @since   2.0.0
-     * @param   {Element}   el
-     * @param   {object}    config
-     * @return  {void}
+     * @param   {Element}       el
+     * @param   {object}        config
+     * @return  {mixitup.State}
      */
 
     _init: function(el, config) {
@@ -134,11 +134,9 @@ h.extend(mixitup.Mixer.prototype,
 
         self._bindEvents();
 
-        self._state = state;
+        self._buildToggleArray(null, state);
 
-        self._buildToggleArray();
-
-        self.execAction('_init', 1, arguments);
+        return self.execFilter('_init', state, arguments);
     },
 
     /**
@@ -720,16 +718,18 @@ h.extend(mixitup.Mixer.prototype,
 
     /**
      * Breaks compound selector strings in an array of discreet selectors,
-     * as per the active `controls.toggleLogic` configuration option.
+     * as per the active `controls.toggleLogic` configuration option. Accepts
+     * either a dynamic command object, or a state object.
      *
      * @private
      * @instance
      * @since   2.0.0
-     * @param   {object} [command]
+     * @param   {object}        [command]
+     * @param   {mixitup.State} [state]
      * @return  {void}
      */
 
-    _buildToggleArray: function(command) {
+    _buildToggleArray: function(command, state) {
         var self            = this,
             activeFilter    = '',
             filter          = '',
@@ -739,8 +739,10 @@ h.extend(mixitup.Mixer.prototype,
 
         if (command && typeof command.filter === 'string') {
             activeFilter = command.filter.replace(/\s/g, '');
+        } else if (state) {
+            activeFilter = state.activeFilter.replace(/\s/g, '');
         } else {
-            activeFilter = self._state.activeFilter.replace(/\s/g, '');
+            return;
         }
 
         activeFilter = activeFilter === self.selectors.target ? '' : activeFilter;

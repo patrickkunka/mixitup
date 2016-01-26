@@ -37,6 +37,7 @@ mixitup = function(container, config, foreignDoc) {
     var el                  = null,
         returnCollection    = false,
         instance            = null,
+        initialState        = null,
         doc                 = null,
         output              = null,
         instances           = [],
@@ -108,7 +109,9 @@ mixitup = function(container, config, foreignDoc) {
             instance._id            = id;
             instance._dom.document  = foreignDoc || window.document;
 
-            instance._init(el, config);
+            initialState = instance._init(el, config);
+
+            instance._state = initialState;
 
             mixitup.instances[id] = instance;
         } else if (mixitup.instances[id] instanceof mixitup.Mixer) {
