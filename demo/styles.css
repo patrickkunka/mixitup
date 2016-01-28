@@ -2,15 +2,21 @@ body {
     padding: 1rem;
 }
 
-.control {
+.control,
+.mixitup-pager {
     cursor: pointer;
     display: inline-block;
     padding: .5rem;
     background: #eee;
 }
 
-.control.active {
+.control.active,
+.mixitup-pager.active {
     font-weight: bold;
+}
+
+.mixitup-pager-disabled {
+    opacity: .5;
 }
 
 .mix {

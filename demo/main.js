@@ -6,10 +6,11 @@ mixer = mixItUp(sandbox, {
     animation: {
         effects: 'fade translateZ(-150px) stagger(50ms)',
         easing: 'cubic-bezier(1, 0, 0, 1)',
-        duration: 1200
+        duration: 500
     },
     pagination: {
-        limit: 3
+        limit: 2,
+        maxPagers: 6
     }
 });
 

@@ -348,7 +348,7 @@ h.extend(mixitup.Target.prototype, {
                 // number of immovable targets, the operation
                 // should be considered finished
 
-                self.mixer.cleanUp(options.operation);
+                self.mixer._cleanUp(options.operation);
             }
 
             return;
@@ -580,7 +580,7 @@ h.extend(mixitup.Target.prototype, {
 
     bindEvents: function() {
         var self = this,
-            transitionEndEvent = self.mixer._transitionPrefix === 'webkit' ?
+            transitionEndEvent = mixitup.features.transitionPrefix === 'webkit' ?
                 'webkitTransitionEnd' :
                 'transitionend';
 
