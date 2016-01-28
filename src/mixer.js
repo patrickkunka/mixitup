@@ -3013,7 +3013,7 @@ h.extend(mixitup.Mixer.prototype,
             self._dom.container.removeAttribute('id');
         }
 
-        delete mixitup.Mixer.prototype._instances[self._id];
+        delete mixitup.instances[self._id];
 
         self.execAction('destroy', 1, arguments);
     }

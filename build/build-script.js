@@ -157,13 +157,34 @@ Private.prototype = {
 
     /**
      * @private
+     * @return {string}
+     */
+
+    generateUUID: function() {
+        var date = new Date().getTime(),
+            uuid = '';
+
+        uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (date + Math.random() * 16) % 16 | 0;
+
+            date = Math.floor(date/16);
+
+            return (c === 'x' ? r : (r&0x3|0x8)).toString(16);
+        });
+
+        return uuid;
+    },
+
+    /**
+     * @private
      * @param   {string}    version
      * @return  {BuildData}
      * @void
      */
 
     mapScope: function(version) {
-        var scope = new BuildData();
+        var self    = this,
+            scope   = new BuildData();
 
         scope.title                     = 'MixItUp';
         scope.author                    = 'KunkaLabs Limited';
@@ -174,6 +195,7 @@ Private.prototype = {
         scope.commercialLicenseUrl      = 'https://kunkalabs.com/mixitup/licenses';
         scope.nonCommercialLicenseTitle = 'CC-BY-NC';
         scope.nonCommercialLicenseUrl   = 'http://creativecommons.org/licenses/by-nc/3.0/';
+        scope.buildId                   = self._.generateUUID.call(self);
 
         return scope;
     },
@@ -240,6 +262,7 @@ BuildData = function() {
     this.commercialLicenseUrl       = '';
     this.nonCommercialLicenseTitle  = '';
     this.nonCommercialLicenseUrl    = '';
+    this.buildId                    = '';
 
     Object.seal(this);
 };

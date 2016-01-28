@@ -1,5 +1,6 @@
 /**!
  * {{title}} v{{version}}
+ * Build {{buildId}}
  *
  * @copyright Copyright {{beginCopyrightYear}}-{{currentYear}} {{author}}.
  * @author    {{author}}.

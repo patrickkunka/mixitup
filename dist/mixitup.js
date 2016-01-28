@@ -1,5 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
+ * Build eaabc841-d4be-42a6-be74-fbcb77d4915e
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -4809,7 +4810,7 @@
                 self._dom.container.removeAttribute('id');
             }
 
-            delete mixitup.Mixer.prototype._instances[self._id];
+            delete mixitup.instances[self._id];
 
             self.execAction('destroy', 1, arguments);
         }
