@@ -72,6 +72,18 @@ document.querySelector('.js-api-sort').addEventListener('click', function() {
     mixer.sort('order:asc');
 });
 
+document.querySelector('.js-api-limit-3').addEventListener('click', function() {
+    mixer.paginate({limit: 3});
+});
+
+document.querySelector('.js-api-limit-inf').addEventListener('click', function() {
+    mixer.paginate({limit: -1});
+});
+
+document.querySelector('.js-api-limit-10').addEventListener('click', function() {
+    mixer.paginate({limit: 10});
+});
+
 mixer.init()
     .then(function(state) {
         console.log(mixer, state);
