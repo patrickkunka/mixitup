@@ -20,7 +20,7 @@ body {
 }
 
 .mix {
-    display: none;
+    display: inline-block;
     width: 100px;
     height: 100px;
     margin: 10px;
@@ -28,7 +28,7 @@ body {
 }
 
 .sandbox__mixitup .mix {
-    display: inline-block;
+
 }
 
 .mix.cat-2 {

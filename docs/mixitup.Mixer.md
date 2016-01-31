@@ -21,6 +21,7 @@ specified via the `load.filter` configuration option.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
+|Param   |`boolean` | `[startFromHidden]` | An optional boolean dictating whether targets should start from a hidden or non-hidden state.
 |Returns |`Promise.<mixitup.State>` | 
 
 

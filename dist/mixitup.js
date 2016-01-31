@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build c095bb0f-a8c5-45a3-984e-621e854d6086
+ * Build a0f1071a-02c1-498f-90fd-cb8fe6caae56
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1376,7 +1376,6 @@
     mixitup.ConfigCallbacks = function() {
         this.execAction('construct', 0);
 
-        this.onMixLoad  = null;
         this.onMixStart = null;
         this.onMixBusy  = null;
         this.onMixEnd   = null;
@@ -4237,11 +4236,21 @@
          * @public
          * @instance
          * @since       3.0.0
+         * @param       {boolean}   [startFromHidden]
+         *      An optional boolean dictating whether targets should start from a hidden or non-hidden state.
          * @return      {Promise.<mixitup.State>}
          */
 
-        init: function() {
-            var self = this;
+        init: function(startFromHidden) {
+            var self    = this,
+                target  = null,
+                i       = -1;
+
+            if (startFromHidden) {
+                for (i = 0; target = self._targets[i]; i++) {
+                    target.hide();
+                }
+            }
 
             return self.multiMix({
                 filter: self._state.activeFilter

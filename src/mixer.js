@@ -2442,11 +2442,21 @@ h.extend(mixitup.Mixer.prototype,
      * @public
      * @instance
      * @since       3.0.0
+     * @param       {boolean}   [startFromHidden]
+     *      An optional boolean dictating whether targets should start from a hidden or non-hidden state.
      * @return      {Promise.<mixitup.State>}
      */
 
-    init: function() {
-        var self = this;
+    init: function(startFromHidden) {
+        var self    = this,
+            target  = null,
+            i       = -1;
+
+        if (startFromHidden) {
+            for (i = 0; target = self._targets[i]; i++) {
+                target.hide();
+            }
+        }
 
         return self.multiMix({
             filter: self._state.activeFilter

@@ -12,7 +12,6 @@
 mixitup.ConfigCallbacks = function() {
     this.execAction('construct', 0);
 
-    this.onMixLoad  = null;
     this.onMixStart = null;
     this.onMixBusy  = null;
     this.onMixEnd   = null;

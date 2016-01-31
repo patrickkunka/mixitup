@@ -9,7 +9,7 @@ mixer = mixitup(sandbox, {
         duration: 350
     },
     pagination: {
-        limit: 2,
+        limit: 4,
         maxPagers: 6
     }
 });
@@ -86,6 +86,5 @@ document.querySelector('.js-api-limit-10').addEventListener('click', function() 
     mixer.paginate({limit: 10});
 });
 
-mixer.hide()
-    .then(() => mixer.show())
+mixer.init(true)
     .then((state) => console.log(mixer, state));
