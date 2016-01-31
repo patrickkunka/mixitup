@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build a0f1071a-02c1-498f-90fd-cb8fe6caae56
+ * Build 485ff043-541d-4e10-91e1-f8b99ad314d3
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1445,7 +1445,7 @@
      * An group of references to any mixitup extensions to be applied to the
      * instance. This is only neccessary when loading mixitup via a module
      * loader such as Browserify or RequireJS, where a reference to the
-     * extension cannot be acessed from the global `window` scope.
+     * extension cannot be accessed from the global `window` scope.
      *
      * @constructor
      * @memberof    mixitup
