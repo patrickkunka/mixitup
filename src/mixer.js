@@ -995,8 +995,6 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        operation.matching = operation.show.slice();
-
         if (operation.toRemove.length) {
             for (i = 0; target = operation.show[i]; i++) {
                 if (operation.toRemove.indexOf(target) > -1) {
@@ -1015,6 +1013,8 @@ h.extend(mixitup.Mixer.prototype,
                 }
             }
         }
+
+        operation.matching = operation.show.slice();
 
         self.execAction('_filter', 1, arguments);
     },
