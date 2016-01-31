@@ -54,7 +54,9 @@ h.extend(mixitup.Target.prototype, {
 
         self.bindEvents();
 
-        !!self.dom.el.style.display && (self.isShown = true);
+        if (self.dom.el.style.display !== 'none') {
+            self.isShown = true;
+        }
 
         self.execAction('init', 1, arguments);
     },
@@ -106,17 +108,18 @@ h.extend(mixitup.Target.prototype, {
      * @private
      * @instance
      * @since   3.0.0
-     * @param   {string}   display
      * @return  {void}
      */
 
-    show: function(display) {
+    show: function() {
         var self = this;
 
         self.execAction('show', 0, arguments);
 
-        if (!self.dom.el.style.display || self.dom.el.style.display !== display) {
-            self.dom.el.style.display = display;
+        if (!self.isShown) {
+            self.dom.el.style.display = '';
+
+            self.isShown = true;
         }
 
         self.execAction('show', 1, arguments);
@@ -134,7 +137,11 @@ h.extend(mixitup.Target.prototype, {
 
         self.execAction('hide', 0, arguments);
 
-        self.dom.el.style.display = '';
+        if (self.isShown) {
+            self.dom.el.style.display = 'none';
+
+            self.isShown = false;
+        }
 
         self.execAction('hide', 1, arguments);
     },
@@ -188,16 +195,13 @@ h.extend(mixitup.Target.prototype, {
 
         self.execAction('applyTween', 0, arguments);
 
-        currentValues.display   = self.mixer.layout.display;
-        currentValues.x         = posIn.x;
-        currentValues.y         = posIn.y;
+        currentValues.x     = posIn.x;
+        currentValues.y     = posIn.y;
 
         if (multiplier === 0) {
-            currentValues.display = 'none';
-
-            posIn.display === currentValues.display && self.hide();
-        } else if (!self.dom.el.style.display) {
-            self.show(self.mixer.layout.display);
+            self.hide();
+        } else if (!self.isShown) {
+            self.show();
         }
 
         for (i = 0; propertyName = mixitup.features.TWEENABLE[i]; i++) {
@@ -222,7 +226,7 @@ h.extend(mixitup.Target.prototype, {
                 currentTransformValues.push(
                     propertyName + '(' + currentValues[propertyName].value + tweenData.unit + ')'
                 );
-            } else if (propertyName !== 'display') {
+            } else {
                 if (!tweenData) continue;
 
                 currentValues[propertyName] = posIn[propertyName] + (tweenData * multiplier);
@@ -316,7 +320,7 @@ h.extend(mixitup.Target.prototype, {
 
         if (
             self.mixer.animation.animateResizeTargets &&
-            options.posOut.display
+            options.hideOrShow === 'show'
         ) {
             transitionRules.push(self.writeTransitionRule(
                 'width',
@@ -378,7 +382,7 @@ h.extend(mixitup.Target.prototype, {
 
         if (
             isResizing &&
-            options.posOut.display
+            options.hideOrShow === 'show'
         ) {
             self.dom.el.style.width        = options.posOut.width + 'px';
             self.dom.el.style.height       = options.posOut.height + 'px';
@@ -612,7 +616,6 @@ h.extend(mixitup.Target.prototype, {
 
         posData.x               = self.dom.el.offsetLeft;
         posData.y               = self.dom.el.offsetTop;
-        posData.display         = self.dom.el.style.display || 'none';
 
         if (self.mixer.animation.animateResizeTargets) {
             rect    = self.dom.el.getBoundingClientRect();
@@ -642,7 +645,7 @@ h.extend(mixitup.Target.prototype, {
 
         self.dom.el.style[mixitup.features.transformProp]  = '';
         self.dom.el.style[mixitup.features.transitionProp] = '';
-        self.dom.el.style.opacity                                  = '';
+        self.dom.el.style.opacity                          = '';
 
         if (self.mixer.animation.animateResizeTargets) {
             self.dom.el.style.width        = '';

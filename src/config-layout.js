@@ -13,7 +13,6 @@ mixitup.ConfigLayout = function() {
     this.execAction('construct', 0);
 
     this.allowNestedTargets = false;
-    this.display            = 'inline-block';
     this.containerClass     = '';
     this.containerClassFail = 'fail';
 

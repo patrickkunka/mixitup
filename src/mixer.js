@@ -108,7 +108,6 @@ h.extend(mixitup.Mixer.prototype,
 
         state.activeSort = self.load.sort;
         state.activeContainerClass = self.layout.containerClass;
-        state.activeDisplay = self.layout.display;
 
         if (state.activeSort) {
             // Perform a syncronous sort without an operation
@@ -885,6 +884,11 @@ h.extend(mixitup.Mixer.prototype,
                     throw new Error(mixitup.messages[151]);
                 }
 
+                // Ensure elements are hidden when they are added to the DOM, so they can
+                // be animated in gracefully
+
+                el.style.display = 'none';
+
                 frag.appendChild(el);
                 frag.appendChild(self._dom.document.createTextNode(' '));
 
@@ -1453,7 +1457,6 @@ h.extend(mixitup.Mixer.prototype,
         state.activeFilter         = operation.newFilter;
         state.activeSort           = operation.newSortString;
         state.activeContainerClass = operation.newContainerClass;
-        state.activeDisplay        = operation.newDisplay || self.layout.display;
         state.hasFailed            = !operation.matching.length && operation.newFilter !== '';
         state.totalTargets         = self._targets.length;
         state.totalShow            = operation.show.length;
@@ -1644,7 +1647,7 @@ h.extend(mixitup.Mixer.prototype,
         self.execAction('_setInter', 0);
 
         for (i = 0; target = operation.toShow[i]; i++) {
-            target.show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
+            target.show();
         }
 
         if (operation.willChangeLayout) {
@@ -1759,7 +1762,7 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         for (i = 0; target = operation.toHide[i]; i++) {
-            target.show(self.layout.display);
+            target.show();
         }
 
         if (operation.willChangeLayout && self.animation.animateChangeLayout) {
@@ -1799,11 +1802,6 @@ h.extend(mixitup.Mixer.prototype,
             posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
             posData.posOut.x    = posData.finalPosData.x - posData.interPosData.x;
             posData.posOut.y    = posData.finalPosData.y - posData.interPosData.y;
-
-            // Process display
-
-            posData.posIn.display   = target.isShown ? self.layout.display : 'none';
-            posData.posOut.display  = self.layout.display;
 
             // Process opacity
 
@@ -1895,11 +1893,6 @@ h.extend(mixitup.Mixer.prototype,
             posData.tweenData.x = posData.posOut.x - posData.posIn.x;
             posData.tweenData.y = posData.posOut.y - posData.posIn.y;
 
-            // Process display
-
-            posData.posIn.display = self.layout.display;
-            posData.posOut.display = 'none';
-
             // Process opacity
 
             posData.posIn.opacity       = 1;
@@ -1966,7 +1959,7 @@ h.extend(mixitup.Mixer.prototype,
                 staggerIndex++;
             }
 
-            target.show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
+            target.show();
 
             target.move({
                 posIn: posData.posIn,
@@ -2138,15 +2131,13 @@ h.extend(mixitup.Mixer.prototype,
         for (i = 0; target = operation.show[i]; i++) {
             target.cleanUp();
 
-            target.show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
-            target.isShown = true;
+            target.show();
         }
 
         for (i = 0; target = operation.toHide[i]; i++) {
             target.cleanUp();
 
             target.hide();
-            target.isShown = false;
         }
 
         if (operation.willSort) {
@@ -2667,17 +2658,12 @@ h.extend(mixitup.Mixer.prototype,
         // which accomodates selectors, elements, hide vs show etc.
 
         if (typeof changeLayoutCommand !== 'undefined') {
-            operation.startDisplay        = operation.startState.activeDisplay;
             operation.startContainerClass = operation.startState.activeContainerClass;
-            operation.newDisplay          = changeLayoutCommand.display || operation.startDisplay;
 
             operation.newContainerClass   =
                 changeLayoutCommand.containerClass || operation.startContainerClass;
 
-            if (
-                operation.newContainerClass !== operation.startContainerClass ||
-                operation.newDisplay !== operation.startDisplay
-            ) {
+            if (operation.newContainerClass !== operation.startContainerClass) {
                 operation.willChangeLayout = true;
             }
         }
@@ -2812,15 +2798,15 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         for (i = 0; target = operation.hide[i]; i++) {
-            if (target.dom.el.style.display) {
+            if (target.isShown) {
                 target.hide();
             }
 
             if ((toHideIndex = operation.toHide.indexOf(target)) > -1) {
                 posData = operation.toHidePosData[toHideIndex];
 
-                if (!target.dom.el.style.display) {
-                    target.show(self.layout.display);
+                if (!target.isShown) {
+                    target.show();
                 }
 
                 target.applyTween(posData, multiplier);

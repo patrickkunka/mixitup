@@ -42,19 +42,6 @@ mixitup.State = function() {
     this.activeSort = '';
 
     /**
-     * The currently active CSS display value for target elements as defined in the
-     * configuration object.
-     *
-     * @name        activeDisplay
-     * @memberof    mixitup.State
-     * @instance
-     * @type        {string}
-     * @default     ''
-     */
-
-    this.activeDisplay = '';
-
-    /**
      * The currently active containerClass, if applied.
      *
      * @name        activeContainerClass

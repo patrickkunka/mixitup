@@ -2,17 +2,19 @@
 var sandbox = document.querySelector('.sandbox');
 var mixer   = null;
 
-mixer = mixItUp(sandbox, {
+mixer = mixitup(sandbox, {
     animation: {
-        effects: 'fade translateZ(-150px) stagger(50ms)',
+        effects: 'fade translateZ(-150px) stagger(20ms)',
         easing: 'cubic-bezier(1, 0, 0, 1)',
-        duration: 500
+        duration: 350
     },
     pagination: {
         limit: 2,
         maxPagers: 6
     }
 });
+
+sandbox.classList.add('sandbox__mixitup');
 
 document.querySelector('.js-append').addEventListener('click', function() {
    mixer.append('<div class="mix cat-3" data-order="3">C 3</div>');
@@ -84,7 +86,6 @@ document.querySelector('.js-api-limit-10').addEventListener('click', function() 
     mixer.paginate({limit: 10});
 });
 
-mixer.init()
-    .then(function(state) {
-        console.log(mixer, state);
-    });
+mixer.hide()
+    .then(() => mixer.show())
+    .then((state) => console.log(mixer, state));

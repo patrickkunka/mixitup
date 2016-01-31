@@ -17,7 +17,6 @@ mixitup.StyleData = function() {
     this.marginRight    = 0;
     this.marginBottom   = 0;
     this.opacity        = 0;
-    this.display        = '';
     this.scale          = new mixitup.TransformData();
     this.translateX     = new mixitup.TransformData();
     this.translateY     = new mixitup.TransformData();

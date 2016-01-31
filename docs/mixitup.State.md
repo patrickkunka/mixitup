@@ -32,18 +32,6 @@ The currently active sort as set by a control click or API call.
 |--- | ---
 `string` | `''`
 
-### <a id="mixitup.State#activeDisplay">mixitup.State.activeDisplay</a>
-
-
-
-The currently active CSS display value for target elements as defined in the
-configuration object.
-
-
-|Type | Default
-|--- | ---
-`string` | `''`
-
 ### <a id="mixitup.State#activeContainerClass">mixitup.State.activeContainerClass</a>
 
 

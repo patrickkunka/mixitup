@@ -27,6 +27,10 @@ body {
     background: skyblue;
 }
 
+.sandbox__mixitup .mix {
+    display: inline-block;
+}
+
 .mix.cat-2 {
     background: violet;
 }

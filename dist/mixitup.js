@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build e5357dd2-5fee-4fec-afd5-6cdc58dabc2e
+ * Build c095bb0f-a8c5-45a3-984e-621e854d6086
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1486,7 +1486,6 @@
         this.execAction('construct', 0);
 
         this.allowNestedTargets = false;
-        this.display            = 'inline-block';
         this.containerClass     = '';
         this.containerClassFail = 'fail';
 
@@ -1703,7 +1702,6 @@
         this.marginRight    = 0;
         this.marginBottom   = 0;
         this.opacity        = 0;
-        this.display        = '';
         this.scale          = new mixitup.TransformData();
         this.translateX     = new mixitup.TransformData();
         this.translateY     = new mixitup.TransformData();
@@ -1905,7 +1903,6 @@
 
             state.activeSort = self.load.sort;
             state.activeContainerClass = self.layout.containerClass;
-            state.activeDisplay = self.layout.display;
 
             if (state.activeSort) {
                 // Perform a syncronous sort without an operation
@@ -2682,6 +2679,11 @@
                         throw new Error(mixitup.messages[151]);
                     }
 
+                    // Ensure elements are hidden when they are added to the DOM, so they can
+                    // be animated in gracefully
+
+                    el.style.display = 'none';
+
                     frag.appendChild(el);
                     frag.appendChild(self._dom.document.createTextNode(' '));
 
@@ -3250,7 +3252,6 @@
             state.activeFilter         = operation.newFilter;
             state.activeSort           = operation.newSortString;
             state.activeContainerClass = operation.newContainerClass;
-            state.activeDisplay        = operation.newDisplay || self.layout.display;
             state.hasFailed            = !operation.matching.length && operation.newFilter !== '';
             state.totalTargets         = self._targets.length;
             state.totalShow            = operation.show.length;
@@ -3441,7 +3442,7 @@
             self.execAction('_setInter', 0);
 
             for (i = 0; target = operation.toShow[i]; i++) {
-                target.show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
+                target.show();
             }
 
             if (operation.willChangeLayout) {
@@ -3556,7 +3557,7 @@
             }
 
             for (i = 0; target = operation.toHide[i]; i++) {
-                target.show(self.layout.display);
+                target.show();
             }
 
             if (operation.willChangeLayout && self.animation.animateChangeLayout) {
@@ -3596,11 +3597,6 @@
                 posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
                 posData.posOut.x    = posData.finalPosData.x - posData.interPosData.x;
                 posData.posOut.y    = posData.finalPosData.y - posData.interPosData.y;
-
-                // Process display
-
-                posData.posIn.display   = target.isShown ? self.layout.display : 'none';
-                posData.posOut.display  = self.layout.display;
 
                 // Process opacity
 
@@ -3692,11 +3688,6 @@
                 posData.tweenData.x = posData.posOut.x - posData.posIn.x;
                 posData.tweenData.y = posData.posOut.y - posData.posIn.y;
 
-                // Process display
-
-                posData.posIn.display = self.layout.display;
-                posData.posOut.display = 'none';
-
                 // Process opacity
 
                 posData.posIn.opacity       = 1;
@@ -3763,7 +3754,7 @@
                     staggerIndex++;
                 }
 
-                target.show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
+                target.show();
 
                 target.move({
                     posIn: posData.posIn,
@@ -3935,15 +3926,13 @@
             for (i = 0; target = operation.show[i]; i++) {
                 target.cleanUp();
 
-                target.show(operation.willChangeLayout ? operation.newDisplay : self.layout.display);
-                target.isShown = true;
+                target.show();
             }
 
             for (i = 0; target = operation.toHide[i]; i++) {
                 target.cleanUp();
 
                 target.hide();
-                target.isShown = false;
             }
 
             if (operation.willSort) {
@@ -4464,17 +4453,12 @@
             // which accomodates selectors, elements, hide vs show etc.
 
             if (typeof changeLayoutCommand !== 'undefined') {
-                operation.startDisplay        = operation.startState.activeDisplay;
                 operation.startContainerClass = operation.startState.activeContainerClass;
-                operation.newDisplay          = changeLayoutCommand.display || operation.startDisplay;
 
                 operation.newContainerClass   =
                     changeLayoutCommand.containerClass || operation.startContainerClass;
 
-                if (
-                    operation.newContainerClass !== operation.startContainerClass ||
-                    operation.newDisplay !== operation.startDisplay
-                ) {
+                if (operation.newContainerClass !== operation.startContainerClass) {
                     operation.willChangeLayout = true;
                 }
             }
@@ -4609,15 +4593,15 @@
             }
 
             for (i = 0; target = operation.hide[i]; i++) {
-                if (target.dom.el.style.display) {
+                if (target.isShown) {
                     target.hide();
                 }
 
                 if ((toHideIndex = operation.toHide.indexOf(target)) > -1) {
                     posData = operation.toHidePosData[toHideIndex];
 
-                    if (!target.dom.el.style.display) {
-                        target.show(self.layout.display);
+                    if (!target.isShown) {
+                        target.show();
                     }
 
                     target.applyTween(posData, multiplier);
@@ -4891,7 +4875,9 @@
 
             self.bindEvents();
 
-            !!self.dom.el.style.display && (self.isShown = true);
+            if (self.dom.el.style.display !== 'none') {
+                self.isShown = true;
+            }
 
             self.execAction('init', 1, arguments);
         },
@@ -4943,17 +4929,18 @@
          * @private
          * @instance
          * @since   3.0.0
-         * @param   {string}   display
          * @return  {void}
          */
 
-        show: function(display) {
+        show: function() {
             var self = this;
 
             self.execAction('show', 0, arguments);
 
-            if (!self.dom.el.style.display || self.dom.el.style.display !== display) {
-                self.dom.el.style.display = display;
+            if (!self.isShown) {
+                self.dom.el.style.display = '';
+
+                self.isShown = true;
             }
 
             self.execAction('show', 1, arguments);
@@ -4971,7 +4958,11 @@
 
             self.execAction('hide', 0, arguments);
 
-            self.dom.el.style.display = '';
+            if (self.isShown) {
+                self.dom.el.style.display = 'none';
+
+                self.isShown = false;
+            }
 
             self.execAction('hide', 1, arguments);
         },
@@ -5025,16 +5016,13 @@
 
             self.execAction('applyTween', 0, arguments);
 
-            currentValues.display   = self.mixer.layout.display;
-            currentValues.x         = posIn.x;
-            currentValues.y         = posIn.y;
+            currentValues.x     = posIn.x;
+            currentValues.y     = posIn.y;
 
             if (multiplier === 0) {
-                currentValues.display = 'none';
-
-                posIn.display === currentValues.display && self.hide();
-            } else if (!self.dom.el.style.display) {
-                self.show(self.mixer.layout.display);
+                self.hide();
+            } else if (!self.isShown) {
+                self.show();
             }
 
             for (i = 0; propertyName = mixitup.features.TWEENABLE[i]; i++) {
@@ -5059,7 +5047,7 @@
                     currentTransformValues.push(
                         propertyName + '(' + currentValues[propertyName].value + tweenData.unit + ')'
                     );
-                } else if (propertyName !== 'display') {
+                } else {
                     if (!tweenData) continue;
 
                     currentValues[propertyName] = posIn[propertyName] + (tweenData * multiplier);
@@ -5153,7 +5141,7 @@
 
             if (
                 self.mixer.animation.animateResizeTargets &&
-                options.posOut.display
+                options.hideOrShow === 'show'
             ) {
                 transitionRules.push(self.writeTransitionRule(
                     'width',
@@ -5215,7 +5203,7 @@
 
             if (
                 isResizing &&
-                options.posOut.display
+                options.hideOrShow === 'show'
             ) {
                 self.dom.el.style.width        = options.posOut.width + 'px';
                 self.dom.el.style.height       = options.posOut.height + 'px';
@@ -5449,7 +5437,6 @@
 
             posData.x               = self.dom.el.offsetLeft;
             posData.y               = self.dom.el.offsetTop;
-            posData.display         = self.dom.el.style.display || 'none';
 
             if (self.mixer.animation.animateResizeTargets) {
                 rect    = self.dom.el.getBoundingClientRect();
@@ -5479,7 +5466,7 @@
 
             self.dom.el.style[mixitup.features.transformProp]  = '';
             self.dom.el.style[mixitup.features.transitionProp] = '';
-            self.dom.el.style.opacity                                  = '';
+            self.dom.el.style.opacity                          = '';
 
             if (self.mixer.animation.animateResizeTargets) {
                 self.dom.el.style.width        = '';
@@ -5654,19 +5641,6 @@
          */
 
         this.activeSort = '';
-
-        /**
-         * The currently active CSS display value for target elements as defined in the
-         * configuration object.
-         *
-         * @name        activeDisplay
-         * @memberof    mixitup.State
-         * @instance
-         * @type        {string}
-         * @default     ''
-         */
-
-        this.activeDisplay = '';
 
         /**
          * The currently active containerClass, if applied.
