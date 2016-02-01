@@ -13,6 +13,9 @@ mixer = mixitup(sandbox, {
     pagination: {
         limit: 4,
         maxPagers: 6
+    },
+    dragndrop: {
+        enable: true
     }
 });
 
