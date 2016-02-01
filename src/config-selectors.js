@@ -14,10 +14,7 @@ mixitup.ConfigSelectors = function() {
     this.execAction('construct', 0);
 
     this.target         = '.mix';
-    this.filter         = '.filter';
-    this.filterToggle   = '.filter-toggle';
-    this.multiMix       = '.multi-mix';
-    this.sort           = '.sort';
+    this.control        = '.mixitup-control';
 
     this.execAction('construct', 1);
 

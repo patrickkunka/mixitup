@@ -149,7 +149,9 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     _cacheDom: function(el) {
-        var self = this;
+        var self    = this,
+            button  = null,
+            i       = -1;
 
         self.execAction('_cacheDom', 0, arguments);
 
@@ -157,22 +159,20 @@ h.extend(mixitup.Mixer.prototype,
         self._dom.container = el;
         self._dom.parent    = el;
 
-        self._dom.sortButtons =
-            Array.prototype.slice.call(self._dom.document.querySelectorAll(self.selectors.sort));
+        self._dom.allButtons =
+            Array.prototype.slice.call(self._dom.document.querySelectorAll(self.selectors.control));
 
-        self._dom.filterButtons =
-            Array.prototype.slice.call(self._dom.document.querySelectorAll(self.selectors.filter));
-
-        self._dom.filterToggleButtons =
-            Array.prototype.slice.call(self._dom.document.querySelectorAll(self.selectors.filterToggle));
-
-        self._dom.multiMixButtons =
-            Array.prototype.slice.call(self._dom.document.querySelectorAll(self.selectors.multiMix));
-
-        self._dom.allButtons = self._dom.filterButtons
-            .concat(self._dom.sortButtons)
-            .concat(self._dom.filterToggleButtons)
-            .concat(self._dom.multiMixButtons);
+        for (i = 0; button = self._dom.allButtons[i]; i++) {
+            if (button.matches('[data-filter][data-sort]')) {
+                self._dom.multiMixButtons.push(button);
+            } else if (button.matches('[data-filter]')) {
+                self._dom.filterButtons.push(button);
+            } else if (button.matches('[data-sort]')) {
+                self._dom.sortButtons.push(button);
+            } else if (button.matches('[data-toggle]')) {
+                self._dom.filterToggleButtons.push(button);
+            }
+        }
 
         self.execAction('_cacheDom', 1, arguments);
     },
@@ -326,10 +326,7 @@ h.extend(mixitup.Mixer.prototype,
 
     _handleClick: function(e) {
         var self            = this,
-            selectorKeys    = [],
-            selectors       = [],
             command         = null,
-            selector        = '',
             method          = '',
             key             = '',
             isTogglingOff   = false,
@@ -362,20 +359,9 @@ h.extend(mixitup.Mixer.prototype,
 
         self._isClicking = true;
 
-        // Build a compound selector from all control selector values, representing
-        // any possible button
-
-        selectorKeys = Object.getOwnPropertyNames(self.selectors);
-
-        for (i = 0; key = selectorKeys[i]; i++) {
-            selectors.push(self.selectors[key]);
-        }
-
-        selector = selectors.join(',');
-
         button = h.closestParent(
             e.target,
-            selector,
+            self.selectors.control,
             true,
             Infinity,
             self._dom.document
@@ -447,21 +433,18 @@ h.extend(mixitup.Mixer.prototype,
 
     _determineButtonMethod: function(button) {
         var self        = this,
-            types       = [],
-            selector    = '',
-            method      = '',
-            i           = -1;
+            method      = '';
 
         self.execAction('_determineButtonMethod', 0, arguments);
 
-        types = Object.keys(self.selectors);
-
-        for (i = 0; method = types[i]; i++) {
-            selector = self.selectors[method];
-
-            if (button.matches(selector)) {
-                break;
-            }
+        if (button.matches('[data-filter][data-sort]')) {
+            method = 'multiMix';
+        } else if (button.matches('[data-filter]')) {
+            method = 'filter';
+        } else if (button.matches('[data-sort]')) {
+            method = 'sort';
+        } else if (button.matches('[data-toggle]')) {
+            method = 'filterToggle';
         }
 
         return self.execFilter('_determineButtonMethod', method, arguments);
@@ -587,7 +570,7 @@ h.extend(mixitup.Mixer.prototype,
             self._isToggling            = true;
         }
 
-        filterString = button.getAttribute('data-filter');
+        filterString = button.getAttribute('data-toggle');
 
         for (i = 0; el = self._dom.filterButtons[i]; i++) {
             h.removeClass(el, self.controls.activeClass);
