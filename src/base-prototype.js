@@ -141,15 +141,12 @@ mixitup.BasePrototype.prototype =
      */
 
     _addHook: function(type, hook, name, func, priority) {
-        var collection  = this[type],
-            obj         = {};
+        var collection = this[type];
 
         priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
 
-        obj[hook]                   = {};
-        obj[hook][priority]         = {};
-        obj[hook][priority][name]   = func;
-
-        h.extend(collection, obj, true);
+        collection[hook]                   = collection[hook] || {};
+        collection[hook][priority]         = collection[hook][priority] || {};
+        collection[hook][priority][name]   = func;
     }
 };

@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 485ff043-541d-4e10-91e1-f8b99ad314d3
+ * Build c1c48d83-45df-47d2-a890-4023a4e3353e
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1062,16 +1062,13 @@
          */
 
         _addHook: function(type, hook, name, func, priority) {
-            var collection  = this[type],
-                obj         = {};
+            var collection = this[type];
 
             priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
 
-            obj[hook]                   = {};
-            obj[hook][priority]         = {};
-            obj[hook][priority][name]   = func;
-
-            h.extend(collection, obj, true);
+            collection[hook]                   = collection[hook] || {};
+            collection[hook][priority]         = collection[hook][priority] || {};
+            collection[hook][priority][name]   = func;
         }
     };
 

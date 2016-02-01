@@ -1,4 +1,6 @@
+/* global fastclick */
 /* global mixItUp */
+
 var sandbox = document.querySelector('.sandbox');
 var mixer   = null;
 
