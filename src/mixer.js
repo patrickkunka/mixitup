@@ -326,6 +326,7 @@ h.extend(mixitup.Mixer.prototype,
     _handleClick: function(e) {
         var self            = this,
             command         = null,
+            returnValue     = null,
             method          = '',
             isTogglingOff   = false,
             button          = null;
@@ -370,25 +371,32 @@ h.extend(mixitup.Mixer.prototype,
 
         self._isClicking = true;
 
-        // This will be automatically mapped into the new operaiton's future
+        // This will be automatically mapped into the new operation's future
         // state, but that has not been generated at this point, so we manually
         // add it to the previous state for the following callbacks/events:
 
         self._state.triggerElement = button;
 
         // Expose the original event to callbacks and events so that any default
-        // behavior can be cancelled (e.g. an <a> being used as a filter as a
+        // behavior can be cancelled (e.g. an <a> being used as a control as a
         // progressive enhancement):
 
-        if (typeof self.callbacks.onMixClick === 'function') {
-            self.callbacks.onMixClick.call(self._dom.container, self._state, self, e);
-        }
 
         h.triggerCustom(self._dom.container, 'mixClick', {
             state: self._state,
             instance: self,
             originalEvent: e
         }, self._dom.document);
+
+        if (typeof self.callbacks.onMixClick === 'function') {
+            returnValue = self.callbacks.onMixClick.call(button, self._state, self, e);
+
+            if (returnValue === false) {
+                // The callback has returned false, so do not execute the default action
+
+                return;
+            }
+        }
 
         method = self._determineButtonMethod(button);
 

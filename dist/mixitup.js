@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 58b8ffc4-43e2-4475-b67e-a6a4bc55d68e
+ * Build 432418e0-fa1c-440e-9dc9-3c69fd723948
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2114,6 +2114,7 @@
         _handleClick: function(e) {
             var self            = this,
                 command         = null,
+                returnValue     = null,
                 method          = '',
                 isTogglingOff   = false,
                 button          = null;
@@ -2158,25 +2159,31 @@
 
             self._isClicking = true;
 
-            // This will be automatically mapped into the new operaiton's future
+            // This will be automatically mapped into the new operation's future
             // state, but that has not been generated at this point, so we manually
             // add it to the previous state for the following callbacks/events:
 
             self._state.triggerElement = button;
 
             // Expose the original event to callbacks and events so that any default
-            // behavior can be cancelled (e.g. an <a> being used as a filter as a
+            // behavior can be cancelled (e.g. an <a> being used as a control as a
             // progressive enhancement):
-
-            if (typeof self.callbacks.onMixClick === 'function') {
-                self.callbacks.onMixClick.call(self._dom.container, self._state, self, e);
-            }
 
             h.triggerCustom(self._dom.container, 'mixClick', {
                 state: self._state,
                 instance: self,
                 originalEvent: e
             }, self._dom.document);
+
+            if (typeof self.callbacks.onMixClick === 'function') {
+                returnValue = self.callbacks.onMixClick.call(button, self._state, self, e);
+
+                if (returnValue === false) {
+                    // The callback has returned false, so do not execute the default action
+
+                    return;
+                }
+            }
 
             method = self._determineButtonMethod(button);
 
