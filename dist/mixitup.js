@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 302e34dd-9015-4523-a6ef-9896cea7ac9e
+ * Build 58b8ffc4-43e2-4475-b67e-a6a4bc55d68e
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1820,7 +1820,6 @@
         this._isMixing          = false;
         this._isClicking        = false;
         this._isToggling        = false;
-        this._isLoading         = true;
         this._incPadding        = true;
 
         this._targets           = [];
@@ -2116,10 +2115,8 @@
             var self            = this,
                 command         = null,
                 method          = '',
-                key             = '',
                 isTogglingOff   = false,
-                button          = null,
-                i               = -1;
+                button          = null;
 
             self.execAction('_handleClick', 0, arguments);
 
@@ -2145,8 +2142,6 @@
                 return;
             }
 
-            self._isClicking = true;
-
             button = h.closestParent(
                 e.target,
                 self.selectors.control,
@@ -2160,6 +2155,8 @@
 
                 return;
             }
+
+            self._isClicking = true;
 
             // This will be automatically mapped into the new operaiton's future
             // state, but that has not been generated at this point, so we manually

@@ -32,7 +32,6 @@ mixitup.Mixer = function() {
     this._isMixing          = false;
     this._isClicking        = false;
     this._isToggling        = false;
-    this._isLoading         = true;
     this._incPadding        = true;
 
     this._targets           = [];
@@ -328,10 +327,8 @@ h.extend(mixitup.Mixer.prototype,
         var self            = this,
             command         = null,
             method          = '',
-            key             = '',
             isTogglingOff   = false,
-            button          = null,
-            i               = -1;
+            button          = null;
 
         self.execAction('_handleClick', 0, arguments);
 
@@ -357,8 +354,6 @@ h.extend(mixitup.Mixer.prototype,
             return;
         }
 
-        self._isClicking = true;
-
         button = h.closestParent(
             e.target,
             self.selectors.control,
@@ -372,6 +367,8 @@ h.extend(mixitup.Mixer.prototype,
 
             return;
         }
+
+        self._isClicking = true;
 
         // This will be automatically mapped into the new operaiton's future
         // state, but that has not been generated at this point, so we manually
