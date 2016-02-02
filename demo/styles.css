@@ -1,5 +1,53 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
 body {
-    padding: 1rem;
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+body {
+    background: #eee;
+}
+
+menu {
+    //display: none;
 }
 
 .control,
@@ -16,20 +64,57 @@ body {
 }
 
 .mixitup-pager-disabled {
-    opacity: .5;
+    opacity: .8;
 }
 
 .mix {
-    display: inline-block;
-    width: 100px;
-    height: 100px;
-    margin: 10px;
+    vertical-align: top;
     background: skyblue;
+    border-radius: 5px;
+    margin: 2rem;
+    color: transparent;
+
+    transition: opacity 300ms;
+
+    -webkit-user-select: none;
+}
+
+.mix,
+.gap {
+    display: inline-block;
+    width: 6%;
+    margin: 0 2rem;
+}
+
+.mix {
+    margin: 2rem;
+}
+
+.mix:before {
+    content: '';
+    display: inline-block;
+    padding-top: 100%;
+}
+
+.mixitup-target-placeholder {
+    background: transparent !important;
+    border: 2px dashed #ccc;
+    box-sizing: border-box;
+}
+
+.mixitup-target-dragging {
+    opacity: .5;
 }
 
 .sandbox {
-    background: black;
     overflow: hidden;
+    text-align: justify;
+}
+
+.sandbox:after {
+    content: '';
+    width: 100%;
+    display: inline-block;
 }
 
 .sandbox__mixitup .mix {

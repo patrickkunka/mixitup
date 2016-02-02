@@ -6,16 +6,24 @@ var mixer   = null;
 
 mixer = mixitup(sandbox, {
     animation: {
-        effects: 'fade translateZ(-150px) stagger(20ms)',
+        effects: 'fade translateZ(-150px)',
         easing: 'cubic-bezier(1, 0, 0, 1)',
-        duration: 350
+        duration: 200
     },
     pagination: {
         limit: 4,
         maxPagers: 6
     },
     dragndrop: {
-        enable: true
+        enable: true,
+        hidePlaceholder: false,
+        debounceDelay: 20,
+        swap: true
+    },
+    callbacks: {
+        onMixLift: function() {
+            console.log('lift', this);
+        }
     }
 });
 
