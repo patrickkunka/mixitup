@@ -367,7 +367,11 @@ h.extend(mixitup.Mixer.prototype,
             self._dom.document
         );
 
-        if (!button) return;
+        if (!button) {
+            self.execAction('_handleClick', 1, arguments);
+
+            return;
+        }
 
         // This will be automatically mapped into the new operaiton's future
         // state, but that has not been generated at this point, so we manually
@@ -2569,10 +2573,12 @@ h.extend(mixitup.Mixer.prototype,
      * @instance
      * @since   3.0.0
      * @param   {Command}           command
+     * @param   {boolean}           [isPreFetch]
+     *      An optional boolean indicating that the operation is being pre-fetched for execution at a later time.
      * @return  {Operation|null}
      */
 
-    getOperation: function(command) {
+    getOperation: function(command, isPreFetch) {
         var self                = this,
             sortCommand         = command.sort,
             filterCommand       = command.filter,

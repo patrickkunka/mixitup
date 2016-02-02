@@ -124,6 +124,7 @@ Sorts the mixer according to the specified sort command.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`Command` | `command` | 
+|Param   |`boolean` | `[isPreFetch]` | An optional boolean indicating that the operation is being pre-fetched for execution at a later time.
 |Returns |`Operation, null` | 
 
 

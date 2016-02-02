@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 6d3d261e-27d8-415c-901d-eb3612679b67
+ * Build 302e34dd-9015-4523-a6ef-9896cea7ac9e
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2155,7 +2155,11 @@
                 self._dom.document
             );
 
-            if (!button) return;
+            if (!button) {
+                self.execAction('_handleClick', 1, arguments);
+
+                return;
+            }
 
             // This will be automatically mapped into the new operaiton's future
             // state, but that has not been generated at this point, so we manually
@@ -4357,10 +4361,12 @@
          * @instance
          * @since   3.0.0
          * @param   {Command}           command
+         * @param   {boolean}           [isPreFetch]
+         *      An optional boolean indicating that the operation is being pre-fetched for execution at a later time.
          * @return  {Operation|null}
          */
 
-        getOperation: function(command) {
+        getOperation: function(command, isPreFetch) {
             var self                = this,
                 sortCommand         = command.sort,
                 filterCommand       = command.filter,
