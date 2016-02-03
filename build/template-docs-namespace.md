@@ -26,7 +26,7 @@
 {{#if isProperty}}
 |Type{{#if defaultvalue}} | Default{{/if}}
 |---{{#if defaultvalue}}  | ---{{/if}}
-`{{#each type.names}}{{{this}}}{{/each}}`{{#if defaultvalue}}| `{{{defaultvalue}}}`{{/if}}
+|`{{#each type.names}}{{{this}}}{{/each}}`{{#if defaultvalue}}| `{{{defaultvalue}}}`{{/if}}
 {{/if}}
 
 {{#if since}}

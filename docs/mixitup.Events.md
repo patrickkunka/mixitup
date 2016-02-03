@@ -29,7 +29,7 @@ the requested operation has completed.
 
 |Type
 |---
-`CustomEvent`
+|`CustomEvent`
 
 ### <a id="mixitup.Events.mixBusy">mixitup.Events.mixBusy</a>
 
@@ -42,7 +42,7 @@ is disabled.
 
 |Type
 |---
-`CustomEvent`
+|`CustomEvent`
 
 ### <a id="mixitup.Events.mixBusy">mixitup.Events.mixBusy</a>
 
@@ -54,7 +54,7 @@ state has been updated.
 
 |Type
 |---
-`CustomEvent`
+|`CustomEvent`
 
 ### <a id="mixitup.Events.mixFail">mixitup.Events.mixFail</a>
 
@@ -66,7 +66,7 @@ could be found matching the filter.
 
 |Type
 |---
-`CustomEvent`
+|`CustomEvent`
 
 ### <a id="mixitup.Events.mixFail">mixitup.Events.mixFail</a>
 
@@ -81,5 +81,5 @@ object, which holds a reference to the original click event.
 
 |Type
 |---
-`CustomEvent`
+|`CustomEvent`
 
