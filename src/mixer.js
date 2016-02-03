@@ -381,7 +381,6 @@ h.extend(mixitup.Mixer.prototype,
         // behavior can be cancelled (e.g. an <a> being used as a control as a
         // progressive enhancement):
 
-
         h.triggerCustom(self._dom.container, 'mixClick', {
             state: self._state,
             instance: self,
