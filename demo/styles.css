@@ -109,6 +109,7 @@ menu {
 .sandbox {
     overflow: hidden;
     text-align: justify;
+    background: #333;
 }
 
 .sandbox:after {

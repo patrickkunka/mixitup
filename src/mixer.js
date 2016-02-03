@@ -341,13 +341,13 @@ h.extend(mixitup.Mixer.prototype,
                 console.warn(mixitup.messages[201]);
             }
 
+            mixitup.events.fire('mixBusy', self._dom.container, {
+                state: self._state,
+                instance: self
+            }, self._dom.document);
+
             if (typeof self.callbacks.onMixBusy === 'function') {
                 self.callbacks.onMixBusy.call(self._dom.container, self._state, self);
-
-                h.triggerCustom(self._dom.container, 'mixBusy', {
-                    state: self._state,
-                    instance: self
-                }, self._dom.document);
             }
 
             self.execAction('_handleClickBusy', 1, arguments);
@@ -381,7 +381,7 @@ h.extend(mixitup.Mixer.prototype,
         // behavior can be cancelled (e.g. an <a> being used as a control as a
         // progressive enhancement):
 
-        h.triggerCustom(self._dom.container, 'mixClick', {
+        mixitup.events.fire('mixClick', self._dom.container, {
             state: self._state,
             instance: self,
             originalEvent: e
@@ -1011,6 +1011,10 @@ h.extend(mixitup.Mixer.prototype,
 
         operation.matching = operation.show.slice();
 
+        if (operation.show.length === 0 && operation.newFilter !== '' && self._targets.length !== 0) {
+            operation.hasFailed = true;
+        }
+
         self.execAction('_filter', 1, arguments);
     },
 
@@ -1448,7 +1452,7 @@ h.extend(mixitup.Mixer.prototype,
         state.activeFilter         = operation.newFilter;
         state.activeSort           = operation.newSortString;
         state.activeContainerClass = operation.newContainerClass;
-        state.hasFailed            = !operation.matching.length && operation.newFilter !== '';
+        state.hasFailed            = operation.hasFailed;
         state.totalTargets         = self._targets.length;
         state.totalShow            = operation.show.length;
         state.totalHide            = operation.hide.length;
@@ -1513,6 +1517,12 @@ h.extend(mixitup.Mixer.prototype,
             self._userPromise = h.getPromise(self.libraries);
         }
 
+        mixitup.events.fire('mixStart', self._dom.container, {
+            state: operation.startState,
+            futureState: operation.newState,
+            instance: self
+        }, self._dom.document);
+
         if (typeof self.callbacks.onMixStart === 'function') {
             self.callbacks.onMixStart.call(
                 self._dom.container,
@@ -1522,11 +1532,7 @@ h.extend(mixitup.Mixer.prototype,
             );
         }
 
-        h.triggerCustom(self._dom.container, 'mixStart', {
-            state: operation.startState,
-            futureState: operation.newState,
-            instance: self
-        }, self._dom.document);
+        h.removeClass(self._dom.container, self.layout.containerClassFail);
 
         if (shouldAnimate && mixitup.features.has.transitions) {
             // If we should animate and the platform supports
@@ -1982,7 +1988,7 @@ h.extend(mixitup.Mixer.prototype,
         if (self.animation.animateResizeContainer) {
             self._dom.parent.style[mixitup.features.transitionProp] =
                 'height ' + self.animation.duration + 'ms ease, ' +
-                'width ' + self.animation.duration + 'ms ease, ';
+                'width ' + self.animation.duration + 'ms ease ';
 
             requestAnimationFrame(function() {
                 self._dom.parent.style.height = operation.newHeight + 'px';
@@ -2172,18 +2178,37 @@ h.extend(mixitup.Mixer.prototype,
 
         self._dom.targets = self._state.targets;
 
-        if (typeof self._userCallback === 'function') {
-            self._userCallback.call(self._dom.el, self._state, self);
-        }
+        // mixEnd
 
-        if (typeof self.callbacks.onMixEnd === 'function') {
-            self.callbacks.onMixEnd.call(self._dom.el, self._state, self);
-        }
-
-        h.triggerCustom(self._dom.container, 'mixEnd', {
+        mixitup.events.fire('mixEnd', self._dom.container, {
             state: self._state,
             instance: self
         }, self._dom.document);
+
+        if (typeof self.callbacks.onMixEnd === 'function') {
+            self.callbacks.onMixEnd.call(self._dom.container, self._state, self);
+        }
+
+        if (operation.hasFailed) {
+            // mixFail
+
+            mixitup.events.fire('mixFail', self._dom.container, {
+                state: self._state,
+                instance: self
+            }, self._dom.document);
+
+            if (typeof self.callbacks.onMixFail === 'function') {
+                self.callbacks.onMixFail.call(self._dom.container, self._state, self);
+            }
+
+            h.addClass(self._dom.container, self.layout.containerClassFail);
+        }
+
+        // User-defined callback function
+
+        if (typeof self._userCallback === 'function') {
+            self._userCallback.call(self._dom.container, self._state, self);
+        }
 
         self._userPromise.resolve(self._state);
 
@@ -2408,14 +2433,14 @@ h.extend(mixitup.Mixer.prototype,
             promise.resolve(self._state);
             promise.isResolved = true;
 
+            mixitup.events.fire('mixBusy', self._dom.container, {
+                state: self._state,
+                instance: self
+            }, self._dom.document);
+
             if (typeof self.callbacks.onMixBusy === 'function') {
                 self.callbacks.onMixBusy.call(self._dom.container, self._state, self);
             }
-
-            h.triggerCustom(self._dom.container, 'mixBusy', {
-                state: self._state,
-                instance: self
-            });
 
             self.execAction('multiMixBusy', 1, args);
         }

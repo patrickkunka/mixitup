@@ -29,6 +29,7 @@ mixitup.Operation = function() {
     this.willSort            = false;
     this.willChangeLayout    = false;
     this.hasEffect           = false;
+    this.hasFailed           = false;
 
     this.show                = [];
     this.hide                = [];

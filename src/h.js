@@ -179,28 +179,27 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   el
-     * @param   {string}    eventName
-     * @param   {object}    data
-     * @param   {Document}  [doc]
-     * @return  {void}
+     * @param   {string}      eventType
+     * @param   {object}      detail
+     * @param   {Document}    [doc]
+     * @return  {CustomEvent}
      */
 
-    triggerCustom: function(el, eventName, data, doc) {
+    getCustomEvent: function(eventType, detail, doc) {
         var event = null;
 
         doc = doc || window.document;
 
         if (typeof window.CustomEvent === 'function') {
-            event = new CustomEvent(eventName, {
-                detail: data
+            event = new CustomEvent(eventType, {
+                detail: detail
             });
         } else {
             event = doc.createEvent('CustomEvent');
-            event.initCustomEvent(eventName, true, true, data);
+            event.initCustomEvent(eventType, true, true, detail);
         }
 
-        el.dispatchEvent(event);
+        return event;
     },
 
     /**

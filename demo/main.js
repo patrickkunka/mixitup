@@ -8,7 +8,7 @@ mixer = mixitup(sandbox, {
     animation: {
         effects: 'fade translateZ(-150px)',
         easing: 'cubic-bezier(1, 0, 0, 1)',
-        duration: 200
+        duration: 200,
     },
     pagination: {
         limit: 4,
@@ -25,6 +25,26 @@ mixer = mixitup(sandbox, {
             console.log('lift', this);
         }
     }
+});
+
+// sandbox.addEventListener('mixStart', function(e) {
+//     console.log('mixStart', e.detail);
+// });
+
+// sandbox.addEventListener('mixEnd', function(e) {
+//     console.log('mixEnd', e.detail);
+// });
+
+// sandbox.addEventListener('mixClick', function(e) {
+//     console.log('mixClick', e.detail);
+// });
+
+// sandbox.addEventListener('mixBusy', function(e) {
+//     console.log('mixBusy', e.detail);
+// });
+
+sandbox.addEventListener('mixFail', function(e) {
+    console.log('mixFail', e.detail);
 });
 
 sandbox.classList.add('sandbox__mixitup');

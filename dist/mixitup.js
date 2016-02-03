@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 93802944-c200-41d1-bd3c-7f6a19e6654a
+ * Build f10f2756-c545-49c7-8089-2c0b4c1a39cf
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -345,28 +345,27 @@
 
         /**
          * @private
-         * @param   {Element}   el
-         * @param   {string}    eventName
-         * @param   {object}    data
-         * @param   {Document}  [doc]
-         * @return  {void}
+         * @param   {string}      eventType
+         * @param   {object}      detail
+         * @param   {Document}    [doc]
+         * @return  {CustomEvent}
          */
 
-        triggerCustom: function(el, eventName, data, doc) {
+        getCustomEvent: function(eventType, detail, doc) {
             var event = null;
 
             doc = doc || window.document;
 
             if (typeof window.CustomEvent === 'function') {
-                event = new CustomEvent(eventName, {
-                    detail: data
+                event = new CustomEvent(eventType, {
+                    detail: detail
                 });
             } else {
                 event = doc.createEvent('CustomEvent');
-                event.initCustomEvent(eventName, true, true, data);
+                event.initCustomEvent(eventType, true, true, detail);
             }
 
-            el.dispatchEvent(event);
+            return event;
         },
 
         /**
@@ -1483,7 +1482,7 @@
 
         this.allowNestedTargets = false;
         this.containerClass     = '';
-        this.containerClassFail = 'fail';
+        this.containerClassFail = 'mixitup-container-fail';
 
         this.execAction('construct', 1);
 
@@ -1787,6 +1786,161 @@
      */
 
     mixitup.transformDefaults = new mixitup.TransformDefaults();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.EventDetail = function() {
+        this.state          = null;
+        this.futureState    = null;
+        this.instance       = null;
+        this.originalEvent  = null;
+    };
+
+    /**
+     * The `mixitup.Events` class contains all custom events dispatched by MixItUp.
+     * Each event is analogous to the callback function of the same name defined in
+     * the `callbacks` configuration object, and is triggered immediately before it.
+     *
+     * Events are always triggered from the container element on which MixItUp is instantiated
+     * upon.
+     *
+     * As with any event, registered event handlers receive the event object as a parameter
+     * which includes a `detail` property containting references to the current `state`,
+     * the `mixer` instance, and other event-specific properties described below.
+     *
+     * @constructor
+     * @namespace
+     * @memberof    mixitup
+     * @public
+     * @since       3.0.0
+     */
+
+    mixitup.Events = function() {
+        this.execAction('construct', 0);
+
+        /**
+         * A custom event triggered immediately after any MixItUp operation is requested
+         * and before animations have begun.
+         *
+         * The `mixStart` event also exposes a `futureState` property via the
+         * `event.detail` object, which represents the final state of the mixer once
+         * the requested operation has completed.
+         *
+         * @name        mixStart
+         * @memberof    mixitup.Events
+         * @static
+         * @type        {CustomEvent}
+         */
+
+        this.mixStart   = null;
+
+        /**
+         * A custom event triggered when a MixItUp operation is requested while another
+         * operation is in progress, and the animation queue is full, or queueing
+         * is disabled.
+         *
+         * @name        mixBusy
+         * @memberof    mixitup.Events
+         * @static
+         * @type        {CustomEvent}
+         */
+
+        this.mixBusy    = null;
+
+        /**
+         * A custom event triggered after any MixItUp operation has completed, and the
+         * state has been updated.
+         *
+         * @name        mixBusy
+         * @memberof    mixitup.Events
+         * @static
+         * @type        {CustomEvent}
+         */
+
+        this.mixEnd     = null;
+
+        /**
+         * A custom event triggered whenever a filter operation "fails", i.e. no targets
+         * could be found matching the filter.
+         *
+         * @name        mixFail
+         * @memberof    mixitup.Events
+         * @static
+         * @type        {CustomEvent}
+         */
+
+        this.mixFail    = null;
+
+        /**
+         * A custom event triggered whenever a MixItUp control is clicked, and before its
+         * respective operation is requested.
+         *
+         * This event also exposes an `originalEvent` property via the `event.detail`
+         * object, which holds a reference to the original click event.
+         *
+         * @name        mixFail
+         * @memberof    mixitup.Events
+         * @static
+         * @type        {CustomEvent}
+         */
+
+        this.mixClick   = null;
+
+        this.execAction('construct', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.Events.prototype = Object.create(new mixitup.BasePrototype());
+
+    mixitup.Events.prototype.constructor = mixitup.Events;
+
+    /**
+     * @private
+     * @param   {string}      eventType
+     * @param   {Element}     el
+     * @param   {object}      detail
+     * @param   {Document}    [doc]
+     */
+
+    mixitup.Events.prototype.fire = function(eventType, el, detail, doc) {
+        var self        = this,
+            event       = null,
+            eventDetail = new mixitup.EventDetail();
+
+        if (typeof self[eventType] === 'undefined') {
+            throw new Error('Event type "' + eventType + '" not found.');
+        }
+
+        eventDetail.state = new mixitup.State();
+
+        h.extend(eventDetail.state, detail.state);
+
+        if (detail.futureState) {
+            eventDetail.futureState = new mixitup.State();
+
+            h.extend(eventDetail.futureState, detail.futureState);
+        }
+
+        eventDetail.instance = detail.instance;
+
+        if (detail.originalEvent) {
+            eventDetail.originalEvent = detail.originalEvent;
+        }
+
+        event = h.getCustomEvent(eventType, eventDetail, doc);
+
+        el.dispatchEvent(event);
+    };
+
+    // Asign a singleton instance to `mixitup.events`:
+
+    mixitup.events = new mixitup.Events();
 
     /**
      * The `mixitup.Mixer` class is used to construct discreet user-configured
@@ -2129,13 +2283,13 @@
                     console.warn(mixitup.messages[201]);
                 }
 
+                mixitup.events.fire('mixBusy', self._dom.container, {
+                    state: self._state,
+                    instance: self
+                }, self._dom.document);
+
                 if (typeof self.callbacks.onMixBusy === 'function') {
                     self.callbacks.onMixBusy.call(self._dom.container, self._state, self);
-
-                    h.triggerCustom(self._dom.container, 'mixBusy', {
-                        state: self._state,
-                        instance: self
-                    }, self._dom.document);
                 }
 
                 self.execAction('_handleClickBusy', 1, arguments);
@@ -2169,7 +2323,7 @@
             // behavior can be cancelled (e.g. an <a> being used as a control as a
             // progressive enhancement):
 
-            h.triggerCustom(self._dom.container, 'mixClick', {
+            mixitup.events.fire('mixClick', self._dom.container, {
                 state: self._state,
                 instance: self,
                 originalEvent: e
@@ -2799,6 +2953,10 @@
 
             operation.matching = operation.show.slice();
 
+            if (operation.show.length === 0 && operation.newFilter !== '' && self._targets.length !== 0) {
+                operation.hasFailed = true;
+            }
+
             self.execAction('_filter', 1, arguments);
         },
 
@@ -3236,7 +3394,7 @@
             state.activeFilter         = operation.newFilter;
             state.activeSort           = operation.newSortString;
             state.activeContainerClass = operation.newContainerClass;
-            state.hasFailed            = !operation.matching.length && operation.newFilter !== '';
+            state.hasFailed            = operation.hasFailed;
             state.totalTargets         = self._targets.length;
             state.totalShow            = operation.show.length;
             state.totalHide            = operation.hide.length;
@@ -3301,6 +3459,12 @@
                 self._userPromise = h.getPromise(self.libraries);
             }
 
+            mixitup.events.fire('mixStart', self._dom.container, {
+                state: operation.startState,
+                futureState: operation.newState,
+                instance: self
+            }, self._dom.document);
+
             if (typeof self.callbacks.onMixStart === 'function') {
                 self.callbacks.onMixStart.call(
                     self._dom.container,
@@ -3310,11 +3474,7 @@
                 );
             }
 
-            h.triggerCustom(self._dom.container, 'mixStart', {
-                state: operation.startState,
-                futureState: operation.newState,
-                instance: self
-            }, self._dom.document);
+            h.removeClass(self._dom.container, self.layout.containerClassFail);
 
             if (shouldAnimate && mixitup.features.has.transitions) {
                 // If we should animate and the platform supports
@@ -3770,7 +3930,7 @@
             if (self.animation.animateResizeContainer) {
                 self._dom.parent.style[mixitup.features.transitionProp] =
                     'height ' + self.animation.duration + 'ms ease, ' +
-                    'width ' + self.animation.duration + 'ms ease, ';
+                    'width ' + self.animation.duration + 'ms ease ';
 
                 requestAnimationFrame(function() {
                     self._dom.parent.style.height = operation.newHeight + 'px';
@@ -3960,18 +4120,37 @@
 
             self._dom.targets = self._state.targets;
 
-            if (typeof self._userCallback === 'function') {
-                self._userCallback.call(self._dom.el, self._state, self);
-            }
+            // mixEnd
 
-            if (typeof self.callbacks.onMixEnd === 'function') {
-                self.callbacks.onMixEnd.call(self._dom.el, self._state, self);
-            }
-
-            h.triggerCustom(self._dom.container, 'mixEnd', {
+            mixitup.events.fire('mixEnd', self._dom.container, {
                 state: self._state,
                 instance: self
             }, self._dom.document);
+
+            if (typeof self.callbacks.onMixEnd === 'function') {
+                self.callbacks.onMixEnd.call(self._dom.container, self._state, self);
+            }
+
+            if (operation.hasFailed) {
+                // mixFail
+
+                mixitup.events.fire('mixFail', self._dom.container, {
+                    state: self._state,
+                    instance: self
+                }, self._dom.document);
+
+                if (typeof self.callbacks.onMixFail === 'function') {
+                    self.callbacks.onMixFail.call(self._dom.container, self._state, self);
+                }
+
+                h.addClass(self._dom.container, self.layout.containerClassFail);
+            }
+
+            // User-defined callback function
+
+            if (typeof self._userCallback === 'function') {
+                self._userCallback.call(self._dom.container, self._state, self);
+            }
 
             self._userPromise.resolve(self._state);
 
@@ -4196,14 +4375,14 @@
                 promise.resolve(self._state);
                 promise.isResolved = true;
 
+                mixitup.events.fire('mixBusy', self._dom.container, {
+                    state: self._state,
+                    instance: self
+                }, self._dom.document);
+
                 if (typeof self.callbacks.onMixBusy === 'function') {
                     self.callbacks.onMixBusy.call(self._dom.container, self._state, self);
                 }
-
-                h.triggerCustom(self._dom.container, 'mixBusy', {
-                    state: self._state,
-                    instance: self
-                });
 
                 self.execAction('multiMixBusy', 1, args);
             }
@@ -5564,6 +5743,7 @@
         this.willSort            = false;
         this.willChangeLayout    = false;
         this.hasEffect           = false;
+        this.hasFailed           = false;
 
         this.show                = [];
         this.hide                = [];

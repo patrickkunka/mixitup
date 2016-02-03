@@ -42,6 +42,8 @@
 
     {{>transform-defaults}}
 
+    {{>events}}
+
     {{>mixer}}
 
     {{>target-dom}}
