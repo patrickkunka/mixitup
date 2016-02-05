@@ -204,6 +204,22 @@ h = {
 
     /**
      * @private
+     * @param {Event} e
+     * @return {Event}
+     */
+
+    getOriginalEvent: function(e) {
+        if (e.touches && e.touches.length) {
+            return e.touches[0];
+        } else if (e.changedTouches && e.changedTouches.length) {
+            return e.changedTouches[0];
+        } else {
+            return e;
+        }
+    },
+
+    /**
+     * @private
      * @param   {Element}   el
      * @param   {string}    selector
      * @return  {Number}

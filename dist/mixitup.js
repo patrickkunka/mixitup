@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build d1d217dc-e3bb-4356-a21d-53be38179f41
+ * Build 51ca8f6a-f36d-48cf-af02-05f90af728aa
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -366,6 +366,22 @@
             }
 
             return event;
+        },
+
+        /**
+         * @private
+         * @param {Event} e
+         * @return {Event}
+         */
+
+        getOriginalEvent: function(e) {
+            if (e.touches && e.touches.length) {
+                return e.touches[0];
+            } else if (e.changedTouches && e.changedTouches.length) {
+                return e.changedTouches[0];
+            } else {
+                return e;
+            }
         },
 
         /**
