@@ -448,6 +448,36 @@ h = {
     },
 
     /**
+     * Calcuates the area of intersection between two rectangles and expresses it as
+     * a ratio in comparison to the area of the first rectangle.
+     *
+     * @private
+     * @param   {Rect}  box1
+     * @param   {Rect}  box2
+     * @return  {number}
+     */
+
+    getIntersectionRatio: function(box1, box2) {
+        var controlArea         = box1.width * box1.height,
+            intersectionX       = -1,
+            intersectionY       = -1,
+            intersectionArea    = -1,
+            ratio               = -1;
+
+        intersectionX =
+            Math.max(0, Math.min(box1.left + box1.width, box2.left + box2.width) - Math.max(box1.left, box2.left));
+
+        intersectionY =
+            Math.max(0, Math.min(box1.top + box1.height, box2.top + box2.height) - Math.max(box1.top, box2.top));
+
+        intersectionArea = intersectionY * intersectionX;
+
+        ratio = intersectionArea / controlArea;
+
+        return ratio;
+    },
+
+    /**
      * @private
      * @param   {object}        el
      * @param   {string}        selector

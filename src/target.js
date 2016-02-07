@@ -603,10 +603,11 @@ h.extend(mixitup.Target.prototype, {
      * @private
      * @instance
      * @since   3.0.0
+     * @param   {boolean}   [getBox]
      * @return  {PosData}
      */
 
-    getPosData: function() {
+    getPosData: function(getBox) {
         var self    = this,
             styles  = {},
             rect    = null,
@@ -614,18 +615,26 @@ h.extend(mixitup.Target.prototype, {
 
         self.execAction('getPosData', 0, arguments);
 
-        posData.x               = self.dom.el.offsetLeft;
-        posData.y               = self.dom.el.offsetTop;
+        posData.x = self.dom.el.offsetLeft;
+        posData.y = self.dom.el.offsetTop;
+
+        if (self.mixer.animation.animateResizeTargets || getBox) {
+            rect = self.dom.el.getBoundingClientRect();
+
+            posData.top     = rect.top;
+            posData.right   = rect.right;
+            posData.bottom  = rect.bottom;
+            posData.left    = rect.left;
+
+            posData.width  = rect.width;
+            posData.height = rect.height;
+        }
 
         if (self.mixer.animation.animateResizeTargets) {
-            rect    = self.dom.el.getBoundingClientRect();
-            styles  = window.getComputedStyle(self.dom.el);
+            styles = window.getComputedStyle(self.dom.el);
 
-            posData.width   = rect.width;
-            posData.height  = rect.height;
-
-            posData.marginBottom    = parseFloat(styles.marginBottom);
-            posData.marginRight     = parseFloat(styles.marginRight);
+            posData.marginBottom = parseFloat(styles.marginBottom);
+            posData.marginRight  = parseFloat(styles.marginRight);
         }
 
         return self.execFilter('getPosData', posData, arguments);

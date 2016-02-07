@@ -18,12 +18,13 @@ mixer = mixitup(sandbox, {
         enable: true,
         hidePlaceholder: false,
         debounceDelay: 20,
-        swap: true
+        detection: 'collision'
+        // swap: true
     },
     callbacks: {
-        onMixLift: function() {
-            console.log('lift', this);
-        }
+        // onMixLift: function() {
+        //     console.log('lift', this);
+        // }
     }
 });
 

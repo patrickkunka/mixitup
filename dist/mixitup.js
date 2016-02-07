@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 51ca8f6a-f36d-48cf-af02-05f90af728aa
+ * Build a6e63638-9050-4dd8-b276-2b96bfa7319b
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -611,6 +611,36 @@
             distanceY = distanceY < 0 ? distanceY * -1 : distanceY;
 
             return Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+        },
+
+        /**
+         * Calcuates the area of intersection between two rectangles and expresses it as
+         * a ratio in comparison to the area of the first rectangle.
+         *
+         * @private
+         * @param   {Rect}  box1
+         * @param   {Rect}  box2
+         * @return  {number}
+         */
+
+        getIntersectionRatio: function(box1, box2) {
+            var controlArea         = box1.width * box1.height,
+                intersectionX       = -1,
+                intersectionY       = -1,
+                intersectionArea    = -1,
+                ratio               = -1;
+
+            intersectionX =
+                Math.max(0, Math.min(box1.left + box1.width, box2.left + box2.width) - Math.max(box1.left, box2.left));
+
+            intersectionY =
+                Math.max(0, Math.min(box1.top + box1.height, box2.top + box2.height) - Math.max(box1.top, box2.top));
+
+            intersectionArea = intersectionY * intersectionX;
+
+            ratio = intersectionArea / controlArea;
+
+            return ratio;
         },
 
         /**
@@ -1705,6 +1735,10 @@
 
         this.x              = 0;
         this.y              = 0;
+        this.top            = 0;
+        this.right          = 0;
+        this.bottom         = 0;
+        this.left           = 0;
         this.width          = 0;
         this.height         = 0;
         this.marginRight    = 0;
@@ -5615,10 +5649,11 @@
          * @private
          * @instance
          * @since   3.0.0
+         * @param   {boolean}   [getBox]
          * @return  {PosData}
          */
 
-        getPosData: function() {
+        getPosData: function(getBox) {
             var self    = this,
                 styles  = {},
                 rect    = null,
@@ -5626,18 +5661,26 @@
 
             self.execAction('getPosData', 0, arguments);
 
-            posData.x               = self.dom.el.offsetLeft;
-            posData.y               = self.dom.el.offsetTop;
+            posData.x = self.dom.el.offsetLeft;
+            posData.y = self.dom.el.offsetTop;
+
+            if (self.mixer.animation.animateResizeTargets || getBox) {
+                rect = self.dom.el.getBoundingClientRect();
+
+                posData.top     = rect.top;
+                posData.right   = rect.right;
+                posData.bottom  = rect.bottom;
+                posData.left    = rect.left;
+
+                posData.width  = rect.width;
+                posData.height = rect.height;
+            }
 
             if (self.mixer.animation.animateResizeTargets) {
-                rect    = self.dom.el.getBoundingClientRect();
-                styles  = window.getComputedStyle(self.dom.el);
+                styles = window.getComputedStyle(self.dom.el);
 
-                posData.width   = rect.width;
-                posData.height  = rect.height;
-
-                posData.marginBottom    = parseFloat(styles.marginBottom);
-                posData.marginRight     = parseFloat(styles.marginRight);
+                posData.marginBottom = parseFloat(styles.marginBottom);
+                posData.marginRight  = parseFloat(styles.marginRight);
             }
 
             return self.execFilter('getPosData', posData, arguments);
