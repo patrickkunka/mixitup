@@ -258,6 +258,18 @@ h = {
 
     /**
      * @private
+     * @param   {string}    str
+     * @return  {string}
+     */
+
+    dashCase: function(str) {
+        return str.replace(/\W+/g, '-')
+            .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+            .toLowerCase();
+    },
+
+    /**
+     * @private
      * @param   {Element}   el
      * @param   {Document}  [doc]
      * @return  {boolean}
@@ -643,7 +655,7 @@ h = {
         var i       = -1,
             prefix  = '';
 
-        if (property.toLowerCase() in el.style) return '';
+        if (h.dashCase(property) in el.style) return '';
 
         for (i = 0; prefix = vendors[i]; i++) {
             if (prefix + property in el.style) {

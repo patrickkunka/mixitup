@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build a6e63638-9050-4dd8-b276-2b96bfa7319b
+ * Build ff28299d-d327-4c5f-a9b5-e16210f9b1f8
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -424,6 +424,18 @@
 
         /**
          * @private
+         * @param   {string}    str
+         * @return  {string}
+         */
+
+        dashCase: function(str) {
+            return str.replace(/\W+/g, '-')
+                .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+                .toLowerCase();
+        },
+
+        /**
+         * @private
          * @param   {Element}   el
          * @param   {Document}  [doc]
          * @return  {boolean}
@@ -809,7 +821,7 @@
             var i       = -1,
                 prefix  = '';
 
-            if (property.toLowerCase() in el.style) return '';
+            if (h.dashCase(property) in el.style) return '';
 
             for (i = 0; prefix = vendors[i]; i++) {
                 if (prefix + property in el.style) {

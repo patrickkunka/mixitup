@@ -106,6 +106,10 @@ menu {
     opacity: .5;
 }
 
+.mixitup-target-closest {
+    border: 3px solid orange;
+}
+
 .sandbox {
     overflow: hidden;
     text-align: justify;

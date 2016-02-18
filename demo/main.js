@@ -18,7 +18,8 @@ mixer = mixitup(sandbox, {
         enable: true,
         hidePlaceholder: false,
         debounceDelay: 20,
-        detection: 'collision'
+        detection: 'collision',
+        // liveSort: false
         // swap: true
     },
     callbacks: {
