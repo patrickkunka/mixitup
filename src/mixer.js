@@ -1554,7 +1554,9 @@ h.extend(mixitup.Mixer.prototype,
 
             if (self.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
                 self._dom.parent.style.height = operation.startHeight + 'px';
-            } else if (self.animationResizeContainer || operation.startWidth === operation.newWidth) {
+            }
+
+            if (self.animation.animateResizeContainer || operation.startWidth === operation.newWidth) {
                 self._dom.parent.style.width = operation.startWidth + 'px';
             }
 

@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build ff28299d-d327-4c5f-a9b5-e16210f9b1f8
+ * Build 2c0806b6-294d-4b8e-b941-2aa38f6c36a7
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3558,7 +3558,9 @@
 
                 if (self.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
                     self._dom.parent.style.height = operation.startHeight + 'px';
-                } else if (self.animationResizeContainer || operation.startWidth === operation.newWidth) {
+                }
+
+                if (self.animation.animateResizeContainer || operation.startWidth === operation.newWidth) {
                     self._dom.parent.style.width = operation.startWidth + 'px';
                 }
 
@@ -5628,7 +5630,7 @@
             self.execAction('unbindEvents', 0, arguments);
 
             h.off(self.dom.el, 'webkitTransitionEnd', self.handler);
-            h.off(self.dom.el, 'transitionEnd', self.handler);
+            h.off(self.dom.el, 'transitionend', self.handler);
 
             self.execAction('unbindEvents', 1, arguments);
         },
@@ -6242,11 +6244,11 @@
             self.transitionProp = self.transitionPrefix ?
                 self.transitionPrefix + h.camelCase(self.TRANSITION_PROP, true) : self.TRANSITION_PROP;
 
-            self.transformProp = self.transitionPrefix ?
+            self.transformProp = self.transformPrefix ?
                 self.transformPrefix + h.camelCase(self.TRANSFORM_PROP, true) : self.TRANSFORM_PROP;
 
             self.transformRule = self.transformPrefix ?
-                self.transformPrefix + '-' + self.TRANSFORM_PROP : self.TRANSFORM_PROP;
+                '-' + self.transformPrefix + '-' + self.TRANSFORM_PROP : self.TRANSFORM_PROP;
 
             self.perspectiveProp = self.transformPrefix ?
                 self.transformPrefix + h.camelCase(self.PERSPECTIVE_PROP, true) : self.PERSPECTIVE_PROP;

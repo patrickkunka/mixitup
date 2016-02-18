@@ -570,7 +570,7 @@ h.extend(mixitup.Target.prototype, {
         self.execAction('unbindEvents', 0, arguments);
 
         h.off(self.dom.el, 'webkitTransitionEnd', self.handler);
-        h.off(self.dom.el, 'transitionEnd', self.handler);
+        h.off(self.dom.el, 'transitionend', self.handler);
 
         self.execAction('unbindEvents', 1, arguments);
     },

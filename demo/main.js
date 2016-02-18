@@ -6,7 +6,7 @@ var mixer   = null;
 
 mixer = mixitup(sandbox, {
     animation: {
-        effects: 'fade translateZ(-150px)',
+        effects: 'fade',
         easing: 'cubic-bezier(1, 0, 0, 1)',
         duration: 200,
     },
@@ -122,4 +122,4 @@ document.querySelector('.js-api-limit-10').addEventListener('click', function() 
 });
 
 mixer.init(true)
-    .then((state) => console.log(mixer, state));
+    .then(function(state) {console.log(mixer, state)});

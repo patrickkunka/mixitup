@@ -115,11 +115,11 @@ h.extend(mixitup.Features.prototype,
         self.transitionProp = self.transitionPrefix ?
             self.transitionPrefix + h.camelCase(self.TRANSITION_PROP, true) : self.TRANSITION_PROP;
 
-        self.transformProp = self.transitionPrefix ?
+        self.transformProp = self.transformPrefix ?
             self.transformPrefix + h.camelCase(self.TRANSFORM_PROP, true) : self.TRANSFORM_PROP;
 
         self.transformRule = self.transformPrefix ?
-            self.transformPrefix + '-' + self.TRANSFORM_PROP : self.TRANSFORM_PROP;
+            '-' + self.transformPrefix + '-' + self.TRANSFORM_PROP : self.TRANSFORM_PROP;
 
         self.perspectiveProp = self.transformPrefix ?
             self.transformPrefix + h.camelCase(self.PERSPECTIVE_PROP, true) : self.PERSPECTIVE_PROP;
