@@ -1810,7 +1810,7 @@ h.extend(mixitup.Mixer.prototype,
 
             // Adjust x and y if not nudging
 
-            if (!target.isShown && !self.animation.nudgeOut) {
+            if (!target.isShown && !self.animation.nudge) {
                 posData.posIn.x = posData.posOut.x;
                 posData.posIn.y = posData.posOut.y;
             }
@@ -1887,8 +1887,8 @@ h.extend(mixitup.Mixer.prototype,
 
             posData.posIn.x     = target.isShown ? posData.startPosData.x - posData.interPosData.x : 0;
             posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
-            posData.posOut.x    = self.animation.nudgeOut ? 0 : posData.posIn.x;
-            posData.posOut.y    = self.animation.nudgeOut ? 0 : posData.posIn.y;
+            posData.posOut.x    = self.animation.nudge ? 0 : posData.posIn.x;
+            posData.posOut.y    = self.animation.nudge ? 0 : posData.posIn.y;
             posData.tweenData.x = posData.posOut.x - posData.posIn.x;
             posData.tweenData.y = posData.posOut.y - posData.posIn.y;
 

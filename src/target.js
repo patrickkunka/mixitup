@@ -390,7 +390,7 @@ h.extend(mixitup.Target.prototype, {
             self.dom.el.style.marginBottom = options.posOut.marginBottom + 'px';
         }
 
-        if (!self.mixer.animation.nudgeOut && options.hideOrShow === 'hide') {
+        if (!self.mixer.animation.nudge && options.hideOrShow === 'hide') {
             // If we're not nudging, the translation should be
             // applied before any other transforms to prevent
             // lateral movement
@@ -412,8 +412,8 @@ h.extend(mixitup.Target.prototype, {
         }
 
         if (
-            self.mixer.animation.nudgeOut ||
-            (!self.mixer.animation.nudgeOut && options.hideOrShow !== 'hide')
+            self.mixer.animation.nudge ||
+            (!self.mixer.animation.nudge && options.hideOrShow !== 'hide')
         ) {
             // Opposite of above - apply translate after
             // other transform

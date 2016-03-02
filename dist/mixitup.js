@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 2c0806b6-294d-4b8e-b941-2aa38f6c36a7
+ * Build 65dae726-f75f-438f-98c6-643c0520f4cc
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1155,7 +1155,7 @@
          * @default     true
          */
 
-        this.enable                 = true;
+        this.enable = true;
 
         /**
          * A string of one or more space-seperated effects to which transitions will be
@@ -1183,7 +1183,7 @@
          * @default     'fade scale'
          */
 
-        this.effects                = 'fade scale';
+        this.effects = 'fade scale';
 
         /**
          * A string of one or more space-seperated effects to be applied only to filter-in
@@ -1196,7 +1196,7 @@
          * @default     ''
          */
 
-        this.effectsIn              = '';
+        this.effectsIn = '';
 
         /**
          * A string of one or more space-seperated effects to be applied only to filter-out
@@ -1209,7 +1209,7 @@
          * @default     ''
          */
 
-        this.effectsOut             = '';
+        this.effectsOut = '';
 
         /**
          * An integer dictating the duration of all MixItUp animations in milliseconds, not
@@ -1222,7 +1222,7 @@
          * @default     600
          */
 
-        this.duration               = 600;
+        this.duration = 600;
 
         /**
          * A valid CSS3 transition-timing function or shorthand. For a full list of accepted
@@ -1235,7 +1235,7 @@
          * @default     'ease'
          */
 
-        this.easing                 = 'ease';
+        this.easing = 'ease';
 
         /**
          * A boolean dictating whether or not to apply perspective to the MixItUp container
@@ -1246,7 +1246,7 @@
          * You may wish to disable this and define your own perspective settings via CSS.
          */
 
-        this.applyPerspective       = 'true';
+        this.applyPerspective = 'true';
 
         /**
          * The perspective distance value applied to the container during animations,
@@ -1259,7 +1259,7 @@
          * @default     '3000px'
          */
 
-        this.perspectiveDistance    = '3000px';
+        this.perspectiveDistance = '3000px';
 
         /**
          * The perspective-origin value applied to the container during animations,
@@ -1272,7 +1272,7 @@
          * @default     '50% 50%'
          */
 
-        this.perspectiveOrigin      = '50% 50%';
+        this.perspectiveOrigin = '50% 50%';
 
         /**
          * A boolean dictating whether or not to enable queuing for all operations received
@@ -1287,7 +1287,7 @@
          * @default     true
          */
 
-        this.queue                  = true;
+        this.queue = true;
 
         /**
          * An integer dictacting the maximum number of operations allowed in the queue at
@@ -1300,7 +1300,7 @@
          * @default     3
          */
 
-        this.queueLimit             = 3;
+        this.queueLimit = 3;
 
         /**
          * A boolean dictating whether or not to attempt transitioning of target elements
@@ -1314,7 +1314,7 @@
          * @default     false
          */
 
-        this.animateChangeLayout    = false;
+        this.animateChangeLayout = false;
 
         /**
          * A boolean dictating whether or not to transition the height and width of the
@@ -1351,7 +1351,7 @@
          * @default     false
          */
 
-        this.animateResizeTargets   = false;
+        this.animateResizeTargets = false;
 
         /**
          * A custom function used to manipulate the order in which the stagger delay is
@@ -1368,7 +1368,7 @@
          * @default     null
          */
 
-        this.staggerSequence        = null;
+        this.staggerSequence = null;
 
         /**
          * A boolean dictating whether or not to reverse the direction of `translate`
@@ -1389,7 +1389,7 @@
          * @default     false
          */
 
-        this.reverseOut             = false;
+        this.reverseOut = false;
 
         /**
          * A boolean dictating whether or not to "nudge" the animation path of target
@@ -1400,14 +1400,14 @@
          * one exclusive set of targets to a different exclusive set of targets,
          * to create a carousel-like effect.
          *
-         * @name        nudgeOut
+         * @name        nudge
          * @memberof    mixitup.Config.animation
          * @instance
          * @type        {boolean}
          * @default     true
          */
 
-        this.nudgeOut               = true;
+        this.nudge = true;
 
         this.execAction('construct', 1);
 
@@ -3814,7 +3814,7 @@
 
                 // Adjust x and y if not nudging
 
-                if (!target.isShown && !self.animation.nudgeOut) {
+                if (!target.isShown && !self.animation.nudge) {
                     posData.posIn.x = posData.posOut.x;
                     posData.posIn.y = posData.posOut.y;
                 }
@@ -3891,8 +3891,8 @@
 
                 posData.posIn.x     = target.isShown ? posData.startPosData.x - posData.interPosData.x : 0;
                 posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
-                posData.posOut.x    = self.animation.nudgeOut ? 0 : posData.posIn.x;
-                posData.posOut.y    = self.animation.nudgeOut ? 0 : posData.posIn.y;
+                posData.posOut.x    = self.animation.nudge ? 0 : posData.posIn.x;
+                posData.posOut.y    = self.animation.nudge ? 0 : posData.posIn.y;
                 posData.tweenData.x = posData.posOut.x - posData.posIn.x;
                 posData.tweenData.y = posData.posOut.y - posData.posIn.y;
 
@@ -5450,7 +5450,7 @@
                 self.dom.el.style.marginBottom = options.posOut.marginBottom + 'px';
             }
 
-            if (!self.mixer.animation.nudgeOut && options.hideOrShow === 'hide') {
+            if (!self.mixer.animation.nudge && options.hideOrShow === 'hide') {
                 // If we're not nudging, the translation should be
                 // applied before any other transforms to prevent
                 // lateral movement
@@ -5472,8 +5472,8 @@
             }
 
             if (
-                self.mixer.animation.nudgeOut ||
-                (!self.mixer.animation.nudgeOut && options.hideOrShow !== 'hide')
+                self.mixer.animation.nudge ||
+                (!self.mixer.animation.nudge && options.hideOrShow !== 'hide')
             ) {
                 // Opposite of above - apply translate after
                 // other transform

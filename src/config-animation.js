@@ -26,7 +26,7 @@ mixitup.ConfigAnimation = function() {
      * @default     true
      */
 
-    this.enable                 = true;
+    this.enable = true;
 
     /**
      * A string of one or more space-seperated effects to which transitions will be
@@ -54,7 +54,7 @@ mixitup.ConfigAnimation = function() {
      * @default     'fade scale'
      */
 
-    this.effects                = 'fade scale';
+    this.effects = 'fade scale';
 
     /**
      * A string of one or more space-seperated effects to be applied only to filter-in
@@ -67,7 +67,7 @@ mixitup.ConfigAnimation = function() {
      * @default     ''
      */
 
-    this.effectsIn              = '';
+    this.effectsIn = '';
 
     /**
      * A string of one or more space-seperated effects to be applied only to filter-out
@@ -80,7 +80,7 @@ mixitup.ConfigAnimation = function() {
      * @default     ''
      */
 
-    this.effectsOut             = '';
+    this.effectsOut = '';
 
     /**
      * An integer dictating the duration of all MixItUp animations in milliseconds, not
@@ -93,7 +93,7 @@ mixitup.ConfigAnimation = function() {
      * @default     600
      */
 
-    this.duration               = 600;
+    this.duration = 600;
 
     /**
      * A valid CSS3 transition-timing function or shorthand. For a full list of accepted
@@ -106,7 +106,7 @@ mixitup.ConfigAnimation = function() {
      * @default     'ease'
      */
 
-    this.easing                 = 'ease';
+    this.easing = 'ease';
 
     /**
      * A boolean dictating whether or not to apply perspective to the MixItUp container
@@ -117,7 +117,7 @@ mixitup.ConfigAnimation = function() {
      * You may wish to disable this and define your own perspective settings via CSS.
      */
 
-    this.applyPerspective       = 'true';
+    this.applyPerspective = 'true';
 
     /**
      * The perspective distance value applied to the container during animations,
@@ -130,7 +130,7 @@ mixitup.ConfigAnimation = function() {
      * @default     '3000px'
      */
 
-    this.perspectiveDistance    = '3000px';
+    this.perspectiveDistance = '3000px';
 
     /**
      * The perspective-origin value applied to the container during animations,
@@ -143,7 +143,7 @@ mixitup.ConfigAnimation = function() {
      * @default     '50% 50%'
      */
 
-    this.perspectiveOrigin      = '50% 50%';
+    this.perspectiveOrigin = '50% 50%';
 
     /**
      * A boolean dictating whether or not to enable queuing for all operations received
@@ -158,7 +158,7 @@ mixitup.ConfigAnimation = function() {
      * @default     true
      */
 
-    this.queue                  = true;
+    this.queue = true;
 
     /**
      * An integer dictacting the maximum number of operations allowed in the queue at
@@ -171,7 +171,7 @@ mixitup.ConfigAnimation = function() {
      * @default     3
      */
 
-    this.queueLimit             = 3;
+    this.queueLimit = 3;
 
     /**
      * A boolean dictating whether or not to attempt transitioning of target elements
@@ -185,7 +185,7 @@ mixitup.ConfigAnimation = function() {
      * @default     false
      */
 
-    this.animateChangeLayout    = false;
+    this.animateChangeLayout = false;
 
     /**
      * A boolean dictating whether or not to transition the height and width of the
@@ -222,7 +222,7 @@ mixitup.ConfigAnimation = function() {
      * @default     false
      */
 
-    this.animateResizeTargets   = false;
+    this.animateResizeTargets = false;
 
     /**
      * A custom function used to manipulate the order in which the stagger delay is
@@ -239,7 +239,7 @@ mixitup.ConfigAnimation = function() {
      * @default     null
      */
 
-    this.staggerSequence        = null;
+    this.staggerSequence = null;
 
     /**
      * A boolean dictating whether or not to reverse the direction of `translate`
@@ -260,7 +260,7 @@ mixitup.ConfigAnimation = function() {
      * @default     false
      */
 
-    this.reverseOut             = false;
+    this.reverseOut = false;
 
     /**
      * A boolean dictating whether or not to "nudge" the animation path of target
@@ -271,14 +271,14 @@ mixitup.ConfigAnimation = function() {
      * one exclusive set of targets to a different exclusive set of targets,
      * to create a carousel-like effect.
      *
-     * @name        nudgeOut
+     * @name        nudge
      * @memberof    mixitup.Config.animation
      * @instance
      * @type        {boolean}
      * @default     true
      */
 
-    this.nudgeOut               = true;
+    this.nudge = true;
 
     this.execAction('construct', 1);
 

@@ -228,7 +228,7 @@ strings for `config.animation.effectsIn` and `config.animation.effectsOut`.
 |---  | ---
 |`boolean`| `false`
 
-### <a id="mixitup.Config.animation#nudgeOut">mixitup.Config.animation.nudgeOut</a>
+### <a id="mixitup.Config.animation#nudge">mixitup.Config.animation.nudge</a>
 
 
 
