@@ -99,14 +99,17 @@ h.extend(mixitup.Mixer.prototype,
 
         self._indexTargets();
 
+        // Map in whatever state values we can
+
         state.activeFilter = self.load.filter === 'all' ?
             self.selectors.target :
             self.load.filter === 'none' ?
                 '' :
                 self.load.filter;
 
-        state.activeSort = self.load.sort;
-        state.activeContainerClass = self.layout.containerClass;
+        state.activeSort            = self.load.sort;
+        state.activeContainerClass  = self.layout.containerClass;
+        state.totalTargets          = self._targets.length;
 
         if (state.activeSort) {
             // Perform a syncronous sort without an operation
@@ -122,6 +125,13 @@ h.extend(mixitup.Mixer.prototype,
 
             self._targets = operation.newOrder;
         }
+
+
+        // TODO: the initial state should be fully mapped, but as the operation is fake we don't have this data
+
+        // state.totalShow         = operation.show.length
+        // state.totalHide         = operation.hide.length
+        // state.totalMatching     = operation.matching.length;
 
         self._updateControls({
             filter: state.activeFilter,
@@ -911,6 +921,7 @@ h.extend(mixitup.Mixer.prototype,
      * @param   {Number}      [index]
      * @param   {Element}     [sibling]
      * @param   {string}      [position]
+     * @return  {Element}
      */
 
     _getNextSibling: function(index, sibling, position) {

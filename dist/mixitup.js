@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 65dae726-f75f-438f-98c6-643c0520f4cc
+ * Build b46147a3-ea1c-4de4-99ba-8145aa649a8e
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2103,14 +2103,17 @@
 
             self._indexTargets();
 
+            // Map in whatever state values we can
+
             state.activeFilter = self.load.filter === 'all' ?
                 self.selectors.target :
                 self.load.filter === 'none' ?
                     '' :
                     self.load.filter;
 
-            state.activeSort = self.load.sort;
-            state.activeContainerClass = self.layout.containerClass;
+            state.activeSort            = self.load.sort;
+            state.activeContainerClass  = self.layout.containerClass;
+            state.totalTargets          = self._targets.length;
 
             if (state.activeSort) {
                 // Perform a syncronous sort without an operation
@@ -2126,6 +2129,12 @@
 
                 self._targets = operation.newOrder;
             }
+
+            // TODO: the initial state should be fully mapped, but as the operation is fake we don't have this data
+
+            // state.totalShow         = operation.show.length
+            // state.totalHide         = operation.hide.length
+            // state.totalMatching     = operation.matching.length;
 
             self._updateControls({
                 filter: state.activeFilter,
@@ -2915,6 +2924,7 @@
          * @param   {Number}      [index]
          * @param   {Element}     [sibling]
          * @param   {string}      [position]
+         * @return  {Element}
          */
 
         _getNextSibling: function(index, sibling, position) {
