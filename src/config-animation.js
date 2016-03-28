@@ -115,9 +115,15 @@ mixitup.ConfigAnimation = function() {
      * and `rotateY`.
      *
      * You may wish to disable this and define your own perspective settings via CSS.
+     *
+     * @name        applyPerspective
+     * @memberof    mixitup.Config.animation
+     * @instance
+     * @type        {bolean}
+     * @default     true
      */
 
-    this.applyPerspective = 'true';
+    this.applyPerspective = true;
 
     /**
      * The perspective distance value applied to the container during animations,

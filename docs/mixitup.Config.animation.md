@@ -94,6 +94,22 @@ values, check out easings.net.
 |---  | ---
 |`string`| `'ease'`
 
+### <a id="mixitup.Config.animation#applyPerspective">mixitup.Config.animation.applyPerspective</a>
+
+
+
+A boolean dictating whether or not to apply perspective to the MixItUp container
+during animations. By default, perspective is always applied and creates the
+illusion of three-dimensional space for effects such as `translateZ`, `rotateX`,
+and `rotateY`.
+
+You may wish to disable this and define your own perspective settings via CSS.
+
+
+|Type | Default
+|---  | ---
+|`bolean`| `true`
+
 ### <a id="mixitup.Config.animation#perspectiveDistance">mixitup.Config.animation.perspectiveDistance</a>
 
 

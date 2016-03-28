@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build f586df2b-5bdf-44f6-918a-3f912618fe1b
+ * Build da620ed4-6405-467c-a94e-9ca4eea6ca9d
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1244,9 +1244,15 @@
          * and `rotateY`.
          *
          * You may wish to disable this and define your own perspective settings via CSS.
+         *
+         * @name        applyPerspective
+         * @memberof    mixitup.Config.animation
+         * @instance
+         * @type        {bolean}
+         * @default     true
          */
 
-        this.applyPerspective = 'true';
+        this.applyPerspective = true;
 
         /**
          * The perspective distance value applied to the container during animations,
