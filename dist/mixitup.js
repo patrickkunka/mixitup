@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build b46147a3-ea1c-4de4-99ba-8145aa649a8e
+ * Build f586df2b-5bdf-44f6-918a-3f912618fe1b
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2882,8 +2882,8 @@
             nextSibling = self._getNextSibling(command.index, command.sibling, command.position);
             frag        = self._dom.document.createDocumentFragment();
 
-            if (command.targets) {
-                for (i = 0; el = command.targets[i]; i++) {
+            if (command.collection) {
+                for (i = 0; el = command.collection[i]; i++) {
                     if (self._dom.targets.indexOf(el) > -1) {
                         throw new Error(mixitup.messages[151]);
                     }
@@ -4294,7 +4294,7 @@
 
             instruction.command = {
                 index: 0, // Index to insert at
-                targets: [], // Element(s) to insert
+                collection: [], // Element(s) to insert
                 position: 'before', // Position relative to a sibling if passed
                 sibling: null // A sibling element as a reference
             };
@@ -4313,19 +4313,19 @@
                 } else if (typeof arg === 'string') {
                     // Markup
 
-                    instruction.command.targets =
+                    instruction.command.collection =
                         Array.prototype.slice.call(h.createElement(arg).children);
                 } else if (typeof arg === 'object' && h.isElement(arg, self._dom.document)) {
                     // Single element
 
-                    !instruction.command.targets.length ?
-                        (instruction.command.targets = [arg]) :
+                    !instruction.command.collection.length ?
+                        (instruction.command.collection = [arg]) :
                         (instruction.command.sibling = arg);
                 } else if (typeof arg === 'object' && arg !== null && arg.length) {
                     // Multiple elements in array or jQuery collection
 
-                    !instruction.command.targets.length ?
-                        (instruction.command.targets = arg) :
+                    !instruction.command.collection.length ?
+                        (instruction.command.collection = arg) :
                         instruction.command.sibling = arg[0];
                 } else if (
                     typeof arg === 'object' &&
@@ -4335,8 +4335,8 @@
                 ) {
                     // Document fragment
 
-                    !instruction.command.targets.length ?
-                        instruction.command.targets = Array.prototype.slice.call(arg.childNodes) :
+                    !instruction.command.collection.length ?
+                        instruction.command.collection = Array.prototype.slice.call(arg.childNodes) :
                         instruction.command.sibling = arg.childNodes[0];
                 } else if (typeof arg === 'boolean') {
                     instruction.animate = arg;
@@ -4345,7 +4345,7 @@
                 }
             }
 
-            if (!instruction.command.targets.length && h.canReportErrors(self)) {
+            if (!instruction.command.collection.length && h.canReportErrors(self)) {
                 throw new Error(mixitup.messages[102]);
             }
 
@@ -4653,8 +4653,10 @@
                 return null;
             }
 
+            // If the commands are passed directly to multiMix, they need additional parsing:
+
             if (insertCommand) {
-                if (typeof insertCommand.targets === 'undefined') {
+                if (typeof insertCommand.collection === 'undefined') {
                     insertCommand = self._parseInsertArgs([insertCommand]).command;
                 }
 
@@ -4662,8 +4664,8 @@
             }
 
             if (removeCommand) {
-                if (typeof removeCommand.targets === 'undefined') {
-                    removeCommand = self._parseRemoveArgs([removeCommand]).command;
+                if (typeof removeCommand.targets === 'undefined' && removeCommand.collection.length) {
+                    removeCommand = self._parseRemoveArgs([removeCommand.collection]).command;
                 }
 
                 operation.toRemove = removeCommand.targets;
@@ -4885,7 +4887,7 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(args.command.targets, 'before', args.command.sibling, args.animate, args.callback);
+            return self.insert(args.command.collection, 'before', args.command.sibling, args.animate, args.callback);
         },
 
         /**
@@ -4899,7 +4901,7 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(args.command.targets, 'after', args.command.sibling, args.animate, args.callback);
+            return self.insert(args.command.collection, 'after', args.command.sibling, args.animate, args.callback);
         },
 
         /**
@@ -4913,7 +4915,7 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(0, args.command.targets, args.animate, args.callback);
+            return self.insert(0, args.command.collection, args.animate, args.callback);
         },
 
         /**
@@ -4927,7 +4929,7 @@
             var self = this,
                 args = self._parseInsertArgs(arguments);
 
-            return self.insert(self._state.totalTargets, args.command.targets, args.animate, args.callback);
+            return self.insert(self._state.totalTargets, args.command.collection, args.animate, args.callback);
         },
 
         /**
