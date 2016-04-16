@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build da620ed4-6405-467c-a94e-9ca4eea6ca9d
+ * Build 370d3cea-d58d-4fe0-9415-f245b34d248f
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2487,6 +2487,7 @@
 
         _handleSortClick: function(button) {
             var self        = this,
+                returnValue = null,
                 sortString  = '',
                 el          = null,
                 i           = -1;
@@ -2507,14 +2508,12 @@
                     h.removeClass(el, self.controls.activeClass);
                 }
 
-                return {
+                returnValue = {
                     sort: sortString
                 };
-            } else {
-                return null;
             }
 
-            self.execAction('_handleSortClick', 1, arguments);
+            return self.execFilter('_handleSortClick', returnValue, arguments);
         },
 
         /**
@@ -2550,13 +2549,13 @@
                     // If we were previously toggling, we are not now,
                     // so remove any selectors from the toggle array
 
-                    self._isToggling            = false;
+                    self._isToggling = false;
                 }
 
                 // Reset any active toggles regardless of whether we were toggling or not,
                 // as an API method could have caused toggle buttons to become active
 
-                self._toggleArray.length    = 0;
+                self._toggleArray.length = 0;
 
                 command = {
                     filter: button.getAttribute('data-filter')
@@ -3631,6 +3630,9 @@
                 };
             }
 
+            operation.startX = parentRect.left;
+            operation.startY = parentRect.top;
+
             operation.startHeight = self._incPadding ?
                 parentRect.height :
                 parentRect.height -
@@ -3756,6 +3758,9 @@
                 operation.toHidePosData[i].finalPosData = target.getPosData();
             }
 
+            operation.newX = parentRect.left;
+            operation.newY = parentRect.top;
+
             operation.newHeight = self._incPadding ?
                 parentRect.height :
                 parentRect.height -
@@ -3819,8 +3824,12 @@
 
                 posData.posIn.x     = target.isShown ? posData.startPosData.x - posData.interPosData.x : 0;
                 posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
-                posData.posOut.x    = posData.finalPosData.x - posData.interPosData.x;
-                posData.posOut.y    = posData.finalPosData.y - posData.interPosData.y;
+
+                posData.posOut.x = (posData.finalPosData.x - posData.interPosData.x) +
+                                   (operation.startX - operation.newX);
+
+                posData.posOut.y = (posData.finalPosData.y - posData.interPosData.y) +
+                                   (operation.startY - operation.newY);
 
                 // Process opacity
 
@@ -5850,8 +5859,12 @@
         this.newSortString       = '';
         this.startFilter         = null;
         this.newFilter           = null;
+        this.startX              = 0;
+        this.startY              = 0;
         this.startHeight         = 0;
         this.startWidth          = 0;
+        this.newX                = 0;
+        this.newY                = 0;
         this.newHeight           = 0;
         this.newWidth            = 0;
         this.startContainerClass = '';
