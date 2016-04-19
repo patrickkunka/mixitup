@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 370d3cea-d58d-4fe0-9415-f245b34d248f
+ * Build 8ba08592-e7ec-481a-bd89-3684e53bd048
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1414,6 +1414,18 @@
          */
 
         this.nudge = true;
+
+        /**
+         * A boolean dictating whether or not to account of a shift in position of the
+         * container due a change in height or width.
+         *
+         * For example, if a vertically centered element changes height throughout the
+         * course of an operation, its vertical position will change, and animation
+         * calculations will be affected. Setting this property to `true` will attempt
+         * to counteract these changs and maintain the desired animation.
+         */
+
+        this.balanceContainerShift = false;
 
         this.execAction('construct', 1);
 
@@ -3825,11 +3837,15 @@
                 posData.posIn.x     = target.isShown ? posData.startPosData.x - posData.interPosData.x : 0;
                 posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
 
-                posData.posOut.x = (posData.finalPosData.x - posData.interPosData.x) +
-                                   (operation.startX - operation.newX);
+                posData.posOut.x = posData.finalPosData.x - posData.interPosData.x;
+                posData.posOut.y = posData.finalPosData.y - posData.interPosData.y;
 
-                posData.posOut.y = (posData.finalPosData.y - posData.interPosData.y) +
-                                   (operation.startY - operation.newY);
+                if (self.animation.balanceContainerShift) {
+                    // TODO: Needs further testing/investigation
+
+                    posData.posOut.x += (operation.startX - operation.newX);
+                    posData.posOut.y += (operation.startY - operation.newY);
+                }
 
                 // Process opacity
 

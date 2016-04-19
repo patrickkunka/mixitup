@@ -286,6 +286,18 @@ mixitup.ConfigAnimation = function() {
 
     this.nudge = true;
 
+    /**
+     * A boolean dictating whether or not to account of a shift in position of the
+     * container due a change in height or width.
+     *
+     * For example, if a vertically centered element changes height throughout the
+     * course of an operation, its vertical position will change, and animation
+     * calculations will be affected. Setting this property to `true` will attempt
+     * to counteract these changs and maintain the desired animation.
+     */
+
+    this.balanceContainerShift = false;
+
     this.execAction('construct', 1);
 
     h.seal(this);

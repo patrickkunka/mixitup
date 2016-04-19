@@ -1815,11 +1815,15 @@ h.extend(mixitup.Mixer.prototype,
             posData.posIn.x     = target.isShown ? posData.startPosData.x - posData.interPosData.x : 0;
             posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
 
-            posData.posOut.x = (posData.finalPosData.x - posData.interPosData.x) +
-                               (operation.startX - operation.newX);
+            posData.posOut.x = posData.finalPosData.x - posData.interPosData.x;
+            posData.posOut.y = posData.finalPosData.y - posData.interPosData.y;
 
-            posData.posOut.y = (posData.finalPosData.y - posData.interPosData.y) +
-                               (operation.startY - operation.newY);
+            if (self.animation.balanceContainerShift) {
+                // TODO: Needs further testing/investigation
+
+                posData.posOut.x += (operation.startX - operation.newX);
+                posData.posOut.y += (operation.startY - operation.newY);
+            }
 
             // Process opacity
 
