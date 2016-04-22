@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 8ba08592-e7ec-481a-bd89-3684e53bd048
+ * Build 67d6a81c-006a-4868-8d23-bc238838bdbd
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1721,10 +1721,10 @@
     mixitup.ClickTracker = function() {
         this.execAction('construct', 0);
 
-        this.filterToggle   = {};
-        this.multiMix       = {};
-        this.filter         = {};
-        this.sort           = {};
+        this.filterToggle   = -1;
+        this.multiMix       = -1;
+        this.filter         = -1;
+        this.sort           = -1;
 
         this.execAction('construct', 1);
 
@@ -2263,8 +2263,6 @@
             var self            = this,
                 controlTypes    = ['filterToggle', 'multiMix', 'filter', 'sort'],
                 button          = null,
-                counter         = null,
-                selector        = '',
                 type            = '',
                 i               = -1;
 
@@ -2287,13 +2285,10 @@
             // before a button is changed to its active state.
 
             for (i = 0; type = controlTypes[i]; i++) {
-                counter     = mixitup.bound[type];
-                selector    = self.selectors[type];
-
-                if (typeof counter[selector] === 'undefined') {
-                    counter[selector] = 1;
+                if (mixitup.bound[type] < 0) {
+                    mixitup.bound[type] = 1;
                 } else {
-                    counter[selector]++;
+                    mixitup.bound[type]++;
                 }
             }
 
@@ -2308,16 +2303,30 @@
          */
 
         _unbindEvents: function() {
-            var self    = this,
-                button  = null,
-                i       = -1;
+            var self            = this,
+                controlTypes    = ['filterToggle', 'multiMix', 'filter', 'sort'],
+                button          = null,
+                type            = '',
+                i               = -1;
 
             self.execAction('_unbindEvents', 0);
 
             h.off(window, 'click', self._handler);
 
             for (i = 0; button = self._dom.allButtons[i]; i++) {
-                h.on(button, 'click', self._handler);
+                h.off(button, 'click', self._handler);
+            }
+
+            // Do the opposite of `_bindEvents`
+
+            for (i = 0; type = controlTypes[i]; i++) {
+                mixitup.bound[type]--;
+
+                if (mixitup.bound[type] === 0) {
+                    // Reset to -1 to indicate inactive state
+
+                    mixitup.bound[type] = -1;
+                }
             }
 
             self.execAction('_unbindEvents', 1);
@@ -2713,26 +2722,25 @@
          */
 
         _trackClick: function(button, method, isTogglingOff) {
-            var self        = this,
-                selector    = self.selectors[method];
+            var self = this;
 
             self._lastClicked = button;
 
             // Add the active class to a button only once
             // all mixitup.Mixer instances have handled the click
 
-            mixitup.handled[method][selector] =
-                (typeof mixitup.handled[method][selector] === 'undefined') ?
-                    1 : mixitup.handled[method][selector] + 1;
+            mixitup.handled[method] =
+                (mixitup.handled[method] < 0) ?
+                    1 : mixitup.handled[method] + 1;
 
-            if (mixitup.handled[method][selector] === mixitup.bound[method][selector]) {
+            if (mixitup.handled[method] === mixitup.bound[method]) {
                 if (isTogglingOff) {
                     h.removeClass(button, self.controls.activeClass);
                 } else {
                     h.addClass(button, self.controls.activeClass);
                 }
 
-                delete mixitup.handled[method][selector];
+                mixitup.handled[method] = -1;
             }
         },
 

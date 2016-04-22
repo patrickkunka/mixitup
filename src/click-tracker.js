@@ -8,10 +8,10 @@
 mixitup.ClickTracker = function() {
     this.execAction('construct', 0);
 
-    this.filterToggle   = {};
-    this.multiMix       = {};
-    this.filter         = {};
-    this.sort           = {};
+    this.filterToggle   = -1;
+    this.multiMix       = -1;
+    this.filter         = -1;
+    this.sort           = -1;
 
     this.execAction('construct', 1);
 
