@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 67d6a81c-006a-4868-8d23-bc238838bdbd
+ * Build 6d9f8137-57d4-43f9-a0d6-3dcd25d48eb2
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2271,6 +2271,16 @@
             self._handler = function(e) {
                 return self._eventBus(e);
             };
+
+            // TODO: it only makes sense for multiple instances to count towards the
+            // "bound" total, if a) they have controls enabled, and b) they share the
+            // same controls selector. Do we need seperate counters per selector?
+
+            if (!self.controls.enable) {
+                self.execAction('_bindEvents', 1);
+
+                return;
+            }
 
             if (self.controls.live) {
                 h.on(window, 'click', self._handler);

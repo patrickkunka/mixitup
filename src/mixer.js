@@ -250,6 +250,16 @@ h.extend(mixitup.Mixer.prototype,
             return self._eventBus(e);
         };
 
+        // TODO: it only makes sense for multiple instances to count towards the
+        // "bound" total, if a) they have controls enabled, and b) they share the
+        // same controls selector. Do we need seperate counters per selector?
+
+        if (!self.controls.enable) {
+            self.execAction('_bindEvents', 1);
+
+            return;
+        }
+
         if (self.controls.live) {
             h.on(window, 'click', self._handler);
         } else {
