@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 6d9f8137-57d4-43f9-a0d6-3dcd25d48eb2
+ * Build 4300c190-d367-475d-97bb-fea44b7dac4b
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -4519,6 +4519,21 @@
          *
          * @example
          * .init()
+         *
+         * @example
+         * var container = document.querySelector('.mixitup-container');
+         * var mixer = mixitup(container);
+         *
+         * mixer.init();
+         *
+         * @example
+         * var mixer = mixitup(.mixitup-container, {
+         *     selectors: {
+         *         target: '.item'
+         *     }
+         * });
+         *
+         * mixer.init();
          *
          * @public
          * @instance

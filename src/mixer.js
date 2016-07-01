@@ -2498,6 +2498,21 @@ h.extend(mixitup.Mixer.prototype,
      * @example
      * .init()
      *
+     * @example
+     * var container = document.querySelector('.mixitup-container');
+     * var mixer = mixitup(container);
+     *
+     * mixer.init();
+     *
+     * @example
+     * var mixer = mixitup(.mixitup-container, {
+     *     selectors: {
+     *         target: '.item'
+     *     }
+     * });
+     *
+     * mixer.init();
+     *
      * @public
      * @instance
      * @since       3.0.0
