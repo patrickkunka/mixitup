@@ -2496,9 +2496,9 @@ h.extend(mixitup.Mixer.prototype,
      * specified via the `load.filter` configuration option.
      *
      * @example
-     * .init()
+     * .init([startFromHidden])
      *
-     * @example
+     * @example <caption>Example 1: Running init after mixer instantiation</caption>
      * var container = document.querySelector('.mixitup-container');
      * var mixer = mixitup(container);
      *

@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 4300c190-d367-475d-97bb-fea44b7dac4b
+ * Build 943b981c-433b-4eba-9970-966fc8c78244
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -4518,9 +4518,9 @@
          * specified via the `load.filter` configuration option.
          *
          * @example
-         * .init()
+         * .init([startFromHidden])
          *
-         * @example
+         * @example <caption>Example 1: Running init after mixer instantiation</caption>
          * var container = document.querySelector('.mixitup-container');
          * var mixer = mixitup(container);
          *

@@ -13,7 +13,7 @@ on mixer instances.
 ### <a id="mixitup.Mixer#init">mixitup.Mixer.init</a>
 
 ```js
-.init()
+.init([startFromHidden])
 ```
 
 Initialises a newly instantiated mixer by filtering in all targets, or those
