@@ -69,7 +69,7 @@ mixitup.Events = function() {
      * A custom event triggered after any MixItUp operation has completed, and the
      * state has been updated.
      *
-     * @name        mixBusy
+     * @name        mixEnd
      * @memberof    mixitup.Events
      * @static
      * @type        {CustomEvent}
@@ -96,7 +96,7 @@ mixitup.Events = function() {
      * This event also exposes an `originalEvent` property via the `event.detail`
      * object, which holds a reference to the original click event.
      *
-     * @name        mixFail
+     * @name        mixClick
      * @memberof    mixitup.Events
      * @static
      * @type        {CustomEvent}

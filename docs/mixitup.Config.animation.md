@@ -58,7 +58,7 @@ animations, overriding `config.animation.effects` if set.
 |---  | ---
 |`string`| `''`
 
-### <a id="mixitup.Config.animation#effectsIn">mixitup.Config.animation.effectsIn</a>
+### <a id="mixitup.Config.animation#effectsOut">mixitup.Config.animation.effectsOut</a>
 
 
 

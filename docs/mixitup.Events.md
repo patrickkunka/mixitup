@@ -44,7 +44,7 @@ is disabled.
 |---
 |`CustomEvent`
 
-### <a id="mixitup.Events.mixBusy">mixitup.Events.mixBusy</a>
+### <a id="mixitup.Events.mixEnd">mixitup.Events.mixEnd</a>
 
 
 
@@ -68,7 +68,7 @@ could be found matching the filter.
 |---
 |`CustomEvent`
 
-### <a id="mixitup.Events.mixFail">mixitup.Events.mixFail</a>
+### <a id="mixitup.Events.mixClick">mixitup.Events.mixClick</a>
 
 
 

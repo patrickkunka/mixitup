@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 943b981c-433b-4eba-9970-966fc8c78244
+ * Build 893f9e22-d61c-42aa-abe0-60370cf42d58
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1202,7 +1202,7 @@
          * A string of one or more space-seperated effects to be applied only to filter-out
          * animations, overriding `config.animation.effects` if set.
          *
-         * @name        effectsIn
+         * @name        effectsOut
          * @memberof    mixitup.Config.animation
          * @instance
          * @type        {string}
@@ -1936,7 +1936,7 @@
          * A custom event triggered after any MixItUp operation has completed, and the
          * state has been updated.
          *
-         * @name        mixBusy
+         * @name        mixEnd
          * @memberof    mixitup.Events
          * @static
          * @type        {CustomEvent}
@@ -1963,7 +1963,7 @@
          * This event also exposes an `originalEvent` property via the `event.detail`
          * object, which holds a reference to the original click event.
          *
-         * @name        mixFail
+         * @name        mixClick
          * @memberof    mixitup.Events
          * @static
          * @type        {CustomEvent}

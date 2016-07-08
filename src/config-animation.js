@@ -73,7 +73,7 @@ mixitup.ConfigAnimation = function() {
      * A string of one or more space-seperated effects to be applied only to filter-out
      * animations, overriding `config.animation.effects` if set.
      *
-     * @name        effectsIn
+     * @name        effectsOut
      * @memberof    mixitup.Config.animation
      * @instance
      * @type        {string}
