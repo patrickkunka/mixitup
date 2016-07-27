@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 893f9e22-d61c-42aa-abe0-60370cf42d58
+ * Build 82e8ba5c-e970-404e-bd33-0af7ed28d841
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -358,7 +358,9 @@
 
             if (typeof window.CustomEvent === 'function') {
                 event = new CustomEvent(eventType, {
-                    detail: detail
+                    detail: detail,
+                    bubbles: true,
+                    cancelable: true
                 });
             } else {
                 event = doc.createEvent('CustomEvent');

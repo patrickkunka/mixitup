@@ -192,7 +192,9 @@ h = {
 
         if (typeof window.CustomEvent === 'function') {
             event = new CustomEvent(eventType, {
-                detail: detail
+                detail: detail,
+                bubbles: true,
+                cancelable: true
             });
         } else {
             event = doc.createEvent('CustomEvent');
