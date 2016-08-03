@@ -266,7 +266,7 @@ h.extend(mixitup.Target.prototype, {
 
         transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
 
-        if (!options.hideOrShow && self.mixer.animation.animateResizeTargets) {
+        if (options.hideOrShow !== 'show' && self.mixer.animation.animateResizeTargets) {
             self.dom.el.style.width        = posIn.width + 'px';
             self.dom.el.style.height       = posIn.height + 'px';
             self.dom.el.style.marginRight  = posIn.marginRight + 'px';
@@ -318,10 +318,7 @@ h.extend(mixitup.Target.prototype, {
             ));
         }
 
-        if (
-            self.mixer.animation.animateResizeTargets &&
-            options.hideOrShow === 'show'
-        ) {
+        if (isResizing) {
             transitionRules.push(self.writeTransitionRule(
                 'width',
                 options.staggerIndex,
@@ -380,10 +377,7 @@ h.extend(mixitup.Target.prototype, {
 
         // Apply width, height and margin negation
 
-        if (
-            isResizing &&
-            options.hideOrShow === 'show'
-        ) {
+        if (isResizing && options.posOut.width > 0 && options.posOut.height > 0) {
             self.dom.el.style.width        = options.posOut.width + 'px';
             self.dom.el.style.height       = options.posOut.height + 'px';
             self.dom.el.style.marginRight  = options.posOut.marginRight + 'px';

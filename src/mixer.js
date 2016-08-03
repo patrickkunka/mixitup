@@ -1933,6 +1933,15 @@ h.extend(mixitup.Mixer.prototype,
             posData.tweenData.x = posData.posOut.x - posData.posIn.x;
             posData.tweenData.y = posData.posOut.y - posData.posIn.y;
 
+            // Process width, height, and margins
+
+            if (self.animation.animateResizeTargets) {
+                posData.posIn.width         = posData.startPosData.width;
+                posData.posIn.height        = posData.startPosData.height;
+                posData.posIn.marginRight   = posData.startPosData.marginRight;
+                posData.posIn.marginBottom  = posData.startPosData.marginBottom;
+            }
+
             // Process opacity
 
             posData.posIn.opacity       = 1;

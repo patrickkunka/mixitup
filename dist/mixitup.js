@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 82e8ba5c-e970-404e-bd33-0af7ed28d841
+ * Build c5bfc6a6-c2f7-4c78-94b1-6cdf060b51ac
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3957,6 +3957,15 @@
                 posData.tweenData.x = posData.posOut.x - posData.posIn.x;
                 posData.tweenData.y = posData.posOut.y - posData.posIn.y;
 
+                // Process width, height, and margins
+
+                if (self.animation.animateResizeTargets) {
+                    posData.posIn.width         = posData.startPosData.width;
+                    posData.posIn.height        = posData.startPosData.height;
+                    posData.posIn.marginRight   = posData.startPosData.marginRight;
+                    posData.posIn.marginBottom  = posData.startPosData.marginBottom;
+                }
+
                 // Process opacity
 
                 posData.posIn.opacity       = 1;
@@ -5404,7 +5413,7 @@
 
             transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
 
-            if (!options.hideOrShow && self.mixer.animation.animateResizeTargets) {
+            if (options.hideOrShow !== 'show' && self.mixer.animation.animateResizeTargets) {
                 self.dom.el.style.width        = posIn.width + 'px';
                 self.dom.el.style.height       = posIn.height + 'px';
                 self.dom.el.style.marginRight  = posIn.marginRight + 'px';
@@ -5456,10 +5465,7 @@
                 ));
             }
 
-            if (
-                self.mixer.animation.animateResizeTargets &&
-                options.hideOrShow === 'show'
-            ) {
+            if (isResizing) {
                 transitionRules.push(self.writeTransitionRule(
                     'width',
                     options.staggerIndex,
@@ -5518,10 +5524,7 @@
 
             // Apply width, height and margin negation
 
-            if (
-                isResizing &&
-                options.hideOrShow === 'show'
-            ) {
+            if (isResizing && options.posOut.width > 0 && options.posOut.height > 0) {
                 self.dom.el.style.width        = options.posOut.width + 'px';
                 self.dom.el.style.height       = options.posOut.height + 'px';
                 self.dom.el.style.marginRight  = options.posOut.marginRight + 'px';
