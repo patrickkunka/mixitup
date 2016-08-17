@@ -8,6 +8,8 @@
  */
 
 mixitup.TransformData = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.value  = 0;
@@ -18,6 +20,8 @@ mixitup.TransformData = function() {
     h.seal(this);
 };
 
-mixitup.TransformData.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.TransformData);
+
+mixitup.TransformData.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 mixitup.TransformData.prototype.constructor = mixitup.TransformData;

@@ -16,6 +16,8 @@
  */
 
 mixitup.ConfigExtensions = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.pagination     = null;
@@ -27,6 +29,8 @@ mixitup.ConfigExtensions = function() {
     h.seal(this);
 };
 
-mixitup.ConfigExtensions.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.ConfigExtensions);
+
+mixitup.ConfigExtensions.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 mixitup.ConfigExtensions.prototype.constructor = mixitup.ConfigExtensions;

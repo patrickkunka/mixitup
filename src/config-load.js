@@ -10,6 +10,8 @@
  */
 
 mixitup.ConfigLoad = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.filter = 'all';
@@ -20,6 +22,8 @@ mixitup.ConfigLoad = function() {
     h.seal(this);
 };
 
-mixitup.ConfigLoad.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.ConfigLoad);
+
+mixitup.ConfigLoad.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 mixitup.ConfigLoad.prototype.constructor = mixitup.ConfigLoad;

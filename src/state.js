@@ -14,6 +14,8 @@
  */
 
 mixitup.State = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     /**
@@ -188,6 +190,8 @@ mixitup.State = function() {
     h.seal(this);
 };
 
-mixitup.State.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.State);
+
+mixitup.State.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 mixitup.State.prototype.constructor = mixitup.State;

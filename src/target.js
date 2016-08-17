@@ -9,6 +9,8 @@
  */
 
 mixitup.Target = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.sortString = '';
@@ -19,7 +21,6 @@ mixitup.Target = function() {
     this.isExcluded = false;
     this.handler    = null;
     this.operation  = null;
-
     this.dom        = new mixitup.TargetDom();
 
     this.execAction('construct', 1);
@@ -27,7 +28,9 @@ mixitup.Target = function() {
     h.seal(this);
 };
 
-mixitup.Target.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.Target);
+
+mixitup.Target.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 h.extend(mixitup.Target.prototype, {
     constructor: mixitup.Target,

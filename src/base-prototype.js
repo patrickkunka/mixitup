@@ -1,9 +1,8 @@
 /* global mixitup, h */
 
 /**
- * The BasePrototype class exposes a set of static methods which all other MixItUp
- * classes inherit as a means of integrating extensions via the addition of new
- * methods and/or actions and hooks.
+ * The BasePrototype adds instance methods to all other extensible MixItUp classes,
+ * enabling the execution of previously registered hooks.
  *
  * @constructor
  * @namespace
@@ -12,73 +11,17 @@
  * @since       3.0.0
  */
 
-mixitup.BasePrototype = function() {
-    this._actions = {};
-    this._filters = {};
-};
+mixitup.BasePrototype = function() {};
 
-mixitup.BasePrototype.prototype =
-/** @lends mixitup.BasePrototype */
-{
+mixitup.BasePrototype.prototype = {
     constructor: mixitup.BasePrototype,
-
-    /**
-     * Performs a shallow extend on the class's prototype, enabling the addition of
-     * multiple new members to the class in a single operation.
-     *
-     * @memberof    mixitup.BasePrototype
-     * @public
-     * @static
-     * @since       2.1.0
-     * @param       {object} extension
-     * @return      {void}
-     */
-
-    extend: function(extension) {
-        h.extend(this, extension);
-    },
-
-    /**
-     * Registers an action function to be executed at a predefined hook.
-     *
-     * @memberof    mixitup.BasePrototype
-     * @public
-     * @static
-     * @since       2.1.0
-     * @param       {string}    hook
-     * @param       {string}    name
-     * @param       {function}  func
-     * @param       {number}    priority
-     * @return      {void}
-     */
-
-    addAction: function(hook, name, func, priority) {
-        this._addHook('_actions', hook, name, func, priority);
-    },
-
-    /**
-     * Registers a filter function to be executed at a predefined hook.
-     *
-     * @memberof    mixitup.BasePrototype
-     * @public
-     * @static
-     * @since       2.1.0
-     * @param       {string}    hook
-     * @param       {string}    name
-     * @param       {function}  func
-     * @return      {void}
-     */
-
-    addFilter: function(hook, name, func) {
-        this._addHook('_filters', hook, name, func);
-    },
 
     /**
      * Executes any registered actions for the respective hook.
      *
      * @memberof    mixitup.BasePrototype
      * @private
-     * @static
+     * @instance
      * @since       2.0.0
      * @param       {string}    methodName
      * @param       {boolean}   isPost
@@ -91,9 +34,9 @@ mixitup.BasePrototype.prototype =
             key     = '',
             context = isPost ? 'post' : 'pre';
 
-        if (!h.isEmptyObject(self._actions) && self._actions.hasOwnProperty(methodName)) {
-            for (key in self._actions[methodName][context]) {
-                self._actions[methodName][context][key].call(self, args);
+        if (!h.isEmptyObject(self.constructor._actions) && self.constructor._actions.hasOwnProperty(methodName)) {
+            for (key in self.constructor._actions[methodName][context]) {
+                self.constructor._actions[methodName][context][key].call(self, args);
             }
         }
     },
@@ -103,7 +46,7 @@ mixitup.BasePrototype.prototype =
      *
      * @memberof    mixitup.BasePrototype
      * @private
-     * @static
+     * @instance
      * @since       2.0.0
      * @param       {string}    methodName
      * @param       {*}         value
@@ -115,38 +58,12 @@ mixitup.BasePrototype.prototype =
         var self    = this,
             key     = '';
 
-        if (!h.isEmptyObject(self._filters) && self._filters.hasOwnProperty(methodName)) {
-            for (key in self._filters[methodName].pre) {
-                return self._filters[methodName].pre[key].call(self, value, args);
+        if (!h.isEmptyObject(self.constructor._filters) && self.constructor._filters.hasOwnProperty(methodName)) {
+            for (key in self.constructor._filters[methodName].pre) {
+                return self.constructor._filters[methodName].pre[key].call(self, value, args);
             }
         } else {
             return value;
         }
-    },
-
-    /**
-     * Registers a filter or action to be executed at a predefined hook. The
-     * lower-level call used by `addAction` and `addFiler`.
-     *
-     * @memberof    mixitup.BasePrototype
-     * @private
-     * @static
-     * @since       2.1.0
-     * @param       {string}    type
-     * @param       {string}    hook
-     * @param       {string}    name
-     * @param       {function}  func
-     * @param       {number}    priority
-     * @return      {void}
-     */
-
-    _addHook: function(type, hook, name, func, priority) {
-        var collection = this[type];
-
-        priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
-
-        collection[hook]                   = collection[hook] || {};
-        collection[hook][priority]         = collection[hook][priority] || {};
-        collection[hook][priority][name]   = func;
     }
 };

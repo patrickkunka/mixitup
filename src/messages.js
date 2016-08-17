@@ -8,6 +8,8 @@
  */
 
 mixitup.Messages = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     /* 100 - 149: General errors
@@ -21,9 +23,9 @@ mixitup.Messages = function() {
     /* 150-199: Public API method-specific errors
     ----------------------------------------------------------------------------- */
 
-    this[150] = '[MixItUp] 102 ERROR: No elements were passed to "insert"';
+    this[150] = '[MixItUp] 150 ERROR: No elements were passed to "insert"';
 
-    this[151] = '[MixItUp] 103 ERROR: An element to be inserted already exists in ' +
+    this[151] = '[MixItUp] 151 ERROR: An element to be inserted already exists in ' +
                 'the container';
 
     /* 200-249: General warnings
@@ -56,7 +58,9 @@ mixitup.Messages = function() {
     h.seal(this);
 };
 
-mixitup.Messages.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.Messages);
+
+mixitup.Messages.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 mixitup.Messages.prototype.constructor = mixitup.Messages;
 

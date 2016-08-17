@@ -15,6 +15,8 @@
  */
 
 mixitup.Mixer = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.animation          = new mixitup.ConfigAnimation();
@@ -66,7 +68,9 @@ mixitup.Mixer = function() {
     h.seal(this);
 };
 
-mixitup.Mixer.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.Mixer);
+
+mixitup.Mixer.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 h.extend(mixitup.Mixer.prototype,
 /** @lends mixitup.Mixer */

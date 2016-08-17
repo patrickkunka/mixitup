@@ -10,6 +10,8 @@
  */
 
 mixitup.ConfigControls = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.enable         = true;
@@ -23,6 +25,8 @@ mixitup.ConfigControls = function() {
     h.seal(this);
 };
 
-mixitup.ConfigControls.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.ConfigControls);
+
+mixitup.ConfigControls.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 mixitup.ConfigControls.prototype.constructor = mixitup.ConfigControls;

@@ -6,6 +6,8 @@
  */
 
 mixitup.ClickTracker = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.filterToggle   = -1;
@@ -18,7 +20,9 @@ mixitup.ClickTracker = function() {
     h.seal(this);
 };
 
-mixitup.ClickTracker.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.ClickTracker);
+
+mixitup.ClickTracker.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 mixitup.ClickTracker.prototype.constructor = mixitup.ClickTracker;
 

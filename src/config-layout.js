@@ -10,6 +10,8 @@
  */
 
 mixitup.ConfigLayout = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.allowNestedTargets = false;
@@ -21,6 +23,8 @@ mixitup.ConfigLayout = function() {
     h.seal(this);
 };
 
-mixitup.ConfigLayout.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.ConfigLayout);
+
+mixitup.ConfigLayout.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 mixitup.ConfigLayout.prototype.constructor = mixitup.ConfigLayout;

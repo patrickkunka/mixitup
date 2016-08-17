@@ -13,6 +13,8 @@
  */
 
 mixitup.Operation = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.id                  = '';
@@ -63,6 +65,8 @@ mixitup.Operation = function() {
     h.seal(this);
 };
 
-mixitup.Operation.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.Operation);
+
+mixitup.Operation.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 mixitup.Operation.prototype.constructor = mixitup.Operation;

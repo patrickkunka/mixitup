@@ -11,6 +11,8 @@
  */
 
 mixitup.ConfigLibraries = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.q          = null;
@@ -21,6 +23,8 @@ mixitup.ConfigLibraries = function() {
     h.seal(this);
 };
 
-mixitup.ConfigLibraries.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.ConfigLibraries);
+
+mixitup.ConfigLibraries.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 mixitup.ConfigLibraries.prototype.constructor = mixitup.ConfigLibraries;

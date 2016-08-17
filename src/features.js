@@ -14,6 +14,8 @@
  */
 
 mixitup.Features = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.boxSizingPrefix            = '';
@@ -52,7 +54,9 @@ mixitup.Features = function() {
     this.execAction('construct', 1);
 };
 
-mixitup.Features.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.Features);
+
+mixitup.Features.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 h.extend(mixitup.Features.prototype,
 /** @lends mixitup.Features */

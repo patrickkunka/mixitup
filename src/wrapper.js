@@ -12,6 +12,8 @@
 
     {{>base-prototype}}
 
+    {{>base-static}}
+
     {{>config-animation}}
 
     {{>config-callbacks}}

@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build c5bfc6a6-c2f7-4c78-94b1-6cdf060b51ac
+ * Build 796b6c76-2a02-4d23-ac86-13558567810f
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -981,9 +981,8 @@
     mixitup.h = h;
 
     /**
-     * The BasePrototype class exposes a set of static methods which all other MixItUp
-     * classes inherit as a means of integrating extensions via the addition of new
-     * methods and/or actions and hooks.
+     * The BasePrototype adds instance methods to all other extensible MixItUp classes,
+     * enabling the execution of previously registered hooks.
      *
      * @constructor
      * @namespace
@@ -992,73 +991,17 @@
      * @since       3.0.0
      */
 
-    mixitup.BasePrototype = function() {
-        this._actions = {};
-        this._filters = {};
-    };
+    mixitup.BasePrototype = function() {};
 
-    mixitup.BasePrototype.prototype =
-    /** @lends mixitup.BasePrototype */
-    {
+    mixitup.BasePrototype.prototype = {
         constructor: mixitup.BasePrototype,
-
-        /**
-         * Performs a shallow extend on the class's prototype, enabling the addition of
-         * multiple new members to the class in a single operation.
-         *
-         * @memberof    mixitup.BasePrototype
-         * @public
-         * @static
-         * @since       2.1.0
-         * @param       {object} extension
-         * @return      {void}
-         */
-
-        extend: function(extension) {
-            h.extend(this, extension);
-        },
-
-        /**
-         * Registers an action function to be executed at a predefined hook.
-         *
-         * @memberof    mixitup.BasePrototype
-         * @public
-         * @static
-         * @since       2.1.0
-         * @param       {string}    hook
-         * @param       {string}    name
-         * @param       {function}  func
-         * @param       {number}    priority
-         * @return      {void}
-         */
-
-        addAction: function(hook, name, func, priority) {
-            this._addHook('_actions', hook, name, func, priority);
-        },
-
-        /**
-         * Registers a filter function to be executed at a predefined hook.
-         *
-         * @memberof    mixitup.BasePrototype
-         * @public
-         * @static
-         * @since       2.1.0
-         * @param       {string}    hook
-         * @param       {string}    name
-         * @param       {function}  func
-         * @return      {void}
-         */
-
-        addFilter: function(hook, name, func) {
-            this._addHook('_filters', hook, name, func);
-        },
 
         /**
          * Executes any registered actions for the respective hook.
          *
          * @memberof    mixitup.BasePrototype
          * @private
-         * @static
+         * @instance
          * @since       2.0.0
          * @param       {string}    methodName
          * @param       {boolean}   isPost
@@ -1071,9 +1014,9 @@
                 key     = '',
                 context = isPost ? 'post' : 'pre';
 
-            if (!h.isEmptyObject(self._actions) && self._actions.hasOwnProperty(methodName)) {
-                for (key in self._actions[methodName][context]) {
-                    self._actions[methodName][context][key].call(self, args);
+            if (!h.isEmptyObject(self.constructor._actions) && self.constructor._actions.hasOwnProperty(methodName)) {
+                for (key in self.constructor._actions[methodName][context]) {
+                    self.constructor._actions[methodName][context][key].call(self, args);
                 }
             }
         },
@@ -1083,7 +1026,7 @@
          *
          * @memberof    mixitup.BasePrototype
          * @private
-         * @static
+         * @instance
          * @since       2.0.0
          * @param       {string}    methodName
          * @param       {*}         value
@@ -1095,20 +1038,88 @@
             var self    = this,
                 key     = '';
 
-            if (!h.isEmptyObject(self._filters) && self._filters.hasOwnProperty(methodName)) {
-                for (key in self._filters[methodName].pre) {
-                    return self._filters[methodName].pre[key].call(self, value, args);
+            if (!h.isEmptyObject(self.constructor._filters) && self.constructor._filters.hasOwnProperty(methodName)) {
+                for (key in self.constructor._filters[methodName].pre) {
+                    return self.constructor._filters[methodName].pre[key].call(self, value, args);
                 }
             } else {
                 return value;
             }
-        },
+        }
+    };
+
+    /**
+     * The BaseStatic class exposes a set of static methods which all other MixItUp
+     * classes inherit as a means of integrating extensions via the addition of new
+     * methods and/or actions and hooks.
+     *
+     * @constructor
+     * @namespace
+     * @memberof    mixitup
+     * @public
+     * @since       3.0.0
+     */
+
+    mixitup.BaseStatic = function() {
+        this._actions = {};
+        this._filters = {};
+
+        /**
+         * Performs a shallow extend on the class's prototype, enabling the addition of
+         * multiple new members to the class in a single operation.
+         *
+         * @memberof    mixitup.BaseStatic
+         * @public
+         * @static
+         * @since       2.1.0
+         * @param       {object} extension
+         * @return      {void}
+         */
+
+        this.extend = function(extension) {
+            h.extend(this.prototype, extension);
+        };
+
+        /**
+         * Registers an action function to be executed at a predefined hook.
+         *
+         * @memberof    mixitup.BaseStatic
+         * @public
+         * @static
+         * @since       2.1.0
+         * @param       {string}    hook
+         * @param       {string}    name
+         * @param       {function}  func
+         * @param       {number}    priority
+         * @return      {void}
+         */
+
+        this.addAction = function(hook, name, func, priority) {
+            this._addHook('_actions', hook, name, func, priority);
+        };
+
+        /**
+         * Registers a filter function to be executed at a predefined hook.
+         *
+         * @memberof    mixitup.BaseStatic
+         * @public
+         * @static
+         * @since       2.1.0
+         * @param       {string}    hook
+         * @param       {string}    name
+         * @param       {function}  func
+         * @return      {void}
+         */
+
+        this.addFilter = function(hook, name, func) {
+            this._addHook('_filters', hook, name, func);
+        };
 
         /**
          * Registers a filter or action to be executed at a predefined hook. The
          * lower-level call used by `addAction` and `addFiler`.
          *
-         * @memberof    mixitup.BasePrototype
+         * @memberof    mixitup.BaseStatic
          * @private
          * @static
          * @since       2.1.0
@@ -1120,7 +1131,7 @@
          * @return      {void}
          */
 
-        _addHook: function(type, hook, name, func, priority) {
+        this._addHook = function(type, hook, name, func, priority) {
             var collection = this[type];
 
             priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
@@ -1128,7 +1139,7 @@
             collection[hook]                   = collection[hook] || {};
             collection[hook][priority]         = collection[hook][priority] || {};
             collection[hook][priority][name]   = func;
-        }
+        };
     };
 
     /**
@@ -1143,6 +1154,8 @@
      */
 
     mixitup.ConfigAnimation = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         /**
@@ -1434,7 +1447,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigAnimation.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.ConfigAnimation);
+
+    mixitup.ConfigAnimation.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.ConfigAnimation.prototype.constructor = mixitup.ConfigAnimation;
 
@@ -1448,6 +1463,8 @@
      */
 
     mixitup.ConfigCallbacks = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.onMixStart = null;
@@ -1461,7 +1478,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigCallbacks.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.ConfigCallbacks);
+
+    mixitup.ConfigCallbacks.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.ConfigCallbacks.prototype.constructor = mixitup.ConfigCallbacks;
 
@@ -1475,6 +1494,8 @@
      */
 
     mixitup.ConfigControls = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.enable         = true;
@@ -1488,7 +1509,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigControls.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.ConfigControls);
+
+    mixitup.ConfigControls.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.ConfigControls.prototype.constructor = mixitup.ConfigControls;
 
@@ -1502,6 +1525,8 @@
      */
 
     mixitup.ConfigDebug = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.enable = true;
@@ -1511,7 +1536,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigDebug.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.ConfigDebug);
+
+    mixitup.ConfigDebug.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.ConfigDebug.prototype.constructor = mixitup.ConfigDebug;
 
@@ -1531,6 +1558,8 @@
      */
 
     mixitup.ConfigExtensions = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.pagination     = null;
@@ -1542,7 +1571,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigExtensions.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.ConfigExtensions);
+
+    mixitup.ConfigExtensions.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.ConfigExtensions.prototype.constructor = mixitup.ConfigExtensions;
 
@@ -1556,6 +1587,8 @@
      */
 
     mixitup.ConfigLayout = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.allowNestedTargets = false;
@@ -1567,7 +1600,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigLayout.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.ConfigLayout);
+
+    mixitup.ConfigLayout.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.ConfigLayout.prototype.constructor = mixitup.ConfigLayout;
 
@@ -1582,6 +1617,8 @@
      */
 
     mixitup.ConfigLibraries = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.q          = null;
@@ -1592,7 +1629,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigLibraries.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.ConfigLibraries);
+
+    mixitup.ConfigLibraries.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.ConfigLibraries.prototype.constructor = mixitup.ConfigLibraries;
 
@@ -1606,6 +1645,8 @@
      */
 
     mixitup.ConfigLoad = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.filter = 'all';
@@ -1616,7 +1657,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigLoad.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.ConfigLoad);
+
+    mixitup.ConfigLoad.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.ConfigLoad.prototype.constructor = mixitup.ConfigLoad;
 
@@ -1631,6 +1674,8 @@
      */
 
     mixitup.ConfigSelectors = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.target         = '.mix';
@@ -1641,7 +1686,9 @@
         h.seal(this);
     };
 
-    mixitup.ConfigSelectors.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.ConfigSelectors);
+
+    mixitup.ConfigSelectors.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.ConfigSelectors.prototype.constructor = mixitup.ConfigSelectors;
 
@@ -1663,6 +1710,8 @@
      */
 
     mixitup.Config = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.animation          = new mixitup.ConfigAnimation();
@@ -1680,7 +1729,9 @@
         h.seal(this);
     };
 
-    mixitup.Config.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.Config);
+
+    mixitup.Config.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.Config.prototype.constructor = mixitup.Config;
 
@@ -1692,6 +1743,8 @@
      */
 
     mixitup.MixerDom = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.document               = null;
@@ -1710,7 +1763,9 @@
         h.seal(this);
     };
 
-    mixitup.MixerDom.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.MixerDom);
+
+    mixitup.MixerDom.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.MixerDom.prototype.constructor = mixitup.MixerDom;
     /**
@@ -1721,6 +1776,8 @@
      */
 
     mixitup.ClickTracker = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.filterToggle   = -1;
@@ -1733,7 +1790,9 @@
         h.seal(this);
     };
 
-    mixitup.ClickTracker.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.ClickTracker);
+
+    mixitup.ClickTracker.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.ClickTracker.prototype.constructor = mixitup.ClickTracker;
 
@@ -1763,6 +1822,8 @@
      */
 
     mixitup.StyleData = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.x              = 0;
@@ -1789,7 +1850,9 @@
         h.seal(this);
     };
 
-    mixitup.StyleData.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.StyleData);
+
+    mixitup.StyleData.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.StyleData.prototype.constructor = mixitup.StyleData;
 
@@ -1801,6 +1864,8 @@
      */
 
     mixitup.TransformData = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.value  = 0;
@@ -1811,7 +1876,9 @@
         h.seal(this);
     };
 
-    mixitup.TransformData.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.TransformData);
+
+    mixitup.TransformData.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.TransformData.prototype.constructor = mixitup.TransformData;
 
@@ -1823,9 +1890,9 @@
      */
 
     mixitup.TransformDefaults = function() {
-        this.execAction('construct', 0);
-
         mixitup.StyleData.apply(this);
+
+        this.execAction('construct', 0);
 
         this.scale.value        = 0.01;
         this.scale.unit         = '';
@@ -1856,7 +1923,9 @@
         h.seal(this);
     };
 
-    mixitup.TransformDefaults.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.TransformDefaults);
+
+    mixitup.TransformDefaults.prototype = Object.create(mixitup.StyleData.prototype);
 
     mixitup.TransformDefaults.prototype.constructor = mixitup.TransformDefaults;
 
@@ -1903,6 +1972,8 @@
      */
 
     mixitup.Events = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         /**
@@ -1978,7 +2049,9 @@
         h.seal(this);
     };
 
-    mixitup.Events.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.Events);
+
+    mixitup.Events.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.Events.prototype.constructor = mixitup.Events;
 
@@ -2039,6 +2112,8 @@
      */
 
     mixitup.Mixer = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.animation          = new mixitup.ConfigAnimation();
@@ -2090,7 +2165,9 @@
         h.seal(this);
     };
 
-    mixitup.Mixer.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.Mixer);
+
+    mixitup.Mixer.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     h.extend(mixitup.Mixer.prototype,
     /** @lends mixitup.Mixer */
@@ -5134,6 +5211,8 @@
      */
 
     mixitup.TargetDom = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.el = null;
@@ -5143,7 +5222,9 @@
         h.seal(this);
     };
 
-    mixitup.TargetDom.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.TargetDom);
+
+    mixitup.TargetDom.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.TargetDom.prototype.constructor = mixitup.TargetDom;
 
@@ -5156,6 +5237,8 @@
      */
 
     mixitup.Target = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.sortString = '';
@@ -5166,7 +5249,6 @@
         this.isExcluded = false;
         this.handler    = null;
         this.operation  = null;
-
         this.dom        = new mixitup.TargetDom();
 
         this.execAction('construct', 1);
@@ -5174,7 +5256,9 @@
         h.seal(this);
     };
 
-    mixitup.Target.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.Target);
+
+    mixitup.Target.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     h.extend(mixitup.Target.prototype, {
         constructor: mixitup.Target,
@@ -5881,6 +5965,8 @@
      */
 
     mixitup.Operation = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.id                  = '';
@@ -5931,7 +6017,9 @@
         h.seal(this);
     };
 
-    mixitup.Operation.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.Operation);
+
+    mixitup.Operation.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.Operation.prototype.constructor = mixitup.Operation;
 
@@ -5949,6 +6037,8 @@
      */
 
     mixitup.State = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         /**
@@ -6123,7 +6213,9 @@
         h.seal(this);
     };
 
-    mixitup.State.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.State);
+
+    mixitup.State.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.State.prototype.constructor = mixitup.State;
 
@@ -6135,6 +6227,8 @@
      */
 
     mixitup.UserInstruction = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.command    = {};
@@ -6146,7 +6240,9 @@
         h.seal(this);
     };
 
-    mixitup.UserInstruction.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.UserInstruction);
+
+    mixitup.UserInstruction.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.UserInstruction.prototype.constructor = mixitup.UserInstruction;
 
@@ -6158,6 +6254,8 @@
      */
 
     mixitup.Messages = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         /* 100 - 149: General errors
@@ -6171,9 +6269,9 @@
         /* 150-199: Public API method-specific errors
         ----------------------------------------------------------------------------- */
 
-        this[150] = '[MixItUp] 102 ERROR: No elements were passed to "insert"';
+        this[150] = '[MixItUp] 150 ERROR: No elements were passed to "insert"';
 
-        this[151] = '[MixItUp] 103 ERROR: An element to be inserted already exists in ' +
+        this[151] = '[MixItUp] 151 ERROR: An element to be inserted already exists in ' +
                     'the container';
 
         /* 200-249: General warnings
@@ -6206,7 +6304,9 @@
         h.seal(this);
     };
 
-    mixitup.Messages.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.Messages);
+
+    mixitup.Messages.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.Messages.prototype.constructor = mixitup.Messages;
 
@@ -6228,6 +6328,8 @@
      */
 
     mixitup.Features = function() {
+        mixitup.BasePrototype.call(this);
+
         this.execAction('construct', 0);
 
         this.boxSizingPrefix            = '';
@@ -6266,7 +6368,9 @@
         this.execAction('construct', 1);
     };
 
-    mixitup.Features.prototype = Object.create(new mixitup.BasePrototype());
+    mixitup.BaseStatic.call(mixitup.Features);
+
+    mixitup.Features.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     h.extend(mixitup.Features.prototype,
     /** @lends mixitup.Features */

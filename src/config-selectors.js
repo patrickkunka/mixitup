@@ -11,6 +11,8 @@
  */
 
 mixitup.ConfigSelectors = function() {
+    mixitup.BasePrototype.call(this);
+
     this.execAction('construct', 0);
 
     this.target         = '.mix';
@@ -21,6 +23,8 @@ mixitup.ConfigSelectors = function() {
     h.seal(this);
 };
 
-mixitup.ConfigSelectors.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.ConfigSelectors);
+
+mixitup.ConfigSelectors.prototype = Object.create(mixitup.BasePrototype.prototype);
 
 mixitup.ConfigSelectors.prototype.constructor = mixitup.ConfigSelectors;

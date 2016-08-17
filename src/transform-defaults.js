@@ -8,9 +8,9 @@
  */
 
 mixitup.TransformDefaults = function() {
-    this.execAction('construct', 0);
-
     mixitup.StyleData.apply(this);
+
+    this.execAction('construct', 0);
 
     this.scale.value        = 0.01;
     this.scale.unit         = '';
@@ -41,7 +41,9 @@ mixitup.TransformDefaults = function() {
     h.seal(this);
 };
 
-mixitup.TransformDefaults.prototype = Object.create(new mixitup.BasePrototype());
+mixitup.BaseStatic.call(mixitup.TransformDefaults);
+
+mixitup.TransformDefaults.prototype = Object.create(mixitup.StyleData.prototype);
 
 mixitup.TransformDefaults.prototype.constructor = mixitup.TransformDefaults;
 
