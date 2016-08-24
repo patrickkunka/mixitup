@@ -66,5 +66,6 @@
 
     {{>module-definitions}}
 
+    mixitup.NAME = '{{name}}';
     mixitup.CORE_VERSION = '{{version}}';
 })(window);

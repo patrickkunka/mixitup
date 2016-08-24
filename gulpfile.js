@@ -65,9 +65,10 @@ gulp.task('build', ['build-script'], function(done) {
 });
 
 gulp.task('build-script', ['lint', 'code-style'], function(done) {
-    var version = p.version;
+    var name    = p.name,
+        version = p.version;
 
-    exec('node build/build-script.js -v ' + version + ' -o mixitup.js', function(e, out) {
+    exec('node build/build-script.js -n ' + name + ' -v ' + version + ' -o mixitup.js', function(e, out) {
         if (out) {
             console.log(out);
         }

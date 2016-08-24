@@ -16,23 +16,25 @@ Build = function() {
 
     this._      = new Private();
 
+    name        = this._.getParameter('-n');
     version     = this._.getParameter('-v');
     fileName    = this._.getParameter('-o');
 
     Object.seal(this);
 
-    this.init(version, fileName);
+    this.init(name, version, fileName);
 };
 
 Build.prototype = {
     /**
      * @public
+     * @param   {string}    name
      * @param   {string}    version
      * @param   {string}    fileName
      * @return  {Promise}
      */
 
-    init: function(version, fileName) {
+    init: function(name, version, fileName) {
         var self = this;
 
         self._.hbs          = handlebars.create();
@@ -46,7 +48,7 @@ Build.prototype = {
                 return self._.registerPartials.call(self, partials);
             })
             .then(function() {
-                var scope   = self._.mapScope.call(self, version),
+                var scope   = self._.mapScope.call(self, name, version),
                     code    = '';
 
                 code = self._.render.call(self, scope);
@@ -177,17 +179,19 @@ Private.prototype = {
 
     /**
      * @private
+     * @param   {name}      name
      * @param   {string}    version
      * @return  {BuildData}
      * @void
      */
 
-    mapScope: function(version) {
+    mapScope: function(name, version) {
         var self    = this,
             scope   = new BuildData();
 
         scope.title                     = 'MixItUp';
         scope.author                    = 'KunkaLabs Limited';
+        scope.name                      = name;
         scope.version                   = version || '*.*.*';
         scope.beginCopyrightYear        = '2014';
         scope.currentYear               = new Date().getFullYear();
@@ -255,6 +259,7 @@ Private.prototype = {
 BuildData = function() {
     this.title                      = '';
     this.author                     = '';
+    this.name                       = '';
     this.version                    = '';
     this.beginCopyrightYear         = '';
     this.currentYear                = '';
