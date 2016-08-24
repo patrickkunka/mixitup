@@ -283,7 +283,7 @@ mixitup.Is = function() {
     this.oldIe          = false;
 };
 
-// Asign a singleton instance to `mixitup.features` and initialise:
+// Assign a singleton instance to `mixitup.features` and initialise:
 
 mixitup.features = new mixitup.Features();
 
