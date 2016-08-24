@@ -2719,7 +2719,7 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         if (removeCommand) {
-            if (typeof removeCommand.targets === 'undefined' && removeCommand.collection.length) {
+            if (typeof removeCommand.targets === 'undefined' && typeof removeCommand.collection !== 'undefined') {
                 removeCommand = self._parseRemoveArgs([removeCommand.collection]).command;
             }
 

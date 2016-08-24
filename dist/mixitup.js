@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build c7faca2d-b2c5-4307-b86b-c21383dd9051
+ * Build 80e6dd15-b887-4189-975e-607b2abd9fd1
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -4816,7 +4816,7 @@
             }
 
             if (removeCommand) {
-                if (typeof removeCommand.targets === 'undefined' && removeCommand.collection.length) {
+                if (typeof removeCommand.targets === 'undefined' && typeof removeCommand.collection !== 'undefined') {
                     removeCommand = self._parseRemoveArgs([removeCommand.collection]).command;
                 }
 
@@ -6597,7 +6597,7 @@
         this.oldIe          = false;
     };
 
-    // Asign a singleton instance to `mixitup.features` and initialise:
+    // Assign a singleton instance to `mixitup.features` and initialise:
 
     mixitup.features = new mixitup.Features();
 
