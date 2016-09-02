@@ -1361,7 +1361,7 @@ h.extend(mixitup.Mixer.prototype,
             unit        = '',
             i           = -1;
 
-        if (!effectString || typeof effectString !== 'string') {
+        if (typeof effectString !== 'string') {
             throw new Error(mixitup.messages[101]);
         }
 
@@ -1508,12 +1508,12 @@ h.extend(mixitup.Mixer.prototype,
         self.execAction('_goMix', 0, arguments);
 
         // If the animation duration is set to 0ms,
-        // Or the container is hidden
+        // or no effects specified,
+        // or the container is hidden
         // then abort animation
 
         if (
-            !self.animation.duration ||
-            !h.isVisible(self._dom.container)
+            !self.animation.duration || !self.animation.effects || !h.isVisible(self._dom.container)
         ) {
             shouldAnimate = false;
         }

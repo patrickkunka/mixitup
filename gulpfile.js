@@ -41,7 +41,7 @@ gulp.task('prod', ['uglify']);
 
 gulp.task('uglify', ['build'], function() {
     return gulp.src([
-        './dist/mixitup.js',
+        './dist/mixitup.js'
     ])
         .pipe(uglify({
             preserveComments: 'license'

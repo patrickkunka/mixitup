@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 80e6dd15-b887-4189-975e-607b2abd9fd1
+ * Build b73df2d2-bf4c-4460-b60b-2a354aa96650
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3458,7 +3458,7 @@
                 unit        = '',
                 i           = -1;
 
-            if (!effectString || typeof effectString !== 'string') {
+            if (typeof effectString !== 'string') {
                 throw new Error(mixitup.messages[101]);
             }
 
@@ -3605,12 +3605,12 @@
             self.execAction('_goMix', 0, arguments);
 
             // If the animation duration is set to 0ms,
-            // Or the container is hidden
+            // or no effects specified,
+            // or the container is hidden
             // then abort animation
 
             if (
-                !self.animation.duration ||
-                !h.isVisible(self._dom.container)
+                !self.animation.duration || !self.animation.effects || !h.isVisible(self._dom.container)
             ) {
                 shouldAnimate = false;
             }
