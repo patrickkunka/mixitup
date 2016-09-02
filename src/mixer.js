@@ -2621,7 +2621,7 @@ h.extend(mixitup.Mixer.prototype,
      * @return      {Promise.<mixitup.State>}
      */
 
-    filter: function(filterCommand) {
+    filter: function() {
         var self = this,
             args = self._parseMultiMixArgs(arguments);
 
@@ -2648,7 +2648,7 @@ h.extend(mixitup.Mixer.prototype,
      * @return      {Promise.<mixitup.State>}
      */
 
-    sort: function(sortCommand) {
+    sort: function() {
         var self = this,
             args = self._parseMultiMixArgs(arguments);
 
@@ -2678,8 +2678,9 @@ h.extend(mixitup.Mixer.prototype,
      * @return  {Operation|null}
      */
 
-    getOperation: function(command, isPreFetch) {
+    getOperation: function() {
         var self                = this,
+            command             = arguments[0],
             sortCommand         = command.sort,
             filterCommand       = command.filter,
             changeLayoutCommand = command.changeLayout,
@@ -2808,7 +2809,7 @@ h.extend(mixitup.Mixer.prototype,
      * @return      {Promise.<mixitup.State>}
      */
 
-    multiMix: function(multiMixCommand) {
+    multiMix: function() {
         var self        = this,
             operation   = null,
             animate     = false,
@@ -2883,8 +2884,7 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     tween: function(operation, multiplier) {
-        var self            = this,
-            target          = null,
+        var target          = null,
             posData         = null,
             toHideIndex     = -1,
             i               = -1;
@@ -3012,6 +3012,8 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     getOption: function(stringKey) {
+        stringKey;
+
         // TODO: requires stringKey parser helper
     },
 

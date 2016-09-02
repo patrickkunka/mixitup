@@ -1,13 +1,13 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build b73df2d2-bf4c-4460-b60b-2a354aa96650
+ * Build 1cf76420-f356-4ec8-b96d-e7114e7baaf0
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
- * @link      https://kunkalabs.com/mixitup/
+ * @link      https://www.kunkalabs.com/mixitup/
  *
  * @license   Commercial use requires a commercial license.
- *            https://kunkalabs.com/mixitup/licenses
+ *            https://www.kunkalabs.com/mixitup/licenses/
  *
  *            Non-commercial use permitted under same terms as  license.
  *            http://creativecommons.org/licenses/by-nc/3.0/
@@ -61,7 +61,6 @@
             output              = null,
             instances           = [],
             id                  = '',
-            name                = '',
             elements            = [],
             i                   = -1;
 
@@ -71,15 +70,6 @@
             // A non-documented 4th paramater set only if the V2 API is in-use via a jQuery shim
 
             returnCollection = typeof returnCollection === 'boolean';
-        }
-
-        if (config && typeof config.extensions === 'object') {
-            for (name in config.extensions) {
-                // Call the extension's factory function, passing
-                // the mixitup factory as a paramater
-
-                config.extensions[name](mixitup);
-            }
         }
 
         if (
@@ -153,6 +143,27 @@
         }
 
         return output;
+    };
+
+    /**
+     * The `.use()` static method is used to register compatible MixItUp extensions, thus
+     * extending the functionality of MixItUp.
+     *
+     * @example
+     * mixitup.use(extension)
+     *
+     * @public
+     * @static
+     * @since   3.0.0
+     * @param   {function}  extension   A reference to the extension to be used.
+     * @return  {void}
+     */
+
+    mixitup.use = function(extension) {
+        // Call the extension's factory function, passing
+        // the mixitup factory as a paramater
+
+        extension(mixitup);
     };
 
     /**
@@ -1768,6 +1779,7 @@
     mixitup.MixerDom.prototype = Object.create(mixitup.BasePrototype.prototype);
 
     mixitup.MixerDom.prototype.constructor = mixitup.MixerDom;
+
     /**
      * @constructor
      * @memberof    mixitup
@@ -4718,7 +4730,7 @@
          * @return      {Promise.<mixitup.State>}
          */
 
-        filter: function(filterCommand) {
+        filter: function() {
             var self = this,
                 args = self._parseMultiMixArgs(arguments);
 
@@ -4745,7 +4757,7 @@
          * @return      {Promise.<mixitup.State>}
          */
 
-        sort: function(sortCommand) {
+        sort: function() {
             var self = this,
                 args = self._parseMultiMixArgs(arguments);
 
@@ -4775,8 +4787,9 @@
          * @return  {Operation|null}
          */
 
-        getOperation: function(command, isPreFetch) {
+        getOperation: function() {
             var self                = this,
+                command             = arguments[0],
                 sortCommand         = command.sort,
                 filterCommand       = command.filter,
                 changeLayoutCommand = command.changeLayout,
@@ -4905,7 +4918,7 @@
          * @return      {Promise.<mixitup.State>}
          */
 
-        multiMix: function(multiMixCommand) {
+        multiMix: function() {
             var self        = this,
                 operation   = null,
                 animate     = false,
@@ -4980,8 +4993,7 @@
          */
 
         tween: function(operation, multiplier) {
-            var self            = this,
-                target          = null,
+            var target          = null,
                 posData         = null,
                 toHideIndex     = -1,
                 i               = -1;
@@ -5109,6 +5121,8 @@
          */
 
         getOption: function(stringKey) {
+            stringKey;
+
             // TODO: requires stringKey parser helper
         },
 

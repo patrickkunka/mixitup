@@ -1,12 +1,16 @@
 {
   "name": "mixitup",
+  "title": "MixItUp",
   "version": "3.0.0-beta",
-  "description": "",
+  "description": "A UI powerhouse for animated filtering and sorting",
+  "author": "KunkaLabs Limited",
+  "homepage": "https://www.kunkalabs.com/mixitup/",
+  "license" : "SEE LICENSE IN license.md",
   "private": true,
   "main": "./dist/mixitup.min.js",
   "devDependencies": {
     "gulp": "^3.8.8",
-    "gulp-jscs": "3.0.0",
+    "gulp-jscs": "^4.0.0",
     "gulp-jshint": "^1.8.5",
     "gulp-livereload": "~2.1.1",
     "gulp-rename": "^1.2.2",
@@ -16,9 +20,12 @@
     "jsdoc-parse": "^1.2.6",
     "jshint-stylish": "~1.0.0",
     "merge-stream": "^0.1.7",
-    "q": "^1.4.1",
-    "q-io": "^1.13.2",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "mocha": "^3.0.2",
+    "jsdom-global": "2.0.0",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "chai-shallow-deep-equal": "^1.4.0"
   }
 }

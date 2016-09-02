@@ -5,9 +5,14 @@
     "-W055": true,
     "-W069": true,
     "-W097": true,
+    "undef": true,
+    "unused": true,
     "laxbreak": true,
+    "node": true,
+    "browser": true,
     "predef": [
         "window",
+        "Promise",
         "define",
         "console"
     ]

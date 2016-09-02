@@ -1,4 +1,4 @@
-/* global mixitup, h */
+/* global mixitup */
 
 /**
  * A jQuery-like wrapper object for one or more `mixitup.Mixer` instances

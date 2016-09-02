@@ -1,20 +1,18 @@
-/* global process */
-var parse       = require('jsdoc-parse'),
-    handlebars  = require('handlebars'),
-    fs          = require('q-io/fs'),
-    path        = require('path'),
-    q           = require('q'),
-    Docs        = null,
-    Namespace   = null,
-    docs        = null,
-    Doclet      = null;
+var parse       = require('jsdoc-parse');
+var handlebars  = require('handlebars');
+var path        = require('path');
+var fs          = require('fs');
 
-Namespace = function(doclet) {
-    this.doclet = doclet;
-    this.members = [];
+var DocsBuilder = function() {
+    var _ = new DocsBuilder.Private();
+
+    this.init = _.init.bind(_);
+
+    Object.seal(this);
 };
 
-Docs = function() {
+DocsBuilder.Private = function() {
+    this.startTime  = -1;
     this.factory    = null;
     this.namespaces = {};
     this.templates  = {};
@@ -26,47 +24,45 @@ Docs = function() {
     this.init();
 };
 
-Docs.prototype = {
-    constructor: Docs,
+DocsBuilder.Private.prototype = {
+    constructor: DocsBuilder.Private,
 
     init: function() {
         var self = this;
 
-        self.root   = process.cwd();
-        self.hbs    = handlebars.create();
+        return Promise.resolve()
+            .then(function() {
+                self.root       = process.cwd();
+                self.hbs        = handlebars.create();
+                self.startTime  = Date.now();
 
-        return q.all([
-            self.parseScript(),
-            self.readTemplates()
-        ])
-            .spread(function(input) {
-                self.sortDoclets(input);
+                console.log('[MixItUp-DocsBuilder] Initialising build...');
 
-                return self.renderDocs();
+                return self.parseScript();
             })
-            .catch(function(e) {
-                console.log(e.stack);
-            });
+            .then(self.readTemplates.bind(self))
+            .then(self.renderDocs.bind(self))
+            .catch(console.error.bind(console));
     },
 
     parseScript: function() {
-        var defered = q.defer(),
-            input   = '';
+        var self = this;
 
-        parse({
-            src: './dist/mixitup.js'
+        return new Promise(function(resolve, reject) {
+            var input = '';
+
+            parse({
+                src: './dist/mixitup.js'
+            })
+                .on('data', function(data) {
+                    input += data;
+                })
+                .on('end', function() {
+                    resolve(input);
+                })
+                .on('error', reject);
         })
-            .on('data', function(data) {
-                input += data;
-            })
-            .on('end', function() {
-                defered.resolve(input);
-            })
-            .on('error', function(e) {
-                throw e;
-            });
-
-        return defered.promise;
+            .then(self.sortDoclets.bind(self));
     },
 
     sortDoclets: function(input) {
@@ -75,13 +71,13 @@ Docs.prototype = {
 
         doclets.forEach(function(doclet) {
             if (doclet.kind === 'namespace') {
-                self.namespaces[doclet.id] = new Namespace(doclet);
+                self.namespaces[doclet.id] = new DocsBuilder.Namespace(doclet);
             }
         });
 
         doclets.forEach(function(doclet) {
             var namespace = null,
-                model     = new Doclet();
+                model     = new DocsBuilder.Doclet();
 
             if (
                 doclet.memberof &&
@@ -103,11 +99,23 @@ Docs.prototype = {
             dirPath     = path.join(self.root, 'build'),
             fileNames   = [];
 
-        return fs.exists(dirPath)
+        return new Promise(function(resolve, reject) {
+            fs.stat(dirPath, function(err, stat) {
+                if (err) reject(err);
+
+                resolve(stat);
+            });
+        })
             .then(function(exists) {
-                if (exists) {
-                    return fs.list(dirPath);
-                }
+                if (!exists) return [];
+
+                return new Promise(function(resolve, reject) {
+                    fs.readdir(dirPath, function(err, list) {
+                        if (err) reject(err);
+
+                        resolve(list);
+                    });
+                });
             })
             .then(function(list) {
                 var filtered = list.filter(function(fileName) {
@@ -124,16 +132,22 @@ Docs.prototype = {
                 fileNames.forEach(function(fileName) {
                     var filePath = path.join(self.root, 'build', fileName);
 
-                    tasks.push(fs.read(filePath));
+                    tasks.push(new Promise(function(resolve, reject) {
+                        fs.readFile(filePath, function(err, data) {
+                            if (err) reject;
+
+                            resolve(data);
+                        });
+                    }));
                 });
 
-                return q.all(tasks);
+                return Promise.all(tasks);
             })
             .then(function(buffers) {
                 buffers.forEach(function(buffer, i) {
                     var slug = fileNames[i].replace('.md', '');
 
-                    self.templates[slug] = self.hbs.compile(buffer);
+                    self.templates[slug] = self.hbs.compile(buffer.toString());
                 });
             });
     },
@@ -142,6 +156,7 @@ Docs.prototype = {
         var self            = this,
             factoryOutput   = '',
             factoryPath     = '',
+            totalFiles      = 0,
             tasks           = [];
 
         Object.keys(self.namespaces).forEach(function(key) {
@@ -151,19 +166,39 @@ Docs.prototype = {
 
             output = self.templates['template-docs-namespace'](namespace);
 
-            tasks.push(fs.write(filePath, output));
+            totalFiles++;
+
+            tasks.push(new Promise(function(resolve) {
+                fs.writeFile(filePath, output, resolve);
+            }));
         });
 
         factoryOutput   = self.templates['template-docs-factory'](self.factory);
         factoryPath     = path.join(self.root, 'docs', 'mixitup.md');
 
-        tasks.push(fs.write(factoryPath, factoryOutput));
+        totalFiles++;
 
-        return q.all(tasks);
+        tasks.push(new Promise(function(resolve) {
+            fs.writeFile(factoryPath, factoryOutput, resolve);
+        }));
+
+        return Promise.all(tasks)
+            .then(function() {
+                var duration = Date.now() - self.startTime;
+
+                console.log('[MixItUp-DocsBuilder] ' + totalFiles + ' documentation files generated in ' + duration + 'ms');
+            });
     }
 };
 
-Doclet = function() {
+DocsBuilder.Namespace = function(doclet) {
+    this.doclet     = doclet;
+    this.members    = [];
+
+    Object.seal(this);
+};
+
+DocsBuilder.Doclet = function() {
     this.id             = '';
     this.name           = '';
     this.access         = '';
@@ -194,7 +229,7 @@ Doclet = function() {
         },
         isProperty: {
             get: function() {
-                return this.kind === 'member'
+                return this.kind === 'member';
             }
         },
         syntax: {
@@ -218,4 +253,4 @@ Doclet = function() {
     Object.seal(this);
 };
 
-module.exports = new Docs();
+module.exports = new DocsBuilder();

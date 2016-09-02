@@ -20,7 +20,7 @@
     ],
     "safeContextKeyword": ["self"],
     "maximumLineLength": {
-      "value": 120,
+      "value": 130,
       "allowComments": false,
       "allowRegex": true
     },
@@ -38,7 +38,9 @@
     },
     "disallowFunctionDeclarations": true,
     "requireSpaceBetweenArguments": true,
-    "requireMultipleVarDecl": "onevar",
+    "requireMultipleVarDecl": {
+        "allExcept": ["require"]
+    },
     "requireBlocksOnNewline": true,
     "requireSemicolons": true,
     "disallowEmptyBlocks": true,
@@ -79,18 +81,6 @@
     "disallowNewlineBeforeBlockStatements": true,
     "disallowMultipleLineStrings": true,
     "disallowMultipleLineBreaks": true,
-    "disallowOperatorBeforeLineBreak": ["."],
     "requireSpaceBeforeObjectValues": true,
-    "validateQuoteMarks": "'",
-    "jsDoc": {
-        "checkAnnotations": true,
-        "requireParamTypes": true,
-        "checkParamNames": true,
-        "checkParamExistence": true,
-        "checkRedundantParams": true,
-        "checkReturnTypes": true,
-        "requireNewlineAfterDescription": true,
-        // "requireParamDescription": true,
-        "requireDescriptionCompleteSentence": true
-    }
+    "validateQuoteMarks": "'"
 }

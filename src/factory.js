@@ -42,7 +42,6 @@ mixitup = function(container, config, foreignDoc) {
         output              = null,
         instances           = [],
         id                  = '',
-        name                = '',
         elements            = [],
         i                   = -1;
 
@@ -52,15 +51,6 @@ mixitup = function(container, config, foreignDoc) {
         // A non-documented 4th paramater set only if the V2 API is in-use via a jQuery shim
 
         returnCollection = typeof returnCollection === 'boolean';
-    }
-
-    if (config && typeof config.extensions === 'object') {
-        for (name in config.extensions) {
-            // Call the extension's factory function, passing
-            // the mixitup factory as a paramater
-
-            config.extensions[name](mixitup);
-        }
     }
 
     if (
@@ -134,6 +124,27 @@ mixitup = function(container, config, foreignDoc) {
     }
 
     return output;
+};
+
+/**
+ * The `.use()` static method is used to register compatible MixItUp extensions, thus
+ * extending the functionality of MixItUp.
+ *
+ * @example
+ * mixitup.use(extension)
+ *
+ * @public
+ * @static
+ * @since   3.0.0
+ * @param   {function}  extension   A reference to the extension to be used.
+ * @return  {void}
+ */
+
+mixitup.use = function(extension) {
+    // Call the extension's factory function, passing
+    // the mixitup factory as a paramater
+
+    extension(mixitup);
 };
 
 /**

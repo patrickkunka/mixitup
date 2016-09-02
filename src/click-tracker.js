@@ -1,3 +1,5 @@
+/* global mixitup, h */
+
 /**
  * @constructor
  * @memberof    mixitup
