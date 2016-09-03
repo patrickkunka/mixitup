@@ -144,7 +144,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self._parseEffects();
 
-        self._bindEvents();
+        self._initControls();
 
         self._buildToggleArray(null, state);
 
@@ -162,9 +162,7 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     _cacheDom: function(el) {
-        var self    = this,
-            button  = null,
-            i       = -1;
+        var self    = this;
 
         self.execAction('_cacheDom', 0, arguments);
 
@@ -172,20 +170,20 @@ h.extend(mixitup.Mixer.prototype,
         self._dom.container = el;
         self._dom.parent    = el;
 
-        self._dom.allButtons =
-            Array.prototype.slice.call(self._dom.document.querySelectorAll(self.selectors.control));
+        // self._dom.allButtons =
+        //     Array.prototype.slice.call(self._dom.document.querySelectorAll(self.selectors.control));
 
-        for (i = 0; button = self._dom.allButtons[i]; i++) {
-            if (button.matches('[data-filter][data-sort]')) {
-                self._dom.multiMixButtons.push(button);
-            } else if (button.matches('[data-filter]')) {
-                self._dom.filterButtons.push(button);
-            } else if (button.matches('[data-sort]')) {
-                self._dom.sortButtons.push(button);
-            } else if (button.matches('[data-toggle]')) {
-                self._dom.filterToggleButtons.push(button);
-            }
-        }
+        // for (i = 0; button = self._dom.allButtons[i]; i++) {
+        //     if (button.matches('[data-filter][data-sort]')) {
+        //         self._dom.multiMixButtons.push(button);
+        //     } else if (button.matches('[data-filter]')) {
+        //         self._dom.filterButtons.push(button);
+        //     } else if (button.matches('[data-sort]')) {
+        //         self._dom.sortButtons.push(button);
+        //     } else if (button.matches('[data-toggle]')) {
+        //         self._dom.filterToggleButtons.push(button);
+        //     }
+        // }
 
         self.execAction('_cacheDom', 1, arguments);
     },
@@ -237,8 +235,7 @@ h.extend(mixitup.Mixer.prototype,
 
     _initControls: function() {
         var self                = this,
-            controlTypes        = Object.keys(mixitup.controlTypes),
-            controlType         = '',
+            definition          = '',
             controlElements     = null,
             el                  = null,
             parent              = null,
@@ -260,23 +257,25 @@ h.extend(mixitup.Mixer.prototype,
 
                 break;
             case 'global':
-                parent = window;
+                parent = document;
 
                 break;
             default:
                 throw new Error(mixitup.messages[102]);
         }
 
-        for (i = 0; controlType = controlTypes[i]; i++) {
-            if (self.controls.live || mixitup.controlTypes[controlType].isDefaultLive) {
-                control = self.getControl(parent,  mixitup.controlTypes[controlType].selector);
+        for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
+            if (self.controls.live || definition.live) {
+                control = self._getControl(parent,  definition.method, definition.selector);
 
                 self._controls.push(control);
             } else {
-                controlElements = parent.querySelectorAll(mixitup.controlTypes[controlType].selector);
+                controlElements = parent.querySelectorAll(definition.selector);
 
-                for (j = 0; el = controlElements[i]; i++) {
-                    control = self.getControl(el);
+                for (j = 0; el = controlElements[j]; j++) {
+                    control = self._getControl(el, definition.method, '');
+
+                    if (!control) continue;
 
                     self._controls.push(control);
                 }
@@ -284,548 +283,53 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         self.execAction('_initControls', 1);
-
-        // in the case of pagination we want to hook into this method, but always treat as live;
-
-        // iterate through each control type,
-        // if live, create a live control instance and bind it/
-        // if not live, trawl dom, create control instance for each control found, and bind it
-        // upon creation of control, we check to see if something of that spec already exists and reference that instead
-        // for each control, push into array for controls for this mixer instance
     },
 
     /**
      * @private
      * @instance
-     * @since 3.0.0
-     * @param {HTMLElement} el
-     * @param {string}      [selector]
+     * @since   3.0.0
+     * @param   {HTMLElement} el
+     * @param   {string}      method
+     * @param   {string}      selector
+     * @return  {mixitup.Control|null}
      */
 
-    _getControl: function(el, selector) {
+    _getControl: function(el, method, selector) {
         var self    = this,
             control = null,
             i       = -1;
 
+        self.execAction('_getControl', 0);
+
         for (i = 0; control = mixitup.controls[i]; i++) {
-            if (control.el === el && control.selector === selector) {
-                control.addBound(self);
+            if (control.el === el && control.isBound(self)) {
+                // Control already bound to this mixer (for another method).
+
+                // NB: This prevents duplicate controls from being registered where a selector
+                // might collide, eg: "[data-filter]" and "[data-filter][data-sort]"
+
+                return null;
+            } else if (control.el === el && control.method === method && control.selector === selector) {
+                // Another mixer is already using this control, add this mixer as a binding
+
+                control.addBinding(self);
 
                 return control;
             }
         }
 
+        // Create new control
+
         control = new mixitup.Control();
 
-        control.init(el, selector || '');
+        control.init(el, method, selector);
 
-        control.addBound(self);
+        // Add a reference to this mixer as a binding
 
-        mixitup.controls.push(control);
+        control.addBinding(self);
 
-        return control;
-    },
-
-    /**
-     * @private
-     * @instance
-     * @since   3.0.0
-     * @return  {void}
-     */
-
-    _bindEvents: function() {
-        var self            = this,
-            controlTypes    = ['filterToggle', 'multiMix', 'filter', 'sort'],
-            button          = null,
-            type            = '',
-            i               = -1;
-
-        self.execAction('_bindEvents', 0);
-
-        self._handler = function(e) {
-            return self._eventBus(e);
-        };
-
-        // TODO: it only makes sense for multiple instances to count towards the
-        // "bound" total, if a) they have controls enabled, and b) they share the
-        // same controls selector. Do we need seperate counters per selector?
-
-        if (!self.controls.enable) {
-            self.execAction('_bindEvents', 1);
-
-            return;
-        }
-
-        if (self.controls.live) {
-            h.on(window, 'click', self._handler);
-        } else {
-            for (i = 0; button = self._dom.allButtons[i]; i++) {
-                h.on(button, 'click', self._handler);
-            }
-        }
-
-        // For each mixitup.Mixer instance, increment the total number of bound
-        // instances. When a button is clicked, all instances must be handled
-        // before a button is changed to its active state.
-
-        for (i = 0; type = controlTypes[i]; i++) {
-            if (mixitup.bound[type] < 0) {
-                mixitup.bound[type] = 1;
-            } else {
-                mixitup.bound[type]++;
-            }
-        }
-
-        self.execAction('_bindEvents', 1);
-    },
-
-    /**
-     * @private
-     * @instance
-     * @since   3.0.0
-     * @return  {void}
-     */
-
-    _unbindEvents: function() {
-        var self            = this,
-            controlTypes    = ['filterToggle', 'multiMix', 'filter', 'sort'],
-            button          = null,
-            type            = '',
-            i               = -1;
-
-        self.execAction('_unbindEvents', 0);
-
-        h.off(window, 'click', self._handler);
-
-        for (i = 0; button = self._dom.allButtons[i]; i++) {
-            h.off(button, 'click', self._handler);
-        }
-
-        // Do the opposite of `_bindEvents`
-
-        for (i = 0; type = controlTypes[i]; i++) {
-            mixitup.bound[type]--;
-
-            if (mixitup.bound[type] === 0) {
-                // Reset to -1 to indicate inactive state
-
-                mixitup.bound[type] = -1;
-            }
-        }
-
-        self.execAction('_unbindEvents', 1);
-    },
-
-    /**
-     * @private
-     * @instance
-     * @param   {Event}            e
-     * @return  {(Boolean|void)}
-     */
-
-    _eventBus: function(e) {
-        var self = this;
-
-        self.execAction('_eventBus', 0);
-
-        switch(e.type) {
-            case 'click':
-                return self._handleClick(e);
-        }
-
-        self.execAction('_eventBus', 1);
-    },
-
-    /**
-     * @private
-     * @instance
-     * @since   3.0.0
-     * @param   {Event}  e
-     * @return  {void}
-     *
-     * Determines the type of operation needed and the
-     * appropriate parameters when a button is clicked
-     */
-
-    _handleClick: function(e) {
-        var self            = this,
-            command         = null,
-            returnValue     = null,
-            method          = '',
-            isTogglingOff   = false,
-            button          = null;
-
-        self.execAction('_handleClick', 0, arguments);
-
-        if (
-            self._isMixing &&
-            (!self.animation.queue || self._queue.length >= self.animation.queueLimit)
-        ) {
-            if (h.canReportErrors(self)) {
-                console.warn(mixitup.messages[301]);
-            }
-
-            mixitup.events.fire('mixBusy', self._dom.container, {
-                state: self._state,
-                instance: self
-            }, self._dom.document);
-
-            if (typeof self.callbacks.onMixBusy === 'function') {
-                self.callbacks.onMixBusy.call(self._dom.container, self._state, self);
-            }
-
-            self.execAction('_handleClickBusy', 1, arguments);
-
-            return;
-        }
-
-        button = h.closestParent(
-            e.target,
-            self.selectors.control,
-            true,
-            Infinity,
-            self._dom.document
-        );
-
-        if (!button) {
-            self.execAction('_handleClick', 1, arguments);
-
-            return;
-        }
-
-        self._isClicking = true;
-
-        // This will be automatically mapped into the new operation's future
-        // state, but that has not been generated at this point, so we manually
-        // add it to the previous state for the following callbacks/events:
-
-        self._state.triggerElement = button;
-
-        // Expose the original event to callbacks and events so that any default
-        // behavior can be cancelled (e.g. an <a> being used as a control as a
-        // progressive enhancement):
-
-        mixitup.events.fire('mixClick', self._dom.container, {
-            state: self._state,
-            instance: self,
-            originalEvent: e
-        }, self._dom.document);
-
-        if (typeof self.callbacks.onMixClick === 'function') {
-            returnValue = self.callbacks.onMixClick.call(button, self._state, self, e);
-
-            if (returnValue === false) {
-                // The callback has returned false, so do not execute the default action
-
-                return;
-            }
-        }
-
-        method = self._determineButtonMethod(button);
-
-        switch (method) {
-            case 'sort':
-                command = self._handleSortClick(button);
-
-                break;
-            case 'filter':
-                command = self._handleFilterClick(button);
-
-                break;
-            case 'filterToggle':
-                if (h.hasClass(button, self.controls.activeClass)) {
-                    isTogglingOff = true;
-                }
-
-                command = self._handleFilterToggleClick(button);
-
-                break;
-            case 'multiMix':
-                command = self._handleMultiMixClick(button);
-
-                break;
-        }
-
-        if (method && command) {
-            self._trackClick(button, method, isTogglingOff);
-
-            self.multiMix(command);
-        }
-
-        self.execAction('_handleClick', 1, arguments);
-    },
-
-    /**
-     * @private
-     * @instance
-     * @since   3.0.0
-     * @param   {Element} button
-     * @return  {string}
-     */
-
-    _determineButtonMethod: function(button) {
-        var self        = this,
-            method      = '';
-
-        self.execAction('_determineButtonMethod', 0, arguments);
-
-        if (button.matches('[data-filter][data-sort]')) {
-            method = 'multiMix';
-        } else if (button.matches('[data-filter]')) {
-            method = 'filter';
-        } else if (button.matches('[data-sort]')) {
-            method = 'sort';
-        } else if (button.matches('[data-toggle]')) {
-            method = 'filterToggle';
-        }
-
-        return self.execFilter('_determineButtonMethod', method, arguments);
-    },
-
-    /**
-     * @private
-     * @instance
-     * @since   3.0.0
-     * @param   {Element}   button
-     * @return  {object|null}
-     */
-
-    _handleSortClick: function(button) {
-        var self        = this,
-            returnValue = null,
-            sortString  = '',
-            el          = null,
-            i           = -1;
-
-        self.execAction('_handleSortClick', 0, arguments);
-
-        sortString = button.getAttribute('data-sort');
-
-        if (
-            !h.hasClass(button, self.controls.activeClass) ||
-            sortString.indexOf('random') > -1
-        ) {
-            for (i = 0; el = self._dom.sortButtons[i]; i++) {
-                h.removeClass(el, self.controls.activeClass);
-            }
-
-            for (i = 0; el = self._dom.multiMixButtons[i]; i++) {
-                h.removeClass(el, self.controls.activeClass);
-            }
-
-            returnValue = {
-                sort: sortString
-            };
-        }
-
-        return self.execFilter('_handleSortClick', returnValue, arguments);
-    },
-
-    /**
-     * @private
-     * @instance
-     * @since   3.0.0
-     * @param   {Element}   button
-     * @return  {object|null}
-     */
-
-    _handleFilterClick: function(button) {
-        var self    = this,
-            command = null,
-            el      = null,
-            i       = -1;
-
-        self.execAction('_handleFilterClick', 0, arguments);
-
-        if (!h.hasClass(button, self.controls.activeClass)) {
-            for (i = 0; el = self._dom.filterButtons[i]; i++) {
-                h.removeClass(el, self.controls.activeClass);
-            }
-
-            for (i = 0; el = self._dom.filterToggleButtons[i]; i++) {
-                h.removeClass(el, self.controls.activeClass);
-            }
-
-            for (i = 0; el = self._dom.multiMixButtons[i]; i++) {
-                h.removeClass(el, self.controls.activeClass);
-            }
-
-            if (self._isToggling) {
-                // If we were previously toggling, we are not now,
-                // so remove any selectors from the toggle array
-
-                self._isToggling = false;
-            }
-
-            // Reset any active toggles regardless of whether we were toggling or not,
-            // as an API method could have caused toggle buttons to become active
-
-            self._toggleArray.length = 0;
-
-            command = {
-                filter: button.getAttribute('data-filter')
-            };
-        }
-
-        return self.execFilter('_handleFilterClick', command, arguments);
-    },
-
-    /**
-     * @private
-     * @instance
-     * @since   3.0.0
-     * @param   {Element}   button
-     * @return  {object|null}
-     */
-
-    _handleFilterToggleClick: function(button) {
-        var self            = this,
-            toggleSeperator = '',
-            filterString    = '',
-            command         = null,
-            el              = null,
-            i               = -1;
-
-        self.execAction('_handleFilterToggleClick', 0, arguments);
-
-        toggleSeperator = self.controls.toggleLogic === 'or' ? ',' : '';
-
-        if (!self._isToggling) {
-            // There were no toggles active previously active
-
-            for (i = 0; el = self._dom.filterToggleButtons[i]; i++) {
-                h.removeClass(el, self.controls.activeClass);
-            }
-
-            self._toggleArray.length    = 0; // Reset any previously active toggles
-            self._isToggling            = true;
-        }
-
-        filterString = button.getAttribute('data-toggle');
-
-        for (i = 0; el = self._dom.filterButtons[i]; i++) {
-            h.removeClass(el, self.controls.activeClass);
-        }
-
-        for (i = 0; el = self._dom.multiMixButtons[i]; i++) {
-            h.removeClass(el, self.controls.activeClass);
-        }
-
-        // Add or remove filters as needed
-
-        if (!h.hasClass(button, self.controls.activeClass)) {
-            self._toggleArray.push(filterString);
-        } else {
-            self._toggleArray.splice(self._toggleArray.indexOf(filterString), 1);
-        }
-
-        self._toggleArray = h.clean(self._toggleArray);
-
-        self._toggleString = self._toggleArray.join(toggleSeperator);
-
-        if (self._toggleString === '') {
-            self._toggleString = self.controls.toggleDefault;
-
-            command = {
-                filter: self._toggleString
-            };
-
-            self._updateControls(command);
-        } else {
-            command =  {
-                filter: self._toggleString
-            };
-        }
-
-        return self.execFilter('_handleFilterToggleClick', command, arguments);
-    },
-
-    /**
-     * @private
-     * @instance
-     * @since 3.0.0
-     * @param   {Element}   button
-     * @return  {object|null}
-     */
-
-    _handleMultiMixClick: function(button) {
-        var self     = this,
-            command  = null,
-            el       = null,
-            i        = -1;
-
-        self.execAction('_handleMultiMixClick', 0, arguments);
-
-        if (!h.hasClass(button, self.controls.activeClass)) {
-            for (i = 0; el = self._dom.filterButtons[i]; i++) {
-                h.removeClass(el, self.controls.activeClass);
-            }
-
-            for (i = 0; el = self._dom.filterToggleButtons[i]; i++) {
-                h.removeClass(el, self.controls.activeClass);
-            }
-
-            for (i = 0; el = self._dom.sortButtons[i]; i++) {
-                h.removeClass(el, self.controls.activeClass);
-            }
-
-            for (i = 0; el = self._dom.multiMixButtons[i]; i++) {
-                h.removeClass(el, self.controls.activeClass);
-            }
-
-            command = {
-                sort: button.getAttribute('data-sort'),
-                filter: button.getAttribute('data-filter')
-            };
-
-            if (self._isToggling) {
-                // If we were previously toggling, we are not now,
-                // so remove any selectors from the toggle array
-
-                self._isToggling            = false;
-                self._toggleArray.length    = 0;
-            }
-
-            // Update any matching individual filter and sort
-            // controls to reflect the multiMix
-
-            self._updateControls(command);
-        }
-
-        return self.execFilter('_handleMultiMixClick', command, arguments);
-    },
-
-    /**
-     * @private
-     * @instance
-     * @since   3.0.0
-     * @param   {Element}   button
-     * @param   {string}    method
-     * @param   {boolean}   isTogglingOff
-     * @return  {void}
-     */
-
-    _trackClick: function(button, method, isTogglingOff) {
-        var self = this;
-
-        self._lastClicked = button;
-
-        // Add the active class to a button only once
-        // all mixitup.Mixer instances have handled the click
-
-        mixitup.handled[method] =
-            (mixitup.handled[method] < 0) ?
-                1 : mixitup.handled[method] + 1;
-
-        if (mixitup.handled[method] === mixitup.bound[method]) {
-            if (isTogglingOff) {
-                h.removeClass(button, self.controls.activeClass);
-            } else {
-                h.addClass(button, self.controls.activeClass);
-            }
-
-            mixitup.handled[method] = -1;
-        }
+        return self.execFilter('_getControl', control, arguments);
     },
 
     /**
@@ -888,80 +392,35 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     _updateControls: function(command) {
-        var self                = this,
-            filterToggleButton  = null,
-            activeButton        = null,
-            output              = null,
-            button              = null,
-            selector            = '',
-            i                   = -1,
-            j                   = -1;
+        var self    = this,
+            control = null,
+            i       = -1;
 
-        output = {
+        self.execAction('_updateControls', 0, arguments);
+
+        // Sanitise to defaults
+
+        // TODO: use a typed MultiMixCommand object
+
+        command = {
             filter: command && command.filter,
             sort: command && command.sort
         };
 
-        self.execAction('_updateControls', 0, arguments);
-
-        (typeof output.filter === 'undefined') && (output.filter = self._state.activeFilter);
-        (typeof output.sort === 'undefined') && (output.sort = self._state.activeSort);
-        (output.filter === self.selectors.target) && (output.filter = 'all');
-
-        for (i = 0; button = self._dom.sortButtons[i]; i++) {
-            h.removeClass(button, self.controls.activeClass);
-
-            if (button.matches('[data-sort="' + output.sort + '"]')) {
-                h.addClass(button, self.controls.activeClass);
-            }
+        if (typeof command.filter === 'undefined') {
+            command.filter = self._state.activeFilter;
         }
 
-        for (i = 0; button = self._dom.filterButtons[i]; i++) {
-            h.removeClass(button, self.controls.activeClass);
-
-            if (button.matches('[data-filter="' + output.filter + '"]')) {
-                h.addClass(button, self.controls.activeClass);
-            }
+        if (typeof command.sort === 'undefined') {
+            command.sort = self._state.activeSort;
         }
 
-        for (i = 0; button = self._dom.multiMixButtons[i]; i++) {
-            h.removeClass(button, self.controls.activeClass);
-
-            if (
-                button.matches('[data-sort="' + output.sort + '"]') &&
-                button.matches('[data-filter="' + output.filter + '"]')
-            ) {
-                h.addClass(button, self.controls.activeClass);
-            }
+        if (command.filter === self.selectors.target) {
+            command.filter = 'all';
         }
 
-        if (self._dom.filterToggleButtons.length) {
-            for (i = 0; button = self._dom.filterToggleButtons[i]; i++) {
-                h.removeClass(button, self.controls.activeClass);
-
-                if (button.matches('[data-filter="' + output.filter + '"]')) {
-                    h.addClass(button, self.controls.activeClass);
-                }
-            }
-
-            for (i = 0; selector = self._toggleArray[i]; i++) {
-                activeButton = null;
-
-                if (self.controls.live) {
-                    activeButton = self._dom.document
-                        .querySelector(self.selectors.filterToggle + '[data-filter="' + selector + '"]');
-                } else {
-                    for (j = 0; filterToggleButton = self._dom.filterToggleButtons[j]; j++) {
-                        if (filterToggleButton.matches('[data-filter="' + selector + '"]')) {
-                            activeButton = filterToggleButton;
-                        }
-                    }
-                }
-
-                if (activeButton) {
-                    h.addClass(activeButton, self.controls.activeClass);
-                }
-            }
+        for (i = 0; control = self._controls[i]; i++) {
+            control.update(command, self._toggleArray);
         }
 
         self.execAction('_updateControls', 1, arguments);
@@ -3172,13 +2631,16 @@ h.extend(mixitup.Mixer.prototype,
 
     destroy: function(hideAll) {
         var self    = this,
+            control = null,
             target  = null,
             button  = null,
             i       = 0;
 
         self.execAction('destroy', 0, arguments);
 
-        self._unbindEvents();
+        for (i = 0; control = self._controls[i]; i++) {
+            control.removeBinding(self);
+        }
 
         for (i = 0; target = self._targets[i]; i++) {
             hideAll && target.hide();

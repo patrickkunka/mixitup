@@ -36,7 +36,7 @@
 
     {{>mixer-dom}}
 
-    {{>control-types}}
+    {{>control-definition}}
 
     {{>control}}
 

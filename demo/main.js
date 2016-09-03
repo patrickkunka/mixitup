@@ -1,5 +1,4 @@
-/* global fastclick */
-/* global mixItUp */
+/* global mixitup */
 
 var sandbox = document.querySelector('.sandbox');
 var mixer   = null;
@@ -8,20 +7,23 @@ mixer = mixitup(sandbox, {
     animation: {
         effects: 'fade',
         easing: 'cubic-bezier(1, 0, 0, 1)',
-        duration: 200,
+        duration: 200
     },
-    pagination: {
-        limit: 4,
-        maxPagers: 6
+    controls: {
+        scope: 'global'
     },
-    dragndrop: {
-        enable: true,
-        hidePlaceholder: false,
-        debounceDelay: 20,
-        detection: 'collision',
-        // liveSort: false
-        // swap: true
-    },
+    // pagination: {
+    //     limit: 4,
+    //     maxPagers: 6
+    // },
+    // dragndrop: {
+    //     enable: true,
+    //     hidePlaceholder: false,
+    //     debounceDelay: 20,
+    //     detection: 'collision',
+    //     // liveSort: false
+    //     // swap: true
+    // },
     callbacks: {
         // onMixLift: function() {
         //     console.log('lift', this);
