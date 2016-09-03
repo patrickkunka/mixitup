@@ -10,7 +10,7 @@
 
     {{>h}}
 
-    {{>base-prototype}}
+    {{>base}}
 
     {{>base-static}}
 
@@ -36,7 +36,9 @@
 
     {{>mixer-dom}}
 
-    {{>click-tracker}}
+    {{>control-types}}
+
+    {{>control}}
 
     {{>style-data}}
 

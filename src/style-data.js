@@ -8,7 +8,7 @@
  */
 
 mixitup.StyleData = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -38,6 +38,6 @@ mixitup.StyleData = function() {
 
 mixitup.BaseStatic.call(mixitup.StyleData);
 
-mixitup.StyleData.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.StyleData.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.StyleData.prototype.constructor = mixitup.StyleData;

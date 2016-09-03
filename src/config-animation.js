@@ -12,7 +12,7 @@
  */
 
 mixitup.ConfigAnimation = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -307,6 +307,6 @@ mixitup.ConfigAnimation = function() {
 
 mixitup.BaseStatic.call(mixitup.ConfigAnimation);
 
-mixitup.ConfigAnimation.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.ConfigAnimation.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.ConfigAnimation.prototype.constructor = mixitup.ConfigAnimation;

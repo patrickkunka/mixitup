@@ -8,7 +8,7 @@
  */
 
 mixitup.UserInstruction = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -23,6 +23,6 @@ mixitup.UserInstruction = function() {
 
 mixitup.BaseStatic.call(mixitup.UserInstruction);
 
-mixitup.UserInstruction.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.UserInstruction.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.UserInstruction.prototype.constructor = mixitup.UserInstruction;

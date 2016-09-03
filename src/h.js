@@ -240,34 +240,43 @@ h = {
     },
 
     /**
+     * Converts a dash or snake-case string to camel case.
+     *
      * @private
      * @param   {string}    str
      * @param   {boolean}   [isPascal]
      * @return  {string}
      */
 
-    camelCase: function(str, isPascal) {
-        var output = str.replace(/-([a-z])/g, function(g) {
-            return g[1].toUpperCase();
+    camelCase: function(str) {
+        return str.replace(/([_-][a-z])/g, function($1) {
+            return $1.toUpperCase().replace(/[_-]/, '');
         });
-
-        if (isPascal) {
-            return output.charAt(0).toUpperCase() + output.slice(1);
-        } else {
-            return output;
-        }
     },
 
     /**
+     * Converts a dash or snake-case string to pascal case.
+     *
+     * @private
+     * @param   {string}    str
+     * @param   {boolean}   [isPascal]
+     * @return  {string}
+     */
+
+    pascalCase: function(str) {
+        return (str = this.camelCase(str)).charAt(0).toUpperCase() + str.slice(1);
+    },
+
+    /**
+     * Converts a camel or pascal-case string to dash case.
+     *
      * @private
      * @param   {string}    str
      * @return  {string}
      */
 
     dashCase: function(str) {
-        return str.replace(/\W+/g, '-')
-            .replace(/([a-z\d])([A-Z])/g, '$1-$2')
-            .toLowerCase();
+        return str.replace(/([A-Z])/g, '-$1').replace(/^-/, '').toLowerCase();
     },
 
     /**
@@ -623,7 +632,7 @@ h = {
         } else {
             // No implementation
 
-            console.warn(mixitup.messages[203]);
+            console.warn(mixitup.messages[303]);
 
             return null;
         }
@@ -746,6 +755,17 @@ h = {
     seal: function(obj) {
         if (typeof Object.seal === 'function') {
             Object.seal(obj);
+        }
+    },
+
+    /**
+     * @private
+     * @param   {object}    obj
+     */
+
+    freeze: function(obj) {
+        if (typeof Object.freeze === 'function') {
+            Object.freeze(obj);
         }
     },
 

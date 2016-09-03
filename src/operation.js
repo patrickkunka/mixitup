@@ -13,7 +13,7 @@
  */
 
 mixitup.Operation = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -67,6 +67,6 @@ mixitup.Operation = function() {
 
 mixitup.BaseStatic.call(mixitup.Operation);
 
-mixitup.Operation.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.Operation.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.Operation.prototype.constructor = mixitup.Operation;

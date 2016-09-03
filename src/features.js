@@ -14,7 +14,7 @@
  */
 
 mixitup.Features = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -56,7 +56,7 @@ mixitup.Features = function() {
 
 mixitup.BaseStatic.call(mixitup.Features);
 
-mixitup.Features.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.Features.prototype = Object.create(mixitup.Base.prototype);
 
 h.extend(mixitup.Features.prototype,
 /** @lends mixitup.Features */
@@ -114,22 +114,22 @@ h.extend(mixitup.Features.prototype,
         self.boxSizingPrefix    = h.getPrefix(self.canary, 'BoxSizing', self.VENDORS);
 
         self.boxSizingProp = self.boxSizingPrefix ?
-            self.boxSizingPrefix + h.camelCase(self.BOX_SIZING_PROP, true) : self.BOX_SIZING_PROP;
+            self.boxSizingPrefix + h.PascalCase(self.BOX_SIZING_PROP) : self.BOX_SIZING_PROP;
 
         self.transitionProp = self.transitionPrefix ?
-            self.transitionPrefix + h.camelCase(self.TRANSITION_PROP, true) : self.TRANSITION_PROP;
+            self.transitionPrefix + h.PascalCase(self.TRANSITION_PROP) : self.TRANSITION_PROP;
 
         self.transformProp = self.transformPrefix ?
-            self.transformPrefix + h.camelCase(self.TRANSFORM_PROP, true) : self.TRANSFORM_PROP;
+            self.transformPrefix + h.PascalCase(self.TRANSFORM_PROP) : self.TRANSFORM_PROP;
 
         self.transformRule = self.transformPrefix ?
             '-' + self.transformPrefix + '-' + self.TRANSFORM_PROP : self.TRANSFORM_PROP;
 
         self.perspectiveProp = self.transformPrefix ?
-            self.transformPrefix + h.camelCase(self.PERSPECTIVE_PROP, true) : self.PERSPECTIVE_PROP;
+            self.transformPrefix + h.PascalCase(self.PERSPECTIVE_PROP) : self.PERSPECTIVE_PROP;
 
         self.perspectiveOriginProp = self.transformPrefix ?
-            self.transformPrefix + h.camelCase(self.PERSPECTIVE_ORIGIN_PROP, true) :
+            self.transformPrefix + h.PascalCase(self.PERSPECTIVE_ORIGIN_PROP) :
             self.PERSPECTIVE_ORIGIN_PROP;
 
         self.execAction('setPrefixes', 1);

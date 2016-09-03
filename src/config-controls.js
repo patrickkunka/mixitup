@@ -10,12 +10,13 @@
  */
 
 mixitup.ConfigControls = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
     this.enable         = true;
     this.live           = false;
+    this.scope          = 'local';
     this.toggleLogic    = 'or';
     this.toggleDefault  = 'all';
     this.activeClass    = 'active';
@@ -27,6 +28,6 @@ mixitup.ConfigControls = function() {
 
 mixitup.BaseStatic.call(mixitup.ConfigControls);
 
-mixitup.ConfigControls.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.ConfigControls.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.ConfigControls.prototype.constructor = mixitup.ConfigControls;

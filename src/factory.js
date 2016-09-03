@@ -108,7 +108,7 @@ mixitup = function(container, config, foreignDoc) {
             instance = mixitup.instances[id];
 
             if (config && h.canReportErrors(config)) {
-                console.warn(mixitup.messages[200]);
+                console.warn(mixitup.messages[300]);
             }
         }
 

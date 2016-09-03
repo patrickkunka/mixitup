@@ -34,7 +34,7 @@ mixitup.EventDetail = function() {
  */
 
 mixitup.Events = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -113,7 +113,7 @@ mixitup.Events = function() {
 
 mixitup.BaseStatic.call(mixitup.Events);
 
-mixitup.Events.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.Events.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.Events.prototype.constructor = mixitup.Events;
 

@@ -10,7 +10,7 @@
  */
 
 mixitup.ConfigCallbacks = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -27,6 +27,6 @@ mixitup.ConfigCallbacks = function() {
 
 mixitup.BaseStatic.call(mixitup.ConfigCallbacks);
 
-mixitup.ConfigCallbacks.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.ConfigCallbacks.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.ConfigCallbacks.prototype.constructor = mixitup.ConfigCallbacks;

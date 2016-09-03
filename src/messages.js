@@ -8,48 +8,47 @@
  */
 
 mixitup.Messages = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
-    /* 100 - 149: General errors
+    /* 100 - 199: Instantiation/init/config errors
     ----------------------------------------------------------------------------- */
 
-    this[100] = '[MixItUp] 100 ERROR: An invalid selector or element was passed to ' +
+    this[100] = '[MixItUp] ERROR 100: An invalid selector or element was passed to ' +
                 'the mixitup factory function.';
 
-    this[101] = '[MixItUp] 101 ERROR: Invalid effects string';
+    this[101] = '[MixItUp] ERROR 101: Invalid value for `config.animation.effects`';
 
-    /* 150-199: Public API method-specific errors
+    this[102] = '[MixItUp] ERROR 102: Invalid value for `config.controls.scope`';
+
+    /* 200-299: API/runtime errors
     ----------------------------------------------------------------------------- */
 
-    this[150] = '[MixItUp] 150 ERROR: No elements were passed to "insert"';
+    this[200] = '[MixItUp] ERROR 200: No elements were passed to "insert"';
 
-    this[151] = '[MixItUp] 151 ERROR: An element to be inserted already exists in ' +
+    this[201] = '[MixItUp] ERROR 201: An element to be inserted already exists in ' +
                 'the container';
 
-    /* 200-249: General warnings
+    /* 300-399: Warnings
     ----------------------------------------------------------------------------- */
 
-    this[200] = '[MixItUp] 200 WARNING: This element already has an active MixItUp ' +
+    this[300] = '[MixItUp] WARNING 300: This element already has an active MixItUp ' +
                 'instance. The provided configuration object will be ignored. If you ' +
                 'wish to perform additional methods on this instance, please create ' +
                 'a reference.';
 
-    this[201] = '[MixItUp] 201 WARNING: An operation was requested but the MixItUp ' +
+    this[301] = '[MixItUp] WARNING 301: An operation was requested but the MixItUp ' +
                 'instance was busy. The operation was rejected because queueing is ' +
                 'disabled or the queue is full.';
 
-    this[202] = '[MixItUp] 202 WARNING: Operations cannot be requested while MixItUp ' +
+    this[302] = '[MixItUp] WARNING 302: Operations cannot be requested while MixItUp ' +
                 'is busy.';
 
-    this[203] = '[MixItUp] 203 WARNING: No available Promise implementations were found. ' +
+    this[303] = '[MixItUp] WARNING 303: No available Promise implementations were found. ' +
                 'Please provide a promise library to the configuration object.';
 
-    /* 250-299: Public API method-specific warnings
-    ----------------------------------------------------------------------------- */
-
-    this[250] = '[MixItUp] 250 WARNING: The requested sorting data attribute was not ' +
+    this[304] = '[MixItUp] WARNING 304: The requested sorting data attribute was not ' +
                 'present on one or more target elements which may product unexpected ' +
                 'sort output';
 
@@ -60,7 +59,7 @@ mixitup.Messages = function() {
 
 mixitup.BaseStatic.call(mixitup.Messages);
 
-mixitup.Messages.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.Messages.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.Messages.prototype.constructor = mixitup.Messages;
 

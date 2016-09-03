@@ -8,7 +8,7 @@
  */
 
 mixitup.MixerDom = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -30,6 +30,6 @@ mixitup.MixerDom = function() {
 
 mixitup.BaseStatic.call(mixitup.MixerDom);
 
-mixitup.MixerDom.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.MixerDom.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.MixerDom.prototype.constructor = mixitup.MixerDom;

@@ -18,7 +18,7 @@
  */
 
 mixitup.Config = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -39,6 +39,6 @@ mixitup.Config = function() {
 
 mixitup.BaseStatic.call(mixitup.Config);
 
-mixitup.Config.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.Config.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.Config.prototype.constructor = mixitup.Config;

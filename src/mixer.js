@@ -15,7 +15,7 @@
  */
 
 mixitup.Mixer = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -36,6 +36,7 @@ mixitup.Mixer = function() {
     this._isToggling        = false;
     this._incPadding        = true;
 
+    this._controls          = [];
     this._targets           = [];
     this._origOrder         = [];
 
@@ -70,7 +71,7 @@ mixitup.Mixer = function() {
 
 mixitup.BaseStatic.call(mixitup.Mixer);
 
-mixitup.Mixer.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.Mixer.prototype = Object.create(mixitup.Base.prototype);
 
 h.extend(mixitup.Mixer.prototype,
 /** @lends mixitup.Mixer */
@@ -234,6 +235,97 @@ h.extend(mixitup.Mixer.prototype,
         self.execAction('_indexTargets', 1, arguments);
     },
 
+    _initControls: function() {
+        var self                = this,
+            controlTypes        = Object.keys(mixitup.controlTypes),
+            controlType         = '',
+            controlElements     = null,
+            el                  = null,
+            parent              = null,
+            control             = null,
+            i                   = -1,
+            j                   = -1;
+
+        self.execAction('_initControls', 0);
+
+        if (!self.controls.enable) {
+            self.execAction('_initControls', 1);
+
+            return;
+        }
+
+        switch (self.controls.scope) {
+            case 'local':
+                parent = self._dom.container;
+
+                break;
+            case 'global':
+                parent = window;
+
+                break;
+            default:
+                throw new Error(mixitup.messages[102]);
+        }
+
+        for (i = 0; controlType = controlTypes[i]; i++) {
+            if (self.controls.live || mixitup.controlTypes[controlType].isDefaultLive) {
+                control = self.getControl(parent,  mixitup.controlTypes[controlType].selector);
+
+                self._controls.push(control);
+            } else {
+                controlElements = parent.querySelectorAll(mixitup.controlTypes[controlType].selector);
+
+                for (j = 0; el = controlElements[i]; i++) {
+                    control = self.getControl(el);
+
+                    self._controls.push(control);
+                }
+            }
+        }
+
+        self.execAction('_initControls', 1);
+
+        // in the case of pagination we want to hook into this method, but always treat as live;
+
+        // iterate through each control type,
+        // if live, create a live control instance and bind it/
+        // if not live, trawl dom, create control instance for each control found, and bind it
+        // upon creation of control, we check to see if something of that spec already exists and reference that instead
+        // for each control, push into array for controls for this mixer instance
+    },
+
+    /**
+     * @private
+     * @instance
+     * @since 3.0.0
+     * @param {HTMLElement} el
+     * @param {string}      [selector]
+     */
+
+    _getControl: function(el, selector) {
+        var self    = this,
+            control = null,
+            i       = -1;
+
+        for (i = 0; control = mixitup.controls[i]; i++) {
+            if (control.el === el && control.selector === selector) {
+                control.addBound(self);
+
+                return control;
+            }
+        }
+
+        control = new mixitup.Control();
+
+        control.init(el, selector || '');
+
+        control.addBound(self);
+
+        mixitup.controls.push(control);
+
+        return control;
+    },
+
     /**
      * @private
      * @instance
@@ -370,7 +462,7 @@ h.extend(mixitup.Mixer.prototype,
             (!self.animation.queue || self._queue.length >= self.animation.queueLimit)
         ) {
             if (h.canReportErrors(self)) {
-                console.warn(mixitup.messages[201]);
+                console.warn(mixitup.messages[301]);
             }
 
             mixitup.events.fire('mixBusy', self._dom.container, {
@@ -902,7 +994,7 @@ h.extend(mixitup.Mixer.prototype,
         if (command.collection) {
             for (i = 0; el = command.collection[i]; i++) {
                 if (self._dom.targets.indexOf(el) > -1) {
-                    throw new Error(mixitup.messages[151]);
+                    throw new Error(mixitup.messages[201]);
                 }
 
                 // Ensure elements are hidden when they are added to the DOM, so they can
@@ -1199,7 +1291,7 @@ h.extend(mixitup.Mixer.prototype,
                 // targets to avoid erroneous sorting when
                 // types are mixed
 
-                console.warn(mixitup.messages[250]);
+                console.warn(mixitup.messages[304]);
             }
         }
 
@@ -2483,7 +2575,7 @@ h.extend(mixitup.Mixer.prototype,
             self.execAction('multiMixQueue', 1, args);
         } else {
             if (h.canReportErrors(self)) {
-                console.warn(mixitup.messages[201]);
+                console.warn(mixitup.messages[301]);
             }
 
             promise.resolve(self._state);
@@ -2703,7 +2795,7 @@ h.extend(mixitup.Mixer.prototype,
 
         if (self._isMixing) {
             if (h.canReportErrors(self)) {
-                console.warn(mixitup.messages[201]);
+                console.warn(mixitup.messages[301]);
             }
 
             return null;

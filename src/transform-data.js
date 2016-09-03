@@ -8,7 +8,7 @@
  */
 
 mixitup.TransformData = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -22,6 +22,6 @@ mixitup.TransformData = function() {
 
 mixitup.BaseStatic.call(mixitup.TransformData);
 
-mixitup.TransformData.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.TransformData.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.TransformData.prototype.constructor = mixitup.TransformData;

@@ -10,7 +10,7 @@
  */
 
 mixitup.ConfigDebug = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -23,6 +23,6 @@ mixitup.ConfigDebug = function() {
 
 mixitup.BaseStatic.call(mixitup.ConfigDebug);
 
-mixitup.ConfigDebug.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.ConfigDebug.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.ConfigDebug.prototype.constructor = mixitup.ConfigDebug;

@@ -14,7 +14,7 @@
  */
 
 mixitup.State = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -192,6 +192,6 @@ mixitup.State = function() {
 
 mixitup.BaseStatic.call(mixitup.State);
 
-mixitup.State.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.State.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.State.prototype.constructor = mixitup.State;

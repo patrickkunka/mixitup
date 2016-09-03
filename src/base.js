@@ -1,7 +1,7 @@
 /* global mixitup, h */
 
 /**
- * The BasePrototype adds instance methods to all other extensible MixItUp classes,
+ * The Base class adds instance methods to all other extensible MixItUp classes,
  * enabling the execution of previously registered hooks.
  *
  * @constructor
@@ -11,15 +11,15 @@
  * @since       3.0.0
  */
 
-mixitup.BasePrototype = function() {};
+mixitup.Base = function() {};
 
-mixitup.BasePrototype.prototype = {
-    constructor: mixitup.BasePrototype,
+mixitup.Base.prototype = {
+    constructor: mixitup.Base,
 
     /**
      * Executes any registered actions for the respective hook.
      *
-     * @memberof    mixitup.BasePrototype
+     * @memberof    mixitup.Base
      * @private
      * @instance
      * @since       2.0.0
@@ -44,7 +44,7 @@ mixitup.BasePrototype.prototype = {
     /**
      * Executes any registered filters for the respective hook.
      *
-     * @memberof    mixitup.BasePrototype
+     * @memberof    mixitup.Base
      * @private
      * @instance
      * @since       2.0.0

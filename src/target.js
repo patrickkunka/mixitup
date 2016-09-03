@@ -9,7 +9,7 @@
  */
 
 mixitup.Target = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -30,7 +30,7 @@ mixitup.Target = function() {
 
 mixitup.BaseStatic.call(mixitup.Target);
 
-mixitup.Target.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.Target.prototype = Object.create(mixitup.Base.prototype);
 
 h.extend(mixitup.Target.prototype, {
     constructor: mixitup.Target,

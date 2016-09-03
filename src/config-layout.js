@@ -10,7 +10,7 @@
  */
 
 mixitup.ConfigLayout = function() {
-    mixitup.BasePrototype.call(this);
+    mixitup.Base.call(this);
 
     this.execAction('construct', 0);
 
@@ -25,6 +25,6 @@ mixitup.ConfigLayout = function() {
 
 mixitup.BaseStatic.call(mixitup.ConfigLayout);
 
-mixitup.ConfigLayout.prototype = Object.create(mixitup.BasePrototype.prototype);
+mixitup.ConfigLayout.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.ConfigLayout.prototype.constructor = mixitup.ConfigLayout;
