@@ -48,6 +48,8 @@
 
     {{>events}}
 
+    {{>queue-item}}
+
     {{>mixer}}
 
     {{>target-dom}}

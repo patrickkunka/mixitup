@@ -17,11 +17,6 @@ mixitup.MixerDom = function() {
     this.container              = null;
     this.parent                 = null;
     this.targets                = [];
-    this.sortButtons            = [];
-    this.filterButtons          = [];
-    this.filterToggleButtons    = [];
-    this.multiMixButtons        = [];
-    this.allButtons             = [];
 
     this.execAction('construct', 1);
 

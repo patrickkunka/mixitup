@@ -589,35 +589,27 @@ h = {
     },
 
     /**
-     * Abstracts various promise implementations into a Q-like "defered promise" interface.
+     * Abstracts an ES6 promise into a q-like deferred interface for storage and deferred resolution.
      *
      * @private
      * @param  {object} libraries
-     * @return {mixitup.PromiseWrapper|null}
+     * @return {h.Deferred}
      */
 
-    getPromise: function(libraries) {
+    defer: function(libraries) {
         var deferred         = null,
             promiseWrapper  = null,
             $               = null;
 
-        promiseWrapper = new this.PromiseWrapper();
+        promiseWrapper = new this.Deferred();
 
         if (mixitup.features.has.promises) {
-            // ES6 native promise or polyfill (bluebird etc)
+            // ES6 native promise or polyfill
 
             promiseWrapper.promise = new Promise(function(resolve, reject) {
                 promiseWrapper.resolve = resolve;
                 promiseWrapper.reject  = reject;
             });
-        } else if (libraries.q && typeof libraries.q === 'function') {
-            // Q
-
-            deferred = libraries.q.defer();
-
-            promiseWrapper.promise = deferred.promise;
-            promiseWrapper.resolve = deferred.resolve;
-            promiseWrapper.reject  = deferred.reject;
         } else if (
             ($ = window.jQuery || libraries.jQuery) &&
             typeof $.Deferred === 'function'
@@ -633,8 +625,6 @@ h = {
             // No implementation
 
             console.warn(mixitup.messages[303]);
-
-            return null;
         }
 
         return promiseWrapper;
@@ -802,11 +792,10 @@ h = {
      * @constructor
      */
 
-    PromiseWrapper: function() {
+    Deferred: function() {
         this.promise    = null;
         this.resolve    = null;
         this.reject     = null;
-        this.isResolved = false;
     },
 
     /**

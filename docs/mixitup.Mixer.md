@@ -72,31 +72,65 @@ currently in progress.
 ### <a id="mixitup.Mixer#filter">mixitup.Mixer.filter</a>
 
 ```js
-.filter(filterCommand [,animate] [,callback])
+.filter(selector [,animate] [,callback])
 ```
 
 Filters the mixer according to the specified filter command.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`string` | `filterCommand` | Any valid CSS selector (i.e. `'.category-2'`), or the strings `'all'` or `'none'`.
+|Param   |`string` | `selector` | Any valid CSS selector (i.e. `'.category-2'`), or the strings `'all'` or `'none'`.
 |Param   |`boolean` | `[animate]` | 
 |Param   |`function` | `[callback]` | 
 |Returns |`Promise.<mixitup.State>` | 
 
 
 **Version added: 2.0.0**
+### <a id="mixitup.Mixer#toggleOn">mixitup.Mixer.toggleOn</a>
+
+```js
+.toggleOn(selector [,animate] [,callback])
+```
+
+Adds a selector to the currently active set of toggles and filters the mixer.
+
+|   |Type | Name | Description
+|---|--- | --- | ---
+|Param   |`string` | `selector` | Any valid CSS selector (i.e. `'.category-2'`)
+|Param   |`boolean` | `[animate]` | 
+|Param   |`function` | `[callback]` | 
+|Returns |`Promise.<mixitup.State>` | 
+
+
+**Version added: 3.0.0**
+### <a id="mixitup.Mixer#toggleOff">mixitup.Mixer.toggleOff</a>
+
+```js
+.toggleOn(selector [,animate] [,callback])
+```
+
+Removes a selector from the currently active set of toggles and filters the mixer.
+
+|   |Type | Name | Description
+|---|--- | --- | ---
+|Param   |`string` | `selector` | Any valid CSS selector (i.e. `'.category-2'`)
+|Param   |`boolean` | `[animate]` | 
+|Param   |`function` | `[callback]` | 
+|Returns |`Promise.<mixitup.State>` | 
+
+
+**Version added: 3.0.0**
 ### <a id="mixitup.Mixer#sort">mixitup.Mixer.sort</a>
 
 ```js
-.sort(sortCommand [,animate] [,callback])
+.sort(sortString [,animate] [,callback])
 ```
 
 Sorts the mixer according to the specified sort command.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`string` | `sortCommand` | A colon-seperated "sorting pair" (e.g. `'published:asc'`, or `'random'`.
+|Param   |`string` | `sortString` | A colon-seperated "sorting pair" (e.g. `'published:asc'`, or `'random'`.
 |Param   |`boolean` | `[animate]` | 
 |Param   |`function` | `[callback]` | 
 |Returns |`Promise.<mixitup.State>` | 
@@ -140,7 +174,7 @@ operations as requested.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`object` | `multiMixCommand` | An object containing one or more operation commands
+|Param   |`object` | `multiMixCommand` | An object containing one or more things to do
 |Param   |`boolean` | `[animate]` | 
 |Param   |`function` | `[callback]` | 
 |Returns |`Promise.<mixitup.State>` | 

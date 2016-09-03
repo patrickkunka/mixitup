@@ -40,22 +40,15 @@ mixitup.Collection.prototype.do = function(methodName) {
         instance    = null,
         args        = Array.prototype.slice.call(arguments),
         tasks       = [],
-        q           = null,
         i           = -1;
 
     args.shift();
 
     for (i = 0; instance = self[i]; i++) {
-        if (!q && instance.libraries.q) {
-            q = instance.libraries.q;
-        }
-
         tasks.push(instance[methodName].apply(instance, args));
     }
 
-    if (q) {
-        return q.all(tasks);
-    } else if (mixitup.Mixer.prototype._has._promises) {
+    if (mixitup.features.has.promises) {
         return Promise.all(tasks);
     }
 };
