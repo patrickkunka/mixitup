@@ -392,7 +392,11 @@ h.extend(mixitup.Control.prototype,
         // TODO: currently takes the activeClass of the first bound mixer, should we check all and build up an active
         // classes list?
 
-        if (status === self.status) return;
+        if (status === self.status || !mixer) {
+            self.execAction('setStatus', 1);
+
+            return;
+        }
 
         switch (status) {
             case 'active':
