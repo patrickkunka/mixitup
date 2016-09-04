@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 351def87-bbb7-4bba-a7b9-2b712340df6f
+ * Build 5c58aa1c-9514-46b4-a7c6-b7de7607a7a5
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2235,7 +2235,11 @@
             // TODO: currently takes the activeClass of the first bound mixer, should we check all and build up an active
             // classes list?
 
-            if (status === self.status) return;
+            if (status === self.status || !mixer) {
+                self.execAction('setStatus', 1);
+
+                return;
+            }
 
             switch (status) {
                 case 'active':
