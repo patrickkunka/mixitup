@@ -15,7 +15,6 @@ mixitup.ConfigLibraries = function() {
 
     this.execAction('construct', 0);
 
-    this.q          = null;
     this.jQuery     = null;
 
     this.execAction('construct', 1);

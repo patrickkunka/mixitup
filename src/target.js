@@ -269,7 +269,7 @@ h.extend(mixitup.Target.prototype, {
 
         transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
 
-        if (options.hideOrShow !== 'show' && self.mixer.animation.animateResizeTargets) {
+        if (options.hideOrShow !== 'show' && self.mixer.config.animation.animateResizeTargets) {
             self.dom.el.style.width        = posIn.width + 'px';
             self.dom.el.style.height       = posIn.height + 'px';
             self.dom.el.style.marginRight  = posIn.marginRight + 'px';
@@ -301,7 +301,7 @@ h.extend(mixitup.Target.prototype, {
         var self            = this,
             transitionRules = [],
             transformValues = [],
-            isResizing      = self.mixer.animation.animateResizeTargets,
+            isResizing      = self.mixer.config.animation.animateResizeTargets,
             isFading        = typeof self.mixer._effectsIn.opacity !== 'undefined';
 
         self.execAction('applyStylesOut', 0, arguments);
@@ -387,7 +387,7 @@ h.extend(mixitup.Target.prototype, {
             self.dom.el.style.marginBottom = options.posOut.marginBottom + 'px';
         }
 
-        if (!self.mixer.animation.nudge && options.hideOrShow === 'hide') {
+        if (!self.mixer.config.animation.nudge && options.hideOrShow === 'hide') {
             // If we're not nudging, the translation should be
             // applied before any other transforms to prevent
             // lateral movement
@@ -409,8 +409,8 @@ h.extend(mixitup.Target.prototype, {
         }
 
         if (
-            self.mixer.animation.nudge ||
-            (!self.mixer.animation.nudge && options.hideOrShow !== 'hide')
+            self.mixer.config.animation.nudge ||
+            (!self.mixer.config.animation.nudge && options.hideOrShow !== 'hide')
         ) {
             // Opposite of above - apply translate after
             // other transform
@@ -444,9 +444,9 @@ h.extend(mixitup.Target.prototype, {
             output  = '';
 
         output = rule + ' ' +
-            (duration || self.mixer.animation.duration) + 'ms ' +
+            (duration || self.mixer.config.animation.duration) + 'ms ' +
             delay + 'ms ' +
-            (rule === 'opacity' ? 'linear' : self.mixer.animation.easing);
+            (rule === 'opacity' ? 'linear' : self.mixer.config.animation.easing);
 
         return self.execFilter('writeTransitionRule', output, arguments);
     },
@@ -468,8 +468,8 @@ h.extend(mixitup.Target.prototype, {
         var self    = this,
             delay   = -1;
 
-        if (typeof self.mixer.animation.staggerSequence === 'function') {
-            index = self.mixer.animation.staggerSequence.call(self, index, self._state);
+        if (typeof self.mixer.config.animation.staggerSequence === 'function') {
+            index = self.mixer.config.animation.staggerSequence.call(self, index, self._state);
         }
 
         delay = !!self.mixer._staggerDuration ? index * self.mixer._staggerDuration : 0;
@@ -507,13 +507,13 @@ h.extend(mixitup.Target.prototype, {
     handleTransitionEnd: function(e) {
         var self        = this,
             propName    = e.propertyName,
-            canResize   = self.mixer.animation.animateResizeTargets;
+            canResize   = self.mixer.config.animation.animateResizeTargets;
 
         self.execAction('handleTransitionEnd', 0, arguments);
 
         if (
             self.isBound &&
-            e.target.matches(self.mixer.selectors.target) &&
+            e.target.matches(self.mixer.config.selectors.target) &&
             (
                 propName.indexOf('transform') > -1 ||
                 propName.indexOf('opacity') > -1 ||
@@ -615,7 +615,7 @@ h.extend(mixitup.Target.prototype, {
         posData.x = self.dom.el.offsetLeft;
         posData.y = self.dom.el.offsetTop;
 
-        if (self.mixer.animation.animateResizeTargets || getBox) {
+        if (self.mixer.config.animation.animateResizeTargets || getBox) {
             rect = self.dom.el.getBoundingClientRect();
 
             posData.top     = rect.top;
@@ -627,7 +627,7 @@ h.extend(mixitup.Target.prototype, {
             posData.height = rect.height;
         }
 
-        if (self.mixer.animation.animateResizeTargets) {
+        if (self.mixer.config.animation.animateResizeTargets) {
             styles = window.getComputedStyle(self.dom.el);
 
             posData.marginBottom = parseFloat(styles.marginBottom);
@@ -653,7 +653,7 @@ h.extend(mixitup.Target.prototype, {
         self.dom.el.style[mixitup.features.transitionProp] = '';
         self.dom.el.style.opacity                          = '';
 
-        if (self.mixer.animation.animateResizeTargets) {
+        if (self.mixer.config.animation.animateResizeTargets) {
             self.dom.el.style.width        = '';
             self.dom.el.style.height       = '';
             self.dom.el.style.marginRight  = '';

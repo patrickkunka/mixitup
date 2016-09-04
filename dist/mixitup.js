@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 4abffccd-853c-4ea9-8e0c-786542cd5711
+ * Build b06583a8-b607-43ee-81ea-0046d1f82564
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1642,7 +1642,6 @@
 
         this.execAction('construct', 0);
 
-        this.q          = null;
         this.jQuery     = null;
 
         this.execAction('construct', 1);
@@ -2168,13 +2167,13 @@
 
             switch (status) {
                 case 'active':
-                    h.addClass(self.el, mixer.controls.activeClass);
+                    h.addClass(self.el, mixer.config.controls.activeClass);
 
                     if (self.canDisable) self.el.disabled = false;
 
                     break;
                 case 'inactive':
-                    h.removeClass(self.el, mixer.controls.activeClass);
+                    h.removeClass(self.el, mixer.config.controls.activeClass);
 
                     if (self.canDisable) self.el.disabled = false;
 
@@ -2591,15 +2590,7 @@
 
         this.execAction('construct', 0);
 
-        this.animation          = new mixitup.ConfigAnimation();
-        this.callbacks          = new mixitup.ConfigCallbacks();
-        this.controls           = new mixitup.ConfigControls();
-        this.debug              = new mixitup.ConfigDebug();
-        this.extensions         = new mixitup.ConfigExtensions();
-        this.layout             = new mixitup.ConfigLayout();
-        this.libraries          = new mixitup.ConfigLibraries();
-        this.load               = new mixitup.ConfigLoad();
-        this.selectors          = new mixitup.ConfigSelectors();
+        this.config             = new mixitup.Config();
 
         this._id                = '';
 
@@ -2664,26 +2655,26 @@
 
             self.execAction('_init', 0, arguments);
 
-            config && h.extend(self, config, true);
+            config && h.extend(self.config, config, true);
 
             self._cacheDom(el);
 
-            self.layout.containerClass && h.addClass(el, self.layout.containerClass);
+            self.config.layout.containerClass && h.addClass(el, self.config.layout.containerClass);
 
-            self.animation.enable = self.animation.enable && mixitup.features.has.transitions;
+            self.config.animation.enable = self.config.animation.enable && mixitup.features.has.transitions;
 
             self._indexTargets();
 
             // Map in whatever state values we can
 
-            state.activeFilter = self.load.filter === 'all' ?
-                self.selectors.target :
-                self.load.filter === 'none' ?
+            state.activeFilter = self.config.load.filter === 'all' ?
+                self.config.selectors.target :
+                self.config.load.filter === 'none' ?
                     '' :
-                    self.load.filter;
+                    self.config.load.filter;
 
-            state.activeSort            = self.load.sort;
-            state.activeContainerClass  = self.layout.containerClass;
+            state.activeSort            = self.config.load.sort;
+            state.activeContainerClass  = self.config.layout.containerClass;
             state.totalTargets          = self._targets.length;
 
             if (state.activeSort) {
@@ -2761,9 +2752,9 @@
 
             self.execAction('_indexTargets', 0, arguments);
 
-            self._dom.targets = self.layout.allowNestedTargets ?
-                self._dom.container.querySelectorAll(self.selectors.target) :
-                h.children(self._dom.container, self.selectors.target, self._dom.document);
+            self._dom.targets = self.config.layout.allowNestedTargets ?
+                self._dom.container.querySelectorAll(self.config.selectors.target) :
+                h.children(self._dom.container, self.config.selectors.target, self._dom.document);
 
             self._dom.targets = Array.prototype.slice.call(self._dom.targets);
 
@@ -2800,13 +2791,13 @@
 
             self.execAction('_initControls', 0);
 
-            if (!self.controls.enable) {
+            if (!self.config.controls.enable) {
                 self.execAction('_initControls', 1);
 
                 return;
             }
 
-            switch (self.controls.scope) {
+            switch (self.config.controls.scope) {
                 case 'local':
                     parent = self._dom.container;
 
@@ -2820,7 +2811,7 @@
             }
 
             for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
-                if (self.controls.live || definition.live) {
+                if (self.config.controls.live || definition.live) {
                     control = self._getControl(parent,  definition.method, definition.selector);
 
                     self._controls.push(control);
@@ -2899,7 +2890,7 @@
 
         _getToggleSelector: function() {
             var self            = this,
-                delineator      = self.controls.toggleLogic === 'or' ? ',' : '',
+                delineator      = self.config.controls.toggleLogic === 'or' ? ',' : '',
                 toggleSelector  = '';
 
             self._toggleArray = h.clean(self._toggleArray);
@@ -2907,7 +2898,7 @@
             toggleSelector = self._toggleArray.join(delineator);
 
             if (toggleSelector === '') {
-                toggleSelector = self.controls.toggleDefault;
+                toggleSelector = self.config.controls.toggleDefault;
             }
 
             return toggleSelector;
@@ -2942,11 +2933,11 @@
                 return;
             }
 
-            if (activeFilter === self.selectors.target || activeFilter === 'all') {
+            if (activeFilter === self.config.selectors.target || activeFilter === 'all') {
                 activeFilter = '';
             }
 
-            if (self.controls.toggleLogic === 'or') {
+            if (self.config.controls.toggleLogic === 'or') {
                 self._toggleArray = activeFilter.split(',');
             } else {
                 self._toggleArray = activeFilter.split('.');
@@ -3000,7 +2991,7 @@
                 command.sort = self._state.activeSort;
             }
 
-            if (command.filter === self.selectors.target) {
+            if (command.filter === self.config.selectors.target) {
                 command.filter = 'all';
             }
 
@@ -3049,7 +3040,7 @@
                     frag.appendChild(el);
                     frag.appendChild(self._dom.document.createTextNode(' '));
 
-                    if (!h.isElement(el, self._dom.document) || !el.matches(self.selectors.target)) continue;
+                    if (!h.isElement(el, self._dom.document) || !el.matches(self.config.selectors.target)) continue;
 
                     target = new mixitup.Target();
 
@@ -3360,7 +3351,7 @@
         _printSort: function(isResetting, operation) {
             var self        = this,
                 order       = isResetting ? operation.startOrder : operation.newOrder,
-                targets     = h.children(self._dom.parent, self.selectors.target, self._dom.document),
+                targets     = h.children(self._dom.parent, self.config.selectors.target, self._dom.document),
                 nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
                 frag        = self._dom.document.createDocumentFragment(),
                 target      = null,
@@ -3449,8 +3440,8 @@
         _parseEffects: function() {
             var self            = this,
                 transformName   = '',
-                effectsIn       = self.animation.effectsIn || self.animation.effects,
-                effectsOut      = self.animation.effectsOut || self.animation.effects;
+                effectsIn       = self.config.animation.effectsIn || self.config.animation.effects,
+                effectsOut      = self.config.animation.effectsOut || self.config.animation.effects;
 
             self._effectsIn      = new mixitup.StyleData();
             self._effectsOut     = new mixitup.StyleData();
@@ -3547,7 +3538,7 @@
                 default:
                     // All other effects are transforms following the same structure
 
-                    if (isOut && self.animation.reverseOut && effectName !== 'scale') {
+                    if (isOut && self.config.animation.reverseOut && effectName !== 'scale') {
                         effects[effectName].value =
                             (val ? parseFloat(val) : mixitup.transformDefaults[effectName].value) * -1;
                     } else {
@@ -3650,7 +3641,7 @@
             // then abort animation
 
             if (
-                !self.animation.duration || !self.animation.effects || !h.isVisible(self._dom.container)
+                !self.config.animation.duration || !self.config.animation.effects || !h.isVisible(self._dom.container)
             ) {
                 shouldAnimate = false;
             }
@@ -3682,8 +3673,8 @@
                 instance: self
             }, self._dom.document);
 
-            if (typeof self.callbacks.onMixStart === 'function') {
-                self.callbacks.onMixStart.call(
+            if (typeof self.config.callbacks.onMixStart === 'function') {
+                self.config.callbacks.onMixStart.call(
                     self._dom.container,
                     operation.startState,
                     operation.newState,
@@ -3691,7 +3682,7 @@
                 );
             }
 
-            h.removeClass(self._dom.container, self.layout.containerClassFail);
+            h.removeClass(self._dom.container, self.config.layout.containerClassFail);
 
             deferred = self._userDeferred = h.defer();
 
@@ -3711,19 +3702,19 @@
                 window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
             }
 
-            if (self.animation.applyPerspective) {
+            if (self.config.animation.applyPerspective) {
                 self._dom.parent.style[mixitup.features.perspectiveProp] =
-                    self.animation.perspectiveDistance;
+                    self.config.animation.perspectiveDistance;
 
                 self._dom.parent.style[mixitup.features.perspectiveOriginProp] =
-                    self.animation.perspectiveOrigin;
+                    self.config.animation.perspectiveOrigin;
             }
 
-            if (self.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
+            if (self.config.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
                 self._dom.parent.style.height = operation.startHeight + 'px';
             }
 
-            if (self.animation.animateResizeContainer || operation.startWidth === operation.newWidth) {
+            if (self.config.animation.animateResizeContainer || operation.startWidth === operation.newWidth) {
                 self._dom.parent.style.width = operation.startWidth + 'px';
             }
 
@@ -3930,9 +3921,9 @@
                 target.show();
             }
 
-            if (operation.willChangeLayout && self.animation.animateChangeLayout) {
+            if (operation.willChangeLayout && self.config.animation.animateChangeLayout) {
                 h.removeClass(self._dom.container, operation.newContainerClass);
-                h.addClass(self._dom.container, self.layout.containerClass);
+                h.addClass(self._dom.container, self.config.layout.containerClass);
             }
 
             self.execAction('_getFinalMixData', 1, arguments);
@@ -3969,7 +3960,7 @@
                 posData.posOut.x = posData.finalPosData.x - posData.interPosData.x;
                 posData.posOut.y = posData.finalPosData.y - posData.interPosData.y;
 
-                if (self.animation.balanceContainerShift) {
+                if (self.config.animation.balanceContainerShift) {
                     // TODO: Needs further testing/investigation
 
                     posData.posOut.x += (operation.startX - operation.newX);
@@ -3984,7 +3975,7 @@
 
                 // Adjust x and y if not nudging
 
-                if (!target.isShown && !self.animation.nudge) {
+                if (!target.isShown && !self.config.animation.nudge) {
                     posData.posIn.x = posData.posOut.x;
                     posData.posIn.y = posData.posOut.y;
                 }
@@ -3994,7 +3985,7 @@
 
                 // Process width, height, and margins
 
-                if (self.animation.animateResizeTargets) {
+                if (self.config.animation.animateResizeTargets) {
                     posData.posIn.width     = posData.startPosData.width;
                     posData.posIn.height    = posData.startPosData.height;
 
@@ -4061,14 +4052,14 @@
 
                 posData.posIn.x     = target.isShown ? posData.startPosData.x - posData.interPosData.x : 0;
                 posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
-                posData.posOut.x    = self.animation.nudge ? 0 : posData.posIn.x;
-                posData.posOut.y    = self.animation.nudge ? 0 : posData.posIn.y;
+                posData.posOut.x    = self.config.animation.nudge ? 0 : posData.posIn.x;
+                posData.posOut.y    = self.config.animation.nudge ? 0 : posData.posIn.y;
                 posData.tweenData.x = posData.posOut.x - posData.posIn.x;
                 posData.tweenData.y = posData.posOut.y - posData.posIn.y;
 
                 // Process width, height, and margins
 
-                if (self.animation.animateResizeTargets) {
+                if (self.config.animation.animateResizeTargets) {
                     posData.posIn.width         = posData.startPosData.width;
                     posData.posIn.height        = posData.startPosData.height;
                     posData.posIn.marginRight   = posData.startPosData.marginRight;
@@ -4170,10 +4161,10 @@
                 });
             }
 
-            if (self.animation.animateResizeContainer) {
+            if (self.config.animation.animateResizeContainer) {
                 self._dom.parent.style[mixitup.features.transitionProp] =
-                    'height ' + self.animation.duration + 'ms ease, ' +
-                    'width ' + self.animation.duration + 'ms ease ';
+                    'height ' + self.config.animation.duration + 'ms ease, ' +
+                    'width ' + self.config.animation.duration + 'ms ease ';
 
                 requestAnimationFrame(function() {
                     self._dom.parent.style.height = operation.newHeight + 'px';
@@ -4182,7 +4173,7 @@
             }
 
             if (operation.willChangeLayout) {
-                h.removeClass(self._dom.container, self.layout.containerClass);
+                h.removeClass(self._dom.container, self.config.layout.containerClass);
                 h.addClass(self._dom.container, operation.newContainerClass);
             }
         },
@@ -4255,7 +4246,7 @@
                 posIn.y !== posOut.y
             ) {
                 return true;
-            } else if (self.animation.animateResizeTargets) {
+            } else if (self.config.animation.animateResizeTargets) {
                 // Check if width, height or margins will change
 
                 return (
@@ -4368,8 +4359,8 @@
                 instance: self
             }, self._dom.document);
 
-            if (typeof self.callbacks.onMixEnd === 'function') {
-                self.callbacks.onMixEnd.call(self._dom.container, self._state, self);
+            if (typeof self.config.callbacks.onMixEnd === 'function') {
+                self.config.callbacks.onMixEnd.call(self._dom.container, self._state, self);
             }
 
             if (operation.hasFailed) {
@@ -4380,11 +4371,11 @@
                     instance: self
                 }, self._dom.document);
 
-                if (typeof self.callbacks.onMixFail === 'function') {
-                    self.callbacks.onMixFail.call(self._dom.container, self._state, self);
+                if (typeof self.config.callbacks.onMixFail === 'function') {
+                    self.config.callbacks.onMixFail.call(self._dom.container, self._state, self);
                 }
 
-                h.addClass(self._dom.container, self.layout.containerClassFail);
+                h.addClass(self._dom.container, self.config.layout.containerClassFail);
             }
 
             // User-defined callback function
@@ -4432,7 +4423,7 @@
                 arg         = null,
                 i           = -1;
 
-            instruction.animate = self.animation.enable;
+            instruction.animate = self.config.animation.enable;
 
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
@@ -4465,7 +4456,7 @@
                 arg         = null,
                 i           = -1;
 
-            instruction.animate = self.animation.enable;
+            instruction.animate = self.config.animation.enable;
 
             instruction.command = {
                 index: 0, // Index to insert at
@@ -4543,7 +4534,7 @@
                 arg         = null,
                 i           = -1;
 
-            instruction.animate = self.animation.enable;
+            instruction.animate = self.config.animation.enable;
 
             instruction.command = {
                 targets: []
@@ -4608,16 +4599,16 @@
 
             self.execAction('_queueMix', 0, arguments);
 
-            deferred = h.defer(self.libraries);
+            deferred = h.defer(self.config.libraries);
 
-            if (self.animation.queue && self._queue.length < self.animation.queueLimit) {
+            if (self.config.animation.queue && self._queue.length < self.config.animation.queueLimit) {
                 queueItem.deferred = deferred;
 
                 self._queue.push(queueItem);
 
                 // Keep controls in sync with user interactions. Mixer will catch up as it drains the queue.
 
-                if (self.controls.enable) {
+                if (self.config.controls.enable) {
                     if (self._isToggling) {
                         self._buildToggleArray(queueItem.instruction.command);
 
@@ -4642,8 +4633,8 @@
                     instance: self
                 }, self._dom.document);
 
-                if (typeof self.callbacks.onMixBusy === 'function') {
-                    self.callbacks.onMixBusy.call(self._dom.container, self._state, self);
+                if (typeof self.config.callbacks.onMixBusy === 'function') {
+                    self.config.callbacks.onMixBusy.call(self._dom.container, self._state, self);
                 }
             }
 
@@ -4958,7 +4949,7 @@
 
             if (filterCommand) {
                 operation.newFilter = filterCommand === 'all' ?
-                    self.selectors.target :
+                    self.config.selectors.target :
                     filterCommand === 'none' ?
                         '' :
                         filterCommand;
@@ -5033,7 +5024,7 @@
             if (!self._isMixing) {
                 operation = self.getOperation(instruction.command);
 
-                if (self.controls.enable) {
+                if (self.config.controls.enable) {
                     // Update controls for API calls
 
                     if (instruction.command.filter && !self._isToggling) {
@@ -5056,9 +5047,9 @@
 
                 // Always allow the instruction to override the instance setting
 
-                animate = (instruction.animate ^ self.animation.enable) ?
+                animate = (instruction.animate ^ self.config.animation.enable) ?
                     instruction.animate :
-                    self.animation.enable;
+                    self.config.animation.enable;
 
                 return self._goMix(animate, operation);
             } else {
@@ -5608,7 +5599,7 @@
 
             transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
 
-            if (options.hideOrShow !== 'show' && self.mixer.animation.animateResizeTargets) {
+            if (options.hideOrShow !== 'show' && self.mixer.config.animation.animateResizeTargets) {
                 self.dom.el.style.width        = posIn.width + 'px';
                 self.dom.el.style.height       = posIn.height + 'px';
                 self.dom.el.style.marginRight  = posIn.marginRight + 'px';
@@ -5640,7 +5631,7 @@
             var self            = this,
                 transitionRules = [],
                 transformValues = [],
-                isResizing      = self.mixer.animation.animateResizeTargets,
+                isResizing      = self.mixer.config.animation.animateResizeTargets,
                 isFading        = typeof self.mixer._effectsIn.opacity !== 'undefined';
 
             self.execAction('applyStylesOut', 0, arguments);
@@ -5726,7 +5717,7 @@
                 self.dom.el.style.marginBottom = options.posOut.marginBottom + 'px';
             }
 
-            if (!self.mixer.animation.nudge && options.hideOrShow === 'hide') {
+            if (!self.mixer.config.animation.nudge && options.hideOrShow === 'hide') {
                 // If we're not nudging, the translation should be
                 // applied before any other transforms to prevent
                 // lateral movement
@@ -5748,8 +5739,8 @@
             }
 
             if (
-                self.mixer.animation.nudge ||
-                (!self.mixer.animation.nudge && options.hideOrShow !== 'hide')
+                self.mixer.config.animation.nudge ||
+                (!self.mixer.config.animation.nudge && options.hideOrShow !== 'hide')
             ) {
                 // Opposite of above - apply translate after
                 // other transform
@@ -5783,9 +5774,9 @@
                 output  = '';
 
             output = rule + ' ' +
-                (duration || self.mixer.animation.duration) + 'ms ' +
+                (duration || self.mixer.config.animation.duration) + 'ms ' +
                 delay + 'ms ' +
-                (rule === 'opacity' ? 'linear' : self.mixer.animation.easing);
+                (rule === 'opacity' ? 'linear' : self.mixer.config.animation.easing);
 
             return self.execFilter('writeTransitionRule', output, arguments);
         },
@@ -5807,8 +5798,8 @@
             var self    = this,
                 delay   = -1;
 
-            if (typeof self.mixer.animation.staggerSequence === 'function') {
-                index = self.mixer.animation.staggerSequence.call(self, index, self._state);
+            if (typeof self.mixer.config.animation.staggerSequence === 'function') {
+                index = self.mixer.config.animation.staggerSequence.call(self, index, self._state);
             }
 
             delay = !!self.mixer._staggerDuration ? index * self.mixer._staggerDuration : 0;
@@ -5846,13 +5837,13 @@
         handleTransitionEnd: function(e) {
             var self        = this,
                 propName    = e.propertyName,
-                canResize   = self.mixer.animation.animateResizeTargets;
+                canResize   = self.mixer.config.animation.animateResizeTargets;
 
             self.execAction('handleTransitionEnd', 0, arguments);
 
             if (
                 self.isBound &&
-                e.target.matches(self.mixer.selectors.target) &&
+                e.target.matches(self.mixer.config.selectors.target) &&
                 (
                     propName.indexOf('transform') > -1 ||
                     propName.indexOf('opacity') > -1 ||
@@ -5954,7 +5945,7 @@
             posData.x = self.dom.el.offsetLeft;
             posData.y = self.dom.el.offsetTop;
 
-            if (self.mixer.animation.animateResizeTargets || getBox) {
+            if (self.mixer.config.animation.animateResizeTargets || getBox) {
                 rect = self.dom.el.getBoundingClientRect();
 
                 posData.top     = rect.top;
@@ -5966,7 +5957,7 @@
                 posData.height = rect.height;
             }
 
-            if (self.mixer.animation.animateResizeTargets) {
+            if (self.mixer.config.animation.animateResizeTargets) {
                 styles = window.getComputedStyle(self.dom.el);
 
                 posData.marginBottom = parseFloat(styles.marginBottom);
@@ -5992,7 +5983,7 @@
             self.dom.el.style[mixitup.features.transitionProp] = '';
             self.dom.el.style.opacity                          = '';
 
-            if (self.mixer.animation.animateResizeTargets) {
+            if (self.mixer.config.animation.animateResizeTargets) {
                 self.dom.el.style.width        = '';
                 self.dom.el.style.height       = '';
                 self.dom.el.style.marginRight  = '';

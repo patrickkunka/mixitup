@@ -357,13 +357,13 @@ h.extend(mixitup.Control.prototype,
 
         switch (status) {
             case 'active':
-                h.addClass(self.el, mixer.controls.activeClass);
+                h.addClass(self.el, mixer.config.controls.activeClass);
 
                 if (self.canDisable) self.el.disabled = false;
 
                 break;
             case 'inactive':
-                h.removeClass(self.el, mixer.controls.activeClass);
+                h.removeClass(self.el, mixer.config.controls.activeClass);
 
                 if (self.canDisable) self.el.disabled = false;
 

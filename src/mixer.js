@@ -19,15 +19,7 @@ mixitup.Mixer = function() {
 
     this.execAction('construct', 0);
 
-    this.animation          = new mixitup.ConfigAnimation();
-    this.callbacks          = new mixitup.ConfigCallbacks();
-    this.controls           = new mixitup.ConfigControls();
-    this.debug              = new mixitup.ConfigDebug();
-    this.extensions         = new mixitup.ConfigExtensions();
-    this.layout             = new mixitup.ConfigLayout();
-    this.libraries          = new mixitup.ConfigLibraries();
-    this.load               = new mixitup.ConfigLoad();
-    this.selectors          = new mixitup.ConfigSelectors();
+    this.config             = new mixitup.Config();
 
     this._id                = '';
 
@@ -92,26 +84,26 @@ h.extend(mixitup.Mixer.prototype,
 
         self.execAction('_init', 0, arguments);
 
-        config && h.extend(self, config, true);
+        config && h.extend(self.config, config, true);
 
         self._cacheDom(el);
 
-        self.layout.containerClass && h.addClass(el, self.layout.containerClass);
+        self.config.layout.containerClass && h.addClass(el, self.config.layout.containerClass);
 
-        self.animation.enable = self.animation.enable && mixitup.features.has.transitions;
+        self.config.animation.enable = self.config.animation.enable && mixitup.features.has.transitions;
 
         self._indexTargets();
 
         // Map in whatever state values we can
 
-        state.activeFilter = self.load.filter === 'all' ?
-            self.selectors.target :
-            self.load.filter === 'none' ?
+        state.activeFilter = self.config.load.filter === 'all' ?
+            self.config.selectors.target :
+            self.config.load.filter === 'none' ?
                 '' :
-                self.load.filter;
+                self.config.load.filter;
 
-        state.activeSort            = self.load.sort;
-        state.activeContainerClass  = self.layout.containerClass;
+        state.activeSort            = self.config.load.sort;
+        state.activeContainerClass  = self.config.layout.containerClass;
         state.totalTargets          = self._targets.length;
 
         if (state.activeSort) {
@@ -189,9 +181,9 @@ h.extend(mixitup.Mixer.prototype,
 
         self.execAction('_indexTargets', 0, arguments);
 
-        self._dom.targets = self.layout.allowNestedTargets ?
-            self._dom.container.querySelectorAll(self.selectors.target) :
-            h.children(self._dom.container, self.selectors.target, self._dom.document);
+        self._dom.targets = self.config.layout.allowNestedTargets ?
+            self._dom.container.querySelectorAll(self.config.selectors.target) :
+            h.children(self._dom.container, self.config.selectors.target, self._dom.document);
 
         self._dom.targets = Array.prototype.slice.call(self._dom.targets);
 
@@ -228,13 +220,13 @@ h.extend(mixitup.Mixer.prototype,
 
         self.execAction('_initControls', 0);
 
-        if (!self.controls.enable) {
+        if (!self.config.controls.enable) {
             self.execAction('_initControls', 1);
 
             return;
         }
 
-        switch (self.controls.scope) {
+        switch (self.config.controls.scope) {
             case 'local':
                 parent = self._dom.container;
 
@@ -248,7 +240,7 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
-            if (self.controls.live || definition.live) {
+            if (self.config.controls.live || definition.live) {
                 control = self._getControl(parent,  definition.method, definition.selector);
 
                 self._controls.push(control);
@@ -327,7 +319,7 @@ h.extend(mixitup.Mixer.prototype,
 
     _getToggleSelector: function() {
         var self            = this,
-            delineator      = self.controls.toggleLogic === 'or' ? ',' : '',
+            delineator      = self.config.controls.toggleLogic === 'or' ? ',' : '',
             toggleSelector  = '';
 
         self._toggleArray = h.clean(self._toggleArray);
@@ -335,7 +327,7 @@ h.extend(mixitup.Mixer.prototype,
         toggleSelector = self._toggleArray.join(delineator);
 
         if (toggleSelector === '') {
-            toggleSelector = self.controls.toggleDefault;
+            toggleSelector = self.config.controls.toggleDefault;
         }
 
         return toggleSelector;
@@ -370,11 +362,11 @@ h.extend(mixitup.Mixer.prototype,
             return;
         }
 
-        if (activeFilter === self.selectors.target || activeFilter === 'all') {
+        if (activeFilter === self.config.selectors.target || activeFilter === 'all') {
             activeFilter = '';
         }
 
-        if (self.controls.toggleLogic === 'or') {
+        if (self.config.controls.toggleLogic === 'or') {
             self._toggleArray = activeFilter.split(',');
         } else {
             self._toggleArray = activeFilter.split('.');
@@ -428,7 +420,7 @@ h.extend(mixitup.Mixer.prototype,
             command.sort = self._state.activeSort;
         }
 
-        if (command.filter === self.selectors.target) {
+        if (command.filter === self.config.selectors.target) {
             command.filter = 'all';
         }
 
@@ -477,7 +469,7 @@ h.extend(mixitup.Mixer.prototype,
                 frag.appendChild(el);
                 frag.appendChild(self._dom.document.createTextNode(' '));
 
-                if (!h.isElement(el, self._dom.document) || !el.matches(self.selectors.target)) continue;
+                if (!h.isElement(el, self._dom.document) || !el.matches(self.config.selectors.target)) continue;
 
                 target = new mixitup.Target();
 
@@ -788,7 +780,7 @@ h.extend(mixitup.Mixer.prototype,
     _printSort: function(isResetting, operation) {
         var self        = this,
             order       = isResetting ? operation.startOrder : operation.newOrder,
-            targets     = h.children(self._dom.parent, self.selectors.target, self._dom.document),
+            targets     = h.children(self._dom.parent, self.config.selectors.target, self._dom.document),
             nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
             frag        = self._dom.document.createDocumentFragment(),
             target      = null,
@@ -877,8 +869,8 @@ h.extend(mixitup.Mixer.prototype,
     _parseEffects: function() {
         var self            = this,
             transformName   = '',
-            effectsIn       = self.animation.effectsIn || self.animation.effects,
-            effectsOut      = self.animation.effectsOut || self.animation.effects;
+            effectsIn       = self.config.animation.effectsIn || self.config.animation.effects,
+            effectsOut      = self.config.animation.effectsOut || self.config.animation.effects;
 
         self._effectsIn      = new mixitup.StyleData();
         self._effectsOut     = new mixitup.StyleData();
@@ -975,7 +967,7 @@ h.extend(mixitup.Mixer.prototype,
             default:
                 // All other effects are transforms following the same structure
 
-                if (isOut && self.animation.reverseOut && effectName !== 'scale') {
+                if (isOut && self.config.animation.reverseOut && effectName !== 'scale') {
                     effects[effectName].value =
                         (val ? parseFloat(val) : mixitup.transformDefaults[effectName].value) * -1;
                 } else {
@@ -1078,7 +1070,7 @@ h.extend(mixitup.Mixer.prototype,
         // then abort animation
 
         if (
-            !self.animation.duration || !self.animation.effects || !h.isVisible(self._dom.container)
+            !self.config.animation.duration || !self.config.animation.effects || !h.isVisible(self._dom.container)
         ) {
             shouldAnimate = false;
         }
@@ -1110,8 +1102,8 @@ h.extend(mixitup.Mixer.prototype,
             instance: self
         }, self._dom.document);
 
-        if (typeof self.callbacks.onMixStart === 'function') {
-            self.callbacks.onMixStart.call(
+        if (typeof self.config.callbacks.onMixStart === 'function') {
+            self.config.callbacks.onMixStart.call(
                 self._dom.container,
                 operation.startState,
                 operation.newState,
@@ -1119,7 +1111,7 @@ h.extend(mixitup.Mixer.prototype,
             );
         }
 
-        h.removeClass(self._dom.container, self.layout.containerClassFail);
+        h.removeClass(self._dom.container, self.config.layout.containerClassFail);
 
         deferred = self._userDeferred = h.defer();
 
@@ -1139,19 +1131,19 @@ h.extend(mixitup.Mixer.prototype,
             window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
         }
 
-        if (self.animation.applyPerspective) {
+        if (self.config.animation.applyPerspective) {
             self._dom.parent.style[mixitup.features.perspectiveProp] =
-                self.animation.perspectiveDistance;
+                self.config.animation.perspectiveDistance;
 
             self._dom.parent.style[mixitup.features.perspectiveOriginProp] =
-                self.animation.perspectiveOrigin;
+                self.config.animation.perspectiveOrigin;
         }
 
-        if (self.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
+        if (self.config.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
             self._dom.parent.style.height = operation.startHeight + 'px';
         }
 
-        if (self.animation.animateResizeContainer || operation.startWidth === operation.newWidth) {
+        if (self.config.animation.animateResizeContainer || operation.startWidth === operation.newWidth) {
             self._dom.parent.style.width = operation.startWidth + 'px';
         }
 
@@ -1358,9 +1350,9 @@ h.extend(mixitup.Mixer.prototype,
             target.show();
         }
 
-        if (operation.willChangeLayout && self.animation.animateChangeLayout) {
+        if (operation.willChangeLayout && self.config.animation.animateChangeLayout) {
             h.removeClass(self._dom.container, operation.newContainerClass);
-            h.addClass(self._dom.container, self.layout.containerClass);
+            h.addClass(self._dom.container, self.config.layout.containerClass);
         }
 
         self.execAction('_getFinalMixData', 1, arguments);
@@ -1397,7 +1389,7 @@ h.extend(mixitup.Mixer.prototype,
             posData.posOut.x = posData.finalPosData.x - posData.interPosData.x;
             posData.posOut.y = posData.finalPosData.y - posData.interPosData.y;
 
-            if (self.animation.balanceContainerShift) {
+            if (self.config.animation.balanceContainerShift) {
                 // TODO: Needs further testing/investigation
 
                 posData.posOut.x += (operation.startX - operation.newX);
@@ -1412,7 +1404,7 @@ h.extend(mixitup.Mixer.prototype,
 
             // Adjust x and y if not nudging
 
-            if (!target.isShown && !self.animation.nudge) {
+            if (!target.isShown && !self.config.animation.nudge) {
                 posData.posIn.x = posData.posOut.x;
                 posData.posIn.y = posData.posOut.y;
             }
@@ -1422,7 +1414,7 @@ h.extend(mixitup.Mixer.prototype,
 
             // Process width, height, and margins
 
-            if (self.animation.animateResizeTargets) {
+            if (self.config.animation.animateResizeTargets) {
                 posData.posIn.width     = posData.startPosData.width;
                 posData.posIn.height    = posData.startPosData.height;
 
@@ -1489,14 +1481,14 @@ h.extend(mixitup.Mixer.prototype,
 
             posData.posIn.x     = target.isShown ? posData.startPosData.x - posData.interPosData.x : 0;
             posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
-            posData.posOut.x    = self.animation.nudge ? 0 : posData.posIn.x;
-            posData.posOut.y    = self.animation.nudge ? 0 : posData.posIn.y;
+            posData.posOut.x    = self.config.animation.nudge ? 0 : posData.posIn.x;
+            posData.posOut.y    = self.config.animation.nudge ? 0 : posData.posIn.y;
             posData.tweenData.x = posData.posOut.x - posData.posIn.x;
             posData.tweenData.y = posData.posOut.y - posData.posIn.y;
 
             // Process width, height, and margins
 
-            if (self.animation.animateResizeTargets) {
+            if (self.config.animation.animateResizeTargets) {
                 posData.posIn.width         = posData.startPosData.width;
                 posData.posIn.height        = posData.startPosData.height;
                 posData.posIn.marginRight   = posData.startPosData.marginRight;
@@ -1598,10 +1590,10 @@ h.extend(mixitup.Mixer.prototype,
             });
         }
 
-        if (self.animation.animateResizeContainer) {
+        if (self.config.animation.animateResizeContainer) {
             self._dom.parent.style[mixitup.features.transitionProp] =
-                'height ' + self.animation.duration + 'ms ease, ' +
-                'width ' + self.animation.duration + 'ms ease ';
+                'height ' + self.config.animation.duration + 'ms ease, ' +
+                'width ' + self.config.animation.duration + 'ms ease ';
 
             requestAnimationFrame(function() {
                 self._dom.parent.style.height = operation.newHeight + 'px';
@@ -1610,7 +1602,7 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         if (operation.willChangeLayout) {
-            h.removeClass(self._dom.container, self.layout.containerClass);
+            h.removeClass(self._dom.container, self.config.layout.containerClass);
             h.addClass(self._dom.container, operation.newContainerClass);
         }
     },
@@ -1683,7 +1675,7 @@ h.extend(mixitup.Mixer.prototype,
             posIn.y !== posOut.y
         ) {
             return true;
-        } else if (self.animation.animateResizeTargets) {
+        } else if (self.config.animation.animateResizeTargets) {
             // Check if width, height or margins will change
 
             return (
@@ -1796,8 +1788,8 @@ h.extend(mixitup.Mixer.prototype,
             instance: self
         }, self._dom.document);
 
-        if (typeof self.callbacks.onMixEnd === 'function') {
-            self.callbacks.onMixEnd.call(self._dom.container, self._state, self);
+        if (typeof self.config.callbacks.onMixEnd === 'function') {
+            self.config.callbacks.onMixEnd.call(self._dom.container, self._state, self);
         }
 
         if (operation.hasFailed) {
@@ -1808,11 +1800,11 @@ h.extend(mixitup.Mixer.prototype,
                 instance: self
             }, self._dom.document);
 
-            if (typeof self.callbacks.onMixFail === 'function') {
-                self.callbacks.onMixFail.call(self._dom.container, self._state, self);
+            if (typeof self.config.callbacks.onMixFail === 'function') {
+                self.config.callbacks.onMixFail.call(self._dom.container, self._state, self);
             }
 
-            h.addClass(self._dom.container, self.layout.containerClassFail);
+            h.addClass(self._dom.container, self.config.layout.containerClassFail);
         }
 
         // User-defined callback function
@@ -1860,7 +1852,7 @@ h.extend(mixitup.Mixer.prototype,
             arg         = null,
             i           = -1;
 
-        instruction.animate = self.animation.enable;
+        instruction.animate = self.config.animation.enable;
 
         for (i = 0; i < args.length; i++) {
             arg = args[i];
@@ -1893,7 +1885,7 @@ h.extend(mixitup.Mixer.prototype,
             arg         = null,
             i           = -1;
 
-        instruction.animate = self.animation.enable;
+        instruction.animate = self.config.animation.enable;
 
         instruction.command = {
             index: 0, // Index to insert at
@@ -1971,7 +1963,7 @@ h.extend(mixitup.Mixer.prototype,
             arg         = null,
             i           = -1;
 
-        instruction.animate = self.animation.enable;
+        instruction.animate = self.config.animation.enable;
 
         instruction.command = {
             targets: []
@@ -2036,16 +2028,16 @@ h.extend(mixitup.Mixer.prototype,
 
         self.execAction('_queueMix', 0, arguments);
 
-        deferred = h.defer(self.libraries);
+        deferred = h.defer(self.config.libraries);
 
-        if (self.animation.queue && self._queue.length < self.animation.queueLimit) {
+        if (self.config.animation.queue && self._queue.length < self.config.animation.queueLimit) {
             queueItem.deferred = deferred;
 
             self._queue.push(queueItem);
 
             // Keep controls in sync with user interactions. Mixer will catch up as it drains the queue.
 
-            if (self.controls.enable) {
+            if (self.config.controls.enable) {
                 if (self._isToggling) {
                     self._buildToggleArray(queueItem.instruction.command);
 
@@ -2070,8 +2062,8 @@ h.extend(mixitup.Mixer.prototype,
                 instance: self
             }, self._dom.document);
 
-            if (typeof self.callbacks.onMixBusy === 'function') {
-                self.callbacks.onMixBusy.call(self._dom.container, self._state, self);
+            if (typeof self.config.callbacks.onMixBusy === 'function') {
+                self.config.callbacks.onMixBusy.call(self._dom.container, self._state, self);
             }
         }
 
@@ -2386,7 +2378,7 @@ h.extend(mixitup.Mixer.prototype,
 
         if (filterCommand) {
             operation.newFilter = filterCommand === 'all' ?
-                self.selectors.target :
+                self.config.selectors.target :
                 filterCommand === 'none' ?
                     '' :
                     filterCommand;
@@ -2461,7 +2453,7 @@ h.extend(mixitup.Mixer.prototype,
         if (!self._isMixing) {
             operation = self.getOperation(instruction.command);
 
-            if (self.controls.enable) {
+            if (self.config.controls.enable) {
                 // Update controls for API calls
 
                 if (instruction.command.filter && !self._isToggling) {
@@ -2484,9 +2476,9 @@ h.extend(mixitup.Mixer.prototype,
 
             // Always allow the instruction to override the instance setting
 
-            animate = (instruction.animate ^ self.animation.enable) ?
+            animate = (instruction.animate ^ self.config.animation.enable) ?
                 instruction.animate :
-                self.animation.enable;
+                self.config.animation.enable;
 
             return self._goMix(animate, operation);
         } else {
