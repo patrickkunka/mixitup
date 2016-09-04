@@ -214,6 +214,7 @@ h.extend(mixitup.Mixer.prototype,
             controlElements     = null,
             el                  = null,
             parent              = null,
+            delagator           = null,
             control             = null,
             i                   = -1,
             j                   = -1;
@@ -232,7 +233,7 @@ h.extend(mixitup.Mixer.prototype,
 
                 break;
             case 'global':
-                parent = document;
+                parent = self._dom.document;
 
                 break;
             default:
@@ -241,7 +242,13 @@ h.extend(mixitup.Mixer.prototype,
 
         for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
             if (self.config.controls.live || definition.live) {
-                control = self._getControl(parent,  definition.method, definition.selector);
+                if (definition.parent) {
+                    delagator = self._dom[definition.parent];
+                } else {
+                    delagator = parent;
+                }
+
+                control = self._getControl(delagator,  definition.method, definition.selector);
 
                 self._controls.push(control);
             } else {
@@ -1816,7 +1823,7 @@ h.extend(mixitup.Mixer.prototype,
         self._userDeferred.resolve(self._state);
 
         self._userCallback  = null;
-        self._userDeferred   = null;
+        self._userDeferred  = null;
         self._lastClicked   = null;
         self._isToggling    = false;
         self._isMixing      = false;
@@ -2304,15 +2311,14 @@ h.extend(mixitup.Mixer.prototype,
      * @public
      * @instance
      * @since   3.0.0
-     * @param   {Command}           command
+     * @param   {object}            command
      * @param   {boolean}           [isPreFetch]
      *      An optional boolean indicating that the operation is being pre-fetched for execution at a later time.
      * @return  {Operation|null}
      */
 
-    getOperation: function() {
+    getOperation: function(command, isPreFetch) {
         var self                = this,
-            command             = arguments[0],
             sortCommand         = command.sort,
             filterCommand       = command.filter,
             changeLayoutCommand = command.changeLayout,
@@ -2320,18 +2326,16 @@ h.extend(mixitup.Mixer.prototype,
             insertCommand       = command.insert,
             operation           = new mixitup.Operation();
 
+        operation = self.execFilter('getOperation_unmapped', operation, arguments);
+
+        // NB: `isPreFetch` is passed as may be useful for extensions, not used in this function
+        // but placed here to satisfy jscs
+
+        isPreFetch;
+
         operation.command       = command;
         operation.startState    = self._state;
         operation.id            = h.randomHexKey();
-
-        self.execAction('getOperation', 0, operation);
-
-        // TODO: passing the operation rather than arguments
-        // to the action is non-standard here but essential as
-        // we require a reference to original. Perhaps a "pre"
-        // filter is the best alternative, but as we already use
-        // a filter at the end of this function, we would need a
-        // new syntax
 
         if (self._isMixing) {
             if (h.canReportErrors(self)) {
@@ -2421,7 +2425,7 @@ h.extend(mixitup.Mixer.prototype,
 
         operation.newState = self._buildState(operation);
 
-        return self.execFilter('getOperation', operation, arguments);
+        return self.execFilter('getOperation_mapped', operation, arguments);
     },
 
     /**

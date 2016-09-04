@@ -197,6 +197,7 @@ h.extend(mixitup.Control.prototype,
             button      = null,
             mixer       = null,
             isActive    = false,
+            returnValue = void(0),
             command     = {},
             i           = -1;
 
@@ -207,9 +208,9 @@ h.extend(mixitup.Control.prototype,
         if (!self.selector) {
             button = self.el;
         } else {
-            button = h.closestParent(e.target, self.selector, true);
+            button = h.closestParent(e.target, self.selector, true, self._dom.document);
 
-            // TODO: pull attributes from element at runtime, sub with self.filter etc
+            // TODO: for live selectors, read data attributes here, sub with self.filter etc
         }
 
         switch (self.method) {
@@ -232,7 +233,7 @@ h.extend(mixitup.Control.prototype,
                 if (self.status === 'live') {
                     // TODO: update to use new classNames config
 
-                    isActive = h.hasClass(button, self.bound[0].controls.activeClass);
+                    isActive = h.hasClass(button, self.bound[0].config.controls.activeClass);
                 } else {
                     isActive = self.status === 'active';
                 }
@@ -242,13 +243,39 @@ h.extend(mixitup.Control.prototype,
 
         command = self.execFilter('handleClick', command, arguments);
 
+        if (!command) {
+            // An extension may return null to indicate that the click should not be handled
+
+            self.execAction('handleClick', 1);
+
+            return;
+        }
+
         self.pending = self.bound.length;
 
         for (i = 0; mixer = self.bound[i]; i++) {
-            mixer._lastClicked = self.el;
+            if (mixer._lastClicked) {
+                mixer._lastClicked = button;
+            }
+
+            mixitup.events.fire('mixClick', self._dom.container, {
+                state: mixer._state,
+                instance: mixer,
+                originalEvent: e,
+                control: mixer._lastClicked
+            }, self._dom.document);
+
+            if (typeof self.config.callbacks.onMixClick === 'function') {
+                returnValue = self.callbacks.onMixClick.call(mixer._lastClicked, self._state, self, e);
+
+                if (returnValue === false) {
+                    // User has returned `false` from the callback, so do not execute paginate command for this mixer
+
+                    continue;
+                }
+            }
 
             if (self.method === 'toggle') {
-
                 isActive ? mixer.toggleOff(command.filter) : mixer.toggleOn(command.filter);
             } else {
                 mixer.multiMix(command);
@@ -393,58 +420,3 @@ h.extend(mixitup.Control.prototype,
 });
 
 mixitup.controls = [];
-
-// /**
-//  * @private
-//  * @instance
-//  * @since 3.0.0
-//  * @param   {Element}   button
-//  * @return  {object|null}
-//  */
-
-// _handleMultiMixClick: function(button) {
-//     var self     = this,
-//         command  = null,
-//         el       = null,
-//         i        = -1;
-
-//     self.execAction('_handleMultiMixClick', 0, arguments);
-
-//     if (!h.hasClass(button, self.controls.activeClass)) {
-//         for (i = 0; el = self._dom.filterButtons[i]; i++) {
-//             h.removeClass(el, self.controls.activeClass);
-//         }
-
-//         for (i = 0; el = self._dom.filterToggleButtons[i]; i++) {
-//             h.removeClass(el, self.controls.activeClass);
-//         }
-
-//         for (i = 0; el = self._dom.sortButtons[i]; i++) {
-//             h.removeClass(el, self.controls.activeClass);
-//         }
-
-//         for (i = 0; el = self._dom.multiMixButtons[i]; i++) {
-//             h.removeClass(el, self.controls.activeClass);
-//         }
-
-//         command = {
-//             sort: button.getAttribute('data-sort'),
-//             filter: button.getAttribute('data-filter')
-//         };
-
-//         if (self._isToggling) {
-//             // If we were previously toggling, we are not now,
-//             // so remove any selectors from the toggle array
-
-//             self._isToggling            = false;
-//             self._toggleArray.length    = 0;
-//         }
-
-//         // Update any matching individual filter and sort
-//         // controls to reflect the multiMix
-
-//         self._updateControls(command);
-//     }
-
-//     return self.execFilter('_handleMultiMixClick', command, arguments);
-// },

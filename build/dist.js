@@ -58,7 +58,7 @@ DistBuilder.Private.prototype = {
 
     /**
      * @private
-     * @return  {Promise} -> {string[]}
+     * @return  {Promise<string[]>}
      */
 
     readPartials: function() {
@@ -95,7 +95,7 @@ DistBuilder.Private.prototype = {
     /**
      * @private
      * @param   {string[]}  fileNames
-     * @void
+     * @return  {Promise}
      */
 
     registerPartials: function(fileNames) {
@@ -168,7 +168,6 @@ DistBuilder.Private.prototype = {
      * @param   {name}      name
      * @param   {string}    version
      * @return  {BuildData}
-     * @void
      */
 
     mapData: function() {
@@ -179,6 +178,11 @@ DistBuilder.Private.prototype = {
         data.author                    = p.author;
         data.name                      = p.name;
         data.version                   = p.version;
+
+        if (p.dependencies.mixitup) {
+            data.coreVersion = p.dependencies.mixitup;
+        }
+
         data.beginCopyrightYear        = '2014';
         data.currentYear               = new Date().getFullYear();
         data.websiteUrl                = p.homepage;
@@ -208,8 +212,8 @@ DistBuilder.Private.prototype = {
 
     /**
      * @private
-     * @param {string} buffer
-     * @return {string}
+     * @param   {string} buffer
+     * @return  {string}
      */
 
     cleanBuild: function(buffer) {
@@ -269,6 +273,7 @@ DistBuilder.Model = function() {
     this.author                     = '';
     this.name                       = '';
     this.version                    = '';
+    this.coreVersion                = '';
     this.beginCopyrightYear         = '';
     this.currentYear                = '';
     this.websiteUrl                 = '';

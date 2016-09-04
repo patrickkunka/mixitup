@@ -36,7 +36,7 @@ mixitup.Base.prototype = {
 
         if (!h.isEmptyObject(self.constructor._actions) && self.constructor._actions.hasOwnProperty(methodName)) {
             for (key in self.constructor._actions[methodName][context]) {
-                self.constructor._actions[methodName][context][key].call(self, args);
+                self.constructor._actions[methodName][context][key].apply(self, args);
             }
         }
     },
@@ -60,7 +60,11 @@ mixitup.Base.prototype = {
 
         if (!h.isEmptyObject(self.constructor._filters) && self.constructor._filters.hasOwnProperty(methodName)) {
             for (key in self.constructor._filters[methodName].pre) {
-                return self.constructor._filters[methodName].pre[key].call(self, value, args);
+                args = Array.prototype.slice.call(args);
+
+                args.unshift(value);
+
+                return self.constructor._filters[methodName].pre[key].apply(self, args);
             }
         } else {
             return value;
