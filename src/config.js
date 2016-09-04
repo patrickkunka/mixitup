@@ -25,12 +25,12 @@ mixitup.Config = function() {
     this.animation          = new mixitup.ConfigAnimation();
     this.callbacks          = new mixitup.ConfigCallbacks();
     this.controls           = new mixitup.ConfigControls();
+    this.classnames         = new mixitup.ConfigClassnames();
     this.debug              = new mixitup.ConfigDebug();
     this.layout             = new mixitup.ConfigLayout();
     this.libraries          = new mixitup.ConfigLibraries();
     this.load               = new mixitup.ConfigLoad();
     this.selectors          = new mixitup.ConfigSelectors();
-    this.extensions         = new mixitup.ConfigExtensions();
 
     this.execAction('construct', 1);
 

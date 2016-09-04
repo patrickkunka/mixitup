@@ -20,9 +20,9 @@
 
     {{>config-controls}}
 
-    {{>config-debug}}
+    {{>config-classnames}}
 
-    {{>config-extensions}}
+    {{>config-debug}}
 
     {{>config-layout}}
 
@@ -35,6 +35,8 @@
     {{>config}}
 
     {{>mixer-dom}}
+
+    {{>ui-classnames}}
 
     {{>command-multimix}}
 

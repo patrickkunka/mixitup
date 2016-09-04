@@ -46,11 +46,7 @@ body {
     background: #eee;
 }
 
-menu {
-    //display: none;
-}
-
-.control,
+.mixitup-control,
 .mixitup-pager {
     cursor: pointer;
     display: inline-block;
@@ -58,8 +54,8 @@ menu {
     background: #eee;
 }
 
-.control.active,
-.mixitup-pager.active {
+.mixitup-control-active,
+.mixitup-pager-active {
     font-weight: bold;
 }
 

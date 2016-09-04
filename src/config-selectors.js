@@ -15,8 +15,7 @@ mixitup.ConfigSelectors = function() {
 
     this.execAction('construct', 0);
 
-    this.target         = '.mix';
-    this.control        = '.mixitup-control';
+    this.target = '.mix';
 
     this.execAction('construct', 1);
 

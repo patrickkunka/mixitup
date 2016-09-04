@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 5c58aa1c-9514-46b4-a7c6-b7de7607a7a5
+ * Build 14b31cc1-06f3-46dd-bc07-bd58558702e0
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -995,6 +995,35 @@
             }
 
             return true;
+        },
+
+        /**
+         * @param   {mixitup.Config.Classnames}   classnames
+         * @param   {string}                      elementName
+         * @param   {string}                      [modifier]
+         * @return  {string}
+         */
+
+        getClassname: function(classnames, elementName, modifier) {
+            var classname = '';
+
+            classname += classnames.block;
+
+            if (classname.length) {
+                classname += classnames.delineatorElement;
+            }
+
+            classname += classnames['element' + this.pascalCase(elementName)];
+
+            if (!modifier) return classname;
+
+            if (classname.length) {
+                classname += classnames.delineatorModifier;
+            }
+
+            classname += modifier;
+
+            return classname;
         }
     };
 
@@ -1527,7 +1556,6 @@
         this.scope          = 'local';
         this.toggleLogic    = 'or';
         this.toggleDefault  = 'all';
-        this.activeClass    = 'active';
 
         this.execAction('construct', 1);
 
@@ -1539,6 +1567,41 @@
     mixitup.ConfigControls.prototype = Object.create(mixitup.Base.prototype);
 
     mixitup.ConfigControls.prototype.constructor = mixitup.ConfigControls;
+
+    /**
+     * @constructor
+     * @memberof    mixitup.Config
+     * @name        classnames
+     * @namespace
+     * @public
+     * @since       3.0.0
+     */
+
+    mixitup.ConfigClassnames = function() {
+        mixitup.Base.call(this);
+
+        this.execAction('construct', 0);
+
+        this.block              = 'mixitup';
+        this.elementFilter      = 'control';
+        this.elementSort        = 'control';
+        this.elementMultimix    = 'control';
+        this.elementToggle      = 'control';
+        this.modifierActive     = 'active';
+        this.modifierDisabled   = 'disabled';
+        this.delineatorElement  = '-';
+        this.delineatorModifier = '-';
+
+        this.execAction('construct', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.ConfigClassnames);
+
+    mixitup.ConfigClassnames.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.ConfigClassnames.prototype.constructor = mixitup.ConfigClassnames;
 
     /**
      * @constructor
@@ -1566,41 +1629,6 @@
     mixitup.ConfigDebug.prototype = Object.create(mixitup.Base.prototype);
 
     mixitup.ConfigDebug.prototype.constructor = mixitup.ConfigDebug;
-
-    /**
-     * An group of references to any mixitup extensions to be applied to the
-     * instance. This is only neccessary when loading mixitup via a module
-     * loader such as Browserify or RequireJS, where a reference to the
-     * extension cannot be accessed from the global `window` scope.
-     *
-     * @constructor
-     * @memberof    mixitup
-     * @memberof    mixitup.Config
-     * @name        extensions
-     * @namespace
-     * @public
-     * @since       3.0.0
-     */
-
-    mixitup.ConfigExtensions = function() {
-        mixitup.Base.call(this);
-
-        this.execAction('construct', 0);
-
-        this.pagination     = null;
-        this.dragndrop      = null;
-        this.multiFilter    = null;
-
-        this.execAction('construct', 1);
-
-        h.seal(this);
-    };
-
-    mixitup.BaseStatic.call(mixitup.ConfigExtensions);
-
-    mixitup.ConfigExtensions.prototype = Object.create(mixitup.Base.prototype);
-
-    mixitup.ConfigExtensions.prototype.constructor = mixitup.ConfigExtensions;
 
     /**
      * @constructor
@@ -1702,8 +1730,7 @@
 
         this.execAction('construct', 0);
 
-        this.target         = '.mix';
-        this.control        = '.mixitup-control';
+        this.target = '.mix';
 
         this.execAction('construct', 1);
 
@@ -1741,12 +1768,12 @@
         this.animation          = new mixitup.ConfigAnimation();
         this.callbacks          = new mixitup.ConfigCallbacks();
         this.controls           = new mixitup.ConfigControls();
+        this.classnames         = new mixitup.ConfigClassnames();
         this.debug              = new mixitup.ConfigDebug();
         this.layout             = new mixitup.ConfigLayout();
         this.libraries          = new mixitup.ConfigLibraries();
         this.load               = new mixitup.ConfigLoad();
         this.selectors          = new mixitup.ConfigSelectors();
-        this.extensions         = new mixitup.ConfigExtensions();
 
         this.execAction('construct', 1);
 
@@ -1795,6 +1822,33 @@
      * @since       3.0.0
      */
 
+    mixitup.UiClassnames = function() {
+        mixitup.Base.call(this);
+
+        this.execAction('construct', 0);
+
+        this.base       = '';
+        this.active     = '';
+        this.disabled   = '';
+
+        this.execAction('construct', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.UiClassnames);
+
+    mixitup.UiClassnames.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.UiClassnames.prototype.constructor = mixitup.UiClassnames;
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
     mixitup.CommandMultimix = function() {
         mixitup.Base.call(this);
 
@@ -1822,19 +1876,31 @@
      * @param       {string}        method
      * @param       {string}        selector
      * @param       {boolean}       [live]
-     * @param       {string}        parent
+     * @param       {string}        [parent]
      *     An optional string representing the name of the mixer.dom property containing a reference to a parent element.
      */
 
     mixitup.ControlDefinition = function(method, selector, live, parent) {
+        mixitup.Base.call(this);
+
+        this.execAction('construct', 0);
+
         this.method             = method;
         this.selector           = selector;
         this.live               = live || false;
         this.parent             = parent || '';
 
+        this.execAction('construct', 1);
+
         h.freeze(this);
         h.seal(this);
     };
+
+    mixitup.BaseStatic.call(mixitup.ControlDefinition);
+
+    mixitup.ControlDefinition.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.ControlDefinition.prototype.constructor = mixitup.ControlDefinition;
 
     mixitup.controlDefinitions = [];
 
@@ -1865,6 +1931,7 @@
         this.sort       = '';
         this.canDisable = false;
         this.handler    = null;
+        this.classnames = new mixitup.UiClassnames();
 
         this.execAction('construct', 1);
 
@@ -2076,9 +2143,7 @@
                     command.filter  = self.filter || button.getAttribute('data-toggle');
 
                     if (self.status === 'live') {
-                        // TODO: update to use new classNames config
-
-                        isActive = h.hasClass(button, self.bound[0].config.controls.activeClass);
+                        isActive = h.hasClass(button, self.classname.active);
                     } else {
                         isActive = self.status === 'active';
                     }
@@ -2232,9 +2297,6 @@
 
             self.execAction('setStatus', 0);
 
-            // TODO: currently takes the activeClass of the first bound mixer, should we check all and build up an active
-            // classes list?
-
             if (status === self.status || !mixer) {
                 self.execAction('setStatus', 1);
 
@@ -2243,19 +2305,24 @@
 
             switch (status) {
                 case 'active':
-                    h.addClass(self.el, mixer.config.controls.activeClass);
+                    h.addClass(self.el, self.classnames.active);
+                    h.removeClass(self.el, self.classnames.disabled);
 
                     if (self.canDisable) self.el.disabled = false;
 
                     break;
                 case 'inactive':
-                    h.removeClass(self.el, mixer.config.controls.activeClass);
+                    h.removeClass(self.el, self.classnames.active);
+                    h.removeClass(self.el, self.classnames.disabled);
 
                     if (self.canDisable) self.el.disabled = false;
 
                     break;
                 case 'disabled':
                     if (self.canDisable) self.el.disabled = true;
+
+                    h.addClass(self.el, self.classnames.disabled);
+                    h.removeClass(self.el, self.classnames.active);
 
                     break;
             }
@@ -2637,7 +2704,6 @@
         this._transformOut      = [];
         this._queue             = [];
 
-        this._handler           = null;
         this._state             = null;
         this._lastOperation     = null;
         this._lastClicked       = null;
@@ -2898,6 +2964,10 @@
             control = new mixitup.Control();
 
             control.init(el, method, selector);
+
+            control.classnames.base     = h.getClassname(self.config.classnames, method);
+            control.classnames.active   = h.getClassname(self.config.classnames, method, self.config.classnames.modifierActive);
+            control.classnames.disabled = h.getClassname(self.config.classnames, method, self.config.classnames.modifierDisabled);
 
             // Add a reference to this mixer as a binding
 

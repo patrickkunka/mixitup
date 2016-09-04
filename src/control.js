@@ -22,6 +22,7 @@ mixitup.Control = function() {
     this.sort       = '';
     this.canDisable = false;
     this.handler    = null;
+    this.classnames = new mixitup.UiClassnames();
 
     this.execAction('construct', 1);
 
@@ -233,9 +234,7 @@ h.extend(mixitup.Control.prototype,
                 command.filter  = self.filter || button.getAttribute('data-toggle');
 
                 if (self.status === 'live') {
-                    // TODO: update to use new classNames config
-
-                    isActive = h.hasClass(button, self.bound[0].config.controls.activeClass);
+                    isActive = h.hasClass(button, self.classname.active);
                 } else {
                     isActive = self.status === 'active';
                 }
@@ -389,9 +388,6 @@ h.extend(mixitup.Control.prototype,
 
         self.execAction('setStatus', 0);
 
-        // TODO: currently takes the activeClass of the first bound mixer, should we check all and build up an active
-        // classes list?
-
         if (status === self.status || !mixer) {
             self.execAction('setStatus', 1);
 
@@ -400,19 +396,24 @@ h.extend(mixitup.Control.prototype,
 
         switch (status) {
             case 'active':
-                h.addClass(self.el, mixer.config.controls.activeClass);
+                h.addClass(self.el, self.classnames.active);
+                h.removeClass(self.el, self.classnames.disabled);
 
                 if (self.canDisable) self.el.disabled = false;
 
                 break;
             case 'inactive':
-                h.removeClass(self.el, mixer.config.controls.activeClass);
+                h.removeClass(self.el, self.classnames.active);
+                h.removeClass(self.el, self.classnames.disabled);
 
                 if (self.canDisable) self.el.disabled = false;
 
                 break;
             case 'disabled':
                 if (self.canDisable) self.el.disabled = true;
+
+                h.addClass(self.el, self.classnames.disabled);
+                h.removeClass(self.el, self.classnames.active);
 
                 break;
         }

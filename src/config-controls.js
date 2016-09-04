@@ -19,7 +19,6 @@ mixitup.ConfigControls = function() {
     this.scope          = 'local';
     this.toggleLogic    = 'or';
     this.toggleDefault  = 'all';
-    this.activeClass    = 'active';
 
     this.execAction('construct', 1);
 
