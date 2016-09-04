@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 7a015074-4c44-4313-bd8a-d31b1b061b2d
+ * Build 351def87-bbb7-4bba-a7b9-2b712340df6f
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1793,6 +1793,32 @@
      * @memberof    mixitup
      * @private
      * @since       3.0.0
+     */
+
+    mixitup.CommandMultimix = function() {
+        mixitup.Base.call(this);
+
+        this.execAction('construct', 0);
+
+        this.filter = null;
+        this.sort   = null;
+
+        this.execAction('construct', 1);
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.CommandMultimix);
+
+    mixitup.CommandMultimix.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.CommandMultimix.prototype.constructor = mixitup.CommandMultimix;
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
      * @param       {string}        method
      * @param       {string}        selector
      * @param       {boolean}       [live]
@@ -2016,6 +2042,8 @@
                 isActive    = false,
                 returnValue = void(0),
                 command     = {},
+                clone       = null,
+                commands    = [],
                 i           = -1;
 
             self.execAction('handleClick', 0);
@@ -2025,7 +2053,7 @@
             if (!self.selector) {
                 button = self.el;
             } else {
-                button = h.closestParent(e.target, self.selector, true, self._dom.document);
+                button = h.closestParent(e.target, self.selector, true, self.bound[0]._dom.document);
 
                 // TODO: for live selectors, read data attributes here, sub with self.filter etc
             }
@@ -2058,21 +2086,27 @@
                     break;
             }
 
-            command = self.execFilter('handleClick', command, arguments);
+            for (i = 0; i < self.bound.length; i++) {
+                // Create a clone of the command for each bound mixer instance
 
-            if (!command) {
-                // An extension may return null to indicate that the click should not be handled
+                clone = new mixitup.CommandMultimix();
 
-                self.execAction('handleClick', 1);
+                h.extend(clone, command);
 
-                return;
+                commands.push(clone);
             }
+
+            commands = self.execFilter('handleClick', commands, arguments);
 
             self.pending = self.bound.length;
 
             for (i = 0; mixer = self.bound[i]; i++) {
-                if (mixer._lastClicked) {
-                    mixer._lastClicked = button;
+                command = commands[i];
+
+                if (!command) {
+                    // An extension may set a command null to indicate that the click should not be handled
+
+                    continue;
                 }
 
                 mixitup.events.fire('mixClick', mixer._dom.container, {
@@ -2086,10 +2120,14 @@
                     returnValue = mixer.config.callbacks.onMixClick.call(mixer._lastClicked, mixer._state, mixer, e);
 
                     if (returnValue === false) {
-                        // User has returned `false` from the callback, so do not execute paginate command for this mixer
+                        // User has returned `false` from the callback, so do not handle click
 
                         continue;
                     }
+                }
+
+                if (mixer._lastClicked) {
+                    mixer._lastClicked = button;
                 }
 
                 if (self.method === 'toggle') {
@@ -2956,33 +2994,24 @@
         _updateControls: function(command) {
             var self    = this,
                 control = null,
+                output  = new mixitup.CommandMultimix(),
                 i       = -1;
 
             self.execAction('_updateControls', 0, arguments);
 
             // Sanitise to defaults
 
-            // TODO: use a typed MultiMixCommand object
+            output.filter  = command.filter || (self._state && self._state.activeFilter);
+            output.sort    = command.sort || (self._state && self._state.activeSort);
 
-            command = {
-                filter: command && command.filter,
-                sort: command && command.sort
-            };
-
-            if (typeof command.filter === 'undefined') {
-                command.filter = self._state.activeFilter;
+            if (output.filter === self.config.selectors.target) {
+                output.filter = 'all';
             }
 
-            if (typeof command.sort === 'undefined') {
-                command.sort = self._state.activeSort;
-            }
-
-            if (command.filter === self.config.selectors.target) {
-                command.filter = 'all';
-            }
+            h.freeze(output);
 
             for (i = 0; control = self._controls[i]; i++) {
-                control.update(command, self._toggleArray);
+                control.update(output, self._toggleArray);
             }
 
             self.execAction('_updateControls', 1, arguments);

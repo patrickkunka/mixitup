@@ -199,6 +199,8 @@ h.extend(mixitup.Control.prototype,
             isActive    = false,
             returnValue = void(0),
             command     = {},
+            clone       = null,
+            commands    = [],
             i           = -1;
 
         self.execAction('handleClick', 0);
@@ -208,7 +210,7 @@ h.extend(mixitup.Control.prototype,
         if (!self.selector) {
             button = self.el;
         } else {
-            button = h.closestParent(e.target, self.selector, true, self._dom.document);
+            button = h.closestParent(e.target, self.selector, true, self.bound[0]._dom.document);
 
             // TODO: for live selectors, read data attributes here, sub with self.filter etc
         }
@@ -241,21 +243,27 @@ h.extend(mixitup.Control.prototype,
                 break;
         }
 
-        command = self.execFilter('handleClick', command, arguments);
+        for (i = 0; i < self.bound.length; i++) {
+            // Create a clone of the command for each bound mixer instance
 
-        if (!command) {
-            // An extension may return null to indicate that the click should not be handled
+            clone = new mixitup.CommandMultimix();
 
-            self.execAction('handleClick', 1);
+            h.extend(clone, command);
 
-            return;
+            commands.push(clone);
         }
+
+        commands = self.execFilter('handleClick', commands, arguments);
 
         self.pending = self.bound.length;
 
         for (i = 0; mixer = self.bound[i]; i++) {
-            if (mixer._lastClicked) {
-                mixer._lastClicked = button;
+            command = commands[i];
+
+            if (!command) {
+                // An extension may set a command null to indicate that the click should not be handled
+
+                continue;
             }
 
             mixitup.events.fire('mixClick', mixer._dom.container, {
@@ -269,10 +277,14 @@ h.extend(mixitup.Control.prototype,
                 returnValue = mixer.config.callbacks.onMixClick.call(mixer._lastClicked, mixer._state, mixer, e);
 
                 if (returnValue === false) {
-                    // User has returned `false` from the callback, so do not execute paginate command for this mixer
+                    // User has returned `false` from the callback, so do not handle click
 
                     continue;
                 }
+            }
+
+            if (mixer._lastClicked) {
+                mixer._lastClicked = button;
             }
 
             if (self.method === 'toggle') {

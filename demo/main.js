@@ -12,10 +12,10 @@ mixer = mixitup('.sandbox', {
     controls: {
         scope: 'global'
     },
-    // pagination: {
-    //     limit: 4,
-    //     maxPagers: 6
-    // },
+    pagination: {
+        limit: 4,
+        maxPagers: 6
+    },
     // dragndrop: {
     //     enable: true,
     //     hidePlaceholder: false,

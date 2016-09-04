@@ -406,33 +406,24 @@ h.extend(mixitup.Mixer.prototype,
     _updateControls: function(command) {
         var self    = this,
             control = null,
+            output  = new mixitup.CommandMultimix(),
             i       = -1;
 
         self.execAction('_updateControls', 0, arguments);
 
         // Sanitise to defaults
 
-        // TODO: use a typed MultiMixCommand object
+        output.filter  = command.filter || (self._state && self._state.activeFilter);
+        output.sort    = command.sort || (self._state && self._state.activeSort);
 
-        command = {
-            filter: command && command.filter,
-            sort: command && command.sort
-        };
-
-        if (typeof command.filter === 'undefined') {
-            command.filter = self._state.activeFilter;
+        if (output.filter === self.config.selectors.target) {
+            output.filter = 'all';
         }
 
-        if (typeof command.sort === 'undefined') {
-            command.sort = self._state.activeSort;
-        }
-
-        if (command.filter === self.config.selectors.target) {
-            command.filter = 'all';
-        }
+        h.freeze(output);
 
         for (i = 0; control = self._controls[i]; i++) {
-            control.update(command, self._toggleArray);
+            control.update(output, self._toggleArray);
         }
 
         self.execAction('_updateControls', 1, arguments);

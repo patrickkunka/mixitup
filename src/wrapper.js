@@ -36,6 +36,8 @@
 
     {{>mixer-dom}}
 
+    {{>command-multimix}}
+
     {{>control-definition}}
 
     {{>control}}
