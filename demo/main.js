@@ -1,9 +1,9 @@
 /* global mixitup */
 
 var sandbox = document.querySelector('.sandbox');
-var mixers   = null;
+var mixer   = null;
 
-mixers = mixitup('.sandbox', {
+mixer = mixitup('.sandbox', {
     animation: {
         effects: 'fade',
         easing: 'cubic-bezier(1, 0, 0, 1)',
@@ -29,25 +29,23 @@ mixers = mixitup('.sandbox', {
         //     console.log('lift', this);
         // }
     }
-}, null, true);
+}, null);
 
-console.log(mixers);
+sandbox.addEventListener('mixStart', function(e) {
+    console.log('mixStart', e.detail);
+});
 
-// sandbox.addEventListener('mixStart', function(e) {
-//     console.log('mixStart', e.detail);
-// });
+sandbox.addEventListener('mixEnd', function(e) {
+    console.log('mixEnd', e.detail);
+});
 
-// sandbox.addEventListener('mixEnd', function(e) {
-//     console.log('mixEnd', e.detail);
-// });
+sandbox.addEventListener('mixClick', function(e) {
+    console.log('mixClick', e.detail);
+});
 
-// sandbox.addEventListener('mixClick', function(e) {
-//     console.log('mixClick', e.detail);
-// });
-
-// sandbox.addEventListener('mixBusy', function(e) {
-//     console.log('mixBusy', e.detail);
-// });
+sandbox.addEventListener('mixBusy', function(e) {
+    console.log('mixBusy', e.detail);
+});
 
 sandbox.addEventListener('mixFail', function(e) {
     console.log('mixFail', e.detail);
@@ -125,5 +123,5 @@ sandbox.classList.add('sandbox__mixitup');
 //     mixer.paginate({limit: 10});
 // });
 
-mixers.do('init', true);
-    // .then(function(state) {console.log(mixer, state)});
+mixer.init(true)
+    .then(function(state) {console.log(mixer, state)});

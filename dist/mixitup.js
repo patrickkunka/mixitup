@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build b06583a8-b607-43ee-81ea-0046d1f82564
+ * Build 7a015074-4c44-4313-bd8a-d31b1b061b2d
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1036,7 +1036,7 @@
 
             if (!h.isEmptyObject(self.constructor._actions) && self.constructor._actions.hasOwnProperty(methodName)) {
                 for (key in self.constructor._actions[methodName][context]) {
-                    self.constructor._actions[methodName][context][key].call(self, args);
+                    self.constructor._actions[methodName][context][key].apply(self, args);
                 }
             }
         },
@@ -1060,7 +1060,11 @@
 
             if (!h.isEmptyObject(self.constructor._filters) && self.constructor._filters.hasOwnProperty(methodName)) {
                 for (key in self.constructor._filters[methodName].pre) {
-                    return self.constructor._filters[methodName].pre[key].call(self, value, args);
+                    args = Array.prototype.slice.call(args);
+
+                    args.unshift(value);
+
+                    return self.constructor._filters[methodName].pre[key].apply(self, args);
                 }
             } else {
                 return value;
@@ -1789,15 +1793,18 @@
      * @memberof    mixitup
      * @private
      * @since       3.0.0
-     * @param       {string}    method
-     * @param       {string}    selector
-     * @param       {boolean}   [live]
+     * @param       {string}        method
+     * @param       {string}        selector
+     * @param       {boolean}       [live]
+     * @param       {string}        parent
+     *     An optional string representing the name of the mixer.dom property containing a reference to a parent element.
      */
 
-    mixitup.ControlDefinition = function(method, selector, live) {
+    mixitup.ControlDefinition = function(method, selector, live, parent) {
         this.method             = method;
         this.selector           = selector;
         this.live               = live || false;
+        this.parent             = parent || '';
 
         h.freeze(this);
         h.seal(this);
@@ -2007,6 +2014,7 @@
                 button      = null,
                 mixer       = null,
                 isActive    = false,
+                returnValue = void(0),
                 command     = {},
                 i           = -1;
 
@@ -2017,9 +2025,9 @@
             if (!self.selector) {
                 button = self.el;
             } else {
-                button = h.closestParent(e.target, self.selector, true);
+                button = h.closestParent(e.target, self.selector, true, self._dom.document);
 
-                // TODO: pull attributes from element at runtime, sub with self.filter etc
+                // TODO: for live selectors, read data attributes here, sub with self.filter etc
             }
 
             switch (self.method) {
@@ -2042,7 +2050,7 @@
                     if (self.status === 'live') {
                         // TODO: update to use new classNames config
 
-                        isActive = h.hasClass(button, self.bound[0].controls.activeClass);
+                        isActive = h.hasClass(button, self.bound[0].config.controls.activeClass);
                     } else {
                         isActive = self.status === 'active';
                     }
@@ -2052,13 +2060,39 @@
 
             command = self.execFilter('handleClick', command, arguments);
 
+            if (!command) {
+                // An extension may return null to indicate that the click should not be handled
+
+                self.execAction('handleClick', 1);
+
+                return;
+            }
+
             self.pending = self.bound.length;
 
             for (i = 0; mixer = self.bound[i]; i++) {
-                mixer._lastClicked = self.el;
+                if (mixer._lastClicked) {
+                    mixer._lastClicked = button;
+                }
+
+                mixitup.events.fire('mixClick', mixer._dom.container, {
+                    state: mixer._state,
+                    instance: mixer,
+                    originalEvent: e,
+                    control: mixer._lastClicked
+                }, mixer._dom.document);
+
+                if (typeof mixer.config.callbacks.onMixClick === 'function') {
+                    returnValue = mixer.config.callbacks.onMixClick.call(mixer._lastClicked, mixer._state, mixer, e);
+
+                    if (returnValue === false) {
+                        // User has returned `false` from the callback, so do not execute paginate command for this mixer
+
+                        continue;
+                    }
+                }
 
                 if (self.method === 'toggle') {
-
                     isActive ? mixer.toggleOff(command.filter) : mixer.toggleOn(command.filter);
                 } else {
                     mixer.multiMix(command);
@@ -2203,61 +2237,6 @@
     });
 
     mixitup.controls = [];
-
-    // /**
-    //  * @private
-    //  * @instance
-    //  * @since 3.0.0
-    //  * @param   {Element}   button
-    //  * @return  {object|null}
-    //  */
-
-    // _handleMultiMixClick: function(button) {
-    //     var self     = this,
-    //         command  = null,
-    //         el       = null,
-    //         i        = -1;
-
-    //     self.execAction('_handleMultiMixClick', 0, arguments);
-
-    //     if (!h.hasClass(button, self.controls.activeClass)) {
-    //         for (i = 0; el = self._dom.filterButtons[i]; i++) {
-    //             h.removeClass(el, self.controls.activeClass);
-    //         }
-
-    //         for (i = 0; el = self._dom.filterToggleButtons[i]; i++) {
-    //             h.removeClass(el, self.controls.activeClass);
-    //         }
-
-    //         for (i = 0; el = self._dom.sortButtons[i]; i++) {
-    //             h.removeClass(el, self.controls.activeClass);
-    //         }
-
-    //         for (i = 0; el = self._dom.multiMixButtons[i]; i++) {
-    //             h.removeClass(el, self.controls.activeClass);
-    //         }
-
-    //         command = {
-    //             sort: button.getAttribute('data-sort'),
-    //             filter: button.getAttribute('data-filter')
-    //         };
-
-    //         if (self._isToggling) {
-    //             // If we were previously toggling, we are not now,
-    //             // so remove any selectors from the toggle array
-
-    //             self._isToggling            = false;
-    //             self._toggleArray.length    = 0;
-    //         }
-
-    //         // Update any matching individual filter and sort
-    //         // controls to reflect the multiMix
-
-    //         self._updateControls(command);
-    //     }
-
-    //     return self.execFilter('_handleMultiMixClick', command, arguments);
-    // },
 
     /**
      * @constructor
@@ -2785,6 +2764,7 @@
                 controlElements     = null,
                 el                  = null,
                 parent              = null,
+                delagator           = null,
                 control             = null,
                 i                   = -1,
                 j                   = -1;
@@ -2803,7 +2783,7 @@
 
                     break;
                 case 'global':
-                    parent = document;
+                    parent = self._dom.document;
 
                     break;
                 default:
@@ -2812,7 +2792,13 @@
 
             for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
                 if (self.config.controls.live || definition.live) {
-                    control = self._getControl(parent,  definition.method, definition.selector);
+                    if (definition.parent) {
+                        delagator = self._dom[definition.parent];
+                    } else {
+                        delagator = parent;
+                    }
+
+                    control = self._getControl(delagator,  definition.method, definition.selector);
 
                     self._controls.push(control);
                 } else {
@@ -4387,7 +4373,7 @@
             self._userDeferred.resolve(self._state);
 
             self._userCallback  = null;
-            self._userDeferred   = null;
+            self._userDeferred  = null;
             self._lastClicked   = null;
             self._isToggling    = false;
             self._isMixing      = false;
@@ -4875,15 +4861,14 @@
          * @public
          * @instance
          * @since   3.0.0
-         * @param   {Command}           command
+         * @param   {object}            command
          * @param   {boolean}           [isPreFetch]
          *      An optional boolean indicating that the operation is being pre-fetched for execution at a later time.
          * @return  {Operation|null}
          */
 
-        getOperation: function() {
+        getOperation: function(command, isPreFetch) {
             var self                = this,
-                command             = arguments[0],
                 sortCommand         = command.sort,
                 filterCommand       = command.filter,
                 changeLayoutCommand = command.changeLayout,
@@ -4891,18 +4876,16 @@
                 insertCommand       = command.insert,
                 operation           = new mixitup.Operation();
 
+            operation = self.execFilter('getOperation_unmapped', operation, arguments);
+
+            // NB: `isPreFetch` is passed as may be useful for extensions, not used in this function
+            // but placed here to satisfy jscs
+
+            isPreFetch;
+
             operation.command       = command;
             operation.startState    = self._state;
             operation.id            = h.randomHexKey();
-
-            self.execAction('getOperation', 0, operation);
-
-            // TODO: passing the operation rather than arguments
-            // to the action is non-standard here but essential as
-            // we require a reference to original. Perhaps a "pre"
-            // filter is the best alternative, but as we already use
-            // a filter at the end of this function, we would need a
-            // new syntax
 
             if (self._isMixing) {
                 if (h.canReportErrors(self)) {
@@ -4992,7 +4975,7 @@
 
             operation.newState = self._buildState(operation);
 
-            return self.execFilter('getOperation', operation, arguments);
+            return self.execFilter('getOperation_mapped', operation, arguments);
         },
 
         /**

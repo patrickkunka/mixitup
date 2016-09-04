@@ -61,7 +61,7 @@ gulp.task('build', ['build-dist'], function(done) {
 });
 
 gulp.task('build-dist', ['lint', 'code-style'], function(done) {
-    exec('node build/dist.js -o mixitup.js', function(e, out) {
+    exec('node node_modules/mixitup-build/dist.js -o mixitup.js', function(e, out) {
         if (out) {
             console.log(out);
         }

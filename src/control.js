@@ -258,15 +258,15 @@ h.extend(mixitup.Control.prototype,
                 mixer._lastClicked = button;
             }
 
-            mixitup.events.fire('mixClick', self._dom.container, {
+            mixitup.events.fire('mixClick', mixer._dom.container, {
                 state: mixer._state,
                 instance: mixer,
                 originalEvent: e,
                 control: mixer._lastClicked
-            }, self._dom.document);
+            }, mixer._dom.document);
 
-            if (typeof self.config.callbacks.onMixClick === 'function') {
-                returnValue = self.callbacks.onMixClick.call(mixer._lastClicked, self._state, self, e);
+            if (typeof mixer.config.callbacks.onMixClick === 'function') {
+                returnValue = mixer.config.callbacks.onMixClick.call(mixer._lastClicked, mixer._state, mixer, e);
 
                 if (returnValue === false) {
                     // User has returned `false` from the callback, so do not execute paginate command for this mixer
