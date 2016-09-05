@@ -2113,12 +2113,15 @@ h.extend(mixitup.Mixer.prototype,
         if (startFromHidden) {
             for (i = 0; target = self._targets[i]; i++) {
                 target.hide();
+
+                // TODO: would it make sense to auto-detect this? If so at what point
+                // should the user change css to show targets?
             }
         }
 
         return self.multiMix({
             filter: self._state.activeFilter
-        });
+        }, self.config.load.animate);
     },
 
     /**

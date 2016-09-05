@@ -2,7 +2,6 @@
 
 /**
  * @constructor
- * @namespace
  * @memberof    mixitup
  * @private
  * @since       3.0.0
@@ -14,15 +13,15 @@ mixitup.Facade = function Mixer(mixer) {
 
     this.execAction('construct', 0);
 
-    this.init           = mixer.init.bind(mixer);
+    this.init           = mixer.init.bind(mixer); // * break _init in to methods (i.e. mapInitialState)
     this.show           = mixer.show.bind(mixer);
     this.hide           = mixer.hide.bind(mixer);
-    this.filter         = mixer.filter.bind(mixer);
-    this.sort           = mixer.sort.bind(mixer);
+    this.filter         = mixer.filter.bind(mixer); // * _filter -> filterTargets
+    this.sort           = mixer.sort.bind(mixer); // * _sort -> sortTargets
     this.changeLayout   = mixer.changeLayout.bind(mixer);
     this.multiMix       = mixer.multiMix.bind(mixer);
     this.tween          = mixer.tween.bind(mixer);
-    this.insert         = mixer.insert.bind(mixer);
+    this.insert         = mixer.insert.bind(mixer); // * _insert -> insertTargets
     this.insertBefore   = mixer.insertBefore.bind(mixer);
     this.insertAfter    = mixer.insertAfter.bind(mixer);
     this.prepend        = mixer.prepend.bind(mixer);
