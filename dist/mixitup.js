@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 14b31cc1-06f3-46dd-bc07-bd58558702e0
+ * Build 38b54d51-e865-429d-b030-83e86203a533
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3080,6 +3080,10 @@
 
             if (output.filter === self.config.selectors.target) {
                 output.filter = 'all';
+            }
+
+            if (output.filter === '') {
+                output.filter = 'none';
             }
 
             h.freeze(output);

@@ -423,6 +423,10 @@ h.extend(mixitup.Mixer.prototype,
             output.filter = 'all';
         }
 
+        if (output.filter === '') {
+            output.filter = 'none';
+        }
+
         h.freeze(output);
 
         for (i = 0; control = self._controls[i]; i++) {
