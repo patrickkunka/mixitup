@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 38b54d51-e865-429d-b030-83e86203a533
+ * Build 32a089dc-ce8f-4049-ac00-254c9cbab8f4
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1701,8 +1701,9 @@
 
         this.execAction('construct', 0);
 
-        this.filter = 'all';
-        this.sort   = 'default:asc';
+        this.filter     = 'all';
+        this.sort       = 'default:asc';
+        this.animate    = false;
 
         this.execAction('construct', 1);
 
@@ -2772,7 +2773,7 @@
                 operation.newSort           = self._parseSort(state.activeSort);
                 operation.newSortString     = state.activeSort;
 
-                self._sort(operation);
+                self._sortOperation(operation);
 
                 self._printSort(false, operation);
 
@@ -3104,7 +3105,7 @@
          * @return  {Promise.<mixitup.State>}
          */
 
-        _insert: function(command, operation) {
+        _insertTargets: function(command, operation) {
             var self        = this,
                 nextSibling = null,
                 frag        = null,
@@ -3112,7 +3113,7 @@
                 el          = null,
                 i           = -1;
 
-            self.execAction('insert', 0, arguments);
+            self.execAction('_insertTargets', 0, arguments);
 
             if (typeof command.index === 'undefined') command.index = 0;
 
@@ -3151,7 +3152,7 @@
 
             operation.startOrder = self._origOrder = self._targets;
 
-            self.execAction('insert', 1, arguments);
+            self.execAction('_insertTargets', 1, arguments);
         },
 
         /**
@@ -3192,14 +3193,14 @@
          * @return  {void}
          */
 
-        _filter: function(operation) {
+        _filterOperation: function(operation) {
             var self        = this,
                 condition   = false,
                 index       = -1,
                 target      = null,
                 i           = -1;
 
-            self.execAction('_filter', 0, arguments);
+            self.execAction('_filterOperation', 0, arguments);
 
             for (i = 0; target = operation.newOrder[i]; i++) {
                 if (typeof operation.newFilter === 'string') {
@@ -3266,7 +3267,7 @@
                 operation.hasFailed = true;
             }
 
-            self.execAction('_filter', 1, arguments);
+            self.execAction('_filterOperation', 1, arguments);
         },
 
         /**
@@ -3311,10 +3312,10 @@
          * @return  {void}
          */
 
-        _sort: function(operation) {
+        _sortOperation: function(operation) {
             var self = this;
 
-            self.execAction('_sort', 0, arguments);
+            self.execAction('_sortOperation', 0, arguments);
 
             operation.startOrder = self._targets;
 
@@ -3347,7 +3348,7 @@
                 operation.willSort = false;
             }
 
-            self.execAction('_sort', 1, arguments);
+            self.execAction('_sortOperation', 1, arguments);
         },
 
         /**
@@ -4772,12 +4773,15 @@
             if (startFromHidden) {
                 for (i = 0; target = self._targets[i]; i++) {
                     target.hide();
+
+                    // TODO: would it make sense to auto-detect this? If so at what point
+                    // should the user change css to show targets?
                 }
             }
 
             return self.multiMix({
                 filter: self._state.activeFilter
-            });
+            }, self.config.load.animate);
         },
 
         /**
@@ -5009,7 +5013,7 @@
                     insertCommand = self._parseInsertArgs([insertCommand]).command;
                 }
 
-                self._insert(insertCommand, operation);
+                self._insertTargets(insertCommand, operation);
             }
 
             if (removeCommand) {
@@ -5028,7 +5032,7 @@
                 if (sortCommand !== operation.startState.activeSortString || sortCommand === 'random') {
                     operation.willSort = true;
 
-                    self._sort(operation);
+                    self._sortOperation(operation);
                 }
             } else {
                 operation.startSortString = operation.newSortString = operation.startState.activeSort;
@@ -5047,7 +5051,7 @@
                 operation.newFilter = operation.startState.activeFilter;
             }
 
-            self._filter(operation);
+            self._filterOperation(operation);
 
             // TODO: we need a definitve object for filter operations,
             // which accomodates selectors, elements, hide vs show etc.

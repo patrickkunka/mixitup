@@ -113,7 +113,7 @@ h.extend(mixitup.Mixer.prototype,
             operation.newSort           = self._parseSort(state.activeSort);
             operation.newSortString     = state.activeSort;
 
-            self._sort(operation);
+            self._sortOperation(operation);
 
             self._printSort(false, operation);
 
@@ -445,7 +445,7 @@ h.extend(mixitup.Mixer.prototype,
      * @return  {Promise.<mixitup.State>}
      */
 
-    _insert: function(command, operation) {
+    _insertTargets: function(command, operation) {
         var self        = this,
             nextSibling = null,
             frag        = null,
@@ -453,7 +453,7 @@ h.extend(mixitup.Mixer.prototype,
             el          = null,
             i           = -1;
 
-        self.execAction('insert', 0, arguments);
+        self.execAction('_insertTargets', 0, arguments);
 
         if (typeof command.index === 'undefined') command.index = 0;
 
@@ -492,7 +492,7 @@ h.extend(mixitup.Mixer.prototype,
 
         operation.startOrder = self._origOrder = self._targets;
 
-        self.execAction('insert', 1, arguments);
+        self.execAction('_insertTargets', 1, arguments);
     },
 
     /**
@@ -533,14 +533,14 @@ h.extend(mixitup.Mixer.prototype,
      * @return  {void}
      */
 
-    _filter: function(operation) {
+    _filterOperation: function(operation) {
         var self        = this,
             condition   = false,
             index       = -1,
             target      = null,
             i           = -1;
 
-        self.execAction('_filter', 0, arguments);
+        self.execAction('_filterOperation', 0, arguments);
 
         for (i = 0; target = operation.newOrder[i]; i++) {
             if (typeof operation.newFilter === 'string') {
@@ -607,7 +607,7 @@ h.extend(mixitup.Mixer.prototype,
             operation.hasFailed = true;
         }
 
-        self.execAction('_filter', 1, arguments);
+        self.execAction('_filterOperation', 1, arguments);
     },
 
     /**
@@ -652,10 +652,10 @@ h.extend(mixitup.Mixer.prototype,
      * @return  {void}
      */
 
-    _sort: function(operation) {
+    _sortOperation: function(operation) {
         var self = this;
 
-        self.execAction('_sort', 0, arguments);
+        self.execAction('_sortOperation', 0, arguments);
 
         operation.startOrder = self._targets;
 
@@ -688,7 +688,7 @@ h.extend(mixitup.Mixer.prototype,
             operation.willSort = false;
         }
 
-        self.execAction('_sort', 1, arguments);
+        self.execAction('_sortOperation', 1, arguments);
     },
 
     /**
@@ -2353,7 +2353,7 @@ h.extend(mixitup.Mixer.prototype,
                 insertCommand = self._parseInsertArgs([insertCommand]).command;
             }
 
-            self._insert(insertCommand, operation);
+            self._insertTargets(insertCommand, operation);
         }
 
         if (removeCommand) {
@@ -2372,7 +2372,7 @@ h.extend(mixitup.Mixer.prototype,
             if (sortCommand !== operation.startState.activeSortString || sortCommand === 'random') {
                 operation.willSort = true;
 
-                self._sort(operation);
+                self._sortOperation(operation);
             }
         } else {
             operation.startSortString = operation.newSortString = operation.startState.activeSort;
@@ -2391,7 +2391,7 @@ h.extend(mixitup.Mixer.prototype,
             operation.newFilter = operation.startState.activeFilter;
         }
 
-        self._filter(operation);
+        self._filterOperation(operation);
 
         // TODO: we need a definitve object for filter operations,
         // which accomodates selectors, elements, hide vs show etc.
