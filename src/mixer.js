@@ -68,30 +68,64 @@ h.extend(mixitup.Mixer.prototype,
     constructor: mixitup.Mixer,
 
     /**
+     * @param {HTMLElement} container
+     * @param {HTMLElement} document
+     * @param {string}      id
+     * @param {object}      [config]
+     */
+
+    attach: function(container, document, id, config) {
+        var self = this;
+
+        self.execAction('attach', 0, arguments);
+
+        self._id = id;
+
+        if (config) {
+            h.extend(self.config, config, true);
+        }
+
+        self._cacheDom(container, document);
+
+        if (self.config.layout.containerClass) {
+            h.addClass(self._dom.container, self.config.layout.containerClass);
+        }
+
+        if (!mixitup.features.has.transitions) {
+            self.config.animation.enable = false;
+        }
+
+        self._indexTargets();
+
+        self._state = self._getInitialState();
+
+        self._updateControls({
+            filter: self._state.activeFilter,
+            sort: self._state.activeSort
+        });
+
+        self._parseEffects();
+
+        self._initControls();
+
+        self._buildToggleArray(null, self._state);
+
+        self.execAction('attach', 1, arguments);
+    },
+
+    /**
      * @private
      * @instance
      * @since   2.0.0
-     * @param   {Element}       el
-     * @param   {object}        config
      * @return  {mixitup.State}
      */
 
-    _init: function(el, config) {
+    _getInitialState: function() {
         var self        = this,
             state       = new mixitup.State(),
             operation   = new mixitup.Operation();
 
-        self.execAction('_init', 0, arguments);
-
-        config && h.extend(self.config, config, true);
-
-        self._cacheDom(el);
-
-        self.config.layout.containerClass && h.addClass(el, self.config.layout.containerClass);
-
-        self.config.animation.enable = self.config.animation.enable && mixitup.features.has.transitions;
-
-        self._indexTargets();
+        self.execAction('_getInitialState', 0, arguments);
 
         // Map in whatever state values we can
 
@@ -126,18 +160,7 @@ h.extend(mixitup.Mixer.prototype,
         // state.totalHide         = operation.hide.length
         // state.totalMatching     = operation.matching.length;
 
-        self._updateControls({
-            filter: state.activeFilter,
-            sort: state.activeSort
-        });
-
-        self._parseEffects();
-
-        self._initControls();
-
-        self._buildToggleArray(null, state);
-
-        return self.execFilter('_init', state, arguments);
+        return self.execFilter('_getInitialState', state, arguments);
     },
 
     /**
@@ -146,15 +169,17 @@ h.extend(mixitup.Mixer.prototype,
      * @private
      * @instance
      * @since   3.0.0
-     * @param   {Element} el
+     * @param   {HTMLElement}       el
+     * @param   {HTMLHtmlElement}   document
      * @return  {void}
      */
 
-    _cacheDom: function(el) {
+    _cacheDom: function(el, document) {
         var self    = this;
 
         self.execAction('_cacheDom', 0, arguments);
 
+        self._dom.document  = document;
         self._dom.body      = self._dom.document.getElementsByTagName('body')[0];
         self._dom.container = el;
         self._dom.parent    = el;
@@ -2100,22 +2125,17 @@ h.extend(mixitup.Mixer.prototype,
      * @public
      * @instance
      * @since       3.0.0
-     * @param       {boolean}   [startFromHidden]
-     *      An optional boolean dictating whether targets should start from a hidden or non-hidden state.
      * @return      {Promise.<mixitup.State>}
      */
 
-    init: function(startFromHidden) {
+    init: function() {
         var self    = this,
             target  = null,
             i       = -1;
 
-        if (startFromHidden) {
-            for (i = 0; target = self._targets[i]; i++) {
+        for (i = 0; target = self._targets[i]; i++) {
+            if (!target.isShown) {
                 target.hide();
-
-                // TODO: would it make sense to auto-detect this? If so at what point
-                // should the user change css to show targets?
             }
         }
 

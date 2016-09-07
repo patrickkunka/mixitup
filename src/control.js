@@ -72,7 +72,7 @@ h.extend(mixitup.Control.prototype,
                     self.sort   = self.el.getAttribute('data-sort');
 
                     break;
-                case 'multiMix':
+                case 'multimix':
                     self.filter = self.el.getAttribute('data-filter');
                     self.sort   = self.el.getAttribute('data-sort');
 
@@ -193,6 +193,12 @@ h.extend(mixitup.Control.prototype,
         self.execAction('unbindClick', 1);
     },
 
+    /**
+     * @private
+     * @param   {MouseEvent} e
+     * @return  {void}
+     */
+
     handleClick: function(e) {
         var self        = this,
             button      = null,
@@ -225,7 +231,7 @@ h.extend(mixitup.Control.prototype,
                 command.sort = self.sort || button.getAttribute('data-sort');
 
                 break;
-            case 'multiMix':
+            case 'multimix':
                 command.filter  = self.filter || button.getAttribute('data-filter');
                 command.sort    = self.sort || button.getAttribute('data-sort');
 
@@ -334,7 +340,7 @@ h.extend(mixitup.Control.prototype,
                 }
 
                 break;
-            case 'multiMix':
+            case 'multimix':
                 if (command.sort === self.sort && command.filter === self.filter) {
                     self.setStatus('active');
                 } else {

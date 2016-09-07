@@ -17,10 +17,10 @@ mixitup.ControlDefinition = function(method, selector, live, parent) {
 
     this.execAction('construct', 0);
 
-    this.method             = method;
-    this.selector           = selector;
-    this.live               = live || false;
-    this.parent             = parent || '';
+    this.method    = method;
+    this.selector  = selector;
+    this.live      = live || false;
+    this.parent    = parent || '';
 
     this.execAction('construct', 1);
 
@@ -36,7 +36,7 @@ mixitup.ControlDefinition.prototype.constructor = mixitup.ControlDefinition;
 
 mixitup.controlDefinitions = [];
 
-mixitup.controlDefinitions.push(new mixitup.ControlDefinition('multiMix', '[data-filter][data-sort]'));
+mixitup.controlDefinitions.push(new mixitup.ControlDefinition('multimix', '[data-filter][data-sort]'));
 mixitup.controlDefinitions.push(new mixitup.ControlDefinition('filter', '[data-filter]'));
 mixitup.controlDefinitions.push(new mixitup.ControlDefinition('sort', '[data-sort]'));
 mixitup.controlDefinitions.push(new mixitup.ControlDefinition('toggle', '[data-toggle]'));

@@ -13,15 +13,16 @@ mixitup.Facade = function Mixer(mixer) {
 
     this.execAction('construct', 0);
 
-    this.init           = mixer.init.bind(mixer); // * break _init in to methods (i.e. mapInitialState)
+    this.init           = mixer.init.bind(mixer);
     this.show           = mixer.show.bind(mixer);
     this.hide           = mixer.hide.bind(mixer);
-    this.filter         = mixer.filter.bind(mixer); // * _filter -> filterTargets
-    this.sort           = mixer.sort.bind(mixer); // * _sort -> sortTargets
+    this.filter         = mixer.filter.bind(mixer);
+    this.sort           = mixer.sort.bind(mixer);
     this.changeLayout   = mixer.changeLayout.bind(mixer);
     this.multimix       = mixer.multimix.bind(mixer);
+    this.multiMix       = mixer.multimix.bind(mixer);
     this.tween          = mixer.tween.bind(mixer);
-    this.insert         = mixer.insert.bind(mixer); // * _insert -> insertTargets
+    this.insert         = mixer.insert.bind(mixer);
     this.insertBefore   = mixer.insertBefore.bind(mixer);
     this.insertAfter    = mixer.insertAfter.bind(mixer);
     this.prepend        = mixer.prepend.bind(mixer);

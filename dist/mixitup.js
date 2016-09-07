@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 32a089dc-ce8f-4049-ac00-254c9cbab8f4
+ * Build 1b23a040-cfe2-4024-906c-c6459e28a540
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -56,7 +56,6 @@
         var el                  = null,
             returnCollection    = false,
             instance            = null,
-            initialState        = null,
             doc                 = null,
             output              = null,
             instances           = [],
@@ -115,12 +114,7 @@
             if (typeof mixitup.instances[id] === 'undefined') {
                 instance = new mixitup.Mixer();
 
-                instance._id            = id;
-                instance._dom.document  = foreignDoc || window.document;
-
-                initialState = instance._init(el, config);
-
-                instance._state = initialState;
+                instance.attach(el, doc, id, config);
 
                 mixitup.instances[id] = instance;
             } else if (mixitup.instances[id] instanceof mixitup.Mixer) {
@@ -1886,10 +1880,10 @@
 
         this.execAction('construct', 0);
 
-        this.method             = method;
-        this.selector           = selector;
-        this.live               = live || false;
-        this.parent             = parent || '';
+        this.method    = method;
+        this.selector  = selector;
+        this.live      = live || false;
+        this.parent    = parent || '';
 
         this.execAction('construct', 1);
 
@@ -1905,7 +1899,7 @@
 
     mixitup.controlDefinitions = [];
 
-    mixitup.controlDefinitions.push(new mixitup.ControlDefinition('multiMix', '[data-filter][data-sort]'));
+    mixitup.controlDefinitions.push(new mixitup.ControlDefinition('multimix', '[data-filter][data-sort]'));
     mixitup.controlDefinitions.push(new mixitup.ControlDefinition('filter', '[data-filter]'));
     mixitup.controlDefinitions.push(new mixitup.ControlDefinition('sort', '[data-sort]'));
     mixitup.controlDefinitions.push(new mixitup.ControlDefinition('toggle', '[data-toggle]'));
@@ -1982,7 +1976,7 @@
                         self.sort   = self.el.getAttribute('data-sort');
 
                         break;
-                    case 'multiMix':
+                    case 'multimix':
                         self.filter = self.el.getAttribute('data-filter');
                         self.sort   = self.el.getAttribute('data-sort');
 
@@ -2103,6 +2097,12 @@
             self.execAction('unbindClick', 1);
         },
 
+        /**
+         * @private
+         * @param   {MouseEvent} e
+         * @return  {void}
+         */
+
         handleClick: function(e) {
             var self        = this,
                 button      = null,
@@ -2135,7 +2135,7 @@
                     command.sort = self.sort || button.getAttribute('data-sort');
 
                     break;
-                case 'multiMix':
+                case 'multimix':
                     command.filter  = self.filter || button.getAttribute('data-filter');
                     command.sort    = self.sort || button.getAttribute('data-sort');
 
@@ -2244,7 +2244,7 @@
                     }
 
                     break;
-                case 'multiMix':
+                case 'multimix':
                     if (command.sort === self.sort && command.filter === self.filter) {
                         self.setStatus('active');
                     } else {
@@ -2728,30 +2728,64 @@
         constructor: mixitup.Mixer,
 
         /**
+         * @param {HTMLElement} container
+         * @param {HTMLElement} document
+         * @param {string}      id
+         * @param {object}      [config]
+         */
+
+        attach: function(container, document, id, config) {
+            var self = this;
+
+            self.execAction('attach', 0, arguments);
+
+            self._id = id;
+
+            if (config) {
+                h.extend(self.config, config, true);
+            }
+
+            self._cacheDom(container, document);
+
+            if (self.config.layout.containerClass) {
+                h.addClass(self._dom.container, self.config.layout.containerClass);
+            }
+
+            if (!mixitup.features.has.transitions) {
+                self.config.animation.enable = false;
+            }
+
+            self._indexTargets();
+
+            self._state = self._getInitialState();
+
+            self._updateControls({
+                filter: self._state.activeFilter,
+                sort: self._state.activeSort
+            });
+
+            self._parseEffects();
+
+            self._initControls();
+
+            self._buildToggleArray(null, self._state);
+
+            self.execAction('attach', 1, arguments);
+        },
+
+        /**
          * @private
          * @instance
          * @since   2.0.0
-         * @param   {Element}       el
-         * @param   {object}        config
          * @return  {mixitup.State}
          */
 
-        _init: function(el, config) {
+        _getInitialState: function() {
             var self        = this,
                 state       = new mixitup.State(),
                 operation   = new mixitup.Operation();
 
-            self.execAction('_init', 0, arguments);
-
-            config && h.extend(self.config, config, true);
-
-            self._cacheDom(el);
-
-            self.config.layout.containerClass && h.addClass(el, self.config.layout.containerClass);
-
-            self.config.animation.enable = self.config.animation.enable && mixitup.features.has.transitions;
-
-            self._indexTargets();
+            self.execAction('_getInitialState', 0, arguments);
 
             // Map in whatever state values we can
 
@@ -2786,18 +2820,7 @@
             // state.totalHide         = operation.hide.length
             // state.totalMatching     = operation.matching.length;
 
-            self._updateControls({
-                filter: state.activeFilter,
-                sort: state.activeSort
-            });
-
-            self._parseEffects();
-
-            self._initControls();
-
-            self._buildToggleArray(null, state);
-
-            return self.execFilter('_init', state, arguments);
+            return self.execFilter('_getInitialState', state, arguments);
         },
 
         /**
@@ -2806,15 +2829,17 @@
          * @private
          * @instance
          * @since   3.0.0
-         * @param   {Element} el
+         * @param   {HTMLElement}       el
+         * @param   {HTMLHtmlElement}   document
          * @return  {void}
          */
 
-        _cacheDom: function(el) {
+        _cacheDom: function(el, document) {
             var self    = this;
 
             self.execAction('_cacheDom', 0, arguments);
 
+            self._dom.document  = document;
             self._dom.body      = self._dom.document.getElementsByTagName('body')[0];
             self._dom.container = el;
             self._dom.parent    = el;
@@ -4760,22 +4785,17 @@
          * @public
          * @instance
          * @since       3.0.0
-         * @param       {boolean}   [startFromHidden]
-         *      An optional boolean dictating whether targets should start from a hidden or non-hidden state.
          * @return      {Promise.<mixitup.State>}
          */
 
-        init: function(startFromHidden) {
+        init: function() {
             var self    = this,
                 target  = null,
                 i       = -1;
 
-            if (startFromHidden) {
-                for (i = 0; target = self._targets[i]; i++) {
+            for (i = 0; target = self._targets[i]; i++) {
+                if (!target.isShown) {
                     target.hide();
-
-                    // TODO: would it make sense to auto-detect this? If so at what point
-                    // should the user change css to show targets?
                 }
             }
 

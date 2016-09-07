@@ -16,6 +16,9 @@ mixer = mixitup('.sandbox', {
         limit: 4,
         maxPagers: 6
     },
+    load: {
+        sort: 'random'
+    },
     // dragndrop: {
     //     enable: true,
     //     hidePlaceholder: false,
