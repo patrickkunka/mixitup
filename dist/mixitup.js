@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 1d5f45f2-fac9-42c2-af17-c7692a2df8ff
+ * Build ed814213-2f3d-4fd6-adc0-bb4beb11e6ba
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -5328,12 +5328,16 @@
          * @public
          * @instance
          * @since       2.0.0
-         * @param       {string}    stringKey
+         * @param       {string}    [stringKey]
          * @return      {*}
          */
 
-        getOption: function(stringKey) {
-            stringKey;
+        getConfig: function(stringKey) {
+            var self = this;
+
+            if (!stringKey) {
+                return self.config;
+            }
 
             // TODO: requires stringKey parser helper
         },
@@ -5346,14 +5350,14 @@
          * @return      {void}
          */
 
-        setOptions: function(config) {
+        configure: function(config) {
             var self = this;
 
-            self.execAction('setOptions', 0, arguments);
+            self.execAction('configure', 0, arguments);
 
             h.extend(self, config, true);
 
-            self.execAction('setOptions', 1, arguments);
+            self.execAction('configure', 1, arguments);
         },
 
         /**
@@ -6832,28 +6836,28 @@
 
         this.execAction('construct', 0);
 
-        this.init           = mixer.init.bind(mixer);
-        this.show           = mixer.show.bind(mixer);
-        this.hide           = mixer.hide.bind(mixer);
-        this.filter         = mixer.filter.bind(mixer);
-        this.sort           = mixer.sort.bind(mixer);
-        this.changeLayout   = mixer.changeLayout.bind(mixer);
-        this.multimix       = mixer.multiMix.bind(mixer);
-        this.multiMix       = mixer.multiMix.bind(mixer);
-        this.tween          = mixer.tween.bind(mixer);
-        this.insert         = mixer.insert.bind(mixer);
-        this.insertBefore   = mixer.insertBefore.bind(mixer);
-        this.insertAfter    = mixer.insertAfter.bind(mixer);
-        this.prepend        = mixer.prepend.bind(mixer);
-        this.append         = mixer.append.bind(mixer);
-        this.remove         = mixer.remove.bind(mixer);
-        this.destroy        = mixer.destroy.bind(mixer);
-        this.forceRefresh   = mixer.forceRefresh.bind(mixer);
-        this.isMixing       = mixer.isMixing.bind(mixer);
-        this.getOperation   = mixer.getOperation.bind(mixer);
-        this.getOption      = mixer.getOption.bind(mixer);
-        this.setOptions     = mixer.setOptions.bind(mixer);
-        this.getState       = mixer.getState.bind(mixer);
+        this.init               = mixer.init.bind(mixer);
+        this.configure          = mixer.configure.bind(mixer);
+        this.show               = mixer.show.bind(mixer);
+        this.hide               = mixer.hide.bind(mixer);
+        this.filter             = mixer.filter.bind(mixer);
+        this.sort               = mixer.sort.bind(mixer);
+        this.changeLayout       = mixer.changeLayout.bind(mixer);
+        this.multimix           = mixer.multiMix.bind(mixer);
+        this.multiMix           = mixer.multiMix.bind(mixer);
+        this.tween              = mixer.tween.bind(mixer);
+        this.insert             = mixer.insert.bind(mixer);
+        this.insertBefore       = mixer.insertBefore.bind(mixer);
+        this.insertAfter        = mixer.insertAfter.bind(mixer);
+        this.prepend            = mixer.prepend.bind(mixer);
+        this.append             = mixer.append.bind(mixer);
+        this.remove             = mixer.remove.bind(mixer);
+        this.destroy            = mixer.destroy.bind(mixer);
+        this.forceRefresh       = mixer.forceRefresh.bind(mixer);
+        this.isMixing           = mixer.isMixing.bind(mixer);
+        this.getOperation       = mixer.getOperation.bind(mixer);
+        this.getConfig          = mixer.getConfig.bind(mixer);
+        this.getState           = mixer.getState.bind(mixer);
 
         this.execAction('construct', 1);
 

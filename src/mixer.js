@@ -2660,12 +2660,16 @@ h.extend(mixitup.Mixer.prototype,
      * @public
      * @instance
      * @since       2.0.0
-     * @param       {string}    stringKey
+     * @param       {string}    [stringKey]
      * @return      {*}
      */
 
-    getOption: function(stringKey) {
-        stringKey;
+    getConfig: function(stringKey) {
+        var self = this;
+
+        if (!stringKey) {
+            return self.config;
+        }
 
         // TODO: requires stringKey parser helper
     },
@@ -2678,14 +2682,14 @@ h.extend(mixitup.Mixer.prototype,
      * @return      {void}
      */
 
-    setOptions: function(config) {
+    configure: function(config) {
         var self = this;
 
-        self.execAction('setOptions', 0, arguments);
+        self.execAction('configure', 0, arguments);
 
         h.extend(self, config, true);
 
-        self.execAction('setOptions', 1, arguments);
+        self.execAction('configure', 1, arguments);
     },
 
     /**
