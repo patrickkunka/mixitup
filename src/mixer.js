@@ -23,7 +23,7 @@ mixitup.Mixer = function() {
 
     this.id                = '';
 
-    this.isMixing          = false;
+    this.isBusy            = false;
     this.isToggling        = false;
     this.incPadding        = true;
 
@@ -1155,7 +1155,7 @@ h.extend(mixitup.Mixer.prototype,
 
         // If we should animate and the platform supports transitions, go for it
 
-        self.isMixing = true;
+        self.isBusy = true;
 
         if (window.pageYOffset !== operation.docState.scrollTop) {
             window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
@@ -1849,7 +1849,7 @@ h.extend(mixitup.Mixer.prototype,
         self.userDeferred  = null;
         self.lastClicked   = null;
         self.isToggling    = false;
-        self.isMixing      = false;
+        self.isBusy      = false;
 
         if (self.queue.length) {
             self.execAction('queue', 0);
@@ -2196,7 +2196,7 @@ h.extend(mixitup.Mixer.prototype,
     isMixing: function() {
         var self = this;
 
-        return self.isMixing;
+        return self.isBusy;
     },
 
     /**
@@ -2358,7 +2358,7 @@ h.extend(mixitup.Mixer.prototype,
         operation.startState    = self.state;
         operation.id            = h.randomHexKey();
 
-        if (self.isMixing) {
+        if (self.isBusy) {
             if (h.canReportErrors(self)) {
                 console.warn(mixitup.messages[301]);
             }
@@ -2475,7 +2475,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.execAction('multiMix', 0, arguments);
 
-        if (!self.isMixing) {
+        if (!self.isBusy) {
             operation = self.getOperation(instruction.command);
 
             if (self.config.controls.enable) {

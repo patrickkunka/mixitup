@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 682a6857-0092-487f-82b3-b5398bed41bb
+ * Build 1d5f45f2-fac9-42c2-af17-c7692a2df8ff
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -56,6 +56,7 @@
         var el                  = null,
             returnCollection    = false,
             instance            = null,
+            facade              = null,
             doc                 = null,
             output              = null,
             instances           = [],
@@ -125,7 +126,13 @@
                 }
             }
 
-            instances.push(instance);
+            facade = new mixitup.Facade(instance);
+
+            if (config && config.debug && config.debug.enable) {
+                instances.push(instance);
+            } else {
+                instances.push(facade);
+            }
         }
 
         if (returnCollection) {
@@ -1611,7 +1618,8 @@
 
         this.execAction('construct', 0);
 
-        this.enable = true;
+        this.enable         = false;
+        this.showWarnings   = true;
 
         this.execAction('construct', 1);
 
@@ -2683,7 +2691,7 @@
 
         this.id                = '';
 
-        this.isMixing          = false;
+        this.isBusy            = false;
         this.isToggling        = false;
         this.incPadding        = true;
 
@@ -3815,7 +3823,7 @@
 
             // If we should animate and the platform supports transitions, go for it
 
-            self.isMixing = true;
+            self.isBusy = true;
 
             if (window.pageYOffset !== operation.docState.scrollTop) {
                 window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
@@ -4509,7 +4517,7 @@
             self.userDeferred  = null;
             self.lastClicked   = null;
             self.isToggling    = false;
-            self.isMixing      = false;
+            self.isBusy      = false;
 
             if (self.queue.length) {
                 self.execAction('queue', 0);
@@ -4856,7 +4864,7 @@
         isMixing: function() {
             var self = this;
 
-            return self.isMixing;
+            return self.isBusy;
         },
 
         /**
@@ -5018,7 +5026,7 @@
             operation.startState    = self.state;
             operation.id            = h.randomHexKey();
 
-            if (self.isMixing) {
+            if (self.isBusy) {
                 if (h.canReportErrors(self)) {
                     console.warn(mixitup.messages[301]);
                 }
@@ -5135,7 +5143,7 @@
 
             self.execAction('multiMix', 0, arguments);
 
-            if (!self.isMixing) {
+            if (!self.isBusy) {
                 operation = self.getOperation(instruction.command);
 
                 if (self.config.controls.enable) {
@@ -6810,6 +6818,54 @@
     mixitup.features = new mixitup.Features();
 
     mixitup.features.init();
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     * @param       {mixitup.Mixer} mixer
+     */
+
+    mixitup.Facade = function Mixer(mixer) {
+        mixitup.Base.call(this);
+
+        this.execAction('construct', 0);
+
+        this.init           = mixer.init.bind(mixer);
+        this.show           = mixer.show.bind(mixer);
+        this.hide           = mixer.hide.bind(mixer);
+        this.filter         = mixer.filter.bind(mixer);
+        this.sort           = mixer.sort.bind(mixer);
+        this.changeLayout   = mixer.changeLayout.bind(mixer);
+        this.multimix       = mixer.multiMix.bind(mixer);
+        this.multiMix       = mixer.multiMix.bind(mixer);
+        this.tween          = mixer.tween.bind(mixer);
+        this.insert         = mixer.insert.bind(mixer);
+        this.insertBefore   = mixer.insertBefore.bind(mixer);
+        this.insertAfter    = mixer.insertAfter.bind(mixer);
+        this.prepend        = mixer.prepend.bind(mixer);
+        this.append         = mixer.append.bind(mixer);
+        this.remove         = mixer.remove.bind(mixer);
+        this.destroy        = mixer.destroy.bind(mixer);
+        this.forceRefresh   = mixer.forceRefresh.bind(mixer);
+        this.isMixing       = mixer.isMixing.bind(mixer);
+        this.getOperation   = mixer.getOperation.bind(mixer);
+        this.getOption      = mixer.getOption.bind(mixer);
+        this.setOptions     = mixer.setOptions.bind(mixer);
+        this.getState       = mixer.getState.bind(mixer);
+
+        this.execAction('construct', 1);
+
+        h.freeze(this);
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.Facade);
+
+    mixitup.Facade.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.Facade.prototype.constructor = mixitup.Facade;
 
     if (typeof exports === 'object' && typeof module === 'object') {
         module.exports = mixitup;

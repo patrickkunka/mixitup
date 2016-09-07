@@ -72,6 +72,8 @@
 
     {{>features}}
 
+    {{>facade}}
+
     {{>module-definitions}}
 
     mixitup.NAME = '{{name}}';

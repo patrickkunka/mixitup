@@ -37,6 +37,7 @@ mixitup = function(container, config, foreignDoc) {
     var el                  = null,
         returnCollection    = false,
         instance            = null,
+        facade              = null,
         doc                 = null,
         output              = null,
         instances           = [],
@@ -106,7 +107,13 @@ mixitup = function(container, config, foreignDoc) {
             }
         }
 
-        instances.push(instance);
+        facade = new mixitup.Facade(instance);
+
+        if (config && config.debug && config.debug.enable) {
+            instances.push(instance);
+        } else {
+            instances.push(facade);
+        }
     }
 
     if (returnCollection) {

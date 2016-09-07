@@ -14,7 +14,8 @@ mixitup.ConfigDebug = function() {
 
     this.execAction('construct', 0);
 
-    this.enable = true;
+    this.enable         = false;
+    this.showWarnings   = true;
 
     this.execAction('construct', 1);
 
