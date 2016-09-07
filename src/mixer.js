@@ -2667,11 +2667,17 @@ h.extend(mixitup.Mixer.prototype,
     getConfig: function(stringKey) {
         var self = this;
 
+        self.execAction('getConfig', 0, arguments);
+
         if (!stringKey) {
             return self.config;
+        } else {
+            // TODO: use string key helper to retrieve indivual props
+
+            void(0);
         }
 
-        // TODO: requires stringKey parser helper
+        self.execAction('getConfig', 1, arguments);
     },
 
     /**
@@ -2687,7 +2693,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.execAction('configure', 0, arguments);
 
-        h.extend(self, config, true);
+        h.extend(self.config, config, true);
 
         self.execAction('configure', 1, arguments);
     },

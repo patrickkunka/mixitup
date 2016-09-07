@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build ed814213-2f3d-4fd6-adc0-bb4beb11e6ba
+ * Build cf7ca75a-d7e8-4129-99b1-0cb58cd51c3c
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -5335,11 +5335,17 @@
         getConfig: function(stringKey) {
             var self = this;
 
+            self.execAction('getConfig', 0, arguments);
+
             if (!stringKey) {
                 return self.config;
+            } else {
+                // TODO: use string key helper to retrieve indivual props
+
+                void(0);
             }
 
-            // TODO: requires stringKey parser helper
+            self.execAction('getConfig', 1, arguments);
         },
 
         /**
@@ -5355,7 +5361,7 @@
 
             self.execAction('configure', 0, arguments);
 
-            h.extend(self, config, true);
+            h.extend(self.config, config, true);
 
             self.execAction('configure', 1, arguments);
         },
