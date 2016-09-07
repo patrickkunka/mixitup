@@ -163,7 +163,7 @@ h.extend(mixitup.Target.prototype, {
         self.execAction('move', 0, arguments);
 
         if (!self.isExcluded) {
-            self.mixer._targetsMoved++;
+            self.mixer.targetsMoved++;
         }
 
         self.applyStylesIn({
@@ -262,7 +262,7 @@ h.extend(mixitup.Target.prototype, {
     applyStylesIn: function(options) {
         var self            = this,
             posIn           = options.posIn,
-            isFading        = self.mixer._effectsIn.opacity !== 1,
+            isFading        = self.mixer.effectsIn.opacity !== 1,
             transformValues = [];
 
         self.execAction('applyStylesIn', 0, arguments);
@@ -279,7 +279,7 @@ h.extend(mixitup.Target.prototype, {
         isFading && (self.dom.el.style.opacity = posIn.opacity);
 
         if (options.hideOrShow === 'show') {
-            transformValues = transformValues.concat(self.mixer._transformIn);
+            transformValues = transformValues.concat(self.mixer.transformIn);
         }
 
         self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
@@ -302,7 +302,7 @@ h.extend(mixitup.Target.prototype, {
             transitionRules = [],
             transformValues = [],
             isResizing      = self.mixer.config.animation.animateResizeTargets,
-            isFading        = typeof self.mixer._effectsIn.opacity !== 'undefined';
+            isFading        = typeof self.mixer.effectsIn.opacity !== 'undefined';
 
         self.execAction('applyStylesOut', 0, arguments);
 
@@ -345,14 +345,14 @@ h.extend(mixitup.Target.prototype, {
         // not transition in any way so tag it as "immovable"
 
         if (!options.callback) {
-            self.mixer._targetsImmovable++;
+            self.mixer.targetsImmovable++;
 
-            if (self.mixer._targetsMoved === self.mixer._targetsImmovable) {
+            if (self.mixer.targetsMoved === self.mixer.targetsImmovable) {
                 // If the total targets moved is equal to the
                 // number of immovable targets, the operation
                 // should be considered finished
 
-                self.mixer._cleanUp(options.operation);
+                self.mixer.cleanUp(options.operation);
             }
 
             return;
@@ -367,7 +367,7 @@ h.extend(mixitup.Target.prototype, {
         // As long as the target is not excluded, increment
         // the total number of targets bound
 
-        !self.isExcluded && self.mixer._targetsBound++;
+        !self.isExcluded && self.mixer.targetsBound++;
 
         // Tag the target as bound to differentiate from transitionEnd
         // events that may come from stylesheet driven effects
@@ -399,9 +399,9 @@ h.extend(mixitup.Target.prototype, {
 
         switch (options.hideOrShow) {
             case 'hide':
-                isFading && (self.dom.el.style.opacity = self.mixer._effectsOut.opacity);
+                isFading && (self.dom.el.style.opacity = self.mixer.effectsOut.opacity);
 
-                transformValues = transformValues.concat(self.mixer._transformOut);
+                transformValues = transformValues.concat(self.mixer.transformOut);
 
                 break;
             case 'show':
@@ -469,10 +469,10 @@ h.extend(mixitup.Target.prototype, {
             delay   = -1;
 
         if (typeof self.mixer.config.animation.staggerSequence === 'function') {
-            index = self.mixer.config.animation.staggerSequence.call(self, index, self._state);
+            index = self.mixer.config.animation.staggerSequence.call(self, index, self.state);
         }
 
-        delay = !!self.mixer._staggerDuration ? index * self.mixer._staggerDuration : 0;
+        delay = !!self.mixer.staggerDuration ? index * self.mixer.staggerDuration : 0;
 
         return self.execFilter('getDelay', delay, arguments);
     },

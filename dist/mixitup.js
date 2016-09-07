@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 1b23a040-cfe2-4024-906c-c6459e28a540
+ * Build 682a6857-0092-487f-82b3-b5398bed41bb
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1057,9 +1057,9 @@
                 key     = '',
                 context = isPost ? 'post' : 'pre';
 
-            if (!h.isEmptyObject(self.constructor._actions) && self.constructor._actions.hasOwnProperty(methodName)) {
-                for (key in self.constructor._actions[methodName][context]) {
-                    self.constructor._actions[methodName][context][key].apply(self, args);
+            if (!h.isEmptyObject(self.constructor.actions) && self.constructor.actions.hasOwnProperty(methodName)) {
+                for (key in self.constructor.actions[methodName][context]) {
+                    self.constructor.actions[methodName][context][key].apply(self, args);
                 }
             }
         },
@@ -1081,13 +1081,13 @@
             var self    = this,
                 key     = '';
 
-            if (!h.isEmptyObject(self.constructor._filters) && self.constructor._filters.hasOwnProperty(methodName)) {
-                for (key in self.constructor._filters[methodName].pre) {
+            if (!h.isEmptyObject(self.constructor.filters) && self.constructor.filters.hasOwnProperty(methodName)) {
+                for (key in self.constructor.filters[methodName].pre) {
                     args = Array.prototype.slice.call(args);
 
                     args.unshift(value);
 
-                    return self.constructor._filters[methodName].pre[key].apply(self, args);
+                    return self.constructor.filters[methodName].pre[key].apply(self, args);
                 }
             } else {
                 return value;
@@ -1108,8 +1108,8 @@
      */
 
     mixitup.BaseStatic = function() {
-        this._actions = {};
-        this._filters = {};
+        this.actions = {};
+        this.filters = {};
 
         /**
          * Performs a shallow extend on the class's prototype, enabling the addition of
@@ -1142,7 +1142,7 @@
          */
 
         this.addAction = function(hook, name, func, priority) {
-            this._addHook('_actions', hook, name, func, priority);
+            this.addHook('actions', hook, name, func, priority);
         };
 
         /**
@@ -1159,7 +1159,7 @@
          */
 
         this.addFilter = function(hook, name, func) {
-            this._addHook('_filters', hook, name, func);
+            this.addHook('filters', hook, name, func);
         };
 
         /**
@@ -1178,7 +1178,7 @@
          * @return      {void}
          */
 
-        this._addHook = function(type, hook, name, func, priority) {
+        this.addHook = function(type, hook, name, func, priority) {
             var collection = this[type];
 
             priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
@@ -2121,7 +2121,7 @@
             if (!self.selector) {
                 button = self.el;
             } else {
-                button = h.closestParent(e.target, self.selector, true, self.bound[0]._dom.document);
+                button = h.closestParent(e.target, self.selector, true, self.bound[0].dom.document);
 
                 // TODO: for live selectors, read data attributes here, sub with self.filter etc
             }
@@ -2175,15 +2175,15 @@
                     continue;
                 }
 
-                mixitup.events.fire('mixClick', mixer._dom.container, {
-                    state: mixer._state,
+                mixitup.events.fire('mixClick', mixer.dom.container, {
+                    state: mixer.state,
                     instance: mixer,
                     originalEvent: e,
-                    control: mixer._lastClicked
-                }, mixer._dom.document);
+                    control: mixer.lastClicked
+                }, mixer.dom.document);
 
                 if (typeof mixer.config.callbacks.onMixClick === 'function') {
-                    returnValue = mixer.config.callbacks.onMixClick.call(mixer._lastClicked, mixer._state, mixer, e);
+                    returnValue = mixer.config.callbacks.onMixClick.call(mixer.lastClicked, mixer.state, mixer, e);
 
                     if (returnValue === false) {
                         // User has returned `false` from the callback, so do not handle click
@@ -2192,8 +2192,8 @@
                     }
                 }
 
-                if (mixer._lastClicked) {
-                    mixer._lastClicked = button;
+                if (mixer.lastClicked) {
+                    mixer.lastClicked = button;
                 }
 
                 if (self.method === 'toggle') {
@@ -2681,37 +2681,37 @@
 
         this.config             = new mixitup.Config();
 
-        this._id                = '';
+        this.id                = '';
 
-        this._isMixing          = false;
-        this._isToggling        = false;
-        this._incPadding        = true;
+        this.isMixing          = false;
+        this.isToggling        = false;
+        this.incPadding        = true;
 
-        this._controls          = [];
-        this._targets           = [];
-        this._origOrder         = [];
+        this.controls          = [];
+        this.targets           = [];
+        this.origOrder         = [];
 
-        this._toggleArray       = [];
+        this.toggleArray       = [];
 
-        this._targetsMoved      = 0;
-        this._targetsImmovable  = 0;
-        this._targetsBound      = 0;
-        this._targetsDone       = 0;
+        this.targetsMoved      = 0;
+        this.targetsImmovable  = 0;
+        this.targetsBound      = 0;
+        this.targetsDone       = 0;
 
-        this._staggerDuration   = 0;
-        this._effectsIn         = null;
-        this._effectsOut        = null;
-        this._transformIn       = [];
-        this._transformOut      = [];
-        this._queue             = [];
+        this.staggerDuration   = 0;
+        this.effectsIn         = null;
+        this.effectsOut        = null;
+        this.transformIn       = [];
+        this.transformOut      = [];
+        this.queue             = [];
 
-        this._state             = null;
-        this._lastOperation     = null;
-        this._lastClicked       = null;
-        this._userCallback      = null;
-        this._userDeferred      = null;
+        this.state             = null;
+        this.lastOperation     = null;
+        this.lastClicked       = null;
+        this.userCallback      = null;
+        this.userDeferred      = null;
 
-        this._dom               = new mixitup.MixerDom();
+        this.dom               = new mixitup.MixerDom();
 
         this.execAction('construct', 1);
 
@@ -2739,36 +2739,36 @@
 
             self.execAction('attach', 0, arguments);
 
-            self._id = id;
+            self.id = id;
 
             if (config) {
                 h.extend(self.config, config, true);
             }
 
-            self._cacheDom(container, document);
+            self.cacheDom(container, document);
 
             if (self.config.layout.containerClass) {
-                h.addClass(self._dom.container, self.config.layout.containerClass);
+                h.addClass(self.dom.container, self.config.layout.containerClass);
             }
 
             if (!mixitup.features.has.transitions) {
                 self.config.animation.enable = false;
             }
 
-            self._indexTargets();
+            self.indexTargets();
 
-            self._state = self._getInitialState();
+            self.state = self.getInitialState();
 
-            self._updateControls({
-                filter: self._state.activeFilter,
-                sort: self._state.activeSort
+            self.updateControls({
+                filter: self.state.activeFilter,
+                sort: self.state.activeSort
             });
 
-            self._parseEffects();
+            self.parseEffects();
 
-            self._initControls();
+            self.initControls();
 
-            self._buildToggleArray(null, self._state);
+            self.buildToggleArray(null, self.state);
 
             self.execAction('attach', 1, arguments);
         },
@@ -2780,12 +2780,12 @@
          * @return  {mixitup.State}
          */
 
-        _getInitialState: function() {
+        getInitialState: function() {
             var self        = this,
                 state       = new mixitup.State(),
                 operation   = new mixitup.Operation();
 
-            self.execAction('_getInitialState', 0, arguments);
+            self.execAction('getInitialState', 0, arguments);
 
             // Map in whatever state values we can
 
@@ -2797,21 +2797,21 @@
 
             state.activeSort            = self.config.load.sort;
             state.activeContainerClass  = self.config.layout.containerClass;
-            state.totalTargets          = self._targets.length;
+            state.totalTargets          = self.targets.length;
 
             if (state.activeSort) {
                 // Perform a syncronous sort without an operation
 
                 operation.startSortString   = 'default:asc';
-                operation.startOrder        = self._targets;
-                operation.newSort           = self._parseSort(state.activeSort);
+                operation.startOrder        = self.targets;
+                operation.newSort           = self.parseSort(state.activeSort);
                 operation.newSortString     = state.activeSort;
 
-                self._sortOperation(operation);
+                self.sortOperation(operation);
 
-                self._printSort(false, operation);
+                self.printSort(false, operation);
 
-                self._targets = operation.newOrder;
+                self.targets = operation.newOrder;
             }
 
             // TODO: the initial state should be fully mapped, but as the operation is fake we don't have this data
@@ -2820,7 +2820,7 @@
             // state.totalHide         = operation.hide.length
             // state.totalMatching     = operation.matching.length;
 
-            return self.execFilter('_getInitialState', state, arguments);
+            return self.execFilter('getInitialState', state, arguments);
         },
 
         /**
@@ -2834,17 +2834,17 @@
          * @return  {void}
          */
 
-        _cacheDom: function(el, document) {
+        cacheDom: function(el, document) {
             var self    = this;
 
-            self.execAction('_cacheDom', 0, arguments);
+            self.execAction('cacheDom', 0, arguments);
 
-            self._dom.document  = document;
-            self._dom.body      = self._dom.document.getElementsByTagName('body')[0];
-            self._dom.container = el;
-            self._dom.parent    = el;
+            self.dom.document  = document;
+            self.dom.body      = self.dom.document.getElementsByTagName('body')[0];
+            self.dom.container = el;
+            self.dom.parent    = el;
 
-            self.execAction('_cacheDom', 1, arguments);
+            self.execAction('cacheDom', 1, arguments);
         },
 
         /**
@@ -2857,42 +2857,42 @@
          * @return  {void}
          */
 
-        _indexTargets: function() {
+        indexTargets: function() {
             var self    = this,
                 target  = null,
                 el      = null,
                 i       = -1;
 
-            self.execAction('_indexTargets', 0, arguments);
+            self.execAction('indexTargets', 0, arguments);
 
-            self._dom.targets = self.config.layout.allowNestedTargets ?
-                self._dom.container.querySelectorAll(self.config.selectors.target) :
-                h.children(self._dom.container, self.config.selectors.target, self._dom.document);
+            self.dom.targets = self.config.layout.allowNestedTargets ?
+                self.dom.container.querySelectorAll(self.config.selectors.target) :
+                h.children(self.dom.container, self.config.selectors.target, self.dom.document);
 
-            self._dom.targets = Array.prototype.slice.call(self._dom.targets);
+            self.dom.targets = Array.prototype.slice.call(self.dom.targets);
 
-            self._targets = [];
+            self.targets = [];
 
-            if (self._dom.targets.length) {
-                for (i = 0; el = self._dom.targets[i]; i++) {
+            if (self.dom.targets.length) {
+                for (i = 0; el = self.dom.targets[i]; i++) {
                     target = new mixitup.Target();
 
                     target.init(el, self);
 
-                    self._targets.push(target);
+                    self.targets.push(target);
                 }
 
-                self._dom.parent = self._dom.targets[0].parentElement.isEqualNode(self._dom.container) ?
-                    self._dom.container :
-                    self._dom.targets[0].parentElement;
+                self.dom.parent = self.dom.targets[0].parentElement.isEqualNode(self.dom.container) ?
+                    self.dom.container :
+                    self.dom.targets[0].parentElement;
             }
 
-            self._origOrder = self._targets;
+            self.origOrder = self.targets;
 
-            self.execAction('_indexTargets', 1, arguments);
+            self.execAction('indexTargets', 1, arguments);
         },
 
-        _initControls: function() {
+        initControls: function() {
             var self                = this,
                 definition          = '',
                 controlElements     = null,
@@ -2903,21 +2903,21 @@
                 i                   = -1,
                 j                   = -1;
 
-            self.execAction('_initControls', 0);
+            self.execAction('initControls', 0);
 
             if (!self.config.controls.enable) {
-                self.execAction('_initControls', 1);
+                self.execAction('initControls', 1);
 
                 return;
             }
 
             switch (self.config.controls.scope) {
                 case 'local':
-                    parent = self._dom.container;
+                    parent = self.dom.container;
 
                     break;
                 case 'global':
-                    parent = self._dom.document;
+                    parent = self.dom.document;
 
                     break;
                 default:
@@ -2927,28 +2927,28 @@
             for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
                 if (self.config.controls.live || definition.live) {
                     if (definition.parent) {
-                        delagator = self._dom[definition.parent];
+                        delagator = self.dom[definition.parent];
                     } else {
                         delagator = parent;
                     }
 
-                    control = self._getControl(delagator,  definition.method, definition.selector);
+                    control = self.getControl(delagator,  definition.method, definition.selector);
 
-                    self._controls.push(control);
+                    self.controls.push(control);
                 } else {
                     controlElements = parent.querySelectorAll(definition.selector);
 
                     for (j = 0; el = controlElements[j]; j++) {
-                        control = self._getControl(el, definition.method, '');
+                        control = self.getControl(el, definition.method, '');
 
                         if (!control) continue;
 
-                        self._controls.push(control);
+                        self.controls.push(control);
                     }
                 }
             }
 
-            self.execAction('_initControls', 1);
+            self.execAction('initControls', 1);
         },
 
         /**
@@ -2961,12 +2961,12 @@
          * @return  {mixitup.Control|null}
          */
 
-        _getControl: function(el, method, selector) {
+        getControl: function(el, method, selector) {
             var self    = this,
                 control = null,
                 i       = -1;
 
-            self.execAction('_getControl', 0);
+            self.execAction('getControl', 0);
 
             for (i = 0; control = mixitup.controls[i]; i++) {
                 if (control.el === el && control.isBound(self)) {
@@ -2999,11 +2999,11 @@
 
             control.addBinding(self);
 
-            return self.execFilter('_getControl', control, arguments);
+            return self.execFilter('getControl', control, arguments);
         },
 
         /**
-         * Creates a compound selector by joining the `_toggleArray` value as per the
+         * Creates a compound selector by joining the `toggleArray` value as per the
          * defined toggle logic.
          *
          * @private
@@ -3012,14 +3012,14 @@
          * @return  {string}
          */
 
-        _getToggleSelector: function() {
+        getToggleSelector: function() {
             var self            = this,
                 delineator      = self.config.controls.toggleLogic === 'or' ? ',' : '',
                 toggleSelector  = '';
 
-            self._toggleArray = h.clean(self._toggleArray);
+            self.toggleArray = h.clean(self.toggleArray);
 
-            toggleSelector = self._toggleArray.join(delineator);
+            toggleSelector = self.toggleArray.join(delineator);
 
             if (toggleSelector === '') {
                 toggleSelector = self.config.controls.toggleDefault;
@@ -3041,13 +3041,13 @@
          * @return  {void}
          */
 
-        _buildToggleArray: function(command, state) {
+        buildToggleArray: function(command, state) {
             var self            = this,
                 activeFilter    = '',
                 filter          = '',
                 i               = -1;
 
-            self.execAction('_buildToggleArray', 0, arguments);
+            self.execAction('buildToggleArray', 0, arguments);
 
             if (command && typeof command.filter === 'string') {
                 activeFilter = command.filter.replace(/\s/g, '');
@@ -3062,22 +3062,22 @@
             }
 
             if (self.config.controls.toggleLogic === 'or') {
-                self._toggleArray = activeFilter.split(',');
+                self.toggleArray = activeFilter.split(',');
             } else {
-                self._toggleArray = activeFilter.split('.');
+                self.toggleArray = activeFilter.split('.');
 
                 // TODO: selectors may not be class names, we need to be able to split any selectors
 
-                !self._toggleArray[0] && self._toggleArray.shift();
+                !self.toggleArray[0] && self.toggleArray.shift();
 
-                for (i = 0; filter = self._toggleArray[i]; i++) {
-                    self._toggleArray[i] = '.' + filter;
+                for (i = 0; filter = self.toggleArray[i]; i++) {
+                    self.toggleArray[i] = '.' + filter;
                 }
             }
 
-            self._toggleArray = h.clean(self._toggleArray);
+            self.toggleArray = h.clean(self.toggleArray);
 
-            self.execAction('_buildToggleArray', 1, arguments);
+            self.execAction('buildToggleArray', 1, arguments);
         },
 
         /**
@@ -3091,18 +3091,18 @@
          * @return  {void}
          */
 
-        _updateControls: function(command) {
+        updateControls: function(command) {
             var self    = this,
                 control = null,
                 output  = new mixitup.CommandMultimix(),
                 i       = -1;
 
-            self.execAction('_updateControls', 0, arguments);
+            self.execAction('updateControls', 0, arguments);
 
             // Sanitise to defaults
 
-            output.filter  = command.filter || (self._state && self._state.activeFilter);
-            output.sort    = command.sort || (self._state && self._state.activeSort);
+            output.filter  = command.filter || (self.state && self.state.activeFilter);
+            output.sort    = command.sort || (self.state && self.state.activeSort);
 
             if (output.filter === self.config.selectors.target) {
                 output.filter = 'all';
@@ -3114,11 +3114,11 @@
 
             h.freeze(output);
 
-            for (i = 0; control = self._controls[i]; i++) {
-                control.update(output, self._toggleArray);
+            for (i = 0; control = self.controls[i]; i++) {
+                control.update(output, self.toggleArray);
             }
 
-            self.execAction('_updateControls', 1, arguments);
+            self.execAction('updateControls', 1, arguments);
         },
 
         /**
@@ -3130,7 +3130,7 @@
          * @return  {Promise.<mixitup.State>}
          */
 
-        _insertTargets: function(command, operation) {
+        insertTargets: function(command, operation) {
             var self        = this,
                 nextSibling = null,
                 frag        = null,
@@ -3138,16 +3138,16 @@
                 el          = null,
                 i           = -1;
 
-            self.execAction('_insertTargets', 0, arguments);
+            self.execAction('insertTargets', 0, arguments);
 
             if (typeof command.index === 'undefined') command.index = 0;
 
-            nextSibling = self._getNextSibling(command.index, command.sibling, command.position);
-            frag        = self._dom.document.createDocumentFragment();
+            nextSibling = self.getNextSibling(command.index, command.sibling, command.position);
+            frag        = self.dom.document.createDocumentFragment();
 
             if (command.collection) {
                 for (i = 0; el = command.collection[i]; i++) {
-                    if (self._dom.targets.indexOf(el) > -1) {
+                    if (self.dom.targets.indexOf(el) > -1) {
                         throw new Error(mixitup.messages[201]);
                     }
 
@@ -3157,27 +3157,27 @@
                     el.style.display = 'none';
 
                     frag.appendChild(el);
-                    frag.appendChild(self._dom.document.createTextNode(' '));
+                    frag.appendChild(self.dom.document.createTextNode(' '));
 
-                    if (!h.isElement(el, self._dom.document) || !el.matches(self.config.selectors.target)) continue;
+                    if (!h.isElement(el, self.dom.document) || !el.matches(self.config.selectors.target)) continue;
 
                     target = new mixitup.Target();
 
                     target.init(el, self);
 
-                    self._targets.splice(command.index, 0, target);
+                    self.targets.splice(command.index, 0, target);
 
                     command.index++;
                 }
 
-                self._dom.parent.insertBefore(frag, nextSibling);
+                self.dom.parent.insertBefore(frag, nextSibling);
             }
 
             // Since targets have been added, the original order must be updated
 
-            operation.startOrder = self._origOrder = self._targets;
+            operation.startOrder = self.origOrder = self.targets;
 
-            self.execAction('_insertTargets', 1, arguments);
+            self.execAction('insertTargets', 1, arguments);
         },
 
         /**
@@ -3190,7 +3190,7 @@
          * @return  {Element}
          */
 
-        _getNextSibling: function(index, sibling, position) {
+        getNextSibling: function(index, sibling, position) {
             var self = this;
 
             if (sibling) {
@@ -3201,12 +3201,12 @@
                 }
             }
 
-            if (self._targets.length && typeof index !== 'undefined') {
-                return (index < self._targets.length || !self._targets.length) ?
-                    self._targets[index].dom.el :
-                    self._targets[self._targets.length - 1].dom.el.nextElementSibling;
+            if (self.targets.length && typeof index !== 'undefined') {
+                return (index < self.targets.length || !self.targets.length) ?
+                    self.targets[index].dom.el :
+                    self.targets[self.targets.length - 1].dom.el.nextElementSibling;
             } else {
-                return self._dom.parent.children.length ? self._dom.parent.children[0] : null;
+                return self.dom.parent.children.length ? self.dom.parent.children[0] : null;
             }
         },
 
@@ -3218,14 +3218,14 @@
          * @return  {void}
          */
 
-        _filterOperation: function(operation) {
+        filterOperation: function(operation) {
             var self        = this,
                 condition   = false,
                 index       = -1,
                 target      = null,
                 i           = -1;
 
-            self.execAction('_filterOperation', 0, arguments);
+            self.execAction('filterOperation', 0, arguments);
 
             for (i = 0; target = operation.newOrder[i]; i++) {
                 if (typeof operation.newFilter === 'string') {
@@ -3234,7 +3234,7 @@
                     condition = operation.newFilter === '' ?
                         false : target.dom.el.matches(operation.newFilter);
 
-                    self._evaluateHideShow(
+                    self.evaluateHideShow(
                         condition,
                         target,
                         false,
@@ -3242,11 +3242,11 @@
                     );
                 } else if (
                     typeof operation.newFilter === 'object' &&
-                    h.isElement(operation.newFilter, self._dom.document)
+                    h.isElement(operation.newFilter, self.dom.document)
                 ) {
                     // show via element
 
-                    self._evaluateHideShow(
+                    self.evaluateHideShow(
                         target.dom.el === operation.newFilter,
                         target,
                         false,
@@ -3258,7 +3258,7 @@
                 ) {
                     // show via collection
 
-                    self._evaluateHideShow(
+                    self.evaluateHideShow(
                         operation.newFilter.indexOf(target.dom.el) > -1,
                         target,
                         false,
@@ -3288,11 +3288,11 @@
 
             operation.matching = operation.show.slice();
 
-            if (operation.show.length === 0 && operation.newFilter !== '' && self._targets.length !== 0) {
+            if (operation.show.length === 0 && operation.newFilter !== '' && self.targets.length !== 0) {
                 operation.hasFailed = true;
             }
 
-            self.execAction('_filterOperation', 1, arguments);
+            self.execAction('filterOperation', 1, arguments);
         },
 
         /**
@@ -3306,12 +3306,12 @@
          * @return  {void}
          */
 
-        _evaluateHideShow: function(condition, target, isRemoving, operation) {
+        evaluateHideShow: function(condition, target, isRemoving, operation) {
             var self = this;
 
             if (condition) {
                 if (isRemoving && typeof operation.startFilter === 'string') {
-                    self._evaluateHideShow(
+                    self.evaluateHideShow(
                         target.dom.el.matches(operation.startFilter),
                         target,
                         false,
@@ -3337,16 +3337,16 @@
          * @return  {void}
          */
 
-        _sortOperation: function(operation) {
+        sortOperation: function(operation) {
             var self = this;
 
-            self.execAction('_sortOperation', 0, arguments);
+            self.execAction('sortOperation', 0, arguments);
 
-            operation.startOrder = self._targets;
+            operation.startOrder = self.targets;
 
             switch (operation.newSort[0].sortBy) {
                 case 'default':
-                    operation.newOrder = self._origOrder.slice();
+                    operation.newOrder = self.origOrder.slice();
 
                     if (operation.newSort[0].order === 'desc') {
                         operation.newOrder.reverse();
@@ -3365,7 +3365,7 @@
                     operation.newOrder = operation.startOrder
                         .slice()
                         .sort(function(a, b) {
-                            return self._compare(a, b, 0, operation.newSort);
+                            return self.compare(a, b, 0, operation.newSort);
                         });
             }
 
@@ -3373,7 +3373,7 @@
                 operation.willSort = false;
             }
 
-            self.execAction('_sortOperation', 1, arguments);
+            self.execAction('sortOperation', 1, arguments);
         },
 
         /**
@@ -3387,13 +3387,13 @@
          * @return  {Number}
          */
 
-        _compare: function(a, b, depth, sort) {
+        compare: function(a, b, depth, sort) {
             depth = depth ? depth : 0;
 
             var self        = this,
                 order       = sort[depth].order,
-                attrA       = self._getAttributeValue(a, depth, sort),
-                attrB       = self._getAttributeValue(b, depth, sort);
+                attrA       = self.getAttributeValue(a, depth, sort),
+                attrB       = self.getAttributeValue(b, depth, sort);
 
             if (isNaN(attrA * 1) || isNaN(attrB * 1)) {
                 attrA = attrA.toLowerCase();
@@ -3412,7 +3412,7 @@
             }
 
             if (attrA === attrB && sort.length > depth + 1) {
-                return self._compare(a, b, depth + 1, sort);
+                return self.compare(a, b, depth + 1, sort);
             }
 
             return 0;
@@ -3431,11 +3431,11 @@
          * @return  {(String|Number)}
          */
 
-        _getAttributeValue: function(target, depth, sort) {
+        getAttributeValue: function(target, depth, sort) {
             var self    = this,
                 value   = '';
 
-            sort = sort ? sort : self._newSort;
+            sort = sort ? sort : self.newSort;
 
             value = target.dom.el.getAttribute('data-' + sort[depth].sortBy);
 
@@ -3467,18 +3467,18 @@
          * @return  {void}
          */
 
-        _printSort: function(isResetting, operation) {
+        printSort: function(isResetting, operation) {
             var self        = this,
                 order       = isResetting ? operation.startOrder : operation.newOrder,
-                targets     = h.children(self._dom.parent, self.config.selectors.target, self._dom.document),
+                targets     = h.children(self.dom.parent, self.config.selectors.target, self.dom.document),
                 nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
-                frag        = self._dom.document.createDocumentFragment(),
+                frag        = self.dom.document.createDocumentFragment(),
                 target      = null,
                 whiteSpace  = null,
                 el          = null,
                 i           = -1;
 
-            self.execAction('_printSort', 0, arguments);
+            self.execAction('printSort', 0, arguments);
 
             for (i = 0; el = targets[i]; i++) {
                 // Empty the container
@@ -3488,10 +3488,10 @@
                 if (el.style.position === 'absolute') continue;
 
                 if (whiteSpace && whiteSpace.nodeName === '#text') {
-                    self._dom.parent.removeChild(whiteSpace);
+                    self.dom.parent.removeChild(whiteSpace);
                 }
 
-                self._dom.parent.removeChild(el);
+                self.dom.parent.removeChild(el);
             }
 
             for (i = 0; target = order[i]; i++) {
@@ -3500,17 +3500,17 @@
                 el = target.dom.el;
 
                 frag.appendChild(el);
-                frag.appendChild(self._dom.document.createTextNode(' '));
+                frag.appendChild(self.dom.document.createTextNode(' '));
             }
 
             // Insert the document fragment into the container
             // before any other non-target elements
 
             nextSibling ?
-                self._dom.parent.insertBefore(frag, nextSibling) :
-                self._dom.parent.appendChild(frag);
+                self.dom.parent.insertBefore(frag, nextSibling) :
+                self.dom.parent.appendChild(frag);
 
-            self.execAction('_printSort', 1, arguments);
+            self.execAction('printSort', 1, arguments);
         },
 
         /**
@@ -3523,7 +3523,7 @@
          * @return  {String[]}
          */
 
-        _parseSort: function(sortString) {
+        parseSort: function(sortString) {
             var self        = this,
                 rules       = typeof sortString === 'string' ? sortString.split(' ') : [sortString],
                 newSort     = [],
@@ -3543,7 +3543,7 @@
                 if (ruleObj.sortBy === 'default' || ruleObj.sortBy === 'random') break;
             }
 
-            return self.execFilter('_parseSort', newSort, arguments);
+            return self.execFilter('parseSort', newSort, arguments);
         },
 
         /**
@@ -3556,33 +3556,33 @@
          * @return  {void}
          */
 
-        _parseEffects: function() {
+        parseEffects: function() {
             var self            = this,
                 transformName   = '',
                 effectsIn       = self.config.animation.effectsIn || self.config.animation.effects,
                 effectsOut      = self.config.animation.effectsOut || self.config.animation.effects;
 
-            self._effectsIn      = new mixitup.StyleData();
-            self._effectsOut     = new mixitup.StyleData();
-            self._transformIn    = [];
-            self._transformOut   = [];
+            self.effectsIn      = new mixitup.StyleData();
+            self.effectsOut     = new mixitup.StyleData();
+            self.transformIn    = [];
+            self.transformOut   = [];
 
-            self._effectsIn.opacity = self._effectsOut.opacity = 1;
+            self.effectsIn.opacity = self.effectsOut.opacity = 1;
 
-            self._parseEffect('fade', effectsIn, self._effectsIn, self._transformIn);
-            self._parseEffect('fade', effectsOut, self._effectsOut, self._transformOut, true);
+            self.parseEffect('fade', effectsIn, self.effectsIn, self.transformIn);
+            self.parseEffect('fade', effectsOut, self.effectsOut, self.transformOut, true);
 
             for (transformName in mixitup.transformDefaults) {
                 if (!(mixitup.transformDefaults[transformName] instanceof mixitup.TransformData)) {
                     continue;
                 }
 
-                self._parseEffect(transformName, effectsIn, self._effectsIn, self._transformIn);
-                self._parseEffect(transformName, effectsOut, self._effectsOut, self._transformOut, true);
+                self.parseEffect(transformName, effectsIn, self.effectsIn, self.transformIn);
+                self.parseEffect(transformName, effectsOut, self.effectsOut, self.transformOut, true);
             }
 
-            self._parseEffect('stagger', effectsIn, self._effectsIn, self._transformIn);
-            self._parseEffect('stagger', effectsOut, self._effectsOut, self._transformOut, true);
+            self.parseEffect('stagger', effectsIn, self.effectsIn, self.transformIn);
+            self.parseEffect('stagger', effectsOut, self.effectsOut, self.transformOut, true);
         },
 
         /**
@@ -3596,7 +3596,7 @@
          * @param   {boolean}   [isOut]
          */
 
-        _parseEffect: function(effectName, effectString, effects, transform, isOut) {
+        parseEffect: function(effectName, effectString, effects, transform, isOut) {
             var self        = this,
                 re          = /\(([^)]+)\)/,
                 propIndex   = -1,
@@ -3617,7 +3617,7 @@
                 if (effectName === 'stagger') {
                     // Reset stagger to 0
 
-                    self._staggerDuration = 0;
+                    self.staggerDuration = 0;
                 }
 
                 return;
@@ -3647,7 +3647,7 @@
 
                     break;
                 case 'stagger':
-                    self._staggerDuration = val ? parseFloat(val) : 100;
+                    self.staggerDuration = val ? parseFloat(val) : 100;
 
                     // TODO: Currently stagger must be applied globally, but
                     // if seperate values are specified for in/out, this should
@@ -3695,18 +3695,18 @@
          * @return  {State}
          */
 
-        _buildState: function(operation) {
+        buildState: function(operation) {
             var self        = this,
                 state       = new mixitup.State(),
                 target      = null,
                 i           = -1;
 
-            self.execAction('_buildState', 0);
+            self.execAction('buildState', 0);
 
             // Map target elements into state arrays.
             // the real target objects should never be exposed
 
-            for (i = 0; target = self._targets[i]; i++) {
+            for (i = 0; target = self.targets[i]; i++) {
                 if (!operation.toRemove.length || operation.toRemove.indexOf(target) < 0) {
                     state.targets.push(target.dom.el);
                 }
@@ -3730,13 +3730,13 @@
             state.activeSort           = operation.newSortString;
             state.activeContainerClass = operation.newContainerClass;
             state.hasFailed            = operation.hasFailed;
-            state.totalTargets         = self._targets.length;
+            state.totalTargets         = self.targets.length;
             state.totalShow            = operation.show.length;
             state.totalHide            = operation.hide.length;
             state.totalMatching        = operation.matching.length;
-            state.triggerElement       = self._lastClicked;
+            state.triggerElement       = self.lastClicked;
 
-            return self.execFilter('_buildState', state, arguments);
+            return self.execFilter('buildState', state, arguments);
         },
 
         /**
@@ -3748,11 +3748,11 @@
          * @return  {void}
          */
 
-        _goMix: function(shouldAnimate, operation) {
+        goMix: function(shouldAnimate, operation) {
             var self        = this,
                 deferred    = null;
 
-            self.execAction('_goMix', 0, arguments);
+            self.execAction('goMix', 0, arguments);
 
             // If the animation duration is set to 0ms,
             // or no effects specified,
@@ -3760,7 +3760,7 @@
             // then abort animation
 
             if (
-                !self.config.animation.duration || !self.config.animation.effects || !h.isVisible(self._dom.container)
+                !self.config.animation.duration || !self.config.animation.effects || !h.isVisible(self.dom.container)
             ) {
                 shouldAnimate = false;
             }
@@ -3786,62 +3786,62 @@
                 shouldAnimate = false;
             }
 
-            mixitup.events.fire('mixStart', self._dom.container, {
+            mixitup.events.fire('mixStart', self.dom.container, {
                 state: operation.startState,
                 futureState: operation.newState,
                 instance: self
-            }, self._dom.document);
+            }, self.dom.document);
 
             if (typeof self.config.callbacks.onMixStart === 'function') {
                 self.config.callbacks.onMixStart.call(
-                    self._dom.container,
+                    self.dom.container,
                     operation.startState,
                     operation.newState,
                     self
                 );
             }
 
-            h.removeClass(self._dom.container, self.config.layout.containerClassFail);
+            h.removeClass(self.dom.container, self.config.layout.containerClassFail);
 
-            deferred = self._userDeferred = h.defer();
+            deferred = self.userDeferred = h.defer();
 
             if (!shouldAnimate || !mixitup.features.has.transitions) {
                 // Abort
 
-                self._cleanUp(operation);
+                self.cleanUp(operation);
 
-                return self.execFilter('_goMix', deferred.promise, arguments);
+                return self.execFilter('goMix', deferred.promise, arguments);
             }
 
             // If we should animate and the platform supports transitions, go for it
 
-            self._isMixing = true;
+            self.isMixing = true;
 
             if (window.pageYOffset !== operation.docState.scrollTop) {
                 window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
             }
 
             if (self.config.animation.applyPerspective) {
-                self._dom.parent.style[mixitup.features.perspectiveProp] =
+                self.dom.parent.style[mixitup.features.perspectiveProp] =
                     self.config.animation.perspectiveDistance;
 
-                self._dom.parent.style[mixitup.features.perspectiveOriginProp] =
+                self.dom.parent.style[mixitup.features.perspectiveOriginProp] =
                     self.config.animation.perspectiveOrigin;
             }
 
             if (self.config.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
-                self._dom.parent.style.height = operation.startHeight + 'px';
+                self.dom.parent.style.height = operation.startHeight + 'px';
             }
 
             if (self.config.animation.animateResizeContainer || operation.startWidth === operation.newWidth) {
-                self._dom.parent.style.width = operation.startWidth + 'px';
+                self.dom.parent.style.width = operation.startWidth + 'px';
             }
 
             requestAnimationFrame(function() {
-                self._moveTargets(operation);
+                self.moveTargets(operation);
             });
 
-            return self.execFilter('_goMix', deferred.promise, arguments);
+            return self.execFilter('goMix', deferred.promise, arguments);
         },
 
         /**
@@ -3852,18 +3852,18 @@
          * @return  {void}
          */
 
-        _getStartMixData: function(operation) {
+        getStartMixData: function(operation) {
             var self        = this,
-                parentStyle = window.getComputedStyle(self._dom.parent),
-                parentRect  = self._dom.parent.getBoundingClientRect(),
+                parentStyle = window.getComputedStyle(self.dom.parent),
+                parentRect  = self.dom.parent.getBoundingClientRect(),
                 target      = null,
                 data        = {},
                 i           = -1,
                 boxSizing   = parentStyle[mixitup.features.boxSizingProp];
 
-            self._incPadding = (boxSizing === 'border-box');
+            self.incPadding = (boxSizing === 'border-box');
 
-            self.execAction('_getStartMixData', 0);
+            self.execAction('getStartMixData', 0);
 
             for (i = 0; target = operation.show[i]; i++) {
                 data = target.getPosData();
@@ -3884,7 +3884,7 @@
             operation.startX = parentRect.left;
             operation.startY = parentRect.top;
 
-            operation.startHeight = self._incPadding ?
+            operation.startHeight = self.incPadding ?
                 parentRect.height :
                 parentRect.height -
                     parseFloat(parentStyle.paddingTop) -
@@ -3892,7 +3892,7 @@
                     parseFloat(parentStyle.borderTop) -
                     parseFloat(parentStyle.borderBottom);
 
-            operation.startWidth = self._incPadding ?
+            operation.startWidth = self.incPadding ?
                 parentRect.width :
                 parentRect.width -
                     parseFloat(parentStyle.paddingLeft) -
@@ -3900,7 +3900,7 @@
                     parseFloat(parentStyle.borderLeft) -
                     parseFloat(parentStyle.borderRight);
 
-            self.execAction('_getStartMixData', 1);
+            self.execAction('getStartMixData', 1);
         },
 
         /**
@@ -3911,23 +3911,23 @@
          * @return  {void}
          */
 
-        _setInter: function(operation) {
+        setInter: function(operation) {
             var self    = this,
                 target  = null,
                 i       = -1;
 
-            self.execAction('_setInter', 0);
+            self.execAction('setInter', 0);
 
             for (i = 0; target = operation.toShow[i]; i++) {
                 target.show();
             }
 
             if (operation.willChangeLayout) {
-                h.removeClass(self._dom.container, operation.startContainerClass);
-                h.addClass(self._dom.container, operation.newContainerClass);
+                h.removeClass(self.dom.container, operation.startContainerClass);
+                h.addClass(self.dom.container, operation.newContainerClass);
             }
 
-            self.execAction('_setInter', 1);
+            self.execAction('setInter', 1);
         },
 
         /**
@@ -3938,12 +3938,12 @@
          * @return  {void}
          */
 
-        _getInterMixData: function(operation) {
+        getInterMixData: function(operation) {
             var self    = this,
                 target  = null,
                 i       = -1;
 
-            self.execAction('_getInterMixData', 0);
+            self.execAction('getInterMixData', 0);
 
             for (i = 0; target = operation.show[i]; i++) {
                 operation.showPosData[i].interPosData = target.getPosData();
@@ -3953,7 +3953,7 @@
                 operation.toHidePosData[i].interPosData = target.getPosData();
             }
 
-            self.execAction('_getInterMixData', 1);
+            self.execAction('getInterMixData', 1);
         },
 
         /**
@@ -3964,20 +3964,20 @@
          * @return  {void}
          */
 
-        _setFinal: function(operation) {
+        setFinal: function(operation) {
             var self    = this,
                 target  = null,
                 i       = -1;
 
-            self.execAction('_setFinal', 0);
+            self.execAction('setFinal', 0);
 
-            operation.willSort && self._printSort(false, operation);
+            operation.willSort && self.printSort(false, operation);
 
             for (i = 0; target = operation.toHide[i]; i++) {
                 target.hide();
             }
 
-            self.execAction('_setFinal', 1);
+            self.execAction('setFinal', 1);
         },
 
         /**
@@ -3988,18 +3988,18 @@
          * @return  {void}
          */
 
-        _getFinalMixData: function(operation) {
+        getFinalMixData: function(operation) {
             var self        = this,
                 parentStyle = null,
-                parentRect  = self._dom.parent.getBoundingClientRect(),
+                parentRect  = self.dom.parent.getBoundingClientRect(),
                 target      = null,
                 i           = -1;
 
-            if (!self._incPadding) {
-                parentStyle = window.getComputedStyle(self._dom.parent);
+            if (!self.incPadding) {
+                parentStyle = window.getComputedStyle(self.dom.parent);
             }
 
-            self.execAction('_getFinalMixData', 0, arguments);
+            self.execAction('getFinalMixData', 0, arguments);
 
             for (i = 0; target = operation.show[i]; i++) {
                 operation.showPosData[i].finalPosData = target.getPosData();
@@ -4012,7 +4012,7 @@
             operation.newX = parentRect.left;
             operation.newY = parentRect.top;
 
-            operation.newHeight = self._incPadding ?
+            operation.newHeight = self.incPadding ?
                 parentRect.height :
                 parentRect.height -
                     parseFloat(parentStyle.paddingTop) -
@@ -4020,7 +4020,7 @@
                     parseFloat(parentStyle.borderTop) -
                     parseFloat(parentStyle.borderBottom);
 
-            operation.newWidth = self._incPadding ?
+            operation.newWidth = self.incPadding ?
                 parentRect.width :
                 parentRect.width -
                     parseFloat(parentStyle.paddingLeft) -
@@ -4029,7 +4029,7 @@
                     parseFloat(parentStyle.borderRight);
 
             if (operation.willSort) {
-                self._printSort(true, operation);
+                self.printSort(true, operation);
             }
 
             for (i = 0; target = operation.toShow[i]; i++) {
@@ -4041,11 +4041,11 @@
             }
 
             if (operation.willChangeLayout && self.config.animation.animateChangeLayout) {
-                h.removeClass(self._dom.container, operation.newContainerClass);
-                h.addClass(self._dom.container, self.config.layout.containerClass);
+                h.removeClass(self.dom.container, operation.newContainerClass);
+                h.addClass(self.dom.container, self.config.layout.containerClass);
             }
 
-            self.execAction('_getFinalMixData', 1, arguments);
+            self.execAction('getFinalMixData', 1, arguments);
         },
 
         /**
@@ -4055,11 +4055,11 @@
          * @param    {Operation}     operation
          */
 
-        _getTweenData: function(operation) {
+        getTweenData: function(operation) {
             var self        = this,
                 target      = null,
                 posData     = null,
-                effectNames = Object.getOwnPropertyNames(self._effectsIn),
+                effectNames = Object.getOwnPropertyNames(self.effectsIn),
                 effectName  = '',
                 effect      = null,
                 i           = -1,
@@ -4088,7 +4088,7 @@
 
                 // Process opacity
 
-                posData.posIn.opacity       = target.isShown ? 1 : self._effectsIn.opacity;
+                posData.posIn.opacity       = target.isShown ? 1 : self.effectsIn.opacity;
                 posData.posOut.opacity      = 1;
                 posData.tweenData.opacity   = posData.posOut.opacity - posData.posIn.opacity;
 
@@ -4144,7 +4144,7 @@
                 // Process transforms
 
                 for (j = 0; effectName = effectNames[j]; j++) {
-                    effect = self._effectsIn[effectName];
+                    effect = self.effectsIn[effectName];
 
                     if (!(effect instanceof mixitup.TransformData) || !effect.value) continue;
 
@@ -4188,13 +4188,13 @@
                 // Process opacity
 
                 posData.posIn.opacity       = 1;
-                posData.posOut.opacity      = self._effectsOut.opacity;
+                posData.posOut.opacity      = self.effectsOut.opacity;
                 posData.tweenData.opacity   = posData.posOut.opacity - posData.posIn.opacity;
 
                 // Process transforms
 
                 for (j = 0; effectName = effectNames[j]; j++) {
-                    effect = self._effectsOut[effectName];
+                    effect = self.effectsOut[effectName];
 
                     if (!(effect instanceof mixitup.TransformData) || !effect.value) continue;
 
@@ -4220,7 +4220,7 @@
          * @return  {void}
          */
 
-        _moveTargets: function(operation) {
+        moveTargets: function(operation) {
             var self            = this,
                 target          = null,
                 posData         = null,
@@ -4228,7 +4228,7 @@
                 willTransition  = false,
                 staggerIndex    = -1,
                 i               = -1,
-                checkProgress   = h.bind(self, self._checkProgress);
+                checkProgress   = h.bind(self, self.checkProgress);
 
             // TODO: this is an extra loop in addition to the calcs
             // done in getOperation, can we get around somehow?
@@ -4238,7 +4238,7 @@
 
                 hideOrShow = target.isShown ? false : 'show'; // TODO: can we not mix types here?
 
-                willTransition = self._willTransition(
+                willTransition = self.willTransition(
                     hideOrShow,
                     operation.hasEffect,
                     posData.posIn,
@@ -4268,7 +4268,7 @@
 
                 hideOrShow = 'hide';
 
-                willTransition = self._willTransition(hideOrShow, posData.posIn, posData.posOut);
+                willTransition = self.willTransition(hideOrShow, posData.posIn, posData.posOut);
 
                 target.move({
                     posIn: posData.posIn,
@@ -4281,19 +4281,19 @@
             }
 
             if (self.config.animation.animateResizeContainer) {
-                self._dom.parent.style[mixitup.features.transitionProp] =
+                self.dom.parent.style[mixitup.features.transitionProp] =
                     'height ' + self.config.animation.duration + 'ms ease, ' +
                     'width ' + self.config.animation.duration + 'ms ease ';
 
                 requestAnimationFrame(function() {
-                    self._dom.parent.style.height = operation.newHeight + 'px';
-                    self._dom.parent.style.width = operation.newWidth + 'px';
+                    self.dom.parent.style.height = operation.newHeight + 'px';
+                    self.dom.parent.style.width = operation.newWidth + 'px';
                 });
             }
 
             if (operation.willChangeLayout) {
-                h.removeClass(self._dom.container, self.config.layout.containerClass);
-                h.addClass(self._dom.container, operation.newContainerClass);
+                h.removeClass(self.dom.container, self.config.layout.containerClass);
+                h.addClass(self.dom.container, operation.newContainerClass);
             }
         },
 
@@ -4315,12 +4315,12 @@
                 value       = -1,
                 i           = -1;
 
-            if (self._effectsIn.opacity !== 1) {
+            if (self.effectsIn.opacity !== 1) {
                 return true;
             }
 
             for (i = 0; effectName = effectables[i]; i++) {
-                effect  = self._effectsIn[effectName];
+                effect  = self.effectsIn[effectName];
                 value   = (typeof effect && effect.value !== 'undefined') ?
                     effect.value : effect;
 
@@ -4347,10 +4347,10 @@
          * @return  {boolean}
          */
 
-        _willTransition: function(hideOrShow, hasEffect, posIn, posOut) {
+        willTransition: function(hideOrShow, hasEffect, posIn, posOut) {
             var self = this;
 
-            if (!h.isVisible(self._dom.container)) {
+            if (!h.isVisible(self.dom.container)) {
                 // If the container is not visible, the transitionEnd
                 // event will not occur and MixItUp will hang
 
@@ -4387,13 +4387,13 @@
          * @return  {void}
          */
 
-        _checkProgress: function(operation) {
+        checkProgress: function(operation) {
             var self = this;
 
-            self._targetsDone++;
+            self.targetsDone++;
 
-            if (self._targetsBound === self._targetsDone) {
-                self._cleanUp(operation);
+            if (self.targetsBound === self.targetsDone) {
+                self.cleanUp(operation);
             }
         },
 
@@ -4405,18 +4405,18 @@
          * @return  {void}
          */
 
-        _cleanUp: function(operation) {
+        cleanUp: function(operation) {
             var self        = this,
                 target      = null,
                 nextInQueue = null,
                 i           = -1;
 
-            self.execAction('_cleanUp', 0);
+            self.execAction('cleanUp', 0);
 
-            self._targetsMoved          =
-                self._targetsImmovable  =
-                self._targetsBound      =
-                self._targetsDone       = 0;
+            self.targetsMoved          =
+                self.targetsImmovable  =
+                self.targetsBound      =
+                self.targetsDone       = 0;
 
             for (i = 0; target = operation.show[i]; i++) {
                 target.cleanUp();
@@ -4431,31 +4431,31 @@
             }
 
             if (operation.willSort) {
-                self._printSort(false, operation);
+                self.printSort(false, operation);
 
-                self._targets = operation.newOrder;
+                self.targets = operation.newOrder;
             }
 
             // Remove any styles applied to the parent container
 
-            self._dom.parent.style[mixitup.features.transitionProp]             =
-                self._dom.parent.style.height                                   =
-                self._dom.parent.style.width                                    =
-                self._dom.parent.style[mixitup.features.perspectiveProp]        =
-                self._dom.parent.style[mixitup.features.perspectiveOriginProp]  = '';
+            self.dom.parent.style[mixitup.features.transitionProp]             =
+                self.dom.parent.style.height                                   =
+                self.dom.parent.style.width                                    =
+                self.dom.parent.style[mixitup.features.perspectiveProp]        =
+                self.dom.parent.style[mixitup.features.perspectiveOriginProp]  = '';
 
             if (operation.willChangeLayout) {
-                h.removeClass(self._dom.container, operation.startContainerClass);
-                h.addClass(self._dom.container, operation.newContainerClass);
+                h.removeClass(self.dom.container, operation.startContainerClass);
+                h.addClass(self.dom.container, operation.newContainerClass);
             }
 
             if (operation.toRemove.length) {
-                for (i = 0; target = self._targets[i]; i++) {
+                for (i = 0; target = self.targets[i]; i++) {
                     if (operation.toRemove.indexOf(target) > -1) {
 
                         h.deleteElement(target.dom.el);
 
-                        self._targets.splice(i, 1);
+                        self.targets.splice(i, 1);
 
                         i--;
                     }
@@ -4463,69 +4463,69 @@
 
                 // Since targets have been removed, the original order must be updated
 
-                self._origOrder = self._targets;
+                self.origOrder = self.targets;
             }
 
-            self._state = operation.newState;
-            self._lastOperation = operation;
+            self.state = operation.newState;
+            self.lastOperation = operation;
 
-            self._dom.targets = self._state.targets;
+            self.dom.targets = self.state.targets;
 
             // mixEnd
 
-            mixitup.events.fire('mixEnd', self._dom.container, {
-                state: self._state,
+            mixitup.events.fire('mixEnd', self.dom.container, {
+                state: self.state,
                 instance: self
-            }, self._dom.document);
+            }, self.dom.document);
 
             if (typeof self.config.callbacks.onMixEnd === 'function') {
-                self.config.callbacks.onMixEnd.call(self._dom.container, self._state, self);
+                self.config.callbacks.onMixEnd.call(self.dom.container, self.state, self);
             }
 
             if (operation.hasFailed) {
                 // mixFail
 
-                mixitup.events.fire('mixFail', self._dom.container, {
-                    state: self._state,
+                mixitup.events.fire('mixFail', self.dom.container, {
+                    state: self.state,
                     instance: self
-                }, self._dom.document);
+                }, self.dom.document);
 
                 if (typeof self.config.callbacks.onMixFail === 'function') {
-                    self.config.callbacks.onMixFail.call(self._dom.container, self._state, self);
+                    self.config.callbacks.onMixFail.call(self.dom.container, self.state, self);
                 }
 
-                h.addClass(self._dom.container, self.config.layout.containerClassFail);
+                h.addClass(self.dom.container, self.config.layout.containerClassFail);
             }
 
             // User-defined callback function
 
-            if (typeof self._userCallback === 'function') {
-                self._userCallback.call(self._dom.container, self._state, self);
+            if (typeof self.userCallback === 'function') {
+                self.userCallback.call(self.dom.container, self.state, self);
             }
 
-            self._userDeferred.resolve(self._state);
+            self.userDeferred.resolve(self.state);
 
-            self._userCallback  = null;
-            self._userDeferred  = null;
-            self._lastClicked   = null;
-            self._isToggling    = false;
-            self._isMixing      = false;
+            self.userCallback  = null;
+            self.userDeferred  = null;
+            self.lastClicked   = null;
+            self.isToggling    = false;
+            self.isMixing      = false;
 
-            if (self._queue.length) {
-                self.execAction('_queue', 0);
+            if (self.queue.length) {
+                self.execAction('queue', 0);
 
-                nextInQueue = self._queue.shift();
+                nextInQueue = self.queue.shift();
 
                 // Update non-public API properties stored in queue
 
-                self._userDeferred   = nextInQueue.promise;
-                self._isToggling    = nextInQueue.isToggling;
-                self._lastClicked   = nextInQueue.trigger;
+                self.userDeferred   = nextInQueue.promise;
+                self.isToggling    = nextInQueue.isToggling;
+                self.lastClicked   = nextInQueue.trigger;
 
                 self.multiMix.apply(self, nextInQueue.args);
             }
 
-            self.execAction('_cleanUp', 1);
+            self.execAction('cleanUp', 1);
         },
 
         /**
@@ -4536,7 +4536,7 @@
          * @return  {object}
          */
 
-        _parseMultiMixArgs: function(args) {
+        parseMultiMixArgs: function(args) {
             var self        = this,
                 instruction = new mixitup.UserInstruction(),
                 arg         = null,
@@ -4558,7 +4558,7 @@
                 }
             }
 
-            return self.execFilter('_parseMultiMixArgs', instruction, arguments);
+            return self.execFilter('parseMultiMixArgs', instruction, arguments);
         },
 
         /**
@@ -4569,7 +4569,7 @@
          * @return  {object}
          */
 
-        _parseInsertArgs: function(args) {
+        parseInsertArgs: function(args) {
             var self        = this,
                 instruction = new mixitup.UserInstruction(),
                 arg         = null,
@@ -4600,7 +4600,7 @@
 
                     instruction.command.collection =
                         Array.prototype.slice.call(h.createElement(arg).children);
-                } else if (typeof arg === 'object' && h.isElement(arg, self._dom.document)) {
+                } else if (typeof arg === 'object' && h.isElement(arg, self.dom.document)) {
                     // Single element
 
                     !instruction.command.collection.length ?
@@ -4634,7 +4634,7 @@
                 throw new Error(mixitup.messages[102]);
             }
 
-            return self.execFilter('_parseInsertArgs', instruction, arguments);
+            return self.execFilter('parseInsertArgs', instruction, arguments);
         },
 
         /**
@@ -4645,7 +4645,7 @@
          * @return  {object}
          */
 
-        _parseRemoveArgs: function(args) {
+        parseRemoveArgs: function(args) {
             var self        = this,
                 instruction = new mixitup.UserInstruction(),
                 collection  = [],
@@ -4664,19 +4664,19 @@
 
                 switch (typeof arg) {
                     case 'number':
-                        if (self._targets[arg]) {
-                            instruction.command.targets[0] = self._targets[arg];
+                        if (self.targets[arg]) {
+                            instruction.command.targets[0] = self.targets[arg];
                         }
 
                         break;
                     case 'string':
-                        collection = Array.prototype.slice.call(self._dom.parent.querySelectorAll(arg));
+                        collection = Array.prototype.slice.call(self.dom.parent.querySelectorAll(arg));
 
                         break;
                     case 'object':
                         if (arg && arg.length) {
                             collection = arg;
-                        } else if (h.isElement(arg, self._dom.document)) {
+                        } else if (h.isElement(arg, self.dom.document)) {
                             collection = [arg];
                         }
 
@@ -4693,14 +4693,14 @@
             }
 
             if (collection.length) {
-                for (i = 0; target = self._targets[i]; i++) {
+                for (i = 0; target = self.targets[i]; i++) {
                     if (collection.indexOf(target.dom.el) > -1) {
                         instruction.command.targets.push(target);
                     }
                 }
             }
 
-            return self.execFilter('_parseRemoveArgs', instruction, arguments);
+            return self.execFilter('parseRemoveArgs', instruction, arguments);
         },
 
         /**
@@ -4711,33 +4711,33 @@
          * @return      {Promise.<mixitup.State>}
          */
 
-        _queueMix: function(queueItem) {
+        queueMix: function(queueItem) {
             var self            = this,
                 deferred        = null,
                 toggleSelector  = '';
 
-            self.execAction('_queueMix', 0, arguments);
+            self.execAction('queueMix', 0, arguments);
 
             deferred = h.defer(self.config.libraries);
 
-            if (self.config.animation.queue && self._queue.length < self.config.animation.queueLimit) {
+            if (self.config.animation.queue && self.queue.length < self.config.animation.queueLimit) {
                 queueItem.deferred = deferred;
 
-                self._queue.push(queueItem);
+                self.queue.push(queueItem);
 
                 // Keep controls in sync with user interactions. Mixer will catch up as it drains the queue.
 
                 if (self.config.controls.enable) {
-                    if (self._isToggling) {
-                        self._buildToggleArray(queueItem.instruction.command);
+                    if (self.isToggling) {
+                        self.buildToggleArray(queueItem.instruction.command);
 
-                        toggleSelector = self._getToggleSelector();
+                        toggleSelector = self.getToggleSelector();
 
-                        self._updateControls({
+                        self.updateControls({
                             filter: toggleSelector
                         });
                     } else {
-                        self._updateControls(queueItem.instruction.command);
+                        self.updateControls(queueItem.instruction.command);
                     }
                 }
             } else {
@@ -4745,19 +4745,19 @@
                     console.warn(mixitup.messages[301]);
                 }
 
-                deferred.resolve(self._state);
+                deferred.resolve(self.state);
 
-                mixitup.events.fire('mixBusy', self._dom.container, {
-                    state: self._state,
+                mixitup.events.fire('mixBusy', self.dom.container, {
+                    state: self.state,
                     instance: self
-                }, self._dom.document);
+                }, self.dom.document);
 
                 if (typeof self.config.callbacks.onMixBusy === 'function') {
-                    self.config.callbacks.onMixBusy.call(self._dom.container, self._state, self);
+                    self.config.callbacks.onMixBusy.call(self.dom.container, self.tate, self);
                 }
             }
 
-            return self.execFilter('_queueMix', deferred.promise, arguments);
+            return self.execFilter('queueMix', deferred.promise, arguments);
         },
 
         /**
@@ -4793,14 +4793,14 @@
                 target  = null,
                 i       = -1;
 
-            for (i = 0; target = self._targets[i]; i++) {
+            for (i = 0; target = self.targets[i]; i++) {
                 if (!target.isShown) {
                     target.hide();
                 }
             }
 
             return self.multiMix({
-                filter: self._state.activeFilter
+                filter: self.state.activeFilter
             }, self.config.load.animate);
         },
 
@@ -4856,7 +4856,7 @@
         isMixing: function() {
             var self = this;
 
-            return self._isMixing;
+            return self.isMixing;
         },
 
         /**
@@ -4877,7 +4877,7 @@
 
         filter: function() {
             var self = this,
-                args = self._parseMultiMixArgs(arguments);
+                args = self.parseMultiMixArgs(arguments);
 
             return self.multiMix({
                 filter: args.command
@@ -4902,17 +4902,17 @@
 
         toggleOn: function() {
             var self            = this,
-                args            = self._parseMultiMixArgs(arguments),
+                args            = self.parseMultiMixArgs(arguments),
                 selector        = args.command,
                 toggleSelector  = '';
 
-            self._isToggling = true;
+            self.isToggling = true;
 
-            if (self._toggleArray.indexOf(selector) < 0) {
-                self._toggleArray.push(selector);
+            if (self.toggleArray.indexOf(selector) < 0) {
+                self.toggleArray.push(selector);
             }
 
-            toggleSelector = self._getToggleSelector();
+            toggleSelector = self.getToggleSelector();
 
             return self.multiMix({
                 filter: toggleSelector
@@ -4937,15 +4937,15 @@
 
         toggleOff: function() {
             var self            = this,
-                args            = self._parseMultiMixArgs(arguments),
+                args            = self.parseMultiMixArgs(arguments),
                 selector        = args.command,
                 toggleSelector  = '';
 
-            self._isToggling = true;
+            self.isToggling = true;
 
-            self._toggleArray.splice(self._toggleArray.indexOf(selector), 1);
+            self.toggleArray.splice(self.toggleArray.indexOf(selector), 1);
 
-            toggleSelector = self._getToggleSelector();
+            toggleSelector = self.getToggleSelector();
 
             return self.multiMix({
                 filter: toggleSelector
@@ -4970,7 +4970,7 @@
 
         sort: function() {
             var self = this,
-                args = self._parseMultiMixArgs(arguments);
+                args = self.parseMultiMixArgs(arguments);
 
             return self.multiMix({
                 sort: args.command
@@ -5007,7 +5007,7 @@
                 insertCommand       = command.insert,
                 operation           = new mixitup.Operation();
 
-            operation = self.execFilter('getOperation_unmapped', operation, arguments);
+            operation = self.execFilter('getOperationUnmapped', operation, arguments);
 
             // NB: `isPreFetch` is passed as may be useful for extensions, not used in this function
             // but placed here to satisfy jscs
@@ -5015,10 +5015,10 @@
             isPreFetch;
 
             operation.command       = command;
-            operation.startState    = self._state;
+            operation.startState    = self.state;
             operation.id            = h.randomHexKey();
 
-            if (self._isMixing) {
+            if (self.isMixing) {
                 if (h.canReportErrors(self)) {
                     console.warn(mixitup.messages[301]);
                 }
@@ -5030,15 +5030,15 @@
 
             if (insertCommand) {
                 if (typeof insertCommand.collection === 'undefined') {
-                    insertCommand = self._parseInsertArgs([insertCommand]).command;
+                    insertCommand = self.parseInsertArgs([insertCommand]).command;
                 }
 
-                self._insertTargets(insertCommand, operation);
+                self.insertTargets(insertCommand, operation);
             }
 
             if (removeCommand) {
                 if (typeof removeCommand.targets === 'undefined' && typeof removeCommand.collection !== 'undefined') {
-                    removeCommand = self._parseRemoveArgs([removeCommand.collection]).command;
+                    removeCommand = self.parseRemoveArgs([removeCommand.collection]).command;
                 }
 
                 operation.toRemove = removeCommand.targets;
@@ -5046,17 +5046,17 @@
 
             if (sortCommand) {
                 operation.startSortString   = operation.startState.activeSort;
-                operation.newSort           = self._parseSort(sortCommand);
+                operation.newSort           = self.parseSort(sortCommand);
                 operation.newSortString     = sortCommand;
 
                 if (sortCommand !== operation.startState.activeSortString || sortCommand === 'random') {
                     operation.willSort = true;
 
-                    self._sortOperation(operation);
+                    self.sortOperation(operation);
                 }
             } else {
                 operation.startSortString = operation.newSortString = operation.startState.activeSort;
-                operation.startOrder = operation.newOrder = self._targets;
+                operation.startOrder = operation.newOrder = self.targets;
             }
 
             operation.startFilter = operation.startState.activeFilter;
@@ -5071,7 +5071,7 @@
                 operation.newFilter = operation.startState.activeFilter;
             }
 
-            self._filterOperation(operation);
+            self.filterOperation(operation);
 
             // TODO: we need a definitve object for filter operations,
             // which accomodates selectors, elements, hide vs show etc.
@@ -5089,24 +5089,24 @@
 
             // Populate the operation's position data
 
-            self._getStartMixData(operation);
-            self._setInter(operation);
+            self.getStartMixData(operation);
+            self.setInter(operation);
 
             operation.docState = h.getDocumentState();
 
-            self._getInterMixData(operation);
-            self._setFinal(operation);
-            self._getFinalMixData(operation);
+            self.getInterMixData(operation);
+            self.setFinal(operation);
+            self.getFinalMixData(operation);
 
-            self._parseEffects();
+            self.parseEffects();
 
             operation.hasEffect = self.hasEffect();
 
-            self._getTweenData(operation);
+            self.getTweenData(operation);
 
-            operation.newState = self._buildState(operation);
+            operation.newState = self.buildState(operation);
 
-            return self.execFilter('getOperation_mapped', operation, arguments);
+            return self.execFilter('getOperationMapped', operation, arguments);
         },
 
         /**
@@ -5131,30 +5131,30 @@
                 operation   = null,
                 animate     = false,
                 queueItem   = null,
-                instruction = self._parseMultiMixArgs(arguments);
+                instruction = self.parseMultiMixArgs(arguments);
 
             self.execAction('multiMix', 0, arguments);
 
-            if (!self._isMixing) {
+            if (!self.isMixing) {
                 operation = self.getOperation(instruction.command);
 
                 if (self.config.controls.enable) {
                     // Update controls for API calls
 
-                    if (instruction.command.filter && !self._isToggling) {
+                    if (instruction.command.filter && !self.isToggling) {
                         // As we are not toggling, reset the toggle array
                         // so new filter overrides existing toggles
 
-                        self._toggleArray.length = 0;
-                        self._buildToggleArray(operation.command);
+                        self.toggleArray.length = 0;
+                        self.buildToggleArray(operation.command);
                     }
 
-                    if (self._queue.length < 1) {
-                        self._updateControls(operation.command);
+                    if (self.queue.length < 1) {
+                        self.updateControls(operation.command);
                     }
                 }
 
-                if (instruction.callback) self._userCallback = instruction.callback;
+                if (instruction.callback) self.userCallback = instruction.callback;
 
                 self.execFilter('multiMix', operation, self);
                 self.execAction('multiMix', 1, arguments);
@@ -5165,16 +5165,16 @@
                     instruction.animate :
                     self.config.animation.enable;
 
-                return self._goMix(animate, operation);
+                return self.goMix(animate, operation);
             } else {
                 queueItem = new mixitup.QueueItem();
 
                 queueItem.args          = arguments;
                 queueItem.instruction   = instruction;
-                queueItem.trigger       = self._lastClicked;
-                queueItem.isToggling    = self._isToggling;
+                queueItem.trigger       = self.lastClicked;
+                queueItem.isToggling    = self.isToggling;
 
-                return self._queueMix(queueItem);
+                return self.queueMix(queueItem);
             }
         },
 
@@ -5237,7 +5237,7 @@
 
         insert: function() {
             var self = this,
-                args = self._parseInsertArgs(arguments);
+                args = self.parseInsertArgs(arguments);
 
             return self.multiMix({
                 insert: args.command
@@ -5253,7 +5253,7 @@
 
         insertBefore: function() {
             var self = this,
-                args = self._parseInsertArgs(arguments);
+                args = self.parseInsertArgs(arguments);
 
             return self.insert(args.command.collection, 'before', args.command.sibling, args.animate, args.callback);
         },
@@ -5267,7 +5267,7 @@
 
         insertAfter: function() {
             var self = this,
-                args = self._parseInsertArgs(arguments);
+                args = self.parseInsertArgs(arguments);
 
             return self.insert(args.command.collection, 'after', args.command.sibling, args.animate, args.callback);
         },
@@ -5281,7 +5281,7 @@
 
         prepend: function() {
             var self = this,
-                args = self._parseInsertArgs(arguments);
+                args = self.parseInsertArgs(arguments);
 
             return self.insert(0, args.command.collection, args.animate, args.callback);
         },
@@ -5295,9 +5295,9 @@
 
         append: function() {
             var self = this,
-                args = self._parseInsertArgs(arguments);
+                args = self.parseInsertArgs(arguments);
 
-            return self.insert(self._state.totalTargets, args.command.collection, args.animate, args.callback);
+            return self.insert(self.state.totalTargets, args.command.collection, args.animate, args.callback);
         },
 
         /**
@@ -5309,7 +5309,7 @@
 
         remove: function() {
             var self = this,
-                args = self._parseRemoveArgs(arguments);
+                args = self.parseRemoveArgs(arguments);
 
             return self.multiMix({
                 remove: args.command
@@ -5362,9 +5362,9 @@
             if (typeof Object.assign === 'function') {
                 state = new mixitup.State();
 
-                Object.assign(state, self._state);
+                Object.assign(state, self.state);
             } else {
-                state = self._state;
+                state = self.state;
             }
 
             return self.execFilter('getState', state, self);
@@ -5380,7 +5380,7 @@
         forceRefresh: function() {
             var self = this;
 
-            self._indexTargets();
+            self.indexTargets();
         },
 
         /**
@@ -5399,21 +5399,21 @@
 
             self.execAction('destroy', 0, arguments);
 
-            for (i = 0; control = self._controls[i]; i++) {
+            for (i = 0; control = self.controls[i]; i++) {
                 control.removeBinding(self);
             }
 
-            for (i = 0; target = self._targets[i]; i++) {
+            for (i = 0; target = self.targets[i]; i++) {
                 hideAll && target.hide();
 
                 target.unbindEvents();
             }
 
-            if (self._dom.container.id.indexOf('MixItUp') === 0) {
-                self._dom.container.removeAttribute('id');
+            if (self.dom.container.id.indexOf('MixItUp') === 0) {
+                self.dom.container.removeAttribute('id');
             }
 
-            delete mixitup.instances[self._id];
+            delete mixitup.instances[self.id];
 
             self.execAction('destroy', 1, arguments);
         }
@@ -5607,7 +5607,7 @@
             self.execAction('move', 0, arguments);
 
             if (!self.isExcluded) {
-                self.mixer._targetsMoved++;
+                self.mixer.targetsMoved++;
             }
 
             self.applyStylesIn({
@@ -5706,7 +5706,7 @@
         applyStylesIn: function(options) {
             var self            = this,
                 posIn           = options.posIn,
-                isFading        = self.mixer._effectsIn.opacity !== 1,
+                isFading        = self.mixer.effectsIn.opacity !== 1,
                 transformValues = [];
 
             self.execAction('applyStylesIn', 0, arguments);
@@ -5723,7 +5723,7 @@
             isFading && (self.dom.el.style.opacity = posIn.opacity);
 
             if (options.hideOrShow === 'show') {
-                transformValues = transformValues.concat(self.mixer._transformIn);
+                transformValues = transformValues.concat(self.mixer.transformIn);
             }
 
             self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
@@ -5746,7 +5746,7 @@
                 transitionRules = [],
                 transformValues = [],
                 isResizing      = self.mixer.config.animation.animateResizeTargets,
-                isFading        = typeof self.mixer._effectsIn.opacity !== 'undefined';
+                isFading        = typeof self.mixer.effectsIn.opacity !== 'undefined';
 
             self.execAction('applyStylesOut', 0, arguments);
 
@@ -5789,14 +5789,14 @@
             // not transition in any way so tag it as "immovable"
 
             if (!options.callback) {
-                self.mixer._targetsImmovable++;
+                self.mixer.targetsImmovable++;
 
-                if (self.mixer._targetsMoved === self.mixer._targetsImmovable) {
+                if (self.mixer.targetsMoved === self.mixer.targetsImmovable) {
                     // If the total targets moved is equal to the
                     // number of immovable targets, the operation
                     // should be considered finished
 
-                    self.mixer._cleanUp(options.operation);
+                    self.mixer.cleanUp(options.operation);
                 }
 
                 return;
@@ -5811,7 +5811,7 @@
             // As long as the target is not excluded, increment
             // the total number of targets bound
 
-            !self.isExcluded && self.mixer._targetsBound++;
+            !self.isExcluded && self.mixer.targetsBound++;
 
             // Tag the target as bound to differentiate from transitionEnd
             // events that may come from stylesheet driven effects
@@ -5843,9 +5843,9 @@
 
             switch (options.hideOrShow) {
                 case 'hide':
-                    isFading && (self.dom.el.style.opacity = self.mixer._effectsOut.opacity);
+                    isFading && (self.dom.el.style.opacity = self.mixer.effectsOut.opacity);
 
-                    transformValues = transformValues.concat(self.mixer._transformOut);
+                    transformValues = transformValues.concat(self.mixer.transformOut);
 
                     break;
                 case 'show':
@@ -5913,10 +5913,10 @@
                 delay   = -1;
 
             if (typeof self.mixer.config.animation.staggerSequence === 'function') {
-                index = self.mixer.config.animation.staggerSequence.call(self, index, self._state);
+                index = self.mixer.config.animation.staggerSequence.call(self, index, self.state);
             }
 
-            delay = !!self.mixer._staggerDuration ? index * self.mixer._staggerDuration : 0;
+            delay = !!self.mixer.staggerDuration ? index * self.mixer.staggerDuration : 0;
 
             return self.execFilter('getDelay', delay, arguments);
         },

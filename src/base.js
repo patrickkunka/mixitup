@@ -34,9 +34,9 @@ mixitup.Base.prototype = {
             key     = '',
             context = isPost ? 'post' : 'pre';
 
-        if (!h.isEmptyObject(self.constructor._actions) && self.constructor._actions.hasOwnProperty(methodName)) {
-            for (key in self.constructor._actions[methodName][context]) {
-                self.constructor._actions[methodName][context][key].apply(self, args);
+        if (!h.isEmptyObject(self.constructor.actions) && self.constructor.actions.hasOwnProperty(methodName)) {
+            for (key in self.constructor.actions[methodName][context]) {
+                self.constructor.actions[methodName][context][key].apply(self, args);
             }
         }
     },
@@ -58,13 +58,13 @@ mixitup.Base.prototype = {
         var self    = this,
             key     = '';
 
-        if (!h.isEmptyObject(self.constructor._filters) && self.constructor._filters.hasOwnProperty(methodName)) {
-            for (key in self.constructor._filters[methodName].pre) {
+        if (!h.isEmptyObject(self.constructor.filters) && self.constructor.filters.hasOwnProperty(methodName)) {
+            for (key in self.constructor.filters[methodName].pre) {
                 args = Array.prototype.slice.call(args);
 
                 args.unshift(value);
 
-                return self.constructor._filters[methodName].pre[key].apply(self, args);
+                return self.constructor.filters[methodName].pre[key].apply(self, args);
             }
         } else {
             return value;

@@ -13,8 +13,8 @@
  */
 
 mixitup.BaseStatic = function() {
-    this._actions = {};
-    this._filters = {};
+    this.actions = {};
+    this.filters = {};
 
     /**
      * Performs a shallow extend on the class's prototype, enabling the addition of
@@ -47,7 +47,7 @@ mixitup.BaseStatic = function() {
      */
 
     this.addAction = function(hook, name, func, priority) {
-        this._addHook('_actions', hook, name, func, priority);
+        this.addHook('actions', hook, name, func, priority);
     };
 
     /**
@@ -64,7 +64,7 @@ mixitup.BaseStatic = function() {
      */
 
     this.addFilter = function(hook, name, func) {
-        this._addHook('_filters', hook, name, func);
+        this.addHook('filters', hook, name, func);
     };
 
     /**
@@ -83,7 +83,7 @@ mixitup.BaseStatic = function() {
      * @return      {void}
      */
 
-    this._addHook = function(type, hook, name, func, priority) {
+    this.addHook = function(type, hook, name, func, priority) {
         var collection = this[type];
 
         priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';

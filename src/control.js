@@ -217,7 +217,7 @@ h.extend(mixitup.Control.prototype,
         if (!self.selector) {
             button = self.el;
         } else {
-            button = h.closestParent(e.target, self.selector, true, self.bound[0]._dom.document);
+            button = h.closestParent(e.target, self.selector, true, self.bound[0].dom.document);
 
             // TODO: for live selectors, read data attributes here, sub with self.filter etc
         }
@@ -271,15 +271,15 @@ h.extend(mixitup.Control.prototype,
                 continue;
             }
 
-            mixitup.events.fire('mixClick', mixer._dom.container, {
-                state: mixer._state,
+            mixitup.events.fire('mixClick', mixer.dom.container, {
+                state: mixer.state,
                 instance: mixer,
                 originalEvent: e,
-                control: mixer._lastClicked
-            }, mixer._dom.document);
+                control: mixer.lastClicked
+            }, mixer.dom.document);
 
             if (typeof mixer.config.callbacks.onMixClick === 'function') {
-                returnValue = mixer.config.callbacks.onMixClick.call(mixer._lastClicked, mixer._state, mixer, e);
+                returnValue = mixer.config.callbacks.onMixClick.call(mixer.lastClicked, mixer.state, mixer, e);
 
                 if (returnValue === false) {
                     // User has returned `false` from the callback, so do not handle click
@@ -288,8 +288,8 @@ h.extend(mixitup.Control.prototype,
                 }
             }
 
-            if (mixer._lastClicked) {
-                mixer._lastClicked = button;
+            if (mixer.lastClicked) {
+                mixer.lastClicked = button;
             }
 
             if (self.method === 'toggle') {
