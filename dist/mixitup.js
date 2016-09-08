@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build cf7ca75a-d7e8-4129-99b1-0cb58cd51c3c
+ * Build 3bfada2b-7c52-482f-a56d-380058d3128e
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -6840,7 +6840,7 @@
     mixitup.Facade = function Mixer(mixer) {
         mixitup.Base.call(this);
 
-        this.execAction('construct', 0);
+        this.execAction('construct', 0, arguments);
 
         this.init               = mixer.init.bind(mixer);
         this.configure          = mixer.configure.bind(mixer);
@@ -6865,7 +6865,7 @@
         this.getConfig          = mixer.getConfig.bind(mixer);
         this.getState           = mixer.getState.bind(mixer);
 
-        this.execAction('construct', 1);
+        this.execAction('construct', 1, arguments);
 
         h.freeze(this);
         h.seal(this);
