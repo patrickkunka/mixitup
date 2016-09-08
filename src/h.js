@@ -1,13 +1,6 @@
 /* global mixitup, h:true */
 
 /**
- * A small library of commonly-used helper functions. This is just a subset of
- * the complete "h" library, with some additional functions added specifically
- * for MixItUp.
- *
- * @author      Kunkalabs Limited
- * @global
- * @namespace
  * @private
  */
 
@@ -15,8 +8,8 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   el
-     * @param   {string}    cls
+     * @param   {HTMLElement}   el
+     * @param   {string}        cls
      * @return  {boolean}
      */
 
@@ -26,8 +19,8 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   el
-     * @param   {string}    cls
+     * @param   {HTMLElement}   el
+     * @param   {string}        cls
      * @return  {void}
      */
 
@@ -37,8 +30,8 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   el
-     * @param   {string}    cls
+     * @param   {HTMLElement}   el
+     * @param   {string}        cls
      * @return  {void}
      */
 
@@ -55,27 +48,17 @@ h = {
      * target object. Alters the target object.
      *
      * @private
-     * @param   {object}    target
+     * @param   {object}    destination
      * @param   {object}    source
      * @param   {boolean}   [deep]
      * @return  {void}
      */
 
-    extend: function(target, source, deep) {
+    extend: function(destination, source, deep) {
         var self        = this,
-            getter      = null,
-            setter      = null,
             sourceKeys  = [],
             key         = '',
             i           = -1;
-
-        if (target === null) {
-            throw new Error('Cannot extend into null');
-        }
-
-        if (source === null) {
-            throw new Error('Cannot extend null into object');
-        }
 
         if (Array.isArray(source)) {
             for (i = 0; i < source.length; i++) {
@@ -87,58 +70,39 @@ h = {
 
         for (i = 0; i < sourceKeys.length; i++) {
             key = sourceKeys[i];
-            getter = source.__lookupGetter__(key);
-            setter = source.__lookupSetter__(key);
 
-            if (getter) {
-                // Getters
+            if (!deep || typeof source[key] !== 'object') {
+                // All non-object properties, or all properties if shallow extend
 
-                target.__defineGetter__(key, getter);
-            } else if (setter) {
-                // Setters
-
-                target.__defineSetter__(key, setter);
-            } else if (
-                deep &&
-                typeof source[key] === 'object' &&
-                source[key] !== null &&
-                !Array.isArray(source[key]) &&
-                !h.isElement(source[key])
-            ) {
-                // Objects
-
-                if (
-                    typeof target[key] === 'undefined' ||
-                    target[key] === null
-                ) {
-                    target[key] = {};
-                }
-
-                self.extend(target[key], source[key]);
-            } else if (deep && Array.isArray(source[key])) {
+                destination[key] = source[key];
+            } else if (Array.isArray(source[key])) {
                 // Arrays
 
-                if (typeof target[key] === 'undefined') {
-                    target[key] = [];
+                if (!destination[key]) {
+                    destination[key] = [];
                 }
 
-                self.extend(target[key], source[key]);
+                self.extend(destination[key], source[key]);
             } else {
-                // Strings, booleans, numbers, functions, and object references
+                // Objects
 
-                target[key] = source[key];
+                if (!destination[key]) {
+                    destination[key] = {};
+                }
+
+                self.extend(destination[key], source[key]);
             }
         }
 
-        return target;
+        return destination;
     },
 
     /**
      * @private
-     * @param   {Element}   el
-     * @param   {string}    type
-     * @param   {function}  fn
-     * @param   {boolean}   useCapture
+     * @param   {HTMLElement}   el
+     * @param   {string}        type
+     * @param   {function}      fn
+     * @param   {boolean}       useCapture
      * @return  {void}
      */
 
@@ -160,9 +124,9 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   el
-     * @param   {string}    type
-     * @param   {function}  fn
+     * @param   {HTMLElement}   el
+     * @param   {string}        type
+     * @param   {function}      fn
      * @return  {void}
      */
 
@@ -206,8 +170,8 @@ h = {
 
     /**
      * @private
-     * @param {Event} e
-     * @return {Event}
+     * @param   {Event} e
+     * @return  {Event}
      */
 
     getOriginalEvent: function(e) {
@@ -222,8 +186,8 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   el
-     * @param   {string}    selector
+     * @param   {HTMLElement}   el
+     * @param   {string}        selector
      * @return  {Number}
      */
 
@@ -281,8 +245,8 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   el
-     * @param   {Document}  [doc]
+     * @param   {HTMLElement}       el
+     * @param   {HTMLHtmlElement}   [doc]
      * @return  {boolean}
      */
 
@@ -312,7 +276,7 @@ h = {
     /**
      * @private
      * @param   {string}            htmlString
-     * @param   {Document}          [doc]
+     * @param   {HTMLHtmlElement}   [doc]
      * @return  {DocumentFragment}
      */
 
@@ -336,7 +300,7 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   el
+     * @param   {HTMLElement}   el
      * @return  {void}
      */
 
@@ -424,7 +388,7 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   element
+     * @param   {HTMLElement}   element
      * @return  {object}
      */
 
@@ -502,36 +466,29 @@ h = {
 
     /**
      * @private
-     * @param   {object}        el
-     * @param   {string}        selector
-     * @param   {boolean}       [includeSelf]
-     * @param   {Number}        [range]
-     * @param   {Document}      [doc]
+     * @param   {object}            el
+     * @param   {string}            selector
+     * @param   {boolean}           [includeSelf]
+     * @param   {HTMLHtmlElement}   [doc]
      * @return  {Element|null}
      */
 
-    closestParent: function(el, selector, includeSelf, range, doc) {
-        var parent  = el.parentNode,
-            depth   = -1;
+    closestParent: function(el, selector, includeSelf, doc) {
+        var parent  = el.parentNode;
 
-        doc     = doc || window.document;
-        depth   = range || Infinity;
+        doc = doc || window.document;
 
         if (includeSelf && el.matches(selector)) {
             return el;
         }
 
-        while (depth && parent && parent != doc.body) {
+        while (parent && parent != doc.body) {
             if (parent.matches && parent.matches(selector)) {
                 return parent;
             } else if (parent.parentNode) {
                 parent = parent.parentNode;
             } else {
                 return null;
-            }
-
-            if (range) {
-                depth--;
             }
         }
 
@@ -540,9 +497,9 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   el
-     * @param   {string}    selector
-     * @param   {Document}  [doc]
+     * @param   {HTMLElement}       el
+     * @param   {string}            selector
+     * @param   {HTMLHtmlElement}   [doc]
      * @return  {NodeList}
      */
 
@@ -570,6 +527,8 @@ h = {
     },
 
     /**
+     * Creates a clone of a provided array, with any empty strings removed.
+     *
      * @private
      * @param   {Array<*>} originalArray
      * @return  {Array<*>}
@@ -597,9 +556,9 @@ h = {
      */
 
     defer: function(libraries) {
-        var deferred         = null,
-            promiseWrapper  = null,
-            $               = null;
+        var deferred       = null,
+            promiseWrapper = null,
+            $              = null;
 
         promiseWrapper = new this.Deferred();
 
@@ -610,10 +569,7 @@ h = {
                 promiseWrapper.resolve = resolve;
                 promiseWrapper.reject  = reject;
             });
-        } else if (
-            ($ = window.jQuery || libraries.jQuery) &&
-            typeof $.Deferred === 'function'
-        ) {
+        } else if (($ = (window.jQuery || libraries.jQuery)) && typeof $.Deferred === 'function') {
             // jQuery
 
             deferred = $.Deferred();
@@ -646,9 +602,9 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   el
-     * @param   {string}    property
-     * @param   {String[]}  vendors
+     * @param   {HTMLElement}   el
+     * @param   {string}        property
+     * @param   {Array<string>} vendors
      * @return  {string}
      */
 
@@ -672,18 +628,13 @@ h = {
      * @return  {string}
      */
 
-    randomHexKey: function() {
-        return (
-            '00000' +
-            (Math.random() * 16777216 << 0).toString(16)
-        )
-            .substr(-6)
-            .toUpperCase();
+    randomHex: function() {
+        return ('00000' + (Math.random() * 16777216 << 0).toString(16)).substr(-6).toUpperCase();
     },
 
     /**
      * @private
-     * @param   {Document}  [doc]
+     * @param   {HTMLHtmlElement}  [doc]
      * @return  {object}
      */
 
@@ -712,7 +663,7 @@ h = {
 
     /**
      * @private
-     * @param   {Element}   el
+     * @param   {HTMLElement}   el
      * @return  {boolean}
      */
 
@@ -847,6 +798,47 @@ h = {
         classname += modifier;
 
         return classname;
+    },
+
+    /**
+     * Returns the value of a property on a given object via its string key.
+     *
+     * @param   {object}    obj
+     * @param   {string}    stringKey
+     * @return  {*} value
+     */
+
+    getProperty: function(obj, stringKey) {
+        var parts           = stringKey.split('.'),
+            returnCurrent   = null,
+            current         = '',
+            i               = 0;
+
+        if (!stringKey) {
+            return obj;
+        }
+
+        returnCurrent = function(obj) {
+            if (!obj) {
+                return null;
+            } else {
+                return obj[current];
+            }
+        };
+
+        while (i < parts.length) {
+            current = parts[i];
+
+            obj = returnCurrent(obj);
+
+            i++;
+        }
+
+        if (typeof obj !== 'undefined') {
+            return obj;
+        } else {
+            return null;
+        }
     }
 };
 

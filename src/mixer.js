@@ -2356,7 +2356,7 @@ h.extend(mixitup.Mixer.prototype,
 
         operation.command       = command;
         operation.startState    = self.state;
-        operation.id            = h.randomHexKey();
+        operation.id            = h.randomHex();
 
         if (self.isBusy) {
             if (h.canReportErrors(self)) {
@@ -2665,19 +2665,18 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     getConfig: function(stringKey) {
-        var self = this;
+        var self    = this,
+            value   = null;
 
         self.execAction('getConfig', 0, arguments);
 
         if (!stringKey) {
-            return self.config;
+            value = self.config;
         } else {
-            // TODO: use string key helper to retrieve indivual props
-
-            void(0);
+            value = h.getProperty(self.config, stringKey);
         }
 
-        self.execAction('getConfig', 1, arguments);
+        return self.execFilter('getConfig', value, arguments);
     },
 
     /**

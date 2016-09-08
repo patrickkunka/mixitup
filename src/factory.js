@@ -86,7 +86,7 @@ mixitup = function(container, config, foreignDoc) {
         if (i > 0 && !returnCollection) break;
 
         if (!el.id) {
-            id = 'MixItUp' + h.randomHexKey();
+            id = 'MixItUp' + h.randomHex();
 
             el.id = id;
         } else {

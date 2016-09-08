@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 3bfada2b-7c52-482f-a56d-380058d3128e
+ * Build b9d2a8fc-e9ed-458a-8aca-8b4018d86642
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -105,7 +105,7 @@
             if (i > 0 && !returnCollection) break;
 
             if (!el.id) {
-                id = 'MixItUp' + h.randomHexKey();
+                id = 'MixItUp' + h.randomHex();
 
                 el.id = id;
             } else {
@@ -179,13 +179,6 @@
     mixitup.instances = {};
 
     /**
-     * A small library of commonly-used helper functions. This is just a subset of
-     * the complete "h" library, with some additional functions added specifically
-     * for MixItUp.
-     *
-     * @author      Kunkalabs Limited
-     * @global
-     * @namespace
      * @private
      */
 
@@ -193,8 +186,8 @@
 
         /**
          * @private
-         * @param   {Element}   el
-         * @param   {string}    cls
+         * @param   {HTMLElement}   el
+         * @param   {string}        cls
          * @return  {boolean}
          */
 
@@ -204,8 +197,8 @@
 
         /**
          * @private
-         * @param   {Element}   el
-         * @param   {string}    cls
+         * @param   {HTMLElement}   el
+         * @param   {string}        cls
          * @return  {void}
          */
 
@@ -215,8 +208,8 @@
 
         /**
          * @private
-         * @param   {Element}   el
-         * @param   {string}    cls
+         * @param   {HTMLElement}   el
+         * @param   {string}        cls
          * @return  {void}
          */
 
@@ -233,27 +226,17 @@
          * target object. Alters the target object.
          *
          * @private
-         * @param   {object}    target
+         * @param   {object}    destination
          * @param   {object}    source
          * @param   {boolean}   [deep]
          * @return  {void}
          */
 
-        extend: function(target, source, deep) {
+        extend: function(destination, source, deep) {
             var self        = this,
-                getter      = null,
-                setter      = null,
                 sourceKeys  = [],
                 key         = '',
                 i           = -1;
-
-            if (target === null) {
-                throw new Error('Cannot extend into null');
-            }
-
-            if (source === null) {
-                throw new Error('Cannot extend null into object');
-            }
 
             if (Array.isArray(source)) {
                 for (i = 0; i < source.length; i++) {
@@ -265,58 +248,39 @@
 
             for (i = 0; i < sourceKeys.length; i++) {
                 key = sourceKeys[i];
-                getter = source.__lookupGetter__(key);
-                setter = source.__lookupSetter__(key);
 
-                if (getter) {
-                    // Getters
+                if (!deep || typeof source[key] !== 'object') {
+                    // All non-object properties, or all properties if shallow extend
 
-                    target.__defineGetter__(key, getter);
-                } else if (setter) {
-                    // Setters
-
-                    target.__defineSetter__(key, setter);
-                } else if (
-                    deep &&
-                    typeof source[key] === 'object' &&
-                    source[key] !== null &&
-                    !Array.isArray(source[key]) &&
-                    !h.isElement(source[key])
-                ) {
-                    // Objects
-
-                    if (
-                        typeof target[key] === 'undefined' ||
-                        target[key] === null
-                    ) {
-                        target[key] = {};
-                    }
-
-                    self.extend(target[key], source[key]);
-                } else if (deep && Array.isArray(source[key])) {
+                    destination[key] = source[key];
+                } else if (Array.isArray(source[key])) {
                     // Arrays
 
-                    if (typeof target[key] === 'undefined') {
-                        target[key] = [];
+                    if (!destination[key]) {
+                        destination[key] = [];
                     }
 
-                    self.extend(target[key], source[key]);
+                    self.extend(destination[key], source[key]);
                 } else {
-                    // Strings, booleans, numbers, functions, and object references
+                    // Objects
 
-                    target[key] = source[key];
+                    if (!destination[key]) {
+                        destination[key] = {};
+                    }
+
+                    self.extend(destination[key], source[key]);
                 }
             }
 
-            return target;
+            return destination;
         },
 
         /**
          * @private
-         * @param   {Element}   el
-         * @param   {string}    type
-         * @param   {function}  fn
-         * @param   {boolean}   useCapture
+         * @param   {HTMLElement}   el
+         * @param   {string}        type
+         * @param   {function}      fn
+         * @param   {boolean}       useCapture
          * @return  {void}
          */
 
@@ -338,9 +302,9 @@
 
         /**
          * @private
-         * @param   {Element}   el
-         * @param   {string}    type
-         * @param   {function}  fn
+         * @param   {HTMLElement}   el
+         * @param   {string}        type
+         * @param   {function}      fn
          * @return  {void}
          */
 
@@ -384,8 +348,8 @@
 
         /**
          * @private
-         * @param {Event} e
-         * @return {Event}
+         * @param   {Event} e
+         * @return  {Event}
          */
 
         getOriginalEvent: function(e) {
@@ -400,8 +364,8 @@
 
         /**
          * @private
-         * @param   {Element}   el
-         * @param   {string}    selector
+         * @param   {HTMLElement}   el
+         * @param   {string}        selector
          * @return  {Number}
          */
 
@@ -459,8 +423,8 @@
 
         /**
          * @private
-         * @param   {Element}   el
-         * @param   {Document}  [doc]
+         * @param   {HTMLElement}       el
+         * @param   {HTMLHtmlElement}   [doc]
          * @return  {boolean}
          */
 
@@ -490,7 +454,7 @@
         /**
          * @private
          * @param   {string}            htmlString
-         * @param   {Document}          [doc]
+         * @param   {HTMLHtmlElement}   [doc]
          * @return  {DocumentFragment}
          */
 
@@ -514,7 +478,7 @@
 
         /**
          * @private
-         * @param   {Element}   el
+         * @param   {HTMLElement}   el
          * @return  {void}
          */
 
@@ -602,7 +566,7 @@
 
         /**
          * @private
-         * @param   {Element}   element
+         * @param   {HTMLElement}   element
          * @return  {object}
          */
 
@@ -680,36 +644,29 @@
 
         /**
          * @private
-         * @param   {object}        el
-         * @param   {string}        selector
-         * @param   {boolean}       [includeSelf]
-         * @param   {Number}        [range]
-         * @param   {Document}      [doc]
+         * @param   {object}            el
+         * @param   {string}            selector
+         * @param   {boolean}           [includeSelf]
+         * @param   {HTMLHtmlElement}   [doc]
          * @return  {Element|null}
          */
 
-        closestParent: function(el, selector, includeSelf, range, doc) {
-            var parent  = el.parentNode,
-                depth   = -1;
+        closestParent: function(el, selector, includeSelf, doc) {
+            var parent  = el.parentNode;
 
-            doc     = doc || window.document;
-            depth   = range || Infinity;
+            doc = doc || window.document;
 
             if (includeSelf && el.matches(selector)) {
                 return el;
             }
 
-            while (depth && parent && parent != doc.body) {
+            while (parent && parent != doc.body) {
                 if (parent.matches && parent.matches(selector)) {
                     return parent;
                 } else if (parent.parentNode) {
                     parent = parent.parentNode;
                 } else {
                     return null;
-                }
-
-                if (range) {
-                    depth--;
                 }
             }
 
@@ -718,9 +675,9 @@
 
         /**
          * @private
-         * @param   {Element}   el
-         * @param   {string}    selector
-         * @param   {Document}  [doc]
+         * @param   {HTMLElement}       el
+         * @param   {string}            selector
+         * @param   {HTMLHtmlElement}   [doc]
          * @return  {NodeList}
          */
 
@@ -748,6 +705,8 @@
         },
 
         /**
+         * Creates a clone of a provided array, with any empty strings removed.
+         *
          * @private
          * @param   {Array<*>} originalArray
          * @return  {Array<*>}
@@ -775,9 +734,9 @@
          */
 
         defer: function(libraries) {
-            var deferred         = null,
-                promiseWrapper  = null,
-                $               = null;
+            var deferred       = null,
+                promiseWrapper = null,
+                $              = null;
 
             promiseWrapper = new this.Deferred();
 
@@ -788,10 +747,7 @@
                     promiseWrapper.resolve = resolve;
                     promiseWrapper.reject  = reject;
                 });
-            } else if (
-                ($ = window.jQuery || libraries.jQuery) &&
-                typeof $.Deferred === 'function'
-            ) {
+            } else if (($ = (window.jQuery || libraries.jQuery)) && typeof $.Deferred === 'function') {
                 // jQuery
 
                 deferred = $.Deferred();
@@ -824,9 +780,9 @@
 
         /**
          * @private
-         * @param   {Element}   el
-         * @param   {string}    property
-         * @param   {String[]}  vendors
+         * @param   {HTMLElement}   el
+         * @param   {string}        property
+         * @param   {Array<string>} vendors
          * @return  {string}
          */
 
@@ -850,18 +806,13 @@
          * @return  {string}
          */
 
-        randomHexKey: function() {
-            return (
-                '00000' +
-                (Math.random() * 16777216 << 0).toString(16)
-            )
-                .substr(-6)
-                .toUpperCase();
+        randomHex: function() {
+            return ('00000' + (Math.random() * 16777216 << 0).toString(16)).substr(-6).toUpperCase();
         },
 
         /**
          * @private
-         * @param   {Document}  [doc]
+         * @param   {HTMLHtmlElement}  [doc]
          * @return  {object}
          */
 
@@ -890,7 +841,7 @@
 
         /**
          * @private
-         * @param   {Element}   el
+         * @param   {HTMLElement}   el
          * @return  {boolean}
          */
 
@@ -1025,6 +976,47 @@
             classname += modifier;
 
             return classname;
+        },
+
+        /**
+         * Returns the value of a property on a given object via its string key.
+         *
+         * @param   {object}    obj
+         * @param   {string}    stringKey
+         * @return  {*} value
+         */
+
+        getProperty: function(obj, stringKey) {
+            var parts           = stringKey.split('.'),
+                returnCurrent   = null,
+                current         = '',
+                i               = 0;
+
+            if (!stringKey) {
+                return obj;
+            }
+
+            returnCurrent = function(obj) {
+                if (!obj) {
+                    return null;
+                } else {
+                    return obj[current];
+                }
+            };
+
+            while (i < parts.length) {
+                current = parts[i];
+
+                obj = returnCurrent(obj);
+
+                i++;
+            }
+
+            if (typeof obj !== 'undefined') {
+                return obj;
+            } else {
+                return null;
+            }
         }
     };
 
@@ -5024,7 +5016,7 @@
 
             operation.command       = command;
             operation.startState    = self.state;
-            operation.id            = h.randomHexKey();
+            operation.id            = h.randomHex();
 
             if (self.isBusy) {
                 if (h.canReportErrors(self)) {
@@ -5333,19 +5325,18 @@
          */
 
         getConfig: function(stringKey) {
-            var self = this;
+            var self    = this,
+                value   = null;
 
             self.execAction('getConfig', 0, arguments);
 
             if (!stringKey) {
-                return self.config;
+                value = self.config;
             } else {
-                // TODO: use string key helper to retrieve indivual props
-
-                void(0);
+                value = h.getProperty(self.config, stringKey);
             }
 
-            self.execAction('getConfig', 1, arguments);
+            return self.execFilter('getConfig', value, arguments);
         },
 
         /**
