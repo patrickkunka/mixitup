@@ -1396,14 +1396,16 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     getTweenData: function(operation) {
-        var self        = this,
-            target      = null,
-            posData     = null,
-            effectNames = Object.getOwnPropertyNames(self.effectsIn),
-            effectName  = '',
-            effect      = null,
-            i           = -1,
-            j           = -1;
+        var self            = this,
+            target          = null,
+            posData         = null,
+            effectNames     = Object.getOwnPropertyNames(self.effectsIn),
+            effectName      = '',
+            effect          = null,
+            widthChange     = -1,
+            heightChange    = -1,
+            i               = -1,
+            j               = -1;
 
         for (i = 0; target = operation.show[i]; i++) {
             posData             = operation.showPosData[i];
@@ -1413,18 +1415,15 @@ h.extend(mixitup.Mixer.prototype,
 
             // Process x and y
 
-            posData.posIn.x     = target.isShown ? posData.startPosData.x - posData.interPosData.x : 0;
-            posData.posIn.y     = target.isShown ? posData.startPosData.y - posData.interPosData.y : 0;
+            if (target.isShown) {
+                posData.posIn.x = posData.startPosData.x - posData.interPosData.x;
+                posData.posIn.y = posData.startPosData.y - posData.interPosData.y;
+            } else {
+                posData.posIn.x = posData.posIn.y = 0;
+            }
 
             posData.posOut.x = posData.finalPosData.x - posData.interPosData.x;
             posData.posOut.y = posData.finalPosData.y - posData.interPosData.y;
-
-            if (self.config.animation.balanceContainerShift) {
-                // TODO: Needs further testing/investigation
-
-                posData.posOut.x += (operation.startX - operation.newX);
-                posData.posOut.y += (operation.startY - operation.newY);
-            }
 
             // Process opacity
 
@@ -1448,32 +1447,26 @@ h.extend(mixitup.Mixer.prototype,
                 posData.posIn.width     = posData.startPosData.width;
                 posData.posIn.height    = posData.startPosData.height;
 
-                if (posData.startPosData.width - posData.finalPosData.width) {
-                    posData.posIn.marginRight =
-                        -(posData.startPosData.width - posData.interPosData.width) +
-                        (posData.startPosData.marginRight * 1);
-                } else {
-                    posData.posIn.marginRight = posData.startPosData.marginRight;
-                }
+                // "||" Prevents width/height change from including 0 width/height if hiding or showing
 
-                if (posData.startPosData.height - posData.finalPosData.height) {
-                    posData.posIn.marginBottom =
-                        -(posData.startPosData.height - posData.interPosData.height) +
-                        (posData.startPosData.marginBottom * 1);
-                } else {
-                    posData.posIn.marginBottom = posData.startPosData.marginBottom;
-                }
+                widthChange = (posData.startPosData.width || posData.finalPosData.width) - posData.interPosData.width;
+
+                posData.posIn.marginRight = posData.startPosData.marginRight - widthChange;
+
+                heightChange = (posData.startPosData.height || posData.finalPosData.height) - posData.interPosData.height;
+
+                posData.posIn.marginBottom = posData.startPosData.marginBottom - heightChange;
 
                 posData.posOut.width    = posData.finalPosData.width;
                 posData.posOut.height   = posData.finalPosData.height;
 
-                posData.posOut.marginRight =
-                    -(posData.finalPosData.width - posData.interPosData.width) +
-                    (posData.finalPosData.marginRight * 1);
+                widthChange = (posData.finalPosData.width || posData.startPosData.width) - posData.interPosData.width;
 
-                posData.posOut.marginBottom =
-                    -(posData.finalPosData.height - posData.interPosData.height) +
-                    (posData.finalPosData.marginBottom * 1);
+                posData.posOut.marginRight = posData.finalPosData.marginRight - widthChange;
+
+                heightChange = (posData.finalPosData.height || posData.startPosData.height) - posData.interPosData.height;
+
+                posData.posOut.marginBottom = posData.finalPosData.marginBottom - heightChange;
 
                 posData.tweenData.width         = posData.posOut.width - posData.posIn.width;
                 posData.tweenData.height        = posData.posOut.height - posData.posIn.height;
@@ -1521,8 +1514,14 @@ h.extend(mixitup.Mixer.prototype,
             if (self.config.animation.animateResizeTargets) {
                 posData.posIn.width         = posData.startPosData.width;
                 posData.posIn.height        = posData.startPosData.height;
-                posData.posIn.marginRight   = posData.startPosData.marginRight;
-                posData.posIn.marginBottom  = posData.startPosData.marginBottom;
+
+                widthChange = posData.startPosData.width - posData.interPosData.width;
+
+                posData.posIn.marginRight = posData.startPosData.marginRight - widthChange;
+
+                heightChange = posData.startPosData.height - posData.interPosData.height;
+
+                posData.posIn.marginBottom = posData.startPosData.marginBottom - heightChange;
             }
 
             // Process opacity

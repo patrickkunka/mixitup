@@ -269,9 +269,14 @@ h.extend(mixitup.Target.prototype, {
 
         transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
 
-        if (options.hideOrShow !== 'show' && self.mixer.config.animation.animateResizeTargets) {
-            self.dom.el.style.width        = posIn.width + 'px';
-            self.dom.el.style.height       = posIn.height + 'px';
+        if (self.mixer.config.animation.animateResizeTargets) {
+            if (options.hideOrShow !== 'show') {
+                // Don't apply posIn width or height or showing, as will be 0
+
+                self.dom.el.style.width  = posIn.width + 'px';
+                self.dom.el.style.height = posIn.height + 'px';
+            }
+
             self.dom.el.style.marginRight  = posIn.marginRight + 'px';
             self.dom.el.style.marginBottom = posIn.marginBottom + 'px';
         }
@@ -286,6 +291,7 @@ h.extend(mixitup.Target.prototype, {
 
         self.execAction('applyStylesIn', 1, arguments);
     },
+
 
     /**
      * Applies a transition followed by the final styles for the element to
