@@ -53,7 +53,6 @@ h.extend(mixitup.Collection.prototype,
         var self        = this,
             instance    = null,
             args        = Array.prototype.slice.call(arguments),
-            libraries   = self[0].config.libraries,
             tasks       = [],
             i           = -1;
 
@@ -65,6 +64,6 @@ h.extend(mixitup.Collection.prototype,
             tasks.push(instance[methodName].apply(instance, args));
         }
 
-        return self.callFilters('promiseMixitup', h.all(libraries, tasks), arguments);
+        return self.callFilters('promiseMixitup', h.all(tasks, mixitup.libraries), arguments);
     }
 });

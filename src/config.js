@@ -28,9 +28,9 @@ mixitup.Config = function() {
     this.classnames         = new mixitup.ConfigClassnames();
     this.debug              = new mixitup.ConfigDebug();
     this.layout             = new mixitup.ConfigLayout();
-    this.libraries          = new mixitup.ConfigLibraries();
     this.load               = new mixitup.ConfigLoad();
     this.selectors          = new mixitup.ConfigSelectors();
+    this.templates          = new mixitup.ConfigTemplates();
 
     this.callActions('afterConstruct');
 

@@ -26,11 +26,11 @@
 
     {{>config-layout}}
 
-    {{>config-libraries}}
-
     {{>config-load}}
 
     {{>config-selectors}}
+
+    {{>config-templates}}
 
     {{>config}}
 

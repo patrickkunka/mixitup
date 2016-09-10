@@ -128,8 +128,8 @@ mixitup = function(container, config, foreignDoc) {
 };
 
 /**
- * The `.use()` static method is used to register compatible MixItUp extensions, thus
- * extending the functionality of MixItUp.
+ * The `.use()` static method is used to extend the functionalityof mixitup with compatible
+ * extensions and libraries.
  *
  * @example
  * mixitup.use(extension)
@@ -137,7 +137,7 @@ mixitup = function(container, config, foreignDoc) {
  * @public
  * @static
  * @since   3.0.0
- * @param   {function}  extension   A reference to the extension to be used.
+ * @param   {*}  extension   A reference to the extension or library to be used.
  * @return  {void}
  */
 
@@ -145,16 +145,21 @@ mixitup.use = function(extension) {
     // Call the extension's factory function, passing
     // the mixitup factory as a paramater
 
-    extension(mixitup);
+    if (typeof extension === 'function' && extension.TYPE === 'mixitup-extension') {
+        // Mixitup extension
+
+        extension(mixitup);
+    } else if (extension.fn && extension.fn.jquery) {
+        // jQuery
+
+        mixitup.libraries.$ = extension;
+    } else if (typeof extension.compile === 'function' && typeof extension.partials === 'object' && typeof extension.helpers === 'object') {
+        // Handlebars
+
+        mixitup.libraries.handlebars = extension;
+    }
 };
 
-/**
- * Stores all instances of MixItUp in the current session, using their IDs as keys.
- *
- * @private
- * @static
- * @since   2.0.0
- * @type    {object}
- */
-
 mixitup.instances = {};
+
+mixitup.libraries = {};

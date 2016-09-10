@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 04cb7094-c4da-4a0e-b564-852acfd426c7
+ * Build 9edab5d4-dd6c-4d8a-9ad5-11d9878c1517
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -147,8 +147,8 @@
     };
 
     /**
-     * The `.use()` static method is used to register compatible MixItUp extensions, thus
-     * extending the functionality of MixItUp.
+     * The `.use()` static method is used to extend the functionalityof mixitup with compatible
+     * extensions and libraries.
      *
      * @example
      * mixitup.use(extension)
@@ -156,7 +156,7 @@
      * @public
      * @static
      * @since   3.0.0
-     * @param   {function}  extension   A reference to the extension to be used.
+     * @param   {*}  extension   A reference to the extension or library to be used.
      * @return  {void}
      */
 
@@ -164,19 +164,23 @@
         // Call the extension's factory function, passing
         // the mixitup factory as a paramater
 
-        extension(mixitup);
+        if (typeof extension === 'function' && extension.TYPE === 'mixitup-extension') {
+            // Mixitup extension
+
+            extension(mixitup);
+        } else if (extension.fn && extension.fn.jquery) {
+            // jQuery
+
+            mixitup.libraries.$ = extension;
+        } else {
+
+            // handlebars
+        }
     };
 
-    /**
-     * Stores all instances of MixItUp in the current session, using their IDs as keys.
-     *
-     * @private
-     * @static
-     * @since   2.0.0
-     * @type    {object}
-     */
-
     mixitup.instances = {};
+
+    mixitup.libraries = {};
 
     /**
      * @private
@@ -747,7 +751,7 @@
                     promiseWrapper.resolve = resolve;
                     promiseWrapper.reject  = reject;
                 });
-            } else if (($ = (window.jQuery || libraries.jQuery)) && typeof $.Deferred === 'function') {
+            } else if (($ = (window.jQuery || libraries.$)) && typeof $.Deferred === 'function') {
                 // jQuery
 
                 deferred = $.Deferred();
@@ -766,17 +770,17 @@
 
         /**
          * @private
-         * @param   {mixitup.ConfigLibraries} libraries
-         * @param   {Array<Promise>}          tasks
+         * @param   {Array<Promise>}    tasks
+         * @param   {object}            libraries
          * @return  {Promise<Array>}
          */
 
-        all: function(libraries, tasks) {
+        all: function(tasks, libraries) {
             var $ = null;
 
             if (mixitup.features.has.promises) {
                 return Promise.all(tasks);
-            } else if (($ = (window.jQuery || libraries.jQuery)) && typeof $.when === 'function') {
+            } else if (($ = (window.jQuery || libraries.$)) && typeof $.when === 'function') {
                 return $.when.apply($, tasks)
                     .done(function() {
                         // jQuery when returns spread arguments rather than an array or resolutions
@@ -1045,6 +1049,38 @@
             } else {
                 return null;
             }
+        },
+
+        /**
+         * @param   {string} templateString
+         * @param   {object} data
+         * @param   {object} [engine]
+         * @return  {string}
+         */
+
+        renderTemplate: function(templateString, data, engine) {
+            var template = null,
+                re       = null,
+                output   = '',
+                key      = '';
+
+            if (!templateString || (data && typeof data !== 'object')) return '';
+
+            if (engine && typeof engine.compile === 'function') {
+                template = engine.compile(templateString);
+
+                return template(data);
+            }
+
+            output = templateString;
+
+            for (key in data) {
+                re = new RegExp('\{\{' + key + '\}\}', 'g');
+
+                output = output.replace(re, data[key]);
+            }
+
+            return output;
         }
     };
 
@@ -1659,34 +1695,6 @@
 
     /**
      * @constructor
-     * @memberof    mixitup
-     * @memberof    mixitup.Config
-     * @name        libraries
-     * @namespace
-     * @public
-     * @since       3.0.0
-     */
-
-    mixitup.ConfigLibraries = function() {
-        mixitup.Base.call(this);
-
-        this.callActions('beforeConstruct');
-
-        this.jQuery = null;
-
-        this.callActions('afterConstruct');
-
-        h.seal(this);
-    };
-
-    mixitup.BaseStatic.call(mixitup.ConfigLibraries);
-
-    mixitup.ConfigLibraries.prototype = Object.create(mixitup.Base.prototype);
-
-    mixitup.ConfigLibraries.prototype.constructor = mixitup.ConfigLibraries;
-
-    /**
-     * @constructor
      * @memberof    mixitup.Config
      * @name        load
      * @namespace
@@ -1743,6 +1751,31 @@
     mixitup.ConfigSelectors.prototype.constructor = mixitup.ConfigSelectors;
 
     /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.ConfigTemplates = function() {
+        mixitup.Base.call(this);
+
+        this.callActions('beforeConstruct');
+
+        this.target = '';
+
+        this.callActions('afterConstruct');
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.ConfigTemplates);
+
+    mixitup.ConfigTemplates.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.ConfigTemplates.prototype.constructor = mixitup.ConfigTemplates;
+
+    /**
      * The `mixitup.Config` class encompasses the full set of user-configurable
      * options for each MixItUp instance, and is organised into to several
      * semantically distinct sub-objects.
@@ -1770,9 +1803,9 @@
         this.classnames         = new mixitup.ConfigClassnames();
         this.debug              = new mixitup.ConfigDebug();
         this.layout             = new mixitup.ConfigLayout();
-        this.libraries          = new mixitup.ConfigLibraries();
         this.load               = new mixitup.ConfigLoad();
         this.selectors          = new mixitup.ConfigSelectors();
+        this.templates          = new mixitup.ConfigTemplates();
 
         this.callActions('afterConstruct');
 
@@ -3890,7 +3923,7 @@
 
             h.removeClass(self.dom.container, self.config.layout.containerClassFail);
 
-            deferred = self.userDeferred = h.defer();
+            deferred = self.userDeferred = h.defer(mixitup.libraries);
 
             if (!shouldAnimate || !mixitup.features.has.transitions) {
                 // Abort
@@ -4816,7 +4849,7 @@
 
             self.callActions('beforeQueueMix', arguments);
 
-            deferred = h.defer(self.config.libraries);
+            deferred = h.defer(mixitup.libraries);
 
             if (self.config.animation.queue && self.queue.length < self.config.animation.queueLimit) {
                 queueItem.deferred = deferred;
@@ -6270,7 +6303,6 @@
             var self        = this,
                 instance    = null,
                 args        = Array.prototype.slice.call(arguments),
-                libraries   = self[0].config.libraries,
                 tasks       = [],
                 i           = -1;
 
@@ -6282,7 +6314,7 @@
                 tasks.push(instance[methodName].apply(instance, args));
             }
 
-            return self.callFilters('promiseMixitup', h.all(libraries, tasks), arguments);
+            return self.callFilters('promiseMixitup', h.all(tasks, mixitup.libraries), arguments);
         }
     });
 

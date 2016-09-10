@@ -1162,7 +1162,7 @@ h.extend(mixitup.Mixer.prototype,
 
         h.removeClass(self.dom.container, self.config.layout.containerClassFail);
 
-        deferred = self.userDeferred = h.defer();
+        deferred = self.userDeferred = h.defer(mixitup.libraries);
 
         if (!shouldAnimate || !mixitup.features.has.transitions) {
             // Abort
@@ -2088,7 +2088,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.callActions('beforeQueueMix', arguments);
 
-        deferred = h.defer(self.config.libraries);
+        deferred = h.defer(mixitup.libraries);
 
         if (self.config.animation.queue && self.queue.length < self.config.animation.queueLimit) {
             queueItem.deferred = deferred;

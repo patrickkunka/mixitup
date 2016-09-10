@@ -569,7 +569,7 @@ h = {
                 promiseWrapper.resolve = resolve;
                 promiseWrapper.reject  = reject;
             });
-        } else if (($ = (window.jQuery || libraries.jQuery)) && typeof $.Deferred === 'function') {
+        } else if (($ = (window.jQuery || libraries.$)) && typeof $.Deferred === 'function') {
             // jQuery
 
             deferred = $.Deferred();
@@ -588,17 +588,17 @@ h = {
 
     /**
      * @private
-     * @param   {mixitup.ConfigLibraries} libraries
-     * @param   {Array<Promise>}          tasks
+     * @param   {Array<Promise>}    tasks
+     * @param   {object}            libraries
      * @return  {Promise<Array>}
      */
 
-    all: function(libraries, tasks) {
+    all: function(tasks, libraries) {
         var $ = null;
 
         if (mixitup.features.has.promises) {
             return Promise.all(tasks);
-        } else if (($ = (window.jQuery || libraries.jQuery)) && typeof $.when === 'function') {
+        } else if (($ = (window.jQuery || libraries.$)) && typeof $.when === 'function') {
             return $.when.apply($, tasks)
                 .done(function() {
                     // jQuery when returns spread arguments rather than an array or resolutions
@@ -867,6 +867,38 @@ h = {
         } else {
             return null;
         }
+    },
+
+    /**
+     * @param   {string} templateString
+     * @param   {object} data
+     * @param   {object} [engine]
+     * @return  {string}
+     */
+
+    renderTemplate: function(templateString, data, engine) {
+        var template = null,
+            re       = null,
+            output   = '',
+            key      = '';
+
+        if (!templateString || (data && typeof data !== 'object')) return '';
+
+        if (engine && typeof engine.compile === 'function') {
+            template = engine.compile(templateString);
+
+            return template(data);
+        }
+
+        output = templateString;
+
+        for (key in data) {
+            re = new RegExp('\{\{' + key + '\}\}', 'g');
+
+            output = output.replace(re, data[key]);
+        }
+
+        return output;
     }
 };
 
