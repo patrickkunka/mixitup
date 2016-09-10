@@ -12,45 +12,40 @@ mixitup.Messages = function() {
 
     this.callActions('beforeConstruct');
 
-    /* 100 - 199: Instantiation/init/config errors
+    /* Errors
     ----------------------------------------------------------------------------- */
 
-    this[100] = '[MixItUp] ERROR 100: An invalid selector or element was passed to ' +
-                'the mixitup factory function.';
+    this.ERROR_FACTORY_INVALID_CONTAINER = '[MixItUp] An invalid selector or element reference was passed to the mixitup factory function';
 
-    this[101] = '[MixItUp] ERROR 101: Invalid value for `config.animation.effects`';
+    this.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS = '[MixItUp] Invalid value for `config.animation.effects`';
 
-    this[102] = '[MixItUp] ERROR 102: Invalid value for `config.controls.scope`';
+    this.ERROR_CONFIG_INVALID_CONTROLS_SCOPE = '[MixItUp] Invalid value for `config.controls.scope`';
 
-    /* 200-299: API/runtime errors
+    this.ERROR_INSERT_PREEXISTING_ELEMENT = '[MixItUp] An element to be inserted already exists in the container';
+
+    /* Warnings
     ----------------------------------------------------------------------------- */
 
-    this[200] = '[MixItUp] ERROR 200: No elements were passed to "insert"';
+    this.WARNING_FACTORY_PREEXISTING_INSTANCE =
+        '[MixItUp] WARNING: This element already has an active MixItUp instance. The provided configuration object will be ignored.' +
+        ' If you wish to perform additional methods on this instance, please create a reference.';
 
-    this[201] = '[MixItUp] ERROR 201: An element to be inserted already exists in ' +
-                'the container';
+    this.WARNING_INSERT_NO_ELEMENTS = '[MixItUp] WARNING: No element were passed to `.insert()`';
 
-    /* 300-399: Warnings
-    ----------------------------------------------------------------------------- */
+    this.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL =
+        '[MixItUp] WARNING: An operation was requested but the MixItUp instance was busy. The operation was rejected because the ' +
+        ' queue is full or queuing is disabled.';
 
-    this[300] = '[MixItUp] WARNING 300: This element already has an active MixItUp ' +
-                'instance. The provided configuration object will be ignored. If you ' +
-                'wish to perform additional methods on this instance, please create ' +
-                'a reference.';
+    this.WARNING_GET_OPERATION_INSTANCE_BUSY =
+        '[MixItUp] WARNING: Operations can be be created while the MixItUp instance is busy.';
 
-    this[301] = '[MixItUp] WARNING 301: An operation was requested but the MixItUp ' +
-                'instance was busy. The operation was rejected because queueing is ' +
-                'disabled or the queue is full.';
+    this.WARNING_NO_PROMISE_IMPLEMENTATION =
+        '[MixItUp] WARNING: No Promise implementations could be found. If you wish to use promises with MixItUp please install' +
+        ' an ES6 Promise polyfill.';
 
-    this[302] = '[MixItUp] WARNING 302: Operations cannot be requested while MixItUp ' +
-                'is busy.';
-
-    this[303] = '[MixItUp] WARNING 303: No available Promise implementations were found. ' +
-                'Please provide a promise library to the configuration object.';
-
-    this[304] = '[MixItUp] WARNING 304: The requested sorting data attribute was not ' +
-                'present on one or more target elements which may product unexpected ' +
-                'sort output';
+    this.WARNING_INCONSISTENT_SORTING_ATTRIBUTES =
+        '[MixItUp] WARNING: The requested sorting data attribute was not present on one or more target elements which may product' +
+        ' unexpected sort output';
 
     this.callActions('afterConstruct');
 
@@ -62,7 +57,5 @@ mixitup.BaseStatic.call(mixitup.Messages);
 mixitup.Messages.prototype = Object.create(mixitup.Base.prototype);
 
 mixitup.Messages.prototype.constructor = mixitup.Messages;
-
-// Asign a singleton instance to `mixitup.messages`:
 
 mixitup.messages = new mixitup.Messages();

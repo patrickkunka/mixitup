@@ -580,7 +580,7 @@ h = {
         } else {
             // No implementation
 
-            console.warn(mixitup.messages[303]);
+            console.warn(mixitup.messages.WARNING_NO_PROMISE_IMPLEMENTATION);
         }
 
         return promiseWrapper;
@@ -609,23 +609,9 @@ h = {
 
         // No implementation
 
-        console.warn(mixitup.messages[303]);
+        console.warn(mixitup.messages.WARNING_NO_PROMISE_IMPLEMENTATION);
 
         return [];
-    },
-
-    /**
-     * @private
-     * @param   {object}  [config]
-     * @return  {boolean}
-     */
-
-    canReportErrors: function(config) {
-        if (!config || !config.debug) {
-            return true;
-        } else {
-            return config.debug.enable;
-        }
     },
 
     /**

@@ -261,7 +261,7 @@ h.extend(mixitup.Mixer.prototype,
 
                 break;
             default:
-                throw new Error(mixitup.messages[102]);
+                throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_CONTROLS_SCOPE);
         }
 
         for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
@@ -496,7 +496,7 @@ h.extend(mixitup.Mixer.prototype,
         if (command.collection) {
             for (i = 0; el = command.collection[i]; i++) {
                 if (self.dom.targets.indexOf(el) > -1) {
-                    throw new Error(mixitup.messages[201]);
+                    throw new Error(mixitup.messages.ERROR_INSERT_PREEXISTING_ELEMENT);
                 }
 
                 // Ensure elements are hidden when they are added to the DOM, so they can
@@ -791,12 +791,11 @@ h.extend(mixitup.Mixer.prototype,
         value = target.dom.el.getAttribute('data-' + sort[depth].sortBy);
 
         if (value === null) {
-            if (h.canReportErrors(self)) {
-                // Encourage users to assign values to all
-                // targets to avoid erroneous sorting when
-                // types are mixed
+            if (self.config.debug.showWarnings) {
+                // Encourage users to assign values to all targets to avoid erroneous sorting
+                // when types are mixed
 
-                console.warn(mixitup.messages[304]);
+                console.warn(mixitup.messages.WARNING_INCONSISTENT_SORTING_ATTRIBUTES);
             }
         }
 
@@ -967,7 +966,7 @@ h.extend(mixitup.Mixer.prototype,
         self.callActions('beforeParseEffect', arguments);
 
         if (typeof effectString !== 'string') {
-            throw new Error(mixitup.messages[101]);
+            throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS);
         }
 
         if (effectString.indexOf(effectName) < 0) {
@@ -2002,8 +2001,8 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        if (!instruction.command.collection.length && h.canReportErrors(self)) {
-            throw new Error(mixitup.messages[102]);
+        if (!instruction.command.collection.length && self.config.debug.showWarnings) {
+            console.warn(mixitup.messages.WARNING_INSERT_NO_ELEMENTS);
         }
 
         return self.callFilters('instructionParseInsertArgs', instruction, arguments);
@@ -2113,8 +2112,8 @@ h.extend(mixitup.Mixer.prototype,
                 }
             }
         } else {
-            if (h.canReportErrors(self)) {
-                console.warn(mixitup.messages[301]);
+            if (self.config.debug.showWarnings) {
+                console.warn(mixitup.messages.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL);
             }
 
             deferred.resolve(self.state);
@@ -2391,8 +2390,8 @@ h.extend(mixitup.Mixer.prototype,
         operation.id            = h.randomHex();
 
         if (self.isBusy) {
-            if (h.canReportErrors(self)) {
-                console.warn(mixitup.messages[301]);
+            if (self.config.debug.showWarnings) {
+                console.warn(mixitup.messages.WARNING_GET_OPERATION_INSTANCE_BUSY);
             }
 
             return null;
