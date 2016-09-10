@@ -160,7 +160,7 @@ h.extend(mixitup.Mixer.prototype,
         // state.totalHide         = operation.hide.length
         // state.totalMatching     = operation.matching.length;
 
-        return self.callFilters('stateGetInitialState', arguments);
+        return self.callFilters('stateGetInitialState', state, arguments);
     },
 
     /**
@@ -246,7 +246,7 @@ h.extend(mixitup.Mixer.prototype,
         self.callActions('beforeInitControls', arguments);
 
         if (!self.config.controls.enable) {
-            self.execAction('initControls', 1);
+            self.callActions('afterInitControls', arguments);
 
             return;
         }
@@ -871,7 +871,7 @@ h.extend(mixitup.Mixer.prototype,
      * @instance
      * @since   2.0.0
      * @param   {string}    sortString
-     * @return  {String[]}
+     * @return  {Array<string>}
      */
 
     parseSort: function(sortString) {
@@ -1882,7 +1882,7 @@ h.extend(mixitup.Mixer.prototype,
         self.isBusy      = false;
 
         if (self.queue.length) {
-            self.execAction('queue', 0);
+            self.callActions('beforeReadQueueCleanUp', arguments);
 
             nextInQueue = self.queue.shift();
 

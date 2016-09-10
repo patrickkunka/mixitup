@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 1e1d4b46-a798-4e66-8eb9-50c0638a70ec
+ * Build dfcdd7cc-bb60-440c-af23-028284548fdc
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1109,7 +1109,9 @@
                 output          = input,
                 extensionName   = '';
 
-            if (!hooks || h.isEmptyObject(hooks)) return;
+            if (!hooks || h.isEmptyObject(hooks)) return output;
+
+            args = args || [];
 
             for (extensionName in hooks) {
                 args = Array.prototype.slice.call(args);
@@ -2240,7 +2242,7 @@
                 actions.sort    = self.sort;
                 actions.filter  = self.filter;
 
-                self.execFilter('actionsUpdate', actions, arguments);
+                self.callFilters('actionsUpdate', actions, arguments);
 
                 self.parseStatusChange(self.el, command, actions, toggleArray);
             }
@@ -2886,7 +2888,7 @@
             // state.totalHide         = operation.hide.length
             // state.totalMatching     = operation.matching.length;
 
-            return self.callFilters('stateGetInitialState', arguments);
+            return self.callFilters('stateGetInitialState', state, arguments);
         },
 
         /**
@@ -2972,7 +2974,7 @@
             self.callActions('beforeInitControls', arguments);
 
             if (!self.config.controls.enable) {
-                self.execAction('initControls', 1);
+                self.callActions('afterInitControls', arguments);
 
                 return;
             }
@@ -3597,7 +3599,7 @@
          * @instance
          * @since   2.0.0
          * @param   {string}    sortString
-         * @return  {String[]}
+         * @return  {Array<string>}
          */
 
         parseSort: function(sortString) {
@@ -4608,7 +4610,7 @@
             self.isBusy      = false;
 
             if (self.queue.length) {
-                self.execAction('queue', 0);
+                self.callActions('beforeReadQueueCleanUp', arguments);
 
                 nextInQueue = self.queue.shift();
 

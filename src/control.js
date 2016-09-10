@@ -334,7 +334,7 @@ h.extend(mixitup.Control.prototype,
             actions.sort    = self.sort;
             actions.filter  = self.filter;
 
-            self.execFilter('actionsUpdate', actions, arguments);
+            self.callFilters('actionsUpdate', actions, arguments);
 
             self.parseStatusChange(self.el, command, actions, toggleArray);
         }

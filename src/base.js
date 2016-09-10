@@ -59,7 +59,9 @@ mixitup.Base.prototype = {
             output          = input,
             extensionName   = '';
 
-        if (!hooks || h.isEmptyObject(hooks)) return;
+        if (!hooks || h.isEmptyObject(hooks)) return output;
+
+        args = args || [];
 
         for (extensionName in hooks) {
             args = Array.prototype.slice.call(args);
