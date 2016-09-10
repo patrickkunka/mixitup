@@ -14,7 +14,7 @@ h = {
      */
 
     hasClass: function(el, cls) {
-        return el.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+        return !!el.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
     },
 
     /**

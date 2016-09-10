@@ -292,7 +292,6 @@ h.extend(mixitup.Target.prototype, {
         self.execAction('applyStylesIn', 1, arguments);
     },
 
-
     /**
      * Applies a transition followed by the final styles for the element to
      * transition towards.

@@ -272,14 +272,14 @@ h.extend(mixitup.Mixer.prototype,
                     delagator = parent;
                 }
 
-                control = self.getControl(delagator,  definition.method, definition.selector);
+                control = self.getControl(delagator,  definition.type, definition.selector);
 
                 self.controls.push(control);
             } else {
                 controlElements = parent.querySelectorAll(definition.selector);
 
                 for (j = 0; el = controlElements[j]; j++) {
-                    control = self.getControl(el, definition.method, '');
+                    control = self.getControl(el, definition.type, '');
 
                     if (!control) continue;
 
@@ -296,32 +296,36 @@ h.extend(mixitup.Mixer.prototype,
      * @instance
      * @since   3.0.0
      * @param   {HTMLElement} el
-     * @param   {string}      method
+     * @param   {string}      type
      * @param   {string}      selector
      * @return  {mixitup.Control|null}
      */
 
-    getControl: function(el, method, selector) {
+    getControl: function(el, type, selector) {
         var self    = this,
             control = null,
             i       = -1;
 
         self.execAction('getControl', 0);
 
-        for (i = 0; control = mixitup.controls[i]; i++) {
-            if (control.el === el && control.isBound(self)) {
-                // Control already bound to this mixer (for another method).
+        if (!selector) {
+            // Static controls only
 
-                // NB: This prevents duplicate controls from being registered where a selector
-                // might collide, eg: "[data-filter]" and "[data-filter][data-sort]"
+            for (i = 0; control = mixitup.controls[i]; i++) {
+                if (control.el === el && control.isBound(self)) {
+                    // Control already bound to this mixer (as another type).
 
-                return null;
-            } else if (control.el === el && control.method === method && control.selector === selector) {
-                // Another mixer is already using this control, add this mixer as a binding
+                    // NB: This prevents duplicate controls from being registered where a selector
+                    // might collide, eg: "[data-filter]" and "[data-filter][data-sort]"
 
-                control.addBinding(self);
+                    return self.execFilter('getControl', null, arguments);
+                } else if (control.el === el && control.type === type && control.selector === selector) {
+                    // Another mixer is already using this control, add this mixer as a binding
 
-                return control;
+                    control.addBinding(self);
+
+                    return self.execFilter('getControl', control, arguments);
+                }
             }
         }
 
@@ -329,11 +333,11 @@ h.extend(mixitup.Mixer.prototype,
 
         control = new mixitup.Control();
 
-        control.init(el, method, selector);
+        control.init(el, type, selector);
 
-        control.classnames.base     = h.getClassname(self.config.classnames, method);
-        control.classnames.active   = h.getClassname(self.config.classnames, method, self.config.classnames.modifierActive);
-        control.classnames.disabled = h.getClassname(self.config.classnames, method, self.config.classnames.modifierDisabled);
+        control.classnames.base     = h.getClassname(self.config.classnames, type);
+        control.classnames.active   = h.getClassname(self.config.classnames, type, self.config.classnames.modifierActive);
+        control.classnames.disabled = h.getClassname(self.config.classnames, type, self.config.classnames.modifierDisabled);
 
         // Add a reference to this mixer as a binding
 
