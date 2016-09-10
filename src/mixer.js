@@ -1892,7 +1892,7 @@ h.extend(mixitup.Mixer.prototype,
             self.isToggling    = nextInQueue.isToggling;
             self.lastClicked   = nextInQueue.trigger;
 
-            self.multiMix.apply(self, nextInQueue.args);
+            self.multimix.apply(self, nextInQueue.args);
         }
 
         self.callActions('afterCleanUp', arguments);
@@ -2169,7 +2169,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        return self.multiMix({
+        return self.multimix({
             filter: self.state.activeFilter
         }, self.config.load.animate);
     },
@@ -2249,7 +2249,7 @@ h.extend(mixitup.Mixer.prototype,
         var self = this,
             args = self.parseMultiMixArgs(arguments);
 
-        return self.multiMix({
+        return self.multimix({
             filter: args.command
         }, args.animate, args.callback);
     },
@@ -2284,7 +2284,7 @@ h.extend(mixitup.Mixer.prototype,
 
         toggleSelector = self.getToggleSelector();
 
-        return self.multiMix({
+        return self.multimix({
             filter: toggleSelector
         }, args.animate, args.callback);
     },
@@ -2317,7 +2317,7 @@ h.extend(mixitup.Mixer.prototype,
 
         toggleSelector = self.getToggleSelector();
 
-        return self.multiMix({
+        return self.multimix({
             filter: toggleSelector
         }, args.animate, args.callback);
     },
@@ -2342,7 +2342,7 @@ h.extend(mixitup.Mixer.prototype,
         var self = this,
             args = self.parseMultiMixArgs(arguments);
 
-        return self.multiMix({
+        return self.multimix({
             sort: args.command
         }, args.animate, args.callback);
     },
@@ -2355,7 +2355,7 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     changeLayout: function() {
-        // TODO: parse arguments, and map to multiMix
+        // TODO: parse arguments, and map to multimix
     },
 
     /**
@@ -2396,7 +2396,7 @@ h.extend(mixitup.Mixer.prototype,
             return null;
         }
 
-        // If the commands are passed directly to multiMix, they need additional parsing:
+        // If the commands are passed directly to multimix, they need additional parsing:
 
         if (insertCommand) {
             if (typeof insertCommand.collection === 'undefined') {
@@ -2484,19 +2484,19 @@ h.extend(mixitup.Mixer.prototype,
      * operations as requested.
      *
      * @example
-     * .multiMix(multiMixCommand [,animate] [,callback])
+     * .multimix(multimixCommand [,animate] [,callback])
      *
      * @public
      * @instance
      * @since       2.0.0
-     * @param       {object}    multiMixCommand
+     * @param       {object}    multimixCommand
      *      An object containing one or more things to do
      * @param       {boolean}   [animate=true]
      * @param       {function}  [callback=null]
      * @return      {Promise.<mixitup.State>}
      */
 
-    multiMix: function() {
+    multimix: function() {
         var self        = this,
             operation   = null,
             animate     = false,
@@ -2608,7 +2608,7 @@ h.extend(mixitup.Mixer.prototype,
         var self = this,
             args = self.parseInsertArgs(arguments);
 
-        return self.multiMix({
+        return self.multimix({
             insert: args.command
         }, args.animate, args.callback);
     },
@@ -2680,7 +2680,7 @@ h.extend(mixitup.Mixer.prototype,
         var self = this,
             args = self.parseRemoveArgs(arguments);
 
-        return self.multiMix({
+        return self.multimix({
             remove: args.command
         }, args.animate, args.callback);
     },

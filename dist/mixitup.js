@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build dfcdd7cc-bb60-440c-af23-028284548fdc
+ * Build 04cb7094-c4da-4a0e-b564-852acfd426c7
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2207,7 +2207,7 @@
                 if (self.type === 'toggle') {
                     isActive ? mixer.toggleOff(command.filter) : mixer.toggleOn(command.filter);
                 } else {
-                    mixer.multiMix(command);
+                    mixer.multimix(command);
                 }
             }
 
@@ -4620,7 +4620,7 @@
                 self.isToggling    = nextInQueue.isToggling;
                 self.lastClicked   = nextInQueue.trigger;
 
-                self.multiMix.apply(self, nextInQueue.args);
+                self.multimix.apply(self, nextInQueue.args);
             }
 
             self.callActions('afterCleanUp', arguments);
@@ -4897,7 +4897,7 @@
                 }
             }
 
-            return self.multiMix({
+            return self.multimix({
                 filter: self.state.activeFilter
             }, self.config.load.animate);
         },
@@ -4977,7 +4977,7 @@
             var self = this,
                 args = self.parseMultiMixArgs(arguments);
 
-            return self.multiMix({
+            return self.multimix({
                 filter: args.command
             }, args.animate, args.callback);
         },
@@ -5012,7 +5012,7 @@
 
             toggleSelector = self.getToggleSelector();
 
-            return self.multiMix({
+            return self.multimix({
                 filter: toggleSelector
             }, args.animate, args.callback);
         },
@@ -5045,7 +5045,7 @@
 
             toggleSelector = self.getToggleSelector();
 
-            return self.multiMix({
+            return self.multimix({
                 filter: toggleSelector
             }, args.animate, args.callback);
         },
@@ -5070,7 +5070,7 @@
             var self = this,
                 args = self.parseMultiMixArgs(arguments);
 
-            return self.multiMix({
+            return self.multimix({
                 sort: args.command
             }, args.animate, args.callback);
         },
@@ -5083,7 +5083,7 @@
          */
 
         changeLayout: function() {
-            // TODO: parse arguments, and map to multiMix
+            // TODO: parse arguments, and map to multimix
         },
 
         /**
@@ -5124,7 +5124,7 @@
                 return null;
             }
 
-            // If the commands are passed directly to multiMix, they need additional parsing:
+            // If the commands are passed directly to multimix, they need additional parsing:
 
             if (insertCommand) {
                 if (typeof insertCommand.collection === 'undefined') {
@@ -5212,19 +5212,19 @@
          * operations as requested.
          *
          * @example
-         * .multiMix(multiMixCommand [,animate] [,callback])
+         * .multimix(multimixCommand [,animate] [,callback])
          *
          * @public
          * @instance
          * @since       2.0.0
-         * @param       {object}    multiMixCommand
+         * @param       {object}    multimixCommand
          *      An object containing one or more things to do
          * @param       {boolean}   [animate=true]
          * @param       {function}  [callback=null]
          * @return      {Promise.<mixitup.State>}
          */
 
-        multiMix: function() {
+        multimix: function() {
             var self        = this,
                 operation   = null,
                 animate     = false,
@@ -5336,7 +5336,7 @@
             var self = this,
                 args = self.parseInsertArgs(arguments);
 
-            return self.multiMix({
+            return self.multimix({
                 insert: args.command
             }, args.animate, args.callback);
         },
@@ -5408,7 +5408,7 @@
             var self = this,
                 args = self.parseRemoveArgs(arguments);
 
-            return self.multiMix({
+            return self.multimix({
                 remove: args.command
             }, args.animate, args.callback);
         },
@@ -6947,8 +6947,8 @@
         this.filter             = mixer.filter.bind(mixer);
         this.sort               = mixer.sort.bind(mixer);
         this.changeLayout       = mixer.changeLayout.bind(mixer);
-        this.multimix           = mixer.multiMix.bind(mixer);
-        this.multiMix           = mixer.multiMix.bind(mixer);
+        this.multimix           = mixer.multimix.bind(mixer);
+        this.multiMix           = mixer.multimix.bind(mixer);
         this.tween              = mixer.tween.bind(mixer);
         this.insert             = mixer.insert.bind(mixer);
         this.insertBefore       = mixer.insertBefore.bind(mixer);

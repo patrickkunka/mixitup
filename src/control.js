@@ -299,7 +299,7 @@ h.extend(mixitup.Control.prototype,
             if (self.type === 'toggle') {
                 isActive ? mixer.toggleOff(command.filter) : mixer.toggleOn(command.filter);
             } else {
-                mixer.multiMix(command);
+                mixer.multimix(command);
             }
         }
 
