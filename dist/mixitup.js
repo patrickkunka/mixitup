@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 9edab5d4-dd6c-4d8a-9ad5-11d9878c1517
+ * Build a0672a3a-fbcd-44b1-96cc-7a3b574c3a2a
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -172,9 +172,10 @@
             // jQuery
 
             mixitup.libraries.$ = extension;
-        } else {
+        } else if (typeof extension.compile === 'function' && typeof extension.partials === 'object' && typeof extension.helpers === 'object') {
+            // Handlebars
 
-            // handlebars
+            mixitup.libraries.handlebars = extension;
         }
     };
 
@@ -1065,6 +1066,8 @@
                 key      = '';
 
             if (!templateString || (data && typeof data !== 'object')) return '';
+
+            engine = engine || window.Handlebars;
 
             if (engine && typeof engine.compile === 'function') {
                 template = engine.compile(templateString);

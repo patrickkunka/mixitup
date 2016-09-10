@@ -884,6 +884,8 @@ h = {
 
         if (!templateString || (data && typeof data !== 'object')) return '';
 
+        engine = engine || window.Handlebars;
+
         if (engine && typeof engine.compile === 'function') {
             template = engine.compile(templateString);
 
