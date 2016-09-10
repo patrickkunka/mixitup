@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build c2996856-8621-4c82-9fd4-8fcb5657379a
+ * Build c0fdfad4-9fdd-4f11-8cb7-f2eb69343bd1
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1575,7 +1575,7 @@
 
         this.enable         = true;
         this.live           = false;
-        this.scope          = 'local';
+        this.scope          = 'local'; // enum: ['local' ,'global']
         this.toggleLogic    = 'or';
         this.toggleDefault  = 'all';
 
@@ -1877,6 +1877,8 @@
 
         this.filter = null;
         this.sort   = null;
+        this.insert = null;
+        this.remove = null;
 
         this.callActions('afterConstruct');
 
@@ -1888,6 +1890,87 @@
     mixitup.CommandMultimix.prototype = Object.create(mixitup.Base.prototype);
 
     mixitup.CommandMultimix.prototype.constructor = mixitup.CommandMultimix;
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.CommandFilter = function() {
+        mixitup.Base.call(this);
+
+        this.callActions('beforeConstruct');
+
+        this.selector   = '';
+        this.collection = [];
+        this.action     = 'show'; // enum: ['show', 'hide']
+
+        this.callActions('afterConstruct');
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.CommandFilter);
+
+    mixitup.CommandFilter.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.CommandFilter.prototype.constructor = mixitup.CommandFilter;
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.CommandInsert = function() {
+        mixitup.Base.call(this);
+
+        this.callActions('beforeConstruct');
+
+        this.index      = 0;
+        this.collection = [];
+        this.position   = 'before'; // enum: ['before', 'after']
+        this.sibling    = null;
+
+        this.callActions('afterConstruct');
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.CommandInsert);
+
+    mixitup.CommandInsert.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.CommandInsert.prototype.constructor = mixitup.CommandInsert;
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.CommandRemove = function() {
+        mixitup.Base.call(this);
+
+        this.callActions('beforeConstruct');
+
+        this.targets    = [];
+        this.collection = [];
+
+        this.callActions('afterConstruct');
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.CommandRemove);
+
+    mixitup.CommandRemove.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.CommandRemove.prototype.constructor = mixitup.CommandRemove;
 
     /**
      * @constructor
@@ -2852,7 +2935,7 @@
             self.state = self.getInitialState();
 
             self.updateControls({
-                filter: self.state.activeFilter,
+                filter: self.state.activeFilterSelector,
                 sort: self.state.activeSort
             });
 
@@ -2881,11 +2964,13 @@
 
             // Map in whatever state values we can
 
-            state.activeFilter = self.config.load.filter === 'all' ?
-                self.config.selectors.target :
-                self.config.load.filter === 'none' ?
-                    '' :
-                    self.config.load.filter;
+            if (self.config.load.filter === 'all') {
+                state.activeFilterSelector = self.config.selectors.target;
+            } else if (self.config.load.filter === 'none') {
+                state.activeFilterSelector = '';
+            } else {
+                state.activeFilterSelector = self.config.load.filter;
+            }
 
             state.activeSort            = self.config.load.sort;
             state.activeContainerClass  = self.config.layout.containerClass;
@@ -3142,29 +3227,29 @@
          */
 
         buildToggleArray: function(command, state) {
-            var self            = this,
-                activeFilter    = '',
-                filter          = '',
-                i               = -1;
+            var self                    = this,
+                activeFilterSelector    = '',
+                filter                  = '',
+                i                       = -1;
 
             self.callActions('beforeBuildToggleArray', arguments);
 
-            if (command && typeof command.filter === 'string') {
-                activeFilter = command.filter.replace(/\s/g, '');
+            if (command && command.filter) {
+                activeFilterSelector = command.filter.selector.replace(/\s/g, '');
             } else if (state) {
-                activeFilter = state.activeFilter.replace(/\s/g, '');
+                activeFilterSelector = state.activeFilterSelector.replace(/\s/g, '');
             } else {
                 return;
             }
 
-            if (activeFilter === self.config.selectors.target || activeFilter === 'all') {
-                activeFilter = '';
+            if (activeFilterSelector === self.config.selectors.target || activeFilterSelector === 'all') {
+                activeFilterSelector = '';
             }
 
             if (self.config.controls.toggleLogic === 'or') {
-                self.toggleArray = activeFilter.split(',');
+                self.toggleArray = activeFilterSelector.split(',');
             } else {
-                self.toggleArray = activeFilter.split('.');
+                self.toggleArray = activeFilterSelector.split('.');
 
                 // TODO: selectors may not be class names, we need to be able to split any selectors
 
@@ -3201,8 +3286,13 @@
 
             // Sanitise to defaults
 
-            output.filter  = command.filter || (self.state && self.state.activeFilter);
-            output.sort    = command.sort || (self.state && self.state.activeSort);
+            if (command.filter) {
+                output.filter = command.filter.selector;
+            } else {
+                output.filter = self.state.activeFilterSelector;
+            }
+
+            output.sort = command.sort || (self.state && self.state.activeSort);
 
             if (output.filter === self.config.selectors.target) {
                 output.filter = 'all';
@@ -3319,51 +3409,32 @@
 
         filterOperation: function(operation) {
             var self        = this,
-                condition   = false,
+                testResult  = false,
                 index       = -1,
+                action      = '',
                 target      = null,
                 i           = -1;
 
             self.callActions('beforeFilterOperation', arguments);
 
+            action = operation.newFilter.action;
+
             for (i = 0; target = operation.newOrder[i]; i++) {
-                if (typeof operation.newFilter === 'string') {
-                    // show via selector
-
-                    condition = operation.newFilter === '' ?
-                        false : target.dom.el.matches(operation.newFilter);
-
-                    self.evaluateHideShow(
-                        condition,
-                        target,
-                        false,
-                        operation
-                    );
-                } else if (
-                    typeof operation.newFilter === 'object' &&
-                    h.isElement(operation.newFilter, self.dom.document)
-                ) {
-                    // show via element
-
-                    self.evaluateHideShow(
-                        target.dom.el === operation.newFilter,
-                        target,
-                        false,
-                        operation
-                    );
-                } else if (
-                    typeof operation.newFilter === 'object' &&
-                    operation.newFilter.length
-                ) {
+                if (operation.newFilter.collection.length > 0) {
                     // show via collection
 
-                    self.evaluateHideShow(
-                        operation.newFilter.indexOf(target.dom.el) > -1,
-                        target,
-                        false,
-                        operation
-                    );
+                    testResult = operation.newFilter.collection.indexOf(target.dom.el) > -1;
+                } else {
+                    // show via selector
+
+                    if (operation.newFilter.selector === '') {
+                        testResult = false;
+                    } else {
+                        testResult = target.dom.el.matches(operation.newFilter.selector);
+                    }
                 }
+
+                self.evaluateHideShow(testResult, target, action, operation);
             }
 
             if (operation.toRemove.length) {
@@ -3387,7 +3458,7 @@
 
             operation.matching = operation.show.slice();
 
-            if (operation.show.length === 0 && operation.newFilter !== '' && self.targets.length !== 0) {
+            if (operation.show.length === 0 && operation.newFilter.selector !== '' && self.targets.length !== 0) {
                 operation.hasFailed = true;
             }
 
@@ -3398,31 +3469,22 @@
          * @private
          * @instance
          * @since   3.0.0
-         * @param   {boolean}   condition
+         * @param   {boolean}   testResult
          * @param   {Element}   target
-         * @param   {boolean}   isRemoving
+         * @param   {string}    action
          * @param   {Operation} operation
          * @return  {void}
          */
 
-        evaluateHideShow: function(condition, target, isRemoving, operation) {
+        evaluateHideShow: function(testResult, target, action, operation) {
             var self = this;
 
             self.callActions('beforeEvaluateHideShow', arguments);
 
-            if (condition) {
-                if (isRemoving && typeof operation.startFilter === 'string') {
-                    self.evaluateHideShow(
-                        target.dom.el.matches(operation.startFilter),
-                        target,
-                        false,
-                        operation
-                    );
-                } else {
-                    operation.show.push(target);
+            if (testResult === true && action === 'show' || testResult === false && action === 'hide') {
+                operation.show.push(target);
 
-                    !target.isShown && operation.toShow.push(target);
-                }
+                !target.isShown && operation.toShow.push(target);
             } else {
                 operation.hide.push(target);
 
@@ -3838,15 +3900,17 @@
                 }
             }
 
-            state.activeFilter         = operation.newFilter;
-            state.activeSort           = operation.newSortString;
-            state.activeContainerClass = operation.newContainerClass;
-            state.hasFailed            = operation.hasFailed;
-            state.totalTargets         = self.targets.length;
-            state.totalShow            = operation.show.length;
-            state.totalHide            = operation.hide.length;
-            state.totalMatching        = operation.matching.length;
-            state.triggerElement       = self.lastClicked;
+            state.activeFilterCollection    = operation.newFilter.collection;
+            state.activeFilterSelector      = operation.newFilter.selector;
+            state.activeFilterAction        = operation.newFilter.action;
+            state.activeSort                = operation.newSortString;
+            state.activeContainerClass      = operation.newContainerClass;
+            state.hasFailed                 = operation.hasFailed;
+            state.totalTargets              = self.targets.length;
+            state.totalShow                 = operation.show.length;
+            state.totalHide                 = operation.hide.length;
+            state.totalMatching             = operation.matching.length;
+            state.triggerElement            = self.lastClicked;
 
             return self.callFilters('stateBuildState', state, arguments);
         },
@@ -4656,10 +4720,90 @@
          * @instance
          * @since   2.0.0
          * @param   {Array<*>}  args
-         * @return  {object}
+         * @return  {mixitup.UserInstruction}
          */
 
-        parseMultiMixArgs: function(args) {
+        parseMultimixArgs: function(args) {
+            var self        = this,
+                instruction = new mixitup.UserInstruction(),
+                arg         = null,
+                i           = -1;
+
+            instruction.animate = self.config.animation.enable;
+            instruction.command = new mixitup.CommandMultimix();
+
+            for (i = 0; i < args.length; i++) {
+                arg = args[i];
+
+                if (arg === null) continue;
+
+                if (typeof arg === 'object') {
+                    h.extend(instruction.command, arg);
+                } else if (typeof arg === 'boolean') {
+                    instruction.animate = arg;
+                } else if (typeof arg === 'function') {
+                    instruction.callback = arg;
+                }
+            }
+
+            // Coerce arbitrary command arguments into typed command objects
+
+            if (instruction.command.insert && !(instruction.command.insert instanceof mixitup.CommandInsert)) {
+                instruction.command.insert = self.parseInsertArgs([instruction.command.insert]).command;
+            }
+
+            if (instruction.command.remove && !(instruction.command.remove instanceof mixitup.CommandRemove)) {
+                instruction.command.remove = self.parseRemoveArgs([instruction.command.remove]).command;
+            }
+
+            if (instruction.command.filter && !(instruction.command.filter instanceof mixitup.CommandFilter)) {
+                instruction.command.filter = self.parseFilterArgs([instruction.command.filter]).command;
+            }
+
+            return self.callFilters('instructionParseMultimixArgs', instruction, arguments);
+        },
+
+        parseFilterArgs: function(args) {
+            var self        = this,
+                instruction = new mixitup.UserInstruction(),
+                arg         = null,
+                i           = -1;
+
+            instruction.animate = self.config.animation.enable;
+            instruction.command = new mixitup.CommandFilter();
+
+            for (i = 0; i < args.length; i++) {
+                arg = args[i];
+
+                if (arg === null) continue;
+
+                if (typeof arg === 'string') {
+                    // Selector
+
+                    instruction.command.selector = arg;
+                } else if (typeof arg === 'object' && h.isElement(arg, self.dom.document)) {
+                    // Single element
+
+                    instruction.command.collection = [arg];
+                } else if (typeof arg === 'object' && arg.length) {
+                    // Multiple elements in array, NodeList or jQuery collection
+
+                    instruction.command.collection = Array.prototype.slice.call(arg);
+                } else if (typeof arg === 'object') {
+                    // Filter command
+
+                    h.extend(instruction.command, arg);
+                } else if (typeof arg === 'boolean') {
+                    instruction.animate = arg;
+                } else if (typeof arg === 'function') {
+                    instruction.callback = arg;
+                }
+            }
+
+            return self.callFilters('instructionParseFilterArgs', instruction, arguments);
+        },
+
+        parseSortArgs: function(args) {
             var self        = this,
                 instruction = new mixitup.UserInstruction(),
                 arg         = null,
@@ -4667,21 +4811,25 @@
 
             instruction.animate = self.config.animation.enable;
 
+            // TODO: still need a typed command object for sorts to seperate strings vs ordered arrays
+
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
 
-                if (arg !== null) {
-                    if (typeof arg === 'object' || typeof arg === 'string') {
-                        instruction.command = arg;
-                    } else if (typeof arg === 'boolean') {
-                        instruction.animate = arg;
-                    } else if (typeof arg === 'function') {
-                        instruction.callback = arg;
-                    }
+                if (arg === null) continue;
+
+                if (typeof arg === 'string' || typeof arg === 'object') {
+                    // Sort string or array of targets/elements
+
+                    instruction.command = arg;
+                } else if (typeof arg === 'boolean') {
+                    instruction.animate = arg;
+                } else if (typeof arg === 'function') {
+                    instruction.callback = arg;
                 }
             }
 
-            return self.callFilters('instructionParseMultiMixArgs', instruction, arguments);
+            return self.callFilters('instructionParseSortArgs', instruction, arguments);
         },
 
         /**
@@ -4689,7 +4837,7 @@
          * @instance
          * @since   2.0.0
          * @param   {Array<*>}  args
-         * @return  {object}
+         * @return  {mixitup.UserInstruction}
          */
 
         parseInsertArgs: function(args) {
@@ -4699,16 +4847,12 @@
                 i           = -1;
 
             instruction.animate = self.config.animation.enable;
-
-            instruction.command = {
-                index: 0, // Index to insert at
-                collection: [], // Element(s) to insert
-                position: 'before', // Position relative to a sibling if passed
-                sibling: null // A sibling element as a reference
-            };
+            instruction.command = new mixitup.CommandInsert();
 
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
+
+                if (arg === null) continue;
 
                 if (typeof arg === 'number') {
                     // Insert index
@@ -4729,23 +4873,22 @@
                     !instruction.command.collection.length ?
                         (instruction.command.collection = [arg]) :
                         (instruction.command.sibling = arg);
-                } else if (typeof arg === 'object' && arg !== null && arg.length) {
+                } else if (typeof arg === 'object' && arg.length) {
                     // Multiple elements in array or jQuery collection
 
                     !instruction.command.collection.length ?
                         (instruction.command.collection = arg) :
                         instruction.command.sibling = arg[0];
-                } else if (
-                    typeof arg === 'object' &&
-                    arg !== null &&
-                    arg.childNodes &&
-                    arg.childNodes.length
-                ) {
+                } else if (typeof arg === 'object' && arg.childNodes && arg.childNodes.length) {
                     // Document fragment
 
                     !instruction.command.collection.length ?
                         instruction.command.collection = Array.prototype.slice.call(arg.childNodes) :
                         instruction.command.sibling = arg.childNodes[0];
+                } else if (typeof arg === 'object') {
+                    // Insert command
+
+                    h.extend(instruction.command, arg);
                 } else if (typeof arg === 'boolean') {
                     instruction.animate = arg;
                 } else if (typeof arg === 'function') {
@@ -4765,25 +4908,24 @@
          * @instance
          * @since   3.0.0
          * @param   {Array<*>}  args
-         * @return  {object}
+         * @return  {mixitup.UserInstruction}
          */
 
         parseRemoveArgs: function(args) {
             var self        = this,
                 instruction = new mixitup.UserInstruction(),
-                collection  = [],
                 target      = null,
                 arg         = null,
                 i           = -1;
 
             instruction.animate = self.config.animation.enable;
 
-            instruction.command = {
-                targets: []
-            };
+            instruction.command = new mixitup.CommandRemove();
 
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
+
+                if (arg === null) continue;
 
                 switch (typeof arg) {
                     case 'number':
@@ -4793,14 +4935,18 @@
 
                         break;
                     case 'string':
-                        collection = Array.prototype.slice.call(self.dom.parent.querySelectorAll(arg));
+                        instruction.command.collection = Array.prototype.slice.call(self.dom.parent.querySelectorAll(arg));
 
                         break;
                     case 'object':
                         if (arg && arg.length) {
-                            collection = arg;
+                            instruction.command.collection = arg;
                         } else if (h.isElement(arg, self.dom.document)) {
-                            collection = [arg];
+                            instruction.command.collection = [arg];
+                        } else {
+                            // Remove command
+
+                            h.extend(instruction.command, arg);
                         }
 
                         break;
@@ -4815,9 +4961,9 @@
                 }
             }
 
-            if (collection.length) {
+            if (instruction.command.collection.length) {
                 for (i = 0; target = self.targets[i]; i++) {
-                    if (collection.indexOf(target.dom.el) > -1) {
+                    if (instruction.command.collection.indexOf(target.dom.el) > -1) {
                         instruction.command.targets.push(target);
                     }
                 }
@@ -4857,7 +5003,9 @@
                         toggleSelector = self.getToggleSelector();
 
                         self.updateControls({
-                            filter: toggleSelector
+                            filter: {
+                                selector: toggleSelector
+                            }
                         });
                     } else {
                         self.updateControls(queueItem.instruction.command);
@@ -4912,9 +5060,10 @@
          */
 
         init: function() {
-            var self    = this,
-                target  = null,
-                i       = -1;
+            var self            = this,
+                target          = null,
+                filterCommand   = self.parseFilterArgs([self.config.load.filter]).command,
+                i               = -1;
 
             for (i = 0; target = self.targets[i]; i++) {
                 if (!target.isShown) {
@@ -4923,7 +5072,7 @@
             }
 
             return self.multimix({
-                filter: self.state.activeFilter
+                filter: filterCommand
             }, self.config.load.animate);
         },
 
@@ -5000,7 +5149,7 @@
 
         filter: function() {
             var self = this,
-                args = self.parseMultiMixArgs(arguments);
+                args = self.parseFilterArgs(arguments);
 
             return self.multimix({
                 filter: args.command
@@ -5025,8 +5174,8 @@
 
         toggleOn: function() {
             var self            = this,
-                args            = self.parseMultiMixArgs(arguments),
-                selector        = args.command,
+                args            = self.parseFilterArgs(arguments),
+                selector        = args.command.selector,
                 toggleSelector  = '';
 
             self.isToggling = true;
@@ -5060,8 +5209,8 @@
 
         toggleOff: function() {
             var self            = this,
-                args            = self.parseMultiMixArgs(arguments),
-                selector        = args.command,
+                args            = self.parseFilterArgs(arguments),
+                selector        = args.command.selector,
                 toggleSelector  = '';
 
             self.isToggling = true;
@@ -5093,7 +5242,7 @@
 
         sort: function() {
             var self = this,
-                args = self.parseMultiMixArgs(arguments);
+                args = self.parseSortArgs(arguments);
 
             return self.multimix({
                 sort: args.command
@@ -5149,21 +5298,11 @@
                 return null;
             }
 
-            // If the commands are passed directly to multimix, they need additional parsing:
-
             if (insertCommand) {
-                if (typeof insertCommand.collection === 'undefined') {
-                    insertCommand = self.parseInsertArgs([insertCommand]).command;
-                }
-
                 self.insertTargets(insertCommand, operation);
             }
 
             if (removeCommand) {
-                if (typeof removeCommand.targets === 'undefined' && typeof removeCommand.collection !== 'undefined') {
-                    removeCommand = self.parseRemoveArgs([removeCommand.collection]).command;
-                }
-
                 operation.toRemove = removeCommand.targets;
             }
 
@@ -5182,28 +5321,32 @@
                 operation.startOrder = operation.newOrder = self.targets;
             }
 
-            operation.startFilter = operation.startState.activeFilter;
+            operation.startFilter = new mixitup.CommandFilter();
+
+            operation.startFilter.selector = operation.startState.activeFilterSelector;
 
             if (filterCommand) {
-                operation.newFilter = filterCommand === 'all' ?
-                    self.config.selectors.target :
-                    filterCommand === 'none' ?
-                        '' :
-                        filterCommand;
+                operation.newFilter = filterCommand;
+
+                if (operation.newFilter.selector === 'all') {
+                    operation.newFilter.selector = self.config.selectors.target;
+                } else if (operation.newFilter.selector === 'none') {
+                    operation.newFilter.selector = '';
+                }
+
+                operation.command.filter = filterCommand;
             } else {
-                operation.newFilter = operation.startState.activeFilter;
+                operation.newFilter = new mixitup.CommandFilter();
+
+                operation.newFilter.selector = operation.startState.activeFilterSelector;
             }
 
             self.filterOperation(operation);
 
-            // TODO: we need a definitve object for filter operations,
-            // which accomodates selectors, elements, hide vs show etc.
-
             if (typeof changeLayoutCommand !== 'undefined') {
                 operation.startContainerClass = operation.startState.activeContainerClass;
 
-                operation.newContainerClass   =
-                    changeLayoutCommand.containerClass || operation.startContainerClass;
+                operation.newContainerClass = changeLayoutCommand.containerClass || operation.startContainerClass;
 
                 if (operation.newContainerClass !== operation.startContainerClass) {
                     operation.willChangeLayout = true;
@@ -5254,7 +5397,7 @@
                 operation   = null,
                 animate     = false,
                 queueItem   = null,
-                instruction = self.parseMultiMixArgs(arguments);
+                instruction = self.parseMultimixArgs(arguments);
 
             self.callActions('beforeMultimix', arguments);
 
@@ -6410,7 +6553,9 @@
          * @default     ''
          */
 
-        this.activeFilter = '';
+        this.activeFilterAction = '';
+        this.activeFilterSelector = '';
+        this.activeFilterCollection = '';
 
         /**
          * The currently active sort as set by a control click or API call.

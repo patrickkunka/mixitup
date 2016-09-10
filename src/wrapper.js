@@ -40,6 +40,12 @@
 
     {{>command-multimix}}
 
+    {{>command-filter}}
+
+    {{>command-insert}}
+
+    {{>command-remove}}
+
     {{>control-definition}}
 
     {{>control}}

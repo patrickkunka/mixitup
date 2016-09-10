@@ -16,7 +16,7 @@ mixitup.ConfigControls = function() {
 
     this.enable         = true;
     this.live           = false;
-    this.scope          = 'local';
+    this.scope          = 'local'; // enum: ['local' ,'global']
     this.toggleLogic    = 'or';
     this.toggleDefault  = 'all';
 

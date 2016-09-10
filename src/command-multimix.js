@@ -14,6 +14,8 @@ mixitup.CommandMultimix = function() {
 
     this.filter = null;
     this.sort   = null;
+    this.insert = null;
+    this.remove = null;
 
     this.callActions('afterConstruct');
 

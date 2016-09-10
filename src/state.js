@@ -29,7 +29,9 @@ mixitup.State = function() {
      * @default     ''
      */
 
-    this.activeFilter = '';
+    this.activeFilterAction = '';
+    this.activeFilterSelector = '';
+    this.activeFilterCollection = '';
 
     /**
      * The currently active sort as set by a control click or API call.
