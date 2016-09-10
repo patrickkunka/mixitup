@@ -12,7 +12,7 @@
 mixitup.ConfigControls = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.enable         = true;
     this.live           = false;
@@ -20,7 +20,7 @@ mixitup.ConfigControls = function() {
     this.toggleLogic    = 'or';
     this.toggleDefault  = 'all';
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

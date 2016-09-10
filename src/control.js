@@ -10,7 +10,7 @@
 mixitup.Control = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.el         = null;
     this.selector   = '';
@@ -24,7 +24,7 @@ mixitup.Control = function() {
     this.handler    = null;
     this.classnames = new mixitup.UiClassnames();
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };
@@ -48,7 +48,7 @@ h.extend(mixitup.Control.prototype,
     init: function(el, type, selector) {
         var self = this;
 
-        self.execAction('init', 0, arguments);
+        this.callActions('beforeInit', arguments);
 
         self.el         = el;
         self.type       = type;
@@ -84,7 +84,7 @@ h.extend(mixitup.Control.prototype,
 
         mixitup.controls.push(self);
 
-        self.execAction('init', 1, arguments);
+        this.callActions('afterInit', arguments);
     },
 
     /**
@@ -97,11 +97,11 @@ h.extend(mixitup.Control.prototype,
         var self    = this,
             isBound = false;
 
-        self.execAction('isBound', 0, arguments);
+        this.callActions('beforeIsBound', arguments);
 
         isBound = self.bound.indexOf(mixer) > -1;
 
-        return self.execFilter('isBound', isBound, arguments);
+        return self.callFilters('afterIsBound', isBound, arguments);
     },
 
     /**
@@ -113,13 +113,13 @@ h.extend(mixitup.Control.prototype,
     addBinding: function(mixer) {
         var self = this;
 
-        self.execAction('addBinding', 0, arguments);
+        this.callActions('beforeAddBinding', arguments);
 
         if (!self.isBound()) {
             self.bound.push(mixer);
         }
 
-        self.execAction('addBinding', 1, arguments);
+        this.callActions('afterAddBinding', arguments);
     },
 
     /**
@@ -132,7 +132,7 @@ h.extend(mixitup.Control.prototype,
         var self        = this,
             removeIndex = -1;
 
-        self.execAction('removeBinding', 0, arguments);
+        this.callActions('beforeRemoveBinding', arguments);
 
         if ((removeIndex = self.bound.indexOf(mixer)) > -1) {
             self.bound.splice(removeIndex, 1);
@@ -150,11 +150,11 @@ h.extend(mixitup.Control.prototype,
             mixitup.controls.splice(removeIndex, 1);
 
             if (self.status === 'active') {
-                self.setStatus(self.el, 'inactive');
+                self.renderStatus(self.el, 'inactive');
             }
         }
 
-        self.execAction('removeBinding', 1, arguments);
+        this.callActions('afterRemoveBinding', arguments);
     },
 
     /**
@@ -165,7 +165,7 @@ h.extend(mixitup.Control.prototype,
     bindClick: function() {
         var self = this;
 
-        self.execAction('bindClick', 0, arguments);
+        this.callActions('beforeBindClick', arguments);
 
         self.handler = function(e) {
             self.handleClick(e);
@@ -173,7 +173,7 @@ h.extend(mixitup.Control.prototype,
 
         h.on(self.el, 'click', self.handler);
 
-        self.execAction('bindClick', 1, arguments);
+        this.callActions('afterBindClick', arguments);
     },
 
     /**
@@ -184,13 +184,13 @@ h.extend(mixitup.Control.prototype,
     unbindClick: function() {
         var self = this;
 
-        self.execAction('unbindClick', 0, arguments);
+        this.callActions('beforeUnbindClick', arguments);
 
         h.off(self.el, 'click', self.handler);
 
         self.handler = null;
 
-        self.execAction('unbindClick', 1, arguments);
+        this.callActions('afterUnbindClick', arguments);
     },
 
     /**
@@ -210,7 +210,7 @@ h.extend(mixitup.Control.prototype,
             commands    = [],
             i           = -1;
 
-        self.execAction('handleClick', 0, arguments);
+        this.callActions('beforeHandleClick', arguments);
 
         this.pending = 0;
 
@@ -221,7 +221,7 @@ h.extend(mixitup.Control.prototype,
         }
 
         if (!button) {
-            self.execAction('handleClick', 1, arguments);
+            self.callActions('afterHandleClick', arguments);
 
             return;
         }
@@ -262,7 +262,7 @@ h.extend(mixitup.Control.prototype,
             commands.push(clone);
         }
 
-        commands = self.execFilter('handleClick', commands, arguments);
+        commands = self.callFilters('commandsHandleClick', commands, arguments);
 
         self.pending = self.bound.length;
 
@@ -297,15 +297,13 @@ h.extend(mixitup.Control.prototype,
             }
 
             if (self.type === 'toggle') {
-                console.log('toggle is active?', isActive, command.filter);
-
                 isActive ? mixer.toggleOff(command.filter) : mixer.toggleOn(command.filter);
             } else {
                 mixer.multiMix(command);
             }
         }
 
-        self.execAction('handleClick', 1, arguments);
+        this.callActions('afterHandleClick', arguments);
     },
 
     /**
@@ -318,7 +316,7 @@ h.extend(mixitup.Control.prototype,
         var self    = this,
             actions = new mixitup.CommandMultimix();
 
-        self.execAction('update', 0, arguments);
+        self.callActions('beforeUpdate', arguments);
 
         self.pending--;
 
@@ -341,7 +339,7 @@ h.extend(mixitup.Control.prototype,
             self.parseStatusChange(self.el, command, actions, toggleArray);
         }
 
-        self.execAction('update', 1, arguments);
+        self.callActions('afterUpdate', arguments);
     },
 
     /**
@@ -357,7 +355,7 @@ h.extend(mixitup.Control.prototype,
             button          = null,
             i               = -1;
 
-        self.execAction('beforeUpdateLive', 0, arguments);
+        self.callActions('beforeUpdateLive', arguments);
 
         controlButtons = self.el.querySelectorAll(self.selector);
 
@@ -384,12 +382,12 @@ h.extend(mixitup.Control.prototype,
                     break;
             }
 
-            actions = self.execFilter('actionsUpdateLive', actions, arguments);
+            actions = self.callFilters('actionsUpdateLive', actions, arguments);
 
             self.parseStatusChange(button, command, actions, toggleArray);
         }
 
-        self.execAction('afterUpdateLive', 1, arguments);
+        self.callActions('afterUpdateLive', arguments);
     },
 
     /**
@@ -405,38 +403,38 @@ h.extend(mixitup.Control.prototype,
             toggle  = '',
             i       = -1;
 
-        self.execAction('beforeParseStatusChange', 0, arguments);
+        self.callActions('beforeParseStatusChange', arguments);
 
         switch (self.type) {
             case 'filter':
                 if (command.filter === actions.filter) {
-                    self.setStatus(button, 'active');
+                    self.renderStatus(button, 'active');
                 } else {
-                    self.setStatus(button, 'inactive');
+                    self.renderStatus(button, 'inactive');
                 }
 
                 break;
             case 'multimix':
                 if (command.sort === actions.sort && command.filter === actions.filter) {
-                    self.setStatus(button, 'active');
+                    self.renderStatus(button, 'active');
                 } else {
-                    self.setStatus(button, 'inactive');
+                    self.renderStatus(button, 'inactive');
                 }
 
                 break;
             case 'sort':
                 if (command.sort === actions.sort) {
-                    self.setStatus(button, 'active');
+                    self.renderStatus(button, 'active');
                 } else {
-                    self.setStatus(button, 'inactive');
+                    self.renderStatus(button, 'inactive');
                 }
 
                 break;
             case 'toggle':
-                if (toggleArray.length < 1) self.setStatus(button, 'inactive');
+                if (toggleArray.length < 1) self.renderStatus(button, 'inactive');
 
                 if (command.filter === actions.filter) {
-                    self.setStatus(button, 'active');
+                    self.renderStatus(button, 'active');
                 }
 
                 for (i = 0; i < toggleArray.length; i++) {
@@ -445,18 +443,18 @@ h.extend(mixitup.Control.prototype,
                     if (toggle === actions.filter) {
                         // Button matches one active toggle
 
-                        self.setStatus(button, 'active');
+                        self.renderStatus(button, 'active');
 
                         break;
                     }
 
-                    self.setStatus(button, 'inactive');
+                    self.renderStatus(button, 'inactive');
                 }
 
                 break;
         }
 
-        self.execAction('afterParseStatusChange', 1, arguments);
+        self.callActions('afterParseStatusChange', arguments);
     },
 
     /**
@@ -465,10 +463,10 @@ h.extend(mixitup.Control.prototype,
      * @return  {void}
      */
 
-    setStatus: function(button, status) {
+    renderStatus: function(button, status) {
         var self = this;
 
-        self.execAction('setStatus', 0, arguments);
+        self.callActions('beforeRenderStatus', arguments);
 
         switch (status) {
             case 'active':
@@ -500,7 +498,7 @@ h.extend(mixitup.Control.prototype,
             self.status = status;
         }
 
-        self.execAction('setStatus', 1, arguments);
+        self.callActions('afterRenderStatus', arguments);
     }
 });
 

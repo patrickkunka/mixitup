@@ -10,7 +10,7 @@
 mixitup.MixerDom = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.document               = null;
     this.body                   = null;
@@ -18,7 +18,7 @@ mixitup.MixerDom = function() {
     this.parent                 = null;
     this.targets                = [];
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

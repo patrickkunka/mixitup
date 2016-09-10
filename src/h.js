@@ -551,7 +551,7 @@ h = {
      * Abstracts an ES6 promise into a q-like deferred interface for storage and deferred resolution.
      *
      * @private
-     * @param  {object} libraries
+     * @param  {mixitup.ConfigLibraries} libraries
      * @return {h.Deferred}
      */
 
@@ -584,6 +584,34 @@ h = {
         }
 
         return promiseWrapper;
+    },
+
+    /**
+     * @private
+     * @param   {mixitup.ConfigLibraries} libraries
+     * @param   {Array<Promise>}          tasks
+     * @return  {Promise<Array>}
+     */
+
+    all: function(libraries, tasks) {
+        var $ = null;
+
+        if (mixitup.features.has.promises) {
+            return Promise.all(tasks);
+        } else if (($ = (window.jQuery || libraries.jQuery)) && typeof $.when === 'function') {
+            return $.when.apply($, tasks)
+                .done(function() {
+                    // jQuery when returns spread arguments rather than an array or resolutions
+
+                    return arguments;
+                });
+        }
+
+        // No implementation
+
+        console.warn(mixitup.messages[303]);
+
+        return [];
     },
 
     /**

@@ -11,7 +11,7 @@ mixer = mixitup('.sandbox', {
     },
     controls: {
         scope: 'global',
-        live: true
+        live: false
     },
     pagination: {
         limit: 4,
@@ -120,7 +120,7 @@ document.querySelector('.js-api-limit-3').addEventListener('click', function() {
 });
 
 document.querySelector('.js-api-limit-inf').addEventListener('click', function() {
-    mixer.paginate({limit: -1});
+    mixer.paginate({limit: Infinity});
 });
 
 document.querySelector('.js-api-limit-10').addEventListener('click', function() {

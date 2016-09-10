@@ -10,7 +10,7 @@
 mixitup.QueueItem = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.args           = [];
     this.instruction    = null;
@@ -18,7 +18,7 @@ mixitup.QueueItem = function() {
     this.deferred       = null;
     this.isToggling     = false;
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

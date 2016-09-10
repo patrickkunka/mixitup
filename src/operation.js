@@ -15,7 +15,7 @@
 mixitup.Operation = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.id                  = '';
 
@@ -60,7 +60,7 @@ mixitup.Operation = function() {
     this.newContainerClass   = '';
     this.newDisplay          = '';
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

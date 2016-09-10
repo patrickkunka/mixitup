@@ -10,7 +10,7 @@
 mixitup.StyleData = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.x              = 0;
     this.y              = 0;
@@ -31,7 +31,7 @@ mixitup.StyleData = function() {
     this.rotateY        = new mixitup.TransformData();
     this.rotateZ        = new mixitup.TransformData();
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

@@ -10,7 +10,7 @@
 mixitup.TransformDefaults = function() {
     mixitup.StyleData.apply(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.scale.value        = 0.01;
     this.scale.unit         = '';
@@ -36,7 +36,7 @@ mixitup.TransformDefaults = function() {
     this.rotateZ.value      = 180;
     this.rotateZ.unit       = 'deg';
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

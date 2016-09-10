@@ -15,14 +15,14 @@
 mixitup.ControlDefinition = function(type, selector, live, parent) {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.type    = type;
     this.selector  = selector;
     this.live      = live || false;
     this.parent    = parent || '';
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.freeze(this);
     h.seal(this);

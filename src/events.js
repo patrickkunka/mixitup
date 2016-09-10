@@ -36,7 +36,7 @@ mixitup.EventDetail = function() {
 mixitup.Events = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     /**
      * A custom event triggered immediately after any MixItUp operation is requested
@@ -52,7 +52,7 @@ mixitup.Events = function() {
      * @type        {CustomEvent}
      */
 
-    this.mixStart   = null;
+    this.mixStart = null;
 
     /**
      * A custom event triggered when a MixItUp operation is requested while another
@@ -65,7 +65,7 @@ mixitup.Events = function() {
      * @type        {CustomEvent}
      */
 
-    this.mixBusy    = null;
+    this.mixBusy = null;
 
     /**
      * A custom event triggered after any MixItUp operation has completed, and the
@@ -77,7 +77,7 @@ mixitup.Events = function() {
      * @type        {CustomEvent}
      */
 
-    this.mixEnd     = null;
+    this.mixEnd = null;
 
     /**
      * A custom event triggered whenever a filter operation "fails", i.e. no targets
@@ -89,7 +89,7 @@ mixitup.Events = function() {
      * @type        {CustomEvent}
      */
 
-    this.mixFail    = null;
+    this.mixFail = null;
 
     /**
      * A custom event triggered whenever a MixItUp control is clicked, and before its
@@ -104,9 +104,9 @@ mixitup.Events = function() {
      * @type        {CustomEvent}
      */
 
-    this.mixClick   = null;
+    this.mixClick = null;
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };
@@ -130,6 +130,8 @@ mixitup.Events.prototype.fire = function(eventType, el, detail, doc) {
         event       = null,
         eventDetail = new mixitup.EventDetail();
 
+    self.callActions('beforeFire', arguments);
+
     if (typeof self[eventType] === 'undefined') {
         throw new Error('Event type "' + eventType + '" not found.');
     }
@@ -151,6 +153,8 @@ mixitup.Events.prototype.fire = function(eventType, el, detail, doc) {
     }
 
     event = h.getCustomEvent(eventType, eventDetail, doc);
+
+    self.callFilters('eventFire', event, arguments);
 
     el.dispatchEvent(event);
 };

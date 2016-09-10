@@ -14,7 +14,7 @@
 mixitup.ConfigAnimation = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     /**
      * A boolean dictating whether or not animation should be enabled for the MixItUp instance.
@@ -300,7 +300,7 @@ mixitup.ConfigAnimation = function() {
 
     this.balanceContainerShift = false;
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

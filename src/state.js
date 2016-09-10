@@ -16,7 +16,7 @@
 mixitup.State = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     /**
      * The currently active filter selector as set by a control click or the API
@@ -185,7 +185,7 @@ mixitup.State = function() {
 
     this.triggerElement = null;
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

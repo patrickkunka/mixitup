@@ -39,15 +39,14 @@ mixitup.BaseStatic = function() {
      * @public
      * @static
      * @since       2.1.0
-     * @param       {string}    hook
-     * @param       {string}    name
+     * @param       {string}    hookName
+     * @param       {string}    extensionName
      * @param       {function}  func
-     * @param       {number}    priority
      * @return      {void}
      */
 
-    this.addAction = function(hook, name, func, priority) {
-        this.addHook('actions', hook, name, func, priority);
+    this.registerAction = function(hookName, extensionName, func) {
+        (this.actions[hookName] = this.actions[hookName] || {})[extensionName] = func;
     };
 
     /**
@@ -57,39 +56,13 @@ mixitup.BaseStatic = function() {
      * @public
      * @static
      * @since       2.1.0
-     * @param       {string}    hook
-     * @param       {string}    name
+     * @param       {string}    hookName
+     * @param       {string}    extensionName
      * @param       {function}  func
      * @return      {void}
      */
 
-    this.addFilter = function(hook, name, func) {
-        this.addHook('filters', hook, name, func);
-    };
-
-    /**
-     * Registers a filter or action to be executed at a predefined hook. The
-     * lower-level call used by `addAction` and `addFiler`.
-     *
-     * @memberof    mixitup.BaseStatic
-     * @private
-     * @static
-     * @since       2.1.0
-     * @param       {string}    type
-     * @param       {string}    hook
-     * @param       {string}    name
-     * @param       {function}  func
-     * @param       {number}    priority
-     * @return      {void}
-     */
-
-    this.addHook = function(type, hook, name, func, priority) {
-        var collection = this[type];
-
-        priority = (priority === 1 || priority === 'post') ? 'post' : 'pre';
-
-        collection[hook]                   = collection[hook] || {};
-        collection[hook][priority]         = collection[hook][priority] || {};
-        collection[hook][priority][name]   = func;
+    this.registerFilter = function(hookName, extensionName, func) {
+        (this.filters[hookName] = this.filters[hookName] || {})[extensionName] = func;
     };
 };

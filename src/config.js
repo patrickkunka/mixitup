@@ -20,7 +20,7 @@
 mixitup.Config = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.animation          = new mixitup.ConfigAnimation();
     this.callbacks          = new mixitup.ConfigCallbacks();
@@ -32,7 +32,7 @@ mixitup.Config = function() {
     this.load               = new mixitup.ConfigLoad();
     this.selectors          = new mixitup.ConfigSelectors();
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

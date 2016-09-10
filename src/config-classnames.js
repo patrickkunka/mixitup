@@ -12,7 +12,7 @@
 mixitup.ConfigClassnames = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.block              = 'mixitup';
     this.elementFilter      = 'control';
@@ -24,7 +24,7 @@ mixitup.ConfigClassnames = function() {
     this.delineatorElement  = '-';
     this.delineatorModifier = '-';
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

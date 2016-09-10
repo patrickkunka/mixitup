@@ -10,7 +10,7 @@
 mixitup.Messages = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     /* 100 - 199: Instantiation/init/config errors
     ----------------------------------------------------------------------------- */
@@ -52,7 +52,7 @@ mixitup.Messages = function() {
                 'present on one or more target elements which may product unexpected ' +
                 'sort output';
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

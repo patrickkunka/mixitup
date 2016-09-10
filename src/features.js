@@ -16,7 +16,7 @@
 mixitup.Features = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.boxSizingPrefix            = '';
     this.transformPrefix            = '';
@@ -30,7 +30,6 @@ mixitup.Features = function() {
     this.perspectiveOriginProp      = '';
 
     this.has                        = new mixitup.Has();
-    this.is                         = new mixitup.Is();
 
     this.canary                     = null;
 
@@ -51,7 +50,7 @@ mixitup.Features = function() {
         'rotateX', 'rotateY', 'rotateZ'
     ];
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 };
 
 mixitup.BaseStatic.call(mixitup.Features);
@@ -71,7 +70,7 @@ h.extend(mixitup.Features.prototype,
     init: function() {
         var self = this;
 
-        self.execAction('init', 0);
+        self.callActions('beforeInit', arguments);
 
         self.canary = document.createElement('div');
 
@@ -79,7 +78,7 @@ h.extend(mixitup.Features.prototype,
         self.setPrefixes();
         self.applyPolyfills();
 
-        self.execAction('init', 1);
+        self.callActions('beforeInit', arguments);
     },
 
     /**
@@ -90,13 +89,14 @@ h.extend(mixitup.Features.prototype,
     runTests: function() {
         var self = this;
 
-        self.execAction('runTests', 0);
+        self.callActions('beforeRunTests', arguments);
 
-        self.has.promises       = typeof Promise === 'function';
+        self.has.promises       = typeof window.Promise === 'function';
         self.has.transitions    = self.transitionPrefix !== 'unsupported';
-        self.is.oldIe           = window.atob ? false : true;
 
-        self.execAction('runTests', 1);
+        self.callActions('afterRunTests', arguments);
+
+        h.freeze(self.has);
     },
 
     /**
@@ -107,7 +107,7 @@ h.extend(mixitup.Features.prototype,
     setPrefixes: function() {
         var self = this;
 
-        self.execAction('setPrefixes', 0);
+        self.callActions('beforeSetPrefixes', arguments);
 
         self.transitionPrefix   = h.getPrefix(self.canary, 'Transition', self.VENDORS);
         self.transformPrefix    = h.getPrefix(self.canary, 'Transform', self.VENDORS);
@@ -132,7 +132,7 @@ h.extend(mixitup.Features.prototype,
             self.transformPrefix + h.PascalCase(self.PERSPECTIVE_ORIGIN_PROP) :
             self.PERSPECTIVE_ORIGIN_PROP;
 
-        self.execAction('setPrefixes', 1);
+        self.callActions('afterSetPrefixes', arguments);
     },
 
     /**
@@ -144,7 +144,7 @@ h.extend(mixitup.Features.prototype,
         var self    = this,
             i       = -1;
 
-        self.execAction('applyPolyfills', 0);
+        self.callActions('beforeApplyPolyfills', arguments);
 
         // window.requestAnimationFrame
 
@@ -191,8 +191,6 @@ h.extend(mixitup.Features.prototype,
                     }
                 };
         })(Element.prototype);
-
-        self.execAction('applyPolyfills', 1);
 
         // Object.keys
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
@@ -257,6 +255,8 @@ h.extend(mixitup.Features.prototype,
                 return Object.prototype.toString.call(arg) === '[object Array]';
             };
         }
+
+        self.callActions('afterApplyPolyfills', arguments);
     }
 });
 
@@ -270,17 +270,8 @@ h.extend(mixitup.Features.prototype,
 mixitup.Has = function() {
     this.transitions    = false;
     this.promises       = false;
-};
 
-/**
- * @constructor
- * @memberof    mixitup
- * @private
- * @since       3.0.0
- */
-
-mixitup.Is = function() {
-    this.oldIe          = false;
+    h.seal(this);
 };
 
 // Assign a singleton instance to `mixitup.features` and initialise:

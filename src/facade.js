@@ -11,7 +11,7 @@
 mixitup.Facade = function Mixer(mixer) {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0, arguments);
+    this.callActions('beforeConstruct', arguments);
 
     this.init               = mixer.init.bind(mixer);
     this.configure          = mixer.configure.bind(mixer);
@@ -36,7 +36,7 @@ mixitup.Facade = function Mixer(mixer) {
     this.getConfig          = mixer.getConfig.bind(mixer);
     this.getState           = mixer.getState.bind(mixer);
 
-    this.execAction('construct', 1, arguments);
+    this.callActions('afterConstruct', arguments);
 
     h.freeze(this);
     h.seal(this);

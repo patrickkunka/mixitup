@@ -12,13 +12,13 @@
 mixitup.ConfigLoad = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.filter     = 'all';
     this.sort       = 'default:asc';
     this.animate    = false;
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

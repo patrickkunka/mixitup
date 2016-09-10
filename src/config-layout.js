@@ -12,13 +12,13 @@
 mixitup.ConfigLayout = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.allowNestedTargets = false;
     this.containerClass     = '';
     this.containerClassFail = 'mixitup-container-fail';
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

@@ -17,7 +17,7 @@
 mixitup.Mixer = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.config             = new mixitup.Config();
 
@@ -53,7 +53,7 @@ mixitup.Mixer = function() {
 
     this.dom               = new mixitup.MixerDom();
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };
@@ -77,7 +77,7 @@ h.extend(mixitup.Mixer.prototype,
     attach: function(container, document, id, config) {
         var self = this;
 
-        self.execAction('attach', 0, arguments);
+        self.callActions('beforeAttach', arguments);
 
         self.id = id;
 
@@ -110,7 +110,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.buildToggleArray(null, self.state);
 
-        self.execAction('attach', 1, arguments);
+        self.callActions('afterAttach', arguments);
     },
 
     /**
@@ -125,7 +125,7 @@ h.extend(mixitup.Mixer.prototype,
             state       = new mixitup.State(),
             operation   = new mixitup.Operation();
 
-        self.execAction('getInitialState', 0, arguments);
+        self.callActions('beforeGetInitialState', arguments);
 
         // Map in whatever state values we can
 
@@ -160,7 +160,7 @@ h.extend(mixitup.Mixer.prototype,
         // state.totalHide         = operation.hide.length
         // state.totalMatching     = operation.matching.length;
 
-        return self.execFilter('getInitialState', state, arguments);
+        return self.callFilters('stateGetInitialState', arguments);
     },
 
     /**
@@ -177,14 +177,14 @@ h.extend(mixitup.Mixer.prototype,
     cacheDom: function(el, document) {
         var self    = this;
 
-        self.execAction('cacheDom', 0, arguments);
+        self.callActions('beforeCacheDom', arguments);
 
         self.dom.document  = document;
         self.dom.body      = self.dom.document.getElementsByTagName('body')[0];
         self.dom.container = el;
         self.dom.parent    = el;
 
-        self.execAction('cacheDom', 1, arguments);
+        self.callActions('afterCacheDom', arguments);
     },
 
     /**
@@ -203,7 +203,7 @@ h.extend(mixitup.Mixer.prototype,
             el      = null,
             i       = -1;
 
-        self.execAction('indexTargets', 0, arguments);
+        self.callActions('beforeIndexTargets', arguments);
 
         self.dom.targets = self.config.layout.allowNestedTargets ?
             self.dom.container.querySelectorAll(self.config.selectors.target) :
@@ -229,7 +229,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.origOrder = self.targets;
 
-        self.execAction('indexTargets', 1, arguments);
+        self.callActions('afterIndexTargets', arguments);
     },
 
     initControls: function() {
@@ -243,7 +243,7 @@ h.extend(mixitup.Mixer.prototype,
             i                   = -1,
             j                   = -1;
 
-        self.execAction('initControls', 0);
+        self.callActions('beforeInitControls', arguments);
 
         if (!self.config.controls.enable) {
             self.execAction('initControls', 1);
@@ -288,7 +288,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        self.execAction('initControls', 1);
+        self.callActions('afterInitControls', arguments);
     },
 
     /**
@@ -306,7 +306,7 @@ h.extend(mixitup.Mixer.prototype,
             control = null,
             i       = -1;
 
-        self.execAction('getControl', 0);
+        self.callActions('beforeGetControl', arguments);
 
         if (!selector) {
             // Static controls only
@@ -318,13 +318,13 @@ h.extend(mixitup.Mixer.prototype,
                     // NB: This prevents duplicate controls from being registered where a selector
                     // might collide, eg: "[data-filter]" and "[data-filter][data-sort]"
 
-                    return self.execFilter('getControl', null, arguments);
+                    return self.callFilters('controlGetControl', null, arguments);
                 } else if (control.el === el && control.type === type && control.selector === selector) {
                     // Another mixer is already using this control, add this mixer as a binding
 
                     control.addBinding(self);
 
-                    return self.execFilter('getControl', control, arguments);
+                    return self.callFilters('controlGetControl', control, arguments);
                 }
             }
         }
@@ -343,7 +343,7 @@ h.extend(mixitup.Mixer.prototype,
 
         control.addBinding(self);
 
-        return self.execFilter('getControl', control, arguments);
+        return self.callFilters('controlGetControl', control, arguments);
     },
 
     /**
@@ -361,6 +361,8 @@ h.extend(mixitup.Mixer.prototype,
             delineator      = self.config.controls.toggleLogic === 'or' ? ',' : '',
             toggleSelector  = '';
 
+        self.callActions('beforeGetToggleSelector', arguments);
+
         self.toggleArray = h.clean(self.toggleArray);
 
         toggleSelector = self.toggleArray.join(delineator);
@@ -369,7 +371,7 @@ h.extend(mixitup.Mixer.prototype,
             toggleSelector = self.config.controls.toggleDefault;
         }
 
-        return toggleSelector;
+        return self.callFilters('selectorGetToggleSelector', toggleSelector, arguments);
     },
 
     /**
@@ -391,7 +393,7 @@ h.extend(mixitup.Mixer.prototype,
             filter          = '',
             i               = -1;
 
-        self.execAction('buildToggleArray', 0, arguments);
+        self.callActions('beforeBuildToggleArray', arguments);
 
         if (command && typeof command.filter === 'string') {
             activeFilter = command.filter.replace(/\s/g, '');
@@ -421,7 +423,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.toggleArray = h.clean(self.toggleArray);
 
-        self.execAction('buildToggleArray', 1, arguments);
+        self.callActions('afterBuildToggleArray', arguments);
     },
 
     /**
@@ -441,7 +443,7 @@ h.extend(mixitup.Mixer.prototype,
             output  = new mixitup.CommandMultimix(),
             i       = -1;
 
-        self.execAction('updateControls', 0, arguments);
+        self.callActions('beforeUpdateControls', arguments);
 
         // Sanitise to defaults
 
@@ -462,7 +464,7 @@ h.extend(mixitup.Mixer.prototype,
             control.update(output, self.toggleArray);
         }
 
-        self.execAction('updateControls', 1, arguments);
+        self.callActions('afterUpdateControls', arguments);
     },
 
     /**
@@ -482,7 +484,7 @@ h.extend(mixitup.Mixer.prototype,
             el          = null,
             i           = -1;
 
-        self.execAction('insertTargets', 0, arguments);
+        self.callActions('beforeInsertTargets', arguments);
 
         if (typeof command.index === 'undefined') command.index = 0;
 
@@ -521,7 +523,7 @@ h.extend(mixitup.Mixer.prototype,
 
         operation.startOrder = self.origOrder = self.targets;
 
-        self.execAction('insertTargets', 1, arguments);
+        self.callActions('afterInsertTargets', arguments);
     },
 
     /**
@@ -535,23 +537,22 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     getNextSibling: function(index, sibling, position) {
-        var self = this;
+        var self    = this,
+            element = null;
 
-        if (sibling) {
-            if (position === 'before') {
-                return sibling;
-            } else if (position === 'after') {
-                return sibling.nextElementSibling || null;
-            }
-        }
-
-        if (self.targets.length && typeof index !== 'undefined') {
-            return (index < self.targets.length || !self.targets.length) ?
+        if (sibling && position === 'before') {
+            element = sibling;
+        } else if (sibling && position === 'after') {
+            element = sibling.nextElementSibling || null;
+        } else if (self.targets.length && typeof index !== 'undefined') {
+            element = (index < self.targets.length || !self.targets.length) ?
                 self.targets[index].dom.el :
                 self.targets[self.targets.length - 1].dom.el.nextElementSibling;
         } else {
-            return self.dom.parent.children.length ? self.dom.parent.children[0] : null;
+            element = self.dom.parent.children.length ? self.dom.parent.children[0] : null;
         }
+
+        return self.callFilters('elementGetNextSibling', element, arguments);
     },
 
     /**
@@ -569,7 +570,7 @@ h.extend(mixitup.Mixer.prototype,
             target      = null,
             i           = -1;
 
-        self.execAction('filterOperation', 0, arguments);
+        self.callActions('beforeFilterOperation', arguments);
 
         for (i = 0; target = operation.newOrder[i]; i++) {
             if (typeof operation.newFilter === 'string') {
@@ -636,7 +637,7 @@ h.extend(mixitup.Mixer.prototype,
             operation.hasFailed = true;
         }
 
-        self.execAction('filterOperation', 1, arguments);
+        self.callActions('afterFilterOperation', arguments);
     },
 
     /**
@@ -652,6 +653,8 @@ h.extend(mixitup.Mixer.prototype,
 
     evaluateHideShow: function(condition, target, isRemoving, operation) {
         var self = this;
+
+        self.callActions('beforeEvaluateHideShow', arguments);
 
         if (condition) {
             if (isRemoving && typeof operation.startFilter === 'string') {
@@ -671,6 +674,8 @@ h.extend(mixitup.Mixer.prototype,
 
             target.isShown && operation.toHide.push(target);
         }
+
+        self.callActions('afterEvaluateHideShow', arguments);
     },
 
     /**
@@ -684,7 +689,7 @@ h.extend(mixitup.Mixer.prototype,
     sortOperation: function(operation) {
         var self = this;
 
-        self.execAction('sortOperation', 0, arguments);
+        self.callActions('beforeSortOperation', arguments);
 
         operation.startOrder = self.targets;
 
@@ -717,7 +722,7 @@ h.extend(mixitup.Mixer.prototype,
             operation.willSort = false;
         }
 
-        self.execAction('sortOperation', 1, arguments);
+        self.callActions('afterSortOperation', arguments);
     },
 
     /**
@@ -795,7 +800,7 @@ h.extend(mixitup.Mixer.prototype,
 
         // If an attribute is not present, return 0 as a safety value
 
-        return value || 0;
+        return self.callFilters('valueGetAttributeValue', value || 0, arguments);
     },
 
     /**
@@ -822,7 +827,7 @@ h.extend(mixitup.Mixer.prototype,
             el          = null,
             i           = -1;
 
-        self.execAction('printSort', 0, arguments);
+        self.callActions('beforePrintSort', arguments);
 
         for (i = 0; el = targets[i]; i++) {
             // Empty the container
@@ -850,15 +855,17 @@ h.extend(mixitup.Mixer.prototype,
         // Insert the document fragment into the container
         // before any other non-target elements
 
-        nextSibling ?
-            self.dom.parent.insertBefore(frag, nextSibling) :
+        if (nextSibling) {
+            self.dom.parent.insertBefore(frag, nextSibling);
+        } else {
             self.dom.parent.appendChild(frag);
+        }
 
-        self.execAction('printSort', 1, arguments);
+        self.callActions('afterPrintSort', arguments);
     },
 
     /**
-     * Parses user-defined sort commands (i.e. `default:asc`) into useable "rules".
+     * Parses user-defined sort strings (i.e. `default:asc`) into arrays of commands.
      *
      * @private
      * @instance
@@ -870,24 +877,24 @@ h.extend(mixitup.Mixer.prototype,
     parseSort: function(sortString) {
         var self        = this,
             rules       = typeof sortString === 'string' ? sortString.split(' ') : [sortString],
-            newSort     = [],
-            ruleObj     = null,
+            commands    = [],
+            command     = null,
             rule        = [],
             i           = -1;
 
         for (i = 0; i < rules.length; i++) {
             rule = typeof sortString === 'string' ? rules[i].split(':') : ['custom', rules[i]];
-            ruleObj = {
+            command = {
                 sortBy: h.camelCase(rule[0]),
                 order: rule[1] || 'asc'
             };
 
-            newSort.push(ruleObj);
+            commands.push(command);
 
-            if (ruleObj.sortBy === 'default' || ruleObj.sortBy === 'random') break;
+            if (command.sortBy === 'default' || command.sortBy === 'random') break;
         }
 
-        return self.execFilter('parseSort', newSort, arguments);
+        return self.callFilters('commandsParseSort', commands, arguments);
     },
 
     /**
@@ -905,6 +912,8 @@ h.extend(mixitup.Mixer.prototype,
             transformName   = '',
             effectsIn       = self.config.animation.effectsIn || self.config.animation.effects,
             effectsOut      = self.config.animation.effectsOut || self.config.animation.effects;
+
+        self.callActions('beforeParseEffects', arguments);
 
         self.effectsIn      = new mixitup.StyleData();
         self.effectsOut     = new mixitup.StyleData();
@@ -927,6 +936,8 @@ h.extend(mixitup.Mixer.prototype,
 
         self.parseEffect('stagger', effectsIn, self.effectsIn, self.transformIn);
         self.parseEffect('stagger', effectsOut, self.effectsOut, self.transformOut, true);
+
+        self.callActions('afterParseEffects', arguments);
     },
 
     /**
@@ -950,6 +961,8 @@ h.extend(mixitup.Mixer.prototype,
             units       = ['%', 'px', 'em', 'rem', 'vh', 'vw', 'deg'],
             unit        = '',
             i           = -1;
+
+        self.callActions('beforeParseEffect', arguments);
 
         if (typeof effectString !== 'string') {
             throw new Error(mixitup.messages[101]);
@@ -1029,6 +1042,8 @@ h.extend(mixitup.Mixer.prototype,
                     ')'
                 );
         }
+
+        self.callActions('afterParseEffect', arguments);
     },
 
     /**
@@ -1045,7 +1060,7 @@ h.extend(mixitup.Mixer.prototype,
             target      = null,
             i           = -1;
 
-        self.execAction('buildState', 0);
+        self.callActions('beforeBuildState', arguments);
 
         // Map target elements into state arrays.
         // the real target objects should never be exposed
@@ -1080,7 +1095,7 @@ h.extend(mixitup.Mixer.prototype,
         state.totalMatching        = operation.matching.length;
         state.triggerElement       = self.lastClicked;
 
-        return self.execFilter('buildState', state, arguments);
+        return self.callFilters('stateBuildState', state, arguments);
     },
 
     /**
@@ -1096,7 +1111,7 @@ h.extend(mixitup.Mixer.prototype,
         var self        = this,
             deferred    = null;
 
-        self.execAction('goMix', 0, arguments);
+        self.callActions('beforeGoMix', arguments);
 
         // If the animation duration is set to 0ms,
         // or no effects specified,
@@ -1154,7 +1169,7 @@ h.extend(mixitup.Mixer.prototype,
 
             self.cleanUp(operation);
 
-            return self.execFilter('goMix', deferred.promise, arguments);
+            return self.callFilters('promiseGoMix', deferred.promise, arguments);
         }
 
         // If we should animate and the platform supports transitions, go for it
@@ -1185,7 +1200,7 @@ h.extend(mixitup.Mixer.prototype,
             self.moveTargets(operation);
         });
 
-        return self.execFilter('goMix', deferred.promise, arguments);
+        return self.callFilters('promiseGoMix', deferred.promise, arguments);
     },
 
     /**
@@ -1207,7 +1222,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.incPadding = (boxSizing === 'border-box');
 
-        self.execAction('getStartMixData', 0);
+        self.callActions('beforeGetStartMixData', arguments);
 
         for (i = 0; target = operation.show[i]; i++) {
             data = target.getPosData();
@@ -1244,7 +1259,7 @@ h.extend(mixitup.Mixer.prototype,
                 parseFloat(parentStyle.borderLeft) -
                 parseFloat(parentStyle.borderRight);
 
-        self.execAction('getStartMixData', 1);
+        self.callActions('afterGetStartMixData', arguments);
     },
 
     /**
@@ -1260,7 +1275,7 @@ h.extend(mixitup.Mixer.prototype,
             target  = null,
             i       = -1;
 
-        self.execAction('setInter', 0);
+        self.callActions('beforeSetInter', arguments);
 
         for (i = 0; target = operation.toShow[i]; i++) {
             target.show();
@@ -1271,7 +1286,7 @@ h.extend(mixitup.Mixer.prototype,
             h.addClass(self.dom.container, operation.newContainerClass);
         }
 
-        self.execAction('setInter', 1);
+        self.callActions('afterSetInter', arguments);
     },
 
     /**
@@ -1287,7 +1302,7 @@ h.extend(mixitup.Mixer.prototype,
             target  = null,
             i       = -1;
 
-        self.execAction('getInterMixData', 0);
+        self.callActions('beforeGetInterMixData', arguments);
 
         for (i = 0; target = operation.show[i]; i++) {
             operation.showPosData[i].interPosData = target.getPosData();
@@ -1297,7 +1312,7 @@ h.extend(mixitup.Mixer.prototype,
             operation.toHidePosData[i].interPosData = target.getPosData();
         }
 
-        self.execAction('getInterMixData', 1);
+        self.callActions('afterGetInterMixData', arguments);
     },
 
     /**
@@ -1313,7 +1328,7 @@ h.extend(mixitup.Mixer.prototype,
             target  = null,
             i       = -1;
 
-        self.execAction('setFinal', 0);
+        self.callActions('beforeSetFinal', arguments);
 
         operation.willSort && self.printSort(false, operation);
 
@@ -1321,7 +1336,7 @@ h.extend(mixitup.Mixer.prototype,
             target.hide();
         }
 
-        self.execAction('setFinal', 1);
+        self.callActions('afterSetFinal', arguments);
     },
 
     /**
@@ -1343,7 +1358,7 @@ h.extend(mixitup.Mixer.prototype,
             parentStyle = window.getComputedStyle(self.dom.parent);
         }
 
-        self.execAction('getFinalMixData', 0, arguments);
+        self.callActions('beforeGetFinalMixData', arguments);
 
         for (i = 0; target = operation.show[i]; i++) {
             operation.showPosData[i].finalPosData = target.getPosData();
@@ -1389,7 +1404,7 @@ h.extend(mixitup.Mixer.prototype,
             h.addClass(self.dom.container, self.config.layout.containerClass);
         }
 
-        self.execAction('getFinalMixData', 1, arguments);
+        self.callActions('afterGetFinalMixData', arguments);
     },
 
     /**
@@ -1410,6 +1425,8 @@ h.extend(mixitup.Mixer.prototype,
             heightChange    = -1,
             i               = -1,
             j               = -1;
+
+        self.callActions('beforeGetTweenData', arguments);
 
         for (i = 0; target = operation.show[i]; i++) {
             posData             = operation.showPosData[i];
@@ -1553,6 +1570,8 @@ h.extend(mixitup.Mixer.prototype,
                     effect.unit;
             }
         }
+
+        self.callActions('afterGetTweenData', arguments);
     },
 
     /**
@@ -1572,6 +1591,8 @@ h.extend(mixitup.Mixer.prototype,
             staggerIndex    = -1,
             i               = -1,
             checkProgress   = h.bind(self, self.checkProgress);
+
+        self.callActions('beforeMoveTargets', arguments);
 
         // TODO: this is an extra loop in addition to the calcs
         // done in getOperation, can we get around somehow?
@@ -1638,6 +1659,8 @@ h.extend(mixitup.Mixer.prototype,
             h.removeClass(self.dom.container, self.config.layout.containerClass);
             h.addClass(self.dom.container, operation.newContainerClass);
         }
+
+        self.callActions('afterMoveTargets', arguments);
     },
 
     /**
@@ -1648,31 +1671,34 @@ h.extend(mixitup.Mixer.prototype,
 
     hasEffect: function() {
         var self        = this,
-            effectables = [
+            EFFECTABLES = [
                 'scale',
                 'translateX', 'translateY', 'translateZ',
                 'rotateX', 'rotateY', 'rotateZ'
             ],
             effectName  = '',
             effect      = null,
+            result      = false,
             value       = -1,
             i           = -1;
 
         if (self.effectsIn.opacity !== 1) {
-            return true;
+            return self.callFilters('resultHasEffect', true, arguments);
         }
 
-        for (i = 0; effectName = effectables[i]; i++) {
+        for (i = 0; effectName = EFFECTABLES[i]; i++) {
             effect  = self.effectsIn[effectName];
             value   = (typeof effect && effect.value !== 'undefined') ?
                 effect.value : effect;
 
             if (value !== 0) {
-                return true;
+                result = true;
+
+                break;
             }
         }
 
-        return false;
+        return self.callFilters('resultHasEffect', result, arguments);
     },
 
     /**
@@ -1691,35 +1717,36 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     willTransition: function(hideOrShow, hasEffect, posIn, posOut) {
-        var self = this;
+        var self    = this,
+            result  = false;
 
         if (!h.isVisible(self.dom.container)) {
             // If the container is not visible, the transitionEnd
             // event will not occur and MixItUp will hang
 
-            return false;
-        }
-
-        // Check if opacity and/or translate will change
-
-        if (
+            result = false;
+        } else if (
             (hideOrShow && hasEffect) ||
             posIn.x !== posOut.x ||
             posIn.y !== posOut.y
         ) {
-            return true;
+            // If opacity and/or translate will change
+
+            result = true;
         } else if (self.config.animation.animateResizeTargets) {
             // Check if width, height or margins will change
 
-            return (
+            result = (
                 posIn.width !== posOut.width ||
                 posIn.height !== posOut.height ||
                 posIn.marginRight !== posOut.marginRight ||
                 posIn.marginTop !== posOut.marginTop
             );
         } else {
-            return false;
+            result = false;
         }
+
+        return self.callFilters('resultWillTransition', result, arguments);
     },
 
     /**
@@ -1754,7 +1781,7 @@ h.extend(mixitup.Mixer.prototype,
             nextInQueue = null,
             i           = -1;
 
-        self.execAction('cleanUp', 0);
+        self.callActions('beforeCleanUp', arguments);
 
         self.targetsMoved          =
             self.targetsImmovable  =
@@ -1868,7 +1895,7 @@ h.extend(mixitup.Mixer.prototype,
             self.multiMix.apply(self, nextInQueue.args);
         }
 
-        self.execAction('cleanUp', 1);
+        self.callActions('afterCleanUp', arguments);
     },
 
     /**
@@ -1901,7 +1928,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        return self.execFilter('parseMultiMixArgs', instruction, arguments);
+        return self.callFilters('instructionParseMultiMixArgs', instruction, arguments);
     },
 
     /**
@@ -1977,7 +2004,7 @@ h.extend(mixitup.Mixer.prototype,
             throw new Error(mixitup.messages[102]);
         }
 
-        return self.execFilter('parseInsertArgs', instruction, arguments);
+        return self.callFilters('instructionParseInsertArgs', instruction, arguments);
     },
 
     /**
@@ -2043,7 +2070,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        return self.execFilter('parseRemoveArgs', instruction, arguments);
+        return self.callFilters('instructionParseRemoveArgs', instruction, arguments);
     },
 
     /**
@@ -2059,7 +2086,7 @@ h.extend(mixitup.Mixer.prototype,
             deferred        = null,
             toggleSelector  = '';
 
-        self.execAction('queueMix', 0, arguments);
+        self.callActions('beforeQueueMix', arguments);
 
         deferred = h.defer(self.config.libraries);
 
@@ -2100,7 +2127,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        return self.execFilter('queueMix', deferred.promise, arguments);
+        return self.callFilters('promiseQueueMix', deferred.promise, arguments);
     },
 
     /**
@@ -2350,7 +2377,7 @@ h.extend(mixitup.Mixer.prototype,
             insertCommand       = command.insert,
             operation           = new mixitup.Operation();
 
-        operation = self.execFilter('getOperationUnmapped', operation, arguments);
+        operation = self.callFilters('operationUnmappedGetOperation', operation, arguments);
 
         // NB: `isPreFetch` is passed as may be useful for extensions, not used in this function
         // but placed here to satisfy jscs
@@ -2449,7 +2476,7 @@ h.extend(mixitup.Mixer.prototype,
 
         operation.newState = self.buildState(operation);
 
-        return self.execFilter('getOperationMapped', operation, arguments);
+        return self.callFilters('operationMappedGetOperation', operation, arguments);
     },
 
     /**
@@ -2476,7 +2503,7 @@ h.extend(mixitup.Mixer.prototype,
             queueItem   = null,
             instruction = self.parseMultiMixArgs(arguments);
 
-        self.execAction('multiMix', 0, arguments);
+        self.callActions('beforeMultimix', arguments);
 
         if (!self.isBusy) {
             operation = self.getOperation(instruction.command);
@@ -2499,14 +2526,13 @@ h.extend(mixitup.Mixer.prototype,
 
             if (instruction.callback) self.userCallback = instruction.callback;
 
-            self.execFilter('multiMix', operation, self);
-            self.execAction('multiMix', 1, arguments);
-
             // Always allow the instruction to override the instance setting
 
             animate = (instruction.animate ^ self.config.animation.enable) ?
                 instruction.animate :
                 self.config.animation.enable;
+
+            self.callFilters('operationMultimix', operation, arguments);
 
             return self.goMix(animate, operation);
         } else {
@@ -2671,15 +2697,13 @@ h.extend(mixitup.Mixer.prototype,
         var self    = this,
             value   = null;
 
-        self.execAction('getConfig', 0, arguments);
-
         if (!stringKey) {
             value = self.config;
         } else {
             value = h.getProperty(self.config, stringKey);
         }
 
-        return self.execFilter('getConfig', value, arguments);
+        return self.callFilters('valueGetConfig', value, arguments);
     },
 
     /**
@@ -2693,11 +2717,11 @@ h.extend(mixitup.Mixer.prototype,
     configure: function(config) {
         var self = this;
 
-        self.execAction('configure', 0, arguments);
+        self.callActions('beforeConfigure', arguments);
 
         h.extend(self.config, config, true);
 
-        self.execAction('configure', 1, arguments);
+        self.callActions('afterConfigure', arguments);
     },
 
     /**
@@ -2719,7 +2743,7 @@ h.extend(mixitup.Mixer.prototype,
             state = self.state;
         }
 
-        return self.execFilter('getState', state, self);
+        return self.callFilters('stateGetState', state, arguments);
     },
 
     /**
@@ -2749,7 +2773,7 @@ h.extend(mixitup.Mixer.prototype,
             target  = null,
             i       = 0;
 
-        self.execAction('destroy', 0, arguments);
+        self.callActions('beforeDestroy', arguments);
 
         for (i = 0; control = self.controls[i]; i++) {
             control.removeBinding(self);
@@ -2767,6 +2791,6 @@ h.extend(mixitup.Mixer.prototype,
 
         delete mixitup.instances[self.id];
 
-        self.execAction('destroy', 1, arguments);
+        self.callActions('afterDestroy', arguments);
     }
 });

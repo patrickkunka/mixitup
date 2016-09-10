@@ -17,57 +17,58 @@ mixitup.Base.prototype = {
     constructor: mixitup.Base,
 
     /**
-     * Executes any registered actions for the respective hook.
+     * Calls any registered hooks for the provided action.
      *
      * @memberof    mixitup.Base
      * @private
      * @instance
      * @since       2.0.0
-     * @param       {string}    methodName
-     * @param       {boolean}   isPost
+     * @param       {string}    actionName
      * @param       {Array<*>}  args
      * @return      {void}
      */
 
-    execAction: function(methodName, isPost, args) {
-        var self    = this,
-            key     = '',
-            context = isPost ? 'post' : 'pre';
+    callActions: function(actionName, args) {
+        var self            = this,
+            hooks           = self.constructor.actions[actionName],
+            extensionName   = '';
 
-        if (!h.isEmptyObject(self.constructor.actions) && self.constructor.actions.hasOwnProperty(methodName)) {
-            for (key in self.constructor.actions[methodName][context]) {
-                self.constructor.actions[methodName][context][key].apply(self, args);
-            }
+        if (!hooks || h.isEmptyObject(hooks)) return;
+
+        for (extensionName in hooks) {
+            hooks[extensionName].apply(self, args);
         }
     },
 
     /**
-     * Executes any registered filters for the respective hook.
+     * Calls any registered hooks for the provided filter.
      *
      * @memberof    mixitup.Base
      * @private
      * @instance
      * @since       2.0.0
-     * @param       {string}    methodName
-     * @param       {*}         value
+     * @param       {string}    filterName
+     * @param       {*}         input
      * @param       {Array<*>}  args
      * @return      {*}
      */
 
-    execFilter: function(methodName, value, args) {
-        var self    = this,
-            key     = '';
+    callFilters: function(filterName, input, args) {
+        var self            = this,
+            hooks           = self.constructor.filters[filterName],
+            output          = input,
+            extensionName   = '';
 
-        if (!h.isEmptyObject(self.constructor.filters) && self.constructor.filters.hasOwnProperty(methodName)) {
-            for (key in self.constructor.filters[methodName].pre) {
-                args = Array.prototype.slice.call(args);
+        if (!hooks || h.isEmptyObject(hooks)) return;
 
-                args.unshift(value);
+        for (extensionName in hooks) {
+            args = Array.prototype.slice.call(args);
 
-                return self.constructor.filters[methodName].pre[key].apply(self, args);
-            }
-        } else {
-            return value;
+            args.unshift(output);
+
+            output = hooks[extensionName].apply(self, args);
         }
+
+        return output;
     }
 };

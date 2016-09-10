@@ -12,7 +12,7 @@
 mixitup.ConfigCallbacks = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.onMixStart = null;
     this.onMixBusy  = null;
@@ -20,7 +20,7 @@ mixitup.ConfigCallbacks = function() {
     this.onMixFail  = null;
     this.onMixClick = null;
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };

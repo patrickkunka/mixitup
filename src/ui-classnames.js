@@ -10,13 +10,13 @@
 mixitup.UiClassnames = function() {
     mixitup.Base.call(this);
 
-    this.execAction('construct', 0);
+    this.callActions('beforeConstruct');
 
     this.base       = '';
     this.active     = '';
     this.disabled   = '';
 
-    this.execAction('construct', 1);
+    this.callActions('afterConstruct');
 
     h.seal(this);
 };
