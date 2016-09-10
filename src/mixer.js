@@ -268,6 +268,8 @@ h.extend(mixitup.Mixer.prototype,
             if (self.config.controls.live || definition.live) {
                 if (definition.parent) {
                     delagator = self.dom[definition.parent];
+
+                    if (!delagator) continue;
                 } else {
                     delagator = parent;
                 }

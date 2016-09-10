@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build a0672a3a-fbcd-44b1-96cc-7a3b574c3a2a
+ * Build 214d9a50-9cb3-45ea-ab7e-648f951d489b
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2301,6 +2301,8 @@
 
             self.callActions('beforeUpdateLive', arguments);
 
+            if (!self.el) return;
+
             controlButtons = self.el.querySelectorAll(self.selector);
 
             for (i = 0; button = controlButtons[i]; i++) {
@@ -3032,6 +3034,8 @@
                 if (self.config.controls.live || definition.live) {
                     if (definition.parent) {
                         delagator = self.dom[definition.parent];
+
+                        if (!delagator) continue;
                     } else {
                         delagator = parent;
                     }

@@ -357,6 +357,8 @@ h.extend(mixitup.Control.prototype,
 
         self.callActions('beforeUpdateLive', arguments);
 
+        if (!self.el) return;
+
         controlButtons = self.el.querySelectorAll(self.selector);
 
         for (i = 0; button = controlButtons[i]; i++) {
