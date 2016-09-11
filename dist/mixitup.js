@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build c3949ed2-b539-497f-85fe-30d433d7d755
+ * Build 1b85c6e5-992d-42d8-ba18-6eb5b8404dcd
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1930,6 +1930,7 @@
 
         this.callActions('beforeConstruct');
 
+        this.sortString = '';
         this.attribute  = '';
         this.order      = 'asc';
         this.collection = null;
@@ -3335,10 +3336,14 @@
             if (command.filter) {
                 output.filter = command.filter.selector;
             } else {
-                output.filter = self.state.activeFilterSelector;
+                output.filter = self.state.activeFilter.selector;
             }
 
-            output.sort = command.sort || (self.state && self.state.activeSort);
+            if (command.sort) {
+                output.sort = command.sort.sortString;
+            } else {
+                output.sort = self.state.activeSort.sortString;
+            }
 
             if (output.filter === self.config.selectors.target) {
                 output.filter = 'all';
@@ -3738,6 +3743,8 @@
                 rule        = [],
                 i           = -1;
 
+            command.sortString = sortString;
+
             for (i = 0; i < rules.length; i++) {
                 rule = rules[i].split(':');
 
@@ -3766,6 +3773,9 @@
                     // Embed reference to the next command
 
                     current.next = new mixitup.CommandSort();
+
+                    h.freeze(current);
+
                     current = current.next;
                 }
             }
@@ -4823,7 +4833,11 @@
                 instruction.command.sort = self.parseSortArgs([instruction.command.sort]).command;
             }
 
-            return self.callFilters('instructionParseMultimixArgs', instruction, arguments);
+            instruction = self.callFilters('instructionParseMultimixArgs', instruction, arguments);
+
+            h.freeze(instruction);
+
+            return instruction;
         },
 
         parseFilterArgs: function(args) {
@@ -4863,7 +4877,11 @@
                 }
             }
 
-            return self.callFilters('instructionParseFilterArgs', instruction, arguments);
+            instruction = self.callFilters('instructionParseFilterArgs', instruction, arguments);
+
+            h.freeze(instruction);
+
+            return instruction;
         },
 
         parseSortArgs: function(args) {
@@ -4911,7 +4929,11 @@
                 instruction.command = self.parseSortString(sortString, instruction.command);
             }
 
-            return self.callFilters('instructionParseSortArgs', instruction, arguments);
+            instruction = self.callFilters('instructionParseSortArgs', instruction, arguments);
+
+            h.freeze(instruction);
+
+            return instruction;
         },
 
         /**
@@ -4982,7 +5004,11 @@
                 console.warn(mixitup.messages.WARNING_INSERT_NO_ELEMENTS);
             }
 
-            return self.callFilters('instructionParseInsertArgs', instruction, arguments);
+            instruction = self.callFilters('instructionParseInsertArgs', instruction, arguments);
+
+            h.freeze(instruction);
+
+            return instruction;
         },
 
         /**
@@ -5001,7 +5027,6 @@
                 i           = -1;
 
             instruction.animate = self.config.animation.enable;
-
             instruction.command = new mixitup.CommandRemove();
 
             for (i = 0; i < args.length; i++) {
@@ -5051,7 +5076,11 @@
                 }
             }
 
-            return self.callFilters('instructionParseRemoveArgs', instruction, arguments);
+            instruction = self.callFilters('instructionParseRemoveArgs', instruction, arguments);
+
+            h.freeze(instruction);
+
+            return instruction;
         },
 
         /**
@@ -5106,7 +5135,7 @@
                 }, self.dom.document);
 
                 if (typeof self.config.callbacks.onMixBusy === 'function') {
-                    self.config.callbacks.onMixBusy.call(self.dom.container, self.tate, self);
+                    self.config.callbacks.onMixBusy.call(self.dom.container, self.state, self);
                 }
             }
 

@@ -447,10 +447,14 @@ h.extend(mixitup.Mixer.prototype,
         if (command.filter) {
             output.filter = command.filter.selector;
         } else {
-            output.filter = self.state.activeFilterSelector;
+            output.filter = self.state.activeFilter.selector;
         }
 
-        output.sort = command.sort || (self.state && self.state.activeSort);
+        if (command.sort) {
+            output.sort = command.sort.sortString;
+        } else {
+            output.sort = self.state.activeSort.sortString;
+        }
 
         if (output.filter === self.config.selectors.target) {
             output.filter = 'all';
@@ -850,6 +854,8 @@ h.extend(mixitup.Mixer.prototype,
             rule        = [],
             i           = -1;
 
+        command.sortString = sortString;
+
         for (i = 0; i < rules.length; i++) {
             rule = rules[i].split(':');
 
@@ -878,6 +884,9 @@ h.extend(mixitup.Mixer.prototype,
                 // Embed reference to the next command
 
                 current.next = new mixitup.CommandSort();
+
+                h.freeze(current);
+
                 current = current.next;
             }
         }
@@ -1935,7 +1944,11 @@ h.extend(mixitup.Mixer.prototype,
             instruction.command.sort = self.parseSortArgs([instruction.command.sort]).command;
         }
 
-        return self.callFilters('instructionParseMultimixArgs', instruction, arguments);
+        instruction = self.callFilters('instructionParseMultimixArgs', instruction, arguments);
+
+        h.freeze(instruction);
+
+        return instruction;
     },
 
     parseFilterArgs: function(args) {
@@ -1975,7 +1988,11 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        return self.callFilters('instructionParseFilterArgs', instruction, arguments);
+        instruction = self.callFilters('instructionParseFilterArgs', instruction, arguments);
+
+        h.freeze(instruction);
+
+        return instruction;
     },
 
     parseSortArgs: function(args) {
@@ -2023,7 +2040,11 @@ h.extend(mixitup.Mixer.prototype,
             instruction.command = self.parseSortString(sortString, instruction.command);
         }
 
-        return self.callFilters('instructionParseSortArgs', instruction, arguments);
+        instruction = self.callFilters('instructionParseSortArgs', instruction, arguments);
+
+        h.freeze(instruction);
+
+        return instruction;
     },
 
     /**
@@ -2094,7 +2115,11 @@ h.extend(mixitup.Mixer.prototype,
             console.warn(mixitup.messages.WARNING_INSERT_NO_ELEMENTS);
         }
 
-        return self.callFilters('instructionParseInsertArgs', instruction, arguments);
+        instruction = self.callFilters('instructionParseInsertArgs', instruction, arguments);
+
+        h.freeze(instruction);
+
+        return instruction;
     },
 
     /**
@@ -2113,7 +2138,6 @@ h.extend(mixitup.Mixer.prototype,
             i           = -1;
 
         instruction.animate = self.config.animation.enable;
-
         instruction.command = new mixitup.CommandRemove();
 
         for (i = 0; i < args.length; i++) {
@@ -2163,7 +2187,11 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        return self.callFilters('instructionParseRemoveArgs', instruction, arguments);
+        instruction = self.callFilters('instructionParseRemoveArgs', instruction, arguments);
+
+        h.freeze(instruction);
+
+        return instruction;
     },
 
     /**
@@ -2218,7 +2246,7 @@ h.extend(mixitup.Mixer.prototype,
             }, self.dom.document);
 
             if (typeof self.config.callbacks.onMixBusy === 'function') {
-                self.config.callbacks.onMixBusy.call(self.dom.container, self.tate, self);
+                self.config.callbacks.onMixBusy.call(self.dom.container, self.state, self);
             }
         }
 

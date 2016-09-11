@@ -12,6 +12,7 @@ mixitup.CommandSort = function() {
 
     this.callActions('beforeConstruct');
 
+    this.sortString = '';
     this.attribute  = '';
     this.order      = 'asc';
     this.collection = null;
