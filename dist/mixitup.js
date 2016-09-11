@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build c0fdfad4-9fdd-4f11-8cb7-f2eb69343bd1
+ * Build c3949ed2-b539-497f-85fe-30d433d7d755
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1904,7 +1904,7 @@
         this.callActions('beforeConstruct');
 
         this.selector   = '';
-        this.collection = [];
+        this.collection = null;
         this.action     = 'show'; // enum: ['show', 'hide']
 
         this.callActions('afterConstruct');
@@ -1917,6 +1917,34 @@
     mixitup.CommandFilter.prototype = Object.create(mixitup.Base.prototype);
 
     mixitup.CommandFilter.prototype.constructor = mixitup.CommandFilter;
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.CommandSort = function() {
+        mixitup.Base.call(this);
+
+        this.callActions('beforeConstruct');
+
+        this.attribute  = '';
+        this.order      = 'asc';
+        this.collection = null;
+        this.next       = null;
+
+        this.callActions('afterConstruct');
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.CommandSort);
+
+    mixitup.CommandSort.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.CommandSort.prototype.constructor = mixitup.CommandSort;
 
     /**
      * @constructor
@@ -1971,6 +1999,31 @@
     mixitup.CommandRemove.prototype = Object.create(mixitup.Base.prototype);
 
     mixitup.CommandRemove.prototype.constructor = mixitup.CommandRemove;
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.CommandChangeLayout = function() {
+        mixitup.Base.call(this);
+
+        this.callActions('beforeConstruct');
+
+        this.containerClassname = '';
+
+        this.callActions('afterConstruct');
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.CommandChangeLayout);
+
+    mixitup.CommandChangeLayout.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.CommandChangeLayout.prototype.constructor = mixitup.CommandChangeLayout;
 
     /**
      * @constructor
@@ -2964,25 +3017,18 @@
 
             // Map in whatever state values we can
 
-            if (self.config.load.filter === 'all') {
-                state.activeFilterSelector = self.config.selectors.target;
-            } else if (self.config.load.filter === 'none') {
-                state.activeFilterSelector = '';
-            } else {
-                state.activeFilterSelector = self.config.load.filter;
-            }
-
-            state.activeSort            = self.config.load.sort;
+            state.activeFilter          = self.parseFilterArgs([self.config.load.filter]).command;
+            state.activeSort            = self.parseSortArgs([self.config.load.sort]).command;
             state.activeContainerClass  = self.config.layout.containerClass;
             state.totalTargets          = self.targets.length;
 
-            if (state.activeSort) {
+            if (
+                state.activeSort.collection || state.activeSort.attribute ||
+                state.activeSort.order === 'random' || state.activeSort.order === 'desc'
+            ) {
                 // Perform a syncronous sort without an operation
 
-                operation.startSortString   = 'default:asc';
-                operation.startOrder        = self.targets;
-                operation.newSort           = self.parseSort(state.activeSort);
-                operation.newSortString     = state.activeSort;
+                operation.newSort = state.activeSort;
 
                 self.sortOperation(operation);
 
@@ -3237,7 +3283,7 @@
             if (command && command.filter) {
                 activeFilterSelector = command.filter.selector.replace(/\s/g, '');
             } else if (state) {
-                activeFilterSelector = state.activeFilterSelector.replace(/\s/g, '');
+                activeFilterSelector = state.activeFilter.selector.replace(/\s/g, '');
             } else {
                 return;
             }
@@ -3420,7 +3466,7 @@
             action = operation.newFilter.action;
 
             for (i = 0; target = operation.newOrder[i]; i++) {
-                if (operation.newFilter.collection.length > 0) {
+                if (operation.newFilter.collection) {
                     // show via collection
 
                     testResult = operation.newFilter.collection.indexOf(target.dom.el) > -1;
@@ -3509,29 +3555,30 @@
 
             operation.startOrder = self.targets;
 
-            switch (operation.newSort[0].sortBy) {
-                case 'default':
-                    operation.newOrder = self.origOrder.slice();
+            if (operation.newSort.collection) {
+                // Sort by collection
 
-                    if (operation.newSort[0].order === 'desc') {
-                        operation.newOrder.reverse();
-                    }
+                operation.newOrder = operation.newSort.collection;
+            } else if (operation.newSort.order === 'random') {
+                // Sort random
 
-                    break;
-                case 'random':
-                    operation.newOrder = h.arrayShuffle(operation.startOrder);
+                operation.newOrder = h.arrayShuffle(operation.startOrder);
+            } else if (operation.newSort.attribute === '') {
+                // Sort by default
 
-                    break;
-                case 'custom':
-                    operation.newOrder = operation.newSort[0].order;
+                operation.newOrder = self.origOrder.slice();
 
-                    break;
-                default:
-                    operation.newOrder = operation.startOrder
-                        .slice()
-                        .sort(function(a, b) {
-                            return self.compare(a, b, 0, operation.newSort);
-                        });
+                if (operation.newSort.order === 'desc') {
+                    operation.newOrder.reverse();
+                }
+            } else {
+                // Sort by attribute
+
+                operation.newOrder = operation.startOrder.slice();
+
+                operation.newOrder.sort(function(a, b) {
+                    return self.compare(a, b, operation.newSort);
+                });
             }
 
             if (h.isEqualArray(operation.newOrder, operation.startOrder)) {
@@ -3545,20 +3592,17 @@
          * @private
          * @instance
          * @since   2.0.0
-         * @param   {mixitup.Target}    a
-         * @param   {mixitup.Target}    b
-         * @param   {Number}            depth
-         * @param   {ParsedSort}        sort
+         * @param   {mixitup.Target}        a
+         * @param   {mixitup.Target}        b
+         * @param   {mixitup.CommandSort}   command
          * @return  {Number}
          */
 
-        compare: function(a, b, depth, sort) {
-            depth = depth ? depth : 0;
-
+        compare: function(a, b, command) {
             var self        = this,
-                order       = sort[depth].order,
-                attrA       = self.getAttributeValue(a, depth, sort),
-                attrB       = self.getAttributeValue(b, depth, sort);
+                order       = command.order,
+                attrA       = self.getAttributeValue(a, command.attribute),
+                attrB       = self.getAttributeValue(b, command.attribute);
 
             if (isNaN(attrA * 1) || isNaN(attrB * 1)) {
                 attrA = attrA.toLowerCase();
@@ -3576,8 +3620,8 @@
                 return order === 'asc' ? 1 : -1;
             }
 
-            if (attrA === attrB && sort.length > depth + 1) {
-                return self.compare(a, b, depth + 1, sort);
+            if (attrA === attrB && command.next) {
+                return self.compare(a, b, command.next);
             }
 
             return 0;
@@ -3590,19 +3634,16 @@
          * @private
          * @instance
          * @since   3.0.0
-         * @param   {Element}           target
-         * @param   {number}            depth
-         * @param   {ParsedSort}        [sort]
+         * @param   {mixitup.Target}    target
+         * @param   {string}            [attribute]
          * @return  {(String|Number)}
          */
 
-        getAttributeValue: function(target, depth, sort) {
+        getAttributeValue: function(target, attribute) {
             var self    = this,
                 value   = '';
 
-            sort = sort ? sort : self.newSort;
-
-            value = target.dom.el.getAttribute('data-' + sort[depth].sortBy);
+            value = target.dom.el.getAttribute('data-' + attribute);
 
             if (value === null) {
                 if (self.config.debug.showWarnings) {
@@ -3680,36 +3721,56 @@
         },
 
         /**
-         * Parses user-defined sort strings (i.e. `default:asc`) into arrays of commands.
+         * Parses user-defined sort strings (i.e. `default:asc`) into sort commands objects.
          *
          * @private
          * @instance
-         * @since   2.0.0
-         * @param   {string}    sortString
-         * @return  {Array<string>}
+         * @since   3.0.0
+         * @param   {string}                sortString
+         * @param   {mixitup.CommandSort}   command
+         * @return  {mixitup.CommandSort}
          */
 
-        parseSort: function(sortString) {
+        parseSortString: function(sortString, command) {
             var self        = this,
-                rules       = typeof sortString === 'string' ? sortString.split(' ') : [sortString],
-                commands    = [],
-                command     = null,
+                rules       = sortString.split(' '),
+                current     = command,
                 rule        = [],
                 i           = -1;
 
             for (i = 0; i < rules.length; i++) {
-                rule = typeof sortString === 'string' ? rules[i].split(':') : ['custom', rules[i]];
-                command = {
-                    sortBy: h.camelCase(rule[0]),
-                    order: rule[1] || 'asc'
-                };
+                rule = rules[i].split(':');
 
-                commands.push(command);
+                current.attribute   = h.dashCase(rule[0]);
+                current.order       = rule[1] || 'asc';
 
-                if (command.sortBy === 'default' || command.sortBy === 'random') break;
+                switch (current.attribute) {
+                    case 'default':
+                        // treat "default" as sorting by no attribute
+
+                        current.attribute = '';
+
+                        break;
+                    case 'random':
+                        // treat "random" as an order not an attribute
+
+                        current.attribute   = '';
+                        current.order       = 'random';
+
+                        break;
+                }
+
+                if (!current.attribute || current.order === 'random') break;
+
+                if (i < rules.length - 1) {
+                    // Embed reference to the next command
+
+                    current.next = new mixitup.CommandSort();
+                    current = current.next;
+                }
             }
 
-            return self.callFilters('commandsParseSort', commands, arguments);
+            return self.callFilters('commandsParseSort', command, arguments);
         },
 
         /**
@@ -3900,10 +3961,8 @@
                 }
             }
 
-            state.activeFilterCollection    = operation.newFilter.collection;
-            state.activeFilterSelector      = operation.newFilter.selector;
-            state.activeFilterAction        = operation.newFilter.action;
-            state.activeSort                = operation.newSortString;
+            state.activeFilter              = operation.newFilter;
+            state.activeSort                = operation.newSort;
             state.activeContainerClass      = operation.newContainerClass;
             state.hasFailed                 = operation.hasFailed;
             state.totalTargets              = self.targets.length;
@@ -4760,6 +4819,10 @@
                 instruction.command.filter = self.parseFilterArgs([instruction.command.filter]).command;
             }
 
+            if (instruction.command.sort && !(instruction.command.sort instanceof mixitup.CommandSort)) {
+                instruction.command.sort = self.parseSortArgs([instruction.command.sort]).command;
+            }
+
             return self.callFilters('instructionParseMultimixArgs', instruction, arguments);
         },
 
@@ -4807,26 +4870,45 @@
             var self        = this,
                 instruction = new mixitup.UserInstruction(),
                 arg         = null,
+                sortString  = '',
                 i           = -1;
 
             instruction.animate = self.config.animation.enable;
-
-            // TODO: still need a typed command object for sorts to seperate strings vs ordered arrays
+            instruction.command = new mixitup.CommandSort();
 
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
 
                 if (arg === null) continue;
 
-                if (typeof arg === 'string' || typeof arg === 'object') {
-                    // Sort string or array of targets/elements
+                switch (typeof arg) {
+                    case 'string':
+                        // Sort string
 
-                    instruction.command = arg;
-                } else if (typeof arg === 'boolean') {
-                    instruction.animate = arg;
-                } else if (typeof arg === 'function') {
-                    instruction.callback = arg;
+                        sortString = arg;
+
+                        break;
+                    case 'object':
+                        // Array of element references
+
+                        if (arg.length) {
+                            instruction.command.collection = Array.prototype.slice.call(arg);
+                        }
+
+                        break;
+                    case 'boolean':
+                        instruction.animate = arg;
+
+                        break;
+                    case 'function':
+                        instruction.callback = arg;
+
+                        break;
                 }
+            }
+
+            if (sortString) {
+                instruction.command = self.parseSortString(sortString, instruction.command);
             }
 
             return self.callFilters('instructionParseSortArgs', instruction, arguments);
@@ -5306,24 +5388,26 @@
                 operation.toRemove = removeCommand.targets;
             }
 
-            if (sortCommand) {
-                operation.startSortString   = operation.startState.activeSort;
-                operation.newSort           = self.parseSort(sortCommand);
-                operation.newSortString     = sortCommand;
+            operation.startSort = operation.newSort = operation.startState.activeSort;
+            operation.startOrder = operation.newOrder = self.targets;
 
-                if (sortCommand !== operation.startState.activeSortString || sortCommand === 'random') {
+            if (sortCommand) {
+                operation.startSort = operation.startState.activeSort;
+                operation.newSort   = sortCommand;
+
+                if (
+                    sortCommand.order       === 'random' ||
+                    sortCommand.attribute   !== operation.startState.activeSort.attribute ||
+                    sortCommand.order       !== operation.startState.activeSort.order ||
+                    sortCommand.collection  !== operation.startState.activeSort.collection
+                ) {
                     operation.willSort = true;
 
                     self.sortOperation(operation);
                 }
-            } else {
-                operation.startSortString = operation.newSortString = operation.startState.activeSort;
-                operation.startOrder = operation.newOrder = self.targets;
             }
 
-            operation.startFilter = new mixitup.CommandFilter();
-
-            operation.startFilter.selector = operation.startState.activeFilterSelector;
+            operation.startFilter = operation.newFilter = operation.startState.activeFilter;
 
             if (filterCommand) {
                 operation.newFilter = filterCommand;
@@ -5333,12 +5417,6 @@
                 } else if (operation.newFilter.selector === 'none') {
                     operation.newFilter.selector = '';
                 }
-
-                operation.command.filter = filterCommand;
-            } else {
-                operation.newFilter = new mixitup.CommandFilter();
-
-                operation.newFilter.selector = operation.startState.activeFilterSelector;
             }
 
             self.filterOperation(operation);
@@ -6495,9 +6573,8 @@
         this.toRemove            = [];
         this.startOrder          = [];
         this.newOrder            = [];
+        this.startSort           = null;
         this.newSort             = null;
-        this.startSortString     = '';
-        this.newSortString       = '';
         this.startFilter         = null;
         this.newFilter           = null;
         this.startX              = 0;
@@ -6543,22 +6620,20 @@
         this.callActions('beforeConstruct');
 
         /**
-         * The currently active filter selector as set by a control click or the API
+         * The currently active filter command as set by a control click or API call
          * call.
          *
          * @name        activeFilter
          * @memberof    mixitup.State
          * @instance
-         * @type        {string}
+         * @type        {mixitup.CommandFilter}
          * @default     ''
          */
 
-        this.activeFilterAction = '';
-        this.activeFilterSelector = '';
-        this.activeFilterCollection = '';
+        this.activeFilter = new mixitup.CommandFilter();
 
         /**
-         * The currently active sort as set by a control click or API call.
+         * The currently active sort command as set by a control click or API call.
          *
          * @name        activeSort
          * @memberof    mixitup.State
@@ -6567,7 +6642,7 @@
          * @default     ''
          */
 
-        this.activeSort = '';
+        this.activeSort = new mixitup.CommandSort();
 
         /**
          * The currently active containerClass, if applied.

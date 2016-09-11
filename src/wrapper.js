@@ -42,9 +42,13 @@
 
     {{>command-filter}}
 
+    {{>command-sort}}
+
     {{>command-insert}}
 
     {{>command-remove}}
+
+    {{>command-change-layout}}
 
     {{>control-definition}}
 

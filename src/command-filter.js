@@ -13,7 +13,7 @@ mixitup.CommandFilter = function() {
     this.callActions('beforeConstruct');
 
     this.selector   = '';
-    this.collection = [];
+    this.collection = null;
     this.action     = 'show'; // enum: ['show', 'hide']
 
     this.callActions('afterConstruct');

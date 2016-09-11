@@ -19,22 +19,20 @@ mixitup.State = function() {
     this.callActions('beforeConstruct');
 
     /**
-     * The currently active filter selector as set by a control click or the API
+     * The currently active filter command as set by a control click or API call
      * call.
      *
      * @name        activeFilter
      * @memberof    mixitup.State
      * @instance
-     * @type        {string}
+     * @type        {mixitup.CommandFilter}
      * @default     ''
      */
 
-    this.activeFilterAction = '';
-    this.activeFilterSelector = '';
-    this.activeFilterCollection = '';
+    this.activeFilter = new mixitup.CommandFilter();
 
     /**
-     * The currently active sort as set by a control click or API call.
+     * The currently active sort command as set by a control click or API call.
      *
      * @name        activeSort
      * @memberof    mixitup.State
@@ -43,7 +41,7 @@ mixitup.State = function() {
      * @default     ''
      */
 
-    this.activeSort = '';
+    this.activeSort = new mixitup.CommandSort();
 
     /**
      * The currently active containerClass, if applied.
