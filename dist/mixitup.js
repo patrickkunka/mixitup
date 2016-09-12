@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 6904885c-df57-485a-acd4-86f7de107279
+ * Build 7b85b688-6c1f-47a6-82f8-1fda9963bc69
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -24,13 +24,29 @@
      * of MixItUp, or "mixers". All API methods can then be called using the
      * mixer instance returned by the factory function.
      *
-     * When loading MixItUp via a `&lsaquo;script%rsaquo;` tag, the factory function is accessed
+     * When loading MixItUp via a script tag, the factory function is accessed
      * as the global variable `mixitup`. When using a module loader such as Browserify
      * or RequireJS however, the factory function is exported directly into your module
      * when you require the MixItUp library.
      *
      * @example
      * mixitup(container [,config] [,foreignDoc])
+     *
+     * @example <caption>Example 1: Creating a mixer instance with an element reference</caption>
+     * var containerEl = document.querySelector('.container');
+     *
+     * var mixer = mixitup(containerEl);
+     *
+     * @example <caption>Example 2: Creating a mixer instance with a selector string</caption>
+     * var mixer = mixitup('.container');
+     *
+     * @example <caption>Example 3: Passing a configuration object</caption>
+     * var mixer = mixitup(containerEl, {
+     *     animation: 'fade scale(.5)'
+     * });
+     *
+     * @example <caption>Example 4: Passing an iframe reference</caption>
+     * var mixer = mixitup(containerEl, config, foreignDocument);
      *
      * @global
      * @namespace

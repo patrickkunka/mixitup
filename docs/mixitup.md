@@ -8,7 +8,7 @@ The `mixitup` "factory" function is used to create individual instances
 of MixItUp, or "mixers". All API methods can then be called using the
 mixer instance returned by the factory function.
 
-When loading MixItUp via a `&lsaquo;script%rsaquo;` tag, the factory function is accessed
+When loading MixItUp via a script tag, the factory function is accessed
 as the global variable `mixitup`. When using a module loader such as Browserify
 or RequireJS however, the factory function is exported directly into your module
 when you require the MixItUp library.
