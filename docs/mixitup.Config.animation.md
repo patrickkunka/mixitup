@@ -53,8 +53,9 @@ MixItUp's animation options, or experiment with our sandbox demo.
 > Example: Apply "fade" and "translateZ" effects to all animations
 
 ```js
-// As targets are filtered in and out, they will fade between opacity 1 and 0 and
-// transform between translateZ(-100px) and translateZ(0).
+// As targets are filtered in and out, they will fade between
+// opacity 1 and 0 and transform between translateZ(-100px) and
+// translateZ(0).
 
 var mixer = mixitup(containerEl, {
     animation: {

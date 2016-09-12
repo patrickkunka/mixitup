@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build ffe2aae1-2801-45ec-ac40-bcdec32798cf
+ * Build 685570a5-8d60-4464-939b-2a8f0ce26d09
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1265,8 +1265,9 @@
          * MixItUp's animation options, or experiment with our sandbox demo.
          *
          * @example <caption>Example: Apply "fade" and "translateZ" effects to all animations</caption>
-         * // As targets are filtered in and out, they will fade between opacity 1 and 0 and
-         * // transform between translateZ(-100px) and translateZ(0).
+         * // As targets are filtered in and out, they will fade between
+         * // opacity 1 and 0 and transform between translateZ(-100px) and
+         * // translateZ(0).
          *
          * var mixer = mixitup(containerEl, {
          *     animation: {
@@ -1900,8 +1901,8 @@
      * the `mixitup` factory function when creating a mixer instance to customise its
      * functionality as desired.
      *
-     * @example
-     * // Create a configuration object with any custom values
+     * @example <caption>Example: Creating and passing the configuration object
+     * // Create a configuration object with your desired values
      *
      * var config = {
      *     animation: {
@@ -1912,7 +1913,7 @@
      *     }
      * };
      *
-     * // Pass the configuration object to the mixitup factory function to customise
+     * // Pass it to the mixitup factory function to customise
      * // the functionality of your mixer.
      *
      * var mixer = mixitup(containerEl, config);

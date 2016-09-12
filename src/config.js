@@ -10,8 +10,8 @@
  * the `mixitup` factory function when creating a mixer instance to customise its
  * functionality as desired.
  *
- * @example
- * // Create a configuration object with any custom values
+ * @example <caption>Example: Creating and passing the configuration object
+ * // Create a configuration object with your desired values
  *
  * var config = {
  *     animation: {
@@ -22,7 +22,7 @@
  *     }
  * };
  *
- * // Pass the configuration object to the mixitup factory function to customise
+ * // Pass it to the mixitup factory function to customise
  * // the functionality of your mixer.
  *
  * var mixer = mixitup(containerEl, config);
