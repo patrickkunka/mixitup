@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build afa2d1c4-3fef-4b47-b5e3-579122511500
+ * Build 95baafea-5cc8-493e-9731-3a2b91258b53
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3113,6 +3113,9 @@
         constructor: mixitup.Mixer,
 
         /**
+         * @private
+         * @instance
+         * @since 3.0.0
          * @param {HTMLElement} container
          * @param {HTMLElement} document
          * @param {string}      id
@@ -6685,7 +6688,7 @@
     mixitup.Collection.prototype = Object.create(mixitup.Base.prototype);
 
     h.extend(mixitup.Collection.prototype,
-    /** @lends mixitup.Mixer */
+    /** @lends mixitup.Collection */
     {
         constructor: mixitup.Collection,
 
