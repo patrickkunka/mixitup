@@ -2,11 +2,15 @@
 
 ## Overview
 
-A group of configurable properties related to MixItUp's animation and effects options.
+A group of configurable properties relating to MixItUp's animation and effects options.
+
+
+
 
 ## Members
 
 ### <a id="mixitup.Config.animation#enable">mixitup.Config.animation.enable</a>
+
 
 
 
@@ -19,34 +23,46 @@ functions and any returned promises will still be fulfilled.
 |---  | ---
 |`boolean`| `true`
 
+```js// Create a mixer with all animations disabled:
+
+var mixer = mixitup(containerEl, {
+    animation: {
+        enable: false
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#effects">mixitup.Config.animation.effects</a>
 
 
 
-A string of one or more space-seperated effects to which transitions will be
+
+A string of one or more space-seperated properties to which transitions will be
 applied for all filtering animations.
 
-The available properties are `'fade'`, `'scale'`, `'translateX'`, `'translateY'`,
-`'translateZ'`, `'rotateX'`, `'rotateY'`, `'rotateZ'` and `'stagger'`, and can
-be listed any order or combination, although they will be applied in a specific
+properties can be listed any order or combination, although they will be applied in a specific
 predefined order to produce consistent results.
 
-Each effect maps directly to the CSS transform of the same name with the exception
-of `'fade'` which maps to `'opacity'`, and `'stagger'` which maps to an incremental
-'`transition-delay'` value based on the index of the target in the filter
-or sort animation.
-
-Effects may be followed by an optional value in parenthesis dictating the maximum
-tween value of the effect in the appropriate units (e.g. `'fade(0.5) translateX(-10%) stagger(40ms)'`).
-Experiment with the home page sandbox to find the perfect combination of
-effects for your project.
+For more information about the available effects, please see our tutorial on customising
+MixItUp's animation options, or experiment with our sandbox demo.
 
 
 |Type | Default
 |---  | ---
 |`string`| `'fade scale'`
 
+```js// As targets are filtered in and out, they will fade between opacity 1 and 0 and
+// transform between translateZ(-100px) and translateZ(0).
+
+var mixer = mixitup(containerEl, {
+    animation: {
+        effects: 'fade translateZ(-100px)'
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#effectsIn">mixitup.Config.animation.effectsIn</a>
+
 
 
 
@@ -58,7 +74,16 @@ animations, overriding `config.animation.effects` if set.
 |---  | ---
 |`string`| `''`
 
+```js
+var mixer = mixitup(containerEl, {
+    animation: {
+        effectsIn: 'fade translateY(-100%)'
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#effectsOut">mixitup.Config.animation.effectsOut</a>
+
 
 
 
@@ -70,7 +95,16 @@ animations, overriding `config.animation.effects` if set.
 |---  | ---
 |`string`| `''`
 
+```js
+var mixer = mixitup(containerEl, {
+    animation: {
+        effectsIn: 'fade translateY(-100%)'
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#duration">mixitup.Config.animation.duration</a>
+
 
 
 
@@ -82,19 +116,42 @@ including any additional delay apllied via the `'stagger'` effect.
 |---  | ---
 |`number`| `600`
 
+```js
+var mixer = mixitup(containerEl, {
+    animation: {
+        duration: 200
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#easing">mixitup.Config.animation.easing</a>
 
 
 
+
 A valid CSS3 transition-timing function or shorthand. For a full list of accepted
-values, check out easings.net.
+values, check out <a href="http://easings.net" target="_blank">easings.net</a>.
 
 
 |Type | Default
 |---  | ---
 |`string`| `'ease'`
 
+```js
+var mixer = mixitup(containerEl, {
+    animation: {
+        easing: 'ease-in-out'
+    }
+});
+``````jsvar mixer = mixitup(containerEl, {
+    animation: {
+        easing: 'cubic-bezier(0.645, 0.045, 0.355, 1)'
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#applyPerspective">mixitup.Config.animation.applyPerspective</a>
+
 
 
 
@@ -110,11 +167,19 @@ You may wish to disable this and define your own perspective settings via CSS.
 |---  | ---
 |`bolean`| `true`
 
+```jsvar mixer = mixitup(containerEl, {
+    animation: {
+        applyPerspective: false
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#perspectiveDistance">mixitup.Config.animation.perspectiveDistance</a>
 
 
 
-The perspective distance value applied to the container during animations,
+
+The perspective distance value to be applied to the container during animations,
 affecting any 3D-transform-based effects.
 
 
@@ -122,11 +187,20 @@ affecting any 3D-transform-based effects.
 |---  | ---
 |`string`| `'3000px'`
 
+```jsvar mixer = mixitup(containerEl, {
+    animation: {
+        effects: 'rotateY(-25deg)',
+        perspectiveDistance: '2000px'
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#perspectiveOrigin">mixitup.Config.animation.perspectiveOrigin</a>
 
 
 
-The perspective-origin value applied to the container during animations,
+
+The perspective-origin value to be applied to the container during animations,
 affecting any 3D-transform-based effects.
 
 
@@ -134,21 +208,42 @@ affecting any 3D-transform-based effects.
 |---  | ---
 |`string`| `'50% 50%'`
 
+```jsvar mixer = mixitup(containerEl, {
+    animation: {
+        effects: 'transateZ(-200px)',
+        perspectiveOrigin: '100% 0'
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#queue">mixitup.Config.animation.queue</a>
 
 
 
-A boolean dictating whether or not to enable queuing for all operations received
-while an another operation is in progress. If `false`, any requested operations will
-be ignored, and the `onMixBusy` callback and `mixBusy` event will be fired. If
-debugging is enabled, a console warning will also occur.
+
+A boolean dictating whether or not to enable the queuing of operations.
+
+If `true` (default), and a control is clicked or an API call is made while another
+operation is progress, the operation will go into the queue and will be automatically exectuted
+when the previous operaitons is finished.
+
+If `false`, any requested operations will be ignored, and the `onMixBusy` callback and `mixBusy`
+event will be fired. If `debug.showWarnings` is enabled, a console warning will also occur.
 
 
 |Type | Default
 |---  | ---
 |`boolean`| `true`
 
+```jsvar mixer = mixitup(containerEl, {
+    animation: {
+        queue: false
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#queueLimit">mixitup.Config.animation.queueLimit</a>
+
 
 
 
@@ -160,20 +255,15 @@ any time, when queuing is enabled.
 |---  | ---
 |`number`| `3`
 
-### <a id="mixitup.Config.animation#animateChangeLayout">mixitup.Config.animation.animateChangeLayout</a>
-
-
-
-A boolean dictating whether or not to attempt transitioning of target elements
-during layout change operations. Depending on the differences in styling between
-layouts this may produce undesirable results and is therefore disabled by default.
-
-
-|Type | Default
-|---  | ---
-|`boolean`| `false`
-
+```jsvar mixer = mixitup(containerEl, {
+    animation: {
+        queueLimit: 5
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#animateResizeContainer">mixitup.Config.animation.animateResizeContainer</a>
+
 
 
 
@@ -181,40 +271,67 @@ A boolean dictating whether or not to transition the height and width of the
 container as elements are filtered in and out. If disabled, the container height
 will change abruptly.
 
-It may be desirable to disable this on mobile devices where the CSS `height` and
-`width` properties do not receive GPU-acceleration.
+It may be desirable to disable this on mobile devices as the CSS `height` and
+`width` properties do not receive GPU-acceleration and can therefore cause stuttering.
 
 
 |Type | Default
 |---  | ---
 |`boolean`| `true`
 
+```js<caption>Example 1: Disable the transitioning of the container height and/or width</caption>
+var mixer = mixitup(containerEl, {
+    animation: {
+        animateResizeContainer: false
+    }
+});
+``````js<caption>Example 2: Disable the transitioning of the container height and/or width for mobile devices only</caption>
+var mixer = mixitup(containerEl, {
+    animation: {
+        animateResizeContainer: myFeatureTests.isMobile ? false : true
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#animateResizeTargets">mixitup.Config.animation.animateResizeTargets</a>
+
 
 
 
 A boolean dictating whether or not to transition the height and width of target
 elements as they change throughout the course of an animation.
 
-This is specifically aimed at flex-box layouts where the size of target elements
-may change depending on final their position in relation to their siblings, and
-is therefore disabled by default.
+This is often a must for flex-box grid layouts where the size of target elements may change
+depending on final their position in relation to their siblings, or for `.changeLayout()`
+operations where the size of targets change between layouts.
 
-This feature requires additional calculations and DOM manipulation which may
-adversely affect performance on slower devices.
+NB: This feature requires additional calculations and manipulation to non-hardware-accelerated
+properties which may adversely affect performance on slower devices, and is therefore
+disabled by default.
 
 
 |Type | Default
 |---  | ---
 |`boolean`| `false`
 
+```jsvar mixer = mixitup(containerEl, {
+    animation: {
+        animateResizeTargets: true
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#staggerSequence">mixitup.Config.animation.staggerSequence</a>
 
 
 
+
 A custom function used to manipulate the order in which the stagger delay is
-incremented when using the ‘stagger’ effect. It can be used to create engaging
-non-linear staggering.
+incremented when using the ‘stagger’ effect.
+
+When using the 'stagger' effect, the delay applied to each target element is incremented
+based on its index. You may create a custom function to manipulate the order in which the
+delay is incremented and create engaging non-linear stagger effects.
 
 The function receives the index of the target element as a parameter, and must
 return an integer which serves as the multiplier for the stagger delay.
@@ -224,17 +341,35 @@ return an integer which serves as the multiplier for the stagger delay.
 |---  | ---
 |`function`| `null`
 
+```jsvar mixer = mixitup(containerEl, {
+    animation: {
+        effects: 'fade stagger(100ms)',
+        staggerSequence: function(i) {
+            return i % 3;
+        }
+    }
+});
+``````jsvar mixer = mixitup(containerEl, {
+    animation: {
+        effects: 'fade stagger(100ms)',
+        staggerSequence: function(i) {
+            return (2*i) - (5*((i/3) - ((1/3) * (i%3))));
+        }
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#reverseOut">mixitup.Config.animation.reverseOut</a>
+
 
 
 
 A boolean dictating whether or not to reverse the direction of `translate`
 and `rotate` transforms for elements being filtered out.
 
-It can be used to create engaging carousel-like animations
-where elements enter and exit from opposite directions. If enabled, the
-effect `translateX(-100%)` for elements being filtered in would become
-`translateX(100%)` for targets being filtered out.
+It can be used to create carousel-like animations where elements enter and exit
+from opposite directions. If enabled, the effect `translateX(-100%)` for elements
+being filtered in would become `translateX(100%)` for targets being filtered out.
 
 This functionality can also be achieved by providing seperate effects
 strings for `config.animation.effectsIn` and `config.animation.effectsOut`.
@@ -244,20 +379,42 @@ strings for `config.animation.effectsIn` and `config.animation.effectsOut`.
 |---  | ---
 |`boolean`| `false`
 
+```js<caption>Example: Reverse the desired direction on any translate/rotate effect for targets being filtered out</caption>
+// Elements being filtered in will be translated from '100%' to '0' while
+// elements being filtered out will be translated from 0 to '-100%'
+
+var mixer = mixitup(containerEl, {
+    animation: {
+        effects: 'fade translateX(100%)',
+        reverseOut: true,
+        nudge: false // Disable nudging to create a carousel-like effect
+    }
+});
+```
+> 
 ### <a id="mixitup.Config.animation#nudge">mixitup.Config.animation.nudge</a>
 
 
 
-A boolean dictating whether or not to "nudge" the animation path of target
-elements depending on their intermediate position in the layout.
+
+A boolean dictating whether or not to "nudge" the animation path of targets
+when they are being filtered in and out simulatenously.
 
 This has been the default behavior of MixItUp since version 1, but it
 may be desirable to disable this effect when filtering directly from
 one exclusive set of targets to a different exclusive set of targets,
-to create a carousel-like effect.
+to create a carousel-like effect, or a generally more subtle animation.
 
 
 |Type | Default
 |---  | ---
 |`boolean`| `true`
 
+```js
+var mixer = mixitup(containerEl, {
+    animation: {
+        nudge: false
+    }
+});
+```
+> 

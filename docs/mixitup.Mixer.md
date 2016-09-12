@@ -8,9 +8,14 @@ than the intial `mixitup()` factory function call, which returns an
 instance of a mixer, all other public API functionality is performed
 on mixer instances.
 
+
+
+
 ## Members
 
 ### <a id="mixitup.Mixer#init">mixitup.Mixer.init</a>
+
+**Version added: 3.0.0**
 
 ```js
 .init([startFromHidden])
@@ -21,12 +26,25 @@ specified via the `load.filter` configuration option.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`boolean` | `[startFromHidden]` | An optional boolean dictating whether targets should start from a hidden or non-hidden state.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 3.0.0**
+```jsvar container = document.querySelector('.mixitup-container');
+var mixer = mixitup(container);
+
+mixer.init();
+``````jsvar mixer = mixitup(.mixitup-container, {
+    selectors: {
+        target: '.item'
+    }
+});
+
+mixer.init();
+```
+> 
 ### <a id="mixitup.Mixer#show">mixitup.Mixer.show</a>
+
+**Version added: 3.0.0**
 
 ```js
 .show()
@@ -39,8 +57,11 @@ A shorthand method for `.filter('all')`.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 3.0.0**
+
+> 
 ### <a id="mixitup.Mixer#hide">mixitup.Mixer.hide</a>
+
+**Version added: 3.0.0**
 
 ```js
 .hide()
@@ -53,8 +74,11 @@ A shorthand method for `.filter('none')`.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 3.0.0**
+
+> 
 ### <a id="mixitup.Mixer#isMixing">mixitup.Mixer.isMixing</a>
+
+**Version added: 2.0.0**
 
 ```js
 .isMixing()
@@ -68,8 +92,11 @@ currently in progress.
 |Returns |`boolean` | 
 
 
-**Version added: 2.0.0**
+
+> 
 ### <a id="mixitup.Mixer#filter">mixitup.Mixer.filter</a>
+
+**Version added: 2.0.0**
 
 ```js
 .filter(selector [,animate] [,callback])
@@ -85,8 +112,11 @@ Filters the mixer according to the specified filter command.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 2.0.0**
+
+> 
 ### <a id="mixitup.Mixer#toggleOn">mixitup.Mixer.toggleOn</a>
+
+**Version added: 3.0.0**
 
 ```js
 .toggleOn(selector [,animate] [,callback])
@@ -102,8 +132,11 @@ Adds a selector to the currently active set of toggles and filters the mixer.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 3.0.0**
+
+> 
 ### <a id="mixitup.Mixer#toggleOff">mixitup.Mixer.toggleOff</a>
+
+**Version added: 3.0.0**
 
 ```js
 .toggleOn(selector [,animate] [,callback])
@@ -119,8 +152,11 @@ Removes a selector from the currently active set of toggles and filters the mixe
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 3.0.0**
+
+> 
 ### <a id="mixitup.Mixer#sort">mixitup.Mixer.sort</a>
+
+**Version added: 2.0.0**
 
 ```js
 .sort(sortString [,animate] [,callback])
@@ -136,8 +172,11 @@ Sorts the mixer according to the specified sort command.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 2.0.0**
+
+> 
 ### <a id="mixitup.Mixer#changeLayout">mixitup.Mixer.changeLayout</a>
+
+**Version added: 2.0.0**
 
 
 
@@ -148,8 +187,11 @@ Sorts the mixer according to the specified sort command.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 2.0.0**
+
+> 
 ### <a id="mixitup.Mixer#getOperation">mixitup.Mixer.getOperation</a>
+
+**Version added: 3.0.0**
 
 
 
@@ -157,16 +199,19 @@ Sorts the mixer according to the specified sort command.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`Command` | `command` | 
+|Param   |`object` | `command` | 
 |Param   |`boolean` | `[isPreFetch]` | An optional boolean indicating that the operation is being pre-fetched for execution at a later time.
 |Returns |`Operation, null` | 
 
 
-**Version added: 3.0.0**
-### <a id="mixitup.Mixer#multiMix">mixitup.Mixer.multiMix</a>
+
+> 
+### <a id="mixitup.Mixer#multimix">mixitup.Mixer.multimix</a>
+
+**Version added: 2.0.0**
 
 ```js
-.multiMix(multiMixCommand [,animate] [,callback])
+.multimix(multimixCommand [,animate] [,callback])
 ```
 
 Performs simultaneous `filter`, `sort`, `insert`, `remove` and `changeLayout`
@@ -174,14 +219,17 @@ operations as requested.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`object` | `multiMixCommand` | An object containing one or more things to do
+|Param   |`object` | `multimixCommand` | An object containing one or more things to do
 |Param   |`boolean` | `[animate]` | 
 |Param   |`function` | `[callback]` | 
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 2.0.0**
+
+> 
 ### <a id="mixitup.Mixer#tween">mixitup.Mixer.tween</a>
+
+**Version added: 3.0.0**
 
 ```js
 .tween(operation, multiplier)
@@ -197,9 +245,12 @@ determined by a multiplier between 0 and 1.
 |Returns |`void` | 
 
 
-**Version added: 3.0.0**
+
+> 
 ### <a id="mixitup.Mixer#insert">mixitup.Mixer.insert</a>
 
+**Version added: 2.0.0**
+
 
 
 
@@ -209,9 +260,12 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 2.0.0**
+
+> 
 ### <a id="mixitup.Mixer#insertBefore">mixitup.Mixer.insertBefore</a>
 
+**Version added: 3.0.0**
+
 
 
 
@@ -221,9 +275,12 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 3.0.0**
+
+> 
 ### <a id="mixitup.Mixer#insertAfter">mixitup.Mixer.insertAfter</a>
 
+**Version added: 3.0.0**
+
 
 
 
@@ -233,9 +290,12 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 3.0.0**
+
+> 
 ### <a id="mixitup.Mixer#prepend">mixitup.Mixer.prepend</a>
 
+**Version added: 2.0.0**
+
 
 
 
@@ -245,9 +305,12 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 2.0.0**
+
+> 
 ### <a id="mixitup.Mixer#append">mixitup.Mixer.append</a>
 
+**Version added: 2.0.0**
+
 
 
 
@@ -257,9 +320,12 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 2.0.0**
+
+> 
 ### <a id="mixitup.Mixer#remove">mixitup.Mixer.remove</a>
 
+**Version added: 3.0.0**
+
 
 
 
@@ -269,8 +335,11 @@ determined by a multiplier between 0 and 1.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-**Version added: 3.0.0**
-### <a id="mixitup.Mixer#getOption">mixitup.Mixer.getOption</a>
+
+> 
+### <a id="mixitup.Mixer#getConfig">mixitup.Mixer.getConfig</a>
+
+**Version added: 2.0.0**
 
 
 
@@ -278,12 +347,15 @@ determined by a multiplier between 0 and 1.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`string` | `stringKey` | 
+|Param   |`string` | `[stringKey]` | 
 |Returns |`*` | 
 
 
+
+> 
+### <a id="mixitup.Mixer#configure">mixitup.Mixer.configure</a>
+
 **Version added: 2.0.0**
-### <a id="mixitup.Mixer#setOptions">mixitup.Mixer.setOptions</a>
 
 
 
@@ -295,8 +367,11 @@ determined by a multiplier between 0 and 1.
 |Returns |`void` | 
 
 
-**Version added: 2.0.0**
+
+> 
 ### <a id="mixitup.Mixer#getState">mixitup.Mixer.getState</a>
+
+**Version added: 2.0.0**
 
 
 
@@ -307,8 +382,11 @@ determined by a multiplier between 0 and 1.
 |Returns |`mixitup.State` | 
 
 
-**Version added: 2.0.0**
+
+> 
 ### <a id="mixitup.Mixer#forceRefresh">mixitup.Mixer.forceRefresh</a>
+
+**Version added: 2.1.2**
 
 
 
@@ -319,8 +397,11 @@ determined by a multiplier between 0 and 1.
 |Returns |`void` | 
 
 
-**Version added: 2.1.2**
+
+> 
 ### <a id="mixitup.Mixer#destroy">mixitup.Mixer.destroy</a>
+
+**Version added: 2.0.0**
 
 
 
@@ -332,4 +413,49 @@ determined by a multiplier between 0 and 1.
 |Returns |`void` | 
 
 
-**Version added: 2.0.0**
+
+> 
+### <a id="mixitup.Mixer#mixitup">mixitup.Mixer.mixitup</a>
+
+**Version added: 3.0.0**
+
+```js
+.mixitup(methodName[,arg1][,arg2..]);
+```
+
+Calls a method on all instances in the collection by passing the method
+name as a string followed by any applicable parameters to be curried into
+to the method.
+
+|   |Type | Name | Description
+|---|--- | --- | ---
+|Param   |`string` | `methodName` | 
+|Returns |`Promise.<Array.<mixitup.State>>` | 
+
+
+```jsvar collection = new Collection([mixer1, mixer2]);
+
+return collection.mixer('filter', '.cat-1')
+    .then(function(states) {
+        console.log('all instances filtered');
+    });
+```
+> 
+### <a id="mixitup.Mixer.attach">mixitup.Mixer.attach</a>
+
+
+
+
+
+
+|   |Type | Name | Description
+|---|--- | --- | ---
+|Param   |`HTMLElement` | `container` | 
+|Param   |`HTMLElement` | `document` | 
+|Param   |`string` | `id` | 
+|Param   |`object` | `[config]` | 
+|Returns |
+
+
+
+> 

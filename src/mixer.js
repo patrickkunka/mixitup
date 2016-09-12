@@ -1396,7 +1396,7 @@ h.extend(mixitup.Mixer.prototype,
             target.show();
         }
 
-        if (operation.willChangeLayout && self.config.animation.animateChangeLayout) {
+        if (operation.willChangeLayout) {
             h.removeClass(self.dom.container, operation.newContainerClass);
             h.addClass(self.dom.container, self.config.layout.containerClass);
         }

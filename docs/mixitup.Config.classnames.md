@@ -1,4 +1,4 @@
-# mixitup.Config.selectors
+# mixitup.Config.classnames
 
 ## Overview
 

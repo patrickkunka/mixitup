@@ -2,9 +2,12 @@
 
 ## Overview
 
-The BaseStatic class exposes a set of static methods which all other MixItUp
-classes inherit as a means of integrating extensions via the addition of new
+The BaseStatic class holds a set of static methods which are then added to all other
+extinsible MixItUp classes as a means of integrating extensions via the addition of new
 methods and/or actions and hooks.
+
+
+
 
 ## Members
 

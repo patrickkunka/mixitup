@@ -11,6 +11,8 @@
  * functionality as desired.
  *
  * @example
+ * // Create a configuration object with any custom values
+ *
  * var config = {
  *     animation: {
  *         enable: false
@@ -19,6 +21,9 @@
  *         target: '.item'
  *     }
  * };
+ *
+ * // Pass the configuration object to the mixitup factory function to customise
+ * // the functionality of your mixer.
  *
  * var mixer = mixitup(containerEl, config);
  *
