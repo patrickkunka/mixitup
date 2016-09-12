@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 4b56ad51-b20e-4b10-971e-1ef61aa9119d
+ * Build 02451575-3cf1-469d-8b0b-9907351d2385
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1348,7 +1348,7 @@
 
         /**
          * A valid CSS3 transition-timing function or shorthand. For a full list of accepted
-         * values, check out <a href="http://easings.net" target="_blank">easings.net</a>.
+         * values, visit <a href="http://easings.net" target="_blank">easings.net</a>.
          *
          * @example <caption>Example 1: Apply "ease-in-out" easing to all animations</caption>
          *

@@ -131,7 +131,7 @@ mixitup.ConfigAnimation = function() {
 
     /**
      * A valid CSS3 transition-timing function or shorthand. For a full list of accepted
-     * values, check out <a href="http://easings.net" target="_blank">easings.net</a>.
+     * values, visit <a href="http://easings.net" target="_blank">easings.net</a>.
      *
      * @example <caption>Example 1: Apply "ease-in-out" easing to all animations</caption>
      *

@@ -27,14 +27,15 @@ specified via the `load.filter` configuration option.
 |Returns |`Promise.<mixitup.State>` | 
 
 
+> Example 1: Running init after mixer instantiation
+
 ```js
 var container = document.querySelector('.mixitup-container');
 var mixer = mixitup(container);
 
 mixer.init();
 ```
-
-> Example 1: Running init after mixer instantiation
+> 
 
 ```js
 var mixer = mixitup(.mixitup-container, {
@@ -45,9 +46,6 @@ var mixer = mixitup(.mixitup-container, {
 
 mixer.init();
 ```
-
-> 
-
 
 ### <a id="mixitup.Mixer#show">mixitup.Mixer.show</a>
 
@@ -418,6 +416,8 @@ to the method.
 |Returns |`Promise.<Array.<mixitup.State>>` | 
 
 
+> 
+
 ```js
 var collection = new Collection([mixer1, mixer2]);
 
@@ -426,9 +426,6 @@ return collection.mixer('filter', '.cat-1')
         console.log('all instances filtered');
     });
 ```
-
-> 
-
 
 ### <a id="mixitup.Mixer.attach">mixitup.Mixer.attach</a>
 
