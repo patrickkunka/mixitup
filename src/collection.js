@@ -1,8 +1,11 @@
 /* global mixitup, h */
 
 /**
- * A jQuery collection-like wrapper around one or more `mixitup.Mixer` instances
+ * A jQuery-collection-like wrapper around one or more `mixitup.Mixer` instances
  * allowing simultaneous control of said instances similar to the MixItUp 2 API.
+ *
+ * @example
+ * new mixitup.Collection(instances)
  *
  * @constructor
  * @namespace
@@ -39,8 +42,20 @@ h.extend(mixitup.Collection.prototype,
     constructor: mixitup.Collection,
 
     /**
-     * Calls a public method on all instances in the collection by passing the method
-     * name as a string followed by any applicable parameters.
+     * Calls a method on all instances in the collection by passing the method
+     * name as a string followed by any applicable parameters to be curried into
+     * to the method.
+     *
+     * @example
+     * .mixitup(methodName[,arg1][,arg2..]);
+     *
+     * @example
+     * var collection = new Collection([mixer1, mixer2]);
+     *
+     * return collection.mixer('filter', '.cat-1')
+     *     .then(function(states) {
+     *         console.log('all instances filtered');
+     *     });
      *
      * @public
      * @instance

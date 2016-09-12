@@ -5,10 +5,22 @@
  * options for each MixItUp instance, and is organised into to several
  * semantically distinct sub-objects.
  *
- * An optional object literal containing any combination of these properies,
+ * An optional object literal containing any or all of these properies,
  * known as the "configuration object", can be passed as the second parameter to
- * the `mixitup` factory function to customise the functionality of the MixItUp
- * instance as needed.
+ * the `mixitup` factory function when creating a mixer instance to customise its
+ * functionality as desired.
+ *
+ * @example
+ * var config = {
+ *     animation: {
+ *         enable: false
+ *     },
+ *     selectors: {
+ *         target: '.item'
+ *     }
+ * };
+ *
+ * var mixer = mixitup(containerEl, config);
  *
  * @constructor
  * @memberof    mixitup

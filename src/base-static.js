@@ -1,8 +1,8 @@
 /* global mixitup, h */
 
 /**
- * The BaseStatic class exposes a set of static methods which all other MixItUp
- * classes inherit as a means of integrating extensions via the addition of new
+ * The BaseStatic class holds a set of static methods which are then added to all other
+ * extinsible MixItUp classes as a means of integrating extensions via the addition of new
  * methods and/or actions and hooks.
  *
  * @constructor
@@ -17,8 +17,8 @@ mixitup.BaseStatic = function() {
     this.filters = {};
 
     /**
-     * Performs a shallow extend on the class's prototype, enabling the addition of
-     * multiple new members to the class in a single operation.
+     * Performs a shallow extend on the class's prototype, adding one or more new members to
+     * the class in a single operation.
      *
      * @memberof    mixitup.BaseStatic
      * @public
@@ -33,7 +33,7 @@ mixitup.BaseStatic = function() {
     };
 
     /**
-     * Registers an action function to be executed at a predefined hook.
+     * Registers a function to be called on the action hook of the provided name.
      *
      * @memberof    mixitup.BaseStatic
      * @public
@@ -50,7 +50,7 @@ mixitup.BaseStatic = function() {
     };
 
     /**
-     * Registers a filter function to be executed at a predefined hook.
+     * Registers a function to be called on the filter of the provided name.
      *
      * @memberof    mixitup.BaseStatic
      * @public

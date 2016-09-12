@@ -1,6 +1,8 @@
 /* global mixitup, h */
 
 /**
+ * An object into which all arbitrary arguments sent to '.insert()' are mapped.
+ *
  * @constructor
  * @memberof    mixitup
  * @private
