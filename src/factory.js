@@ -1,19 +1,14 @@
 /* global mixitup:true, h */
 
 /**
- * The `mixitup` "factory" function is used to create discreet instances
- * of MixItUp, or "mixers". When loading MixItUp via a `<script>` tag, the
- * factory function is accessed as the global variable `mixitup`. When using
- * a module loader such as Browserify or RequireJS however, the factory
- * function is exported directly into your module when you require
- * the MixItUp library.
+ * The `mixitup` "factory" function is used to create individual instances
+ * of MixItUp, or "mixers". All API methods can then be called using the
+ * mixer instance returned by the factory function.
  *
- * It is the first entry point for the v3 API, and abstracts away the
- * functionality of instantiating mixer objects directly.
- *
- * The factory function also checks whether or not a MixItUp instance is
- * already active on specified element, and if so, returns that instance
- * rather than creating a duplicate.
+ * When loading MixItUp via a `&lsaquo;script%rsaquo;` tag, the factory function is accessed
+ * as the global variable `mixitup`. When using a module loader such as Browserify
+ * or RequireJS however, the factory function is exported directly into your module
+ * when you require the MixItUp library.
  *
  * @example
  * mixitup(container [,config] [,foreignDoc])
