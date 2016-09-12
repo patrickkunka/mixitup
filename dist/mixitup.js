@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 02451575-3cf1-469d-8b0b-9907351d2385
+ * Build ffe2aae1-2801-45ec-ac40-bcdec32798cf
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
