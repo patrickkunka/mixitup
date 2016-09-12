@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 685570a5-8d60-4464-939b-2a8f0ce26d09
+ * Build afa2d1c4-3fef-4b47-b5e3-579122511500
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1901,7 +1901,7 @@
      * the `mixitup` factory function when creating a mixer instance to customise its
      * functionality as desired.
      *
-     * @example <caption>Example: Creating and passing the configuration object
+     * @example <caption>Example: Creating and passing the configuration object</caption>
      * // Create a configuration object with your desired values
      *
      * var config = {

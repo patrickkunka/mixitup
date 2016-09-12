@@ -10,7 +10,7 @@
  * the `mixitup` factory function when creating a mixer instance to customise its
  * functionality as desired.
  *
- * @example <caption>Example: Creating and passing the configuration object
+ * @example <caption>Example: Creating and passing the configuration object</caption>
  * // Create a configuration object with your desired values
  *
  * var config = {
