@@ -37,7 +37,7 @@ mixitup.BaseStatic.call(mixitup.Collection);
 mixitup.Collection.prototype = Object.create(mixitup.Base.prototype);
 
 h.extend(mixitup.Collection.prototype,
-/** @lends mixitup.Mixer */
+/** @lends mixitup.Collection */
 {
     constructor: mixitup.Collection,
 

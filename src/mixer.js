@@ -68,6 +68,9 @@ h.extend(mixitup.Mixer.prototype,
     constructor: mixitup.Mixer,
 
     /**
+     * @private
+     * @instance
+     * @since 3.0.0
      * @param {HTMLElement} container
      * @param {HTMLElement} document
      * @param {string}      id
