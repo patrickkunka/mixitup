@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 0675e00e-19f4-459f-929e-bac42911454c
+ * Build 4b56ad51-b20e-4b10-971e-1ef61aa9119d
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1238,9 +1238,7 @@
          * If `false`, all operations will occur instantly and syncronously, although callback
          * functions and any returned promises will still be fulfilled.
          *
-         * @example
-         * // Create a mixer with all animations disabled:
-         *
+         * @example <caption>Example: Create a mixer with all animations disabled</caption>
          * var mixer = mixitup(containerEl, {
          *     animation: {
          *         enable: false

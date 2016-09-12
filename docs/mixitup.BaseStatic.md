@@ -7,7 +7,5 @@ extinsible MixItUp classes as a means of integrating extensions via the addition
 methods and/or actions and hooks.
 
 
-
-
 ## Members
 

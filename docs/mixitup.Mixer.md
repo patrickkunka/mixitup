@@ -9,8 +9,6 @@ instance of a mixer, all other public API functionality is performed
 on mixer instances.
 
 
-
-
 ## Members
 
 ### <a id="mixitup.Mixer#init">mixitup.Mixer.init</a>
@@ -29,11 +27,17 @@ specified via the `load.filter` configuration option.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-```jsvar container = document.querySelector('.mixitup-container');
+```js
+var container = document.querySelector('.mixitup-container');
 var mixer = mixitup(container);
 
 mixer.init();
-``````jsvar mixer = mixitup(.mixitup-container, {
+```
+
+> Example 1: Running init after mixer instantiation
+
+```js
+var mixer = mixitup(.mixitup-container, {
     selectors: {
         target: '.item'
     }
@@ -41,7 +45,10 @@ mixer.init();
 
 mixer.init();
 ```
+
 > 
+
+
 ### <a id="mixitup.Mixer#show">mixitup.Mixer.show</a>
 
 **Version added: 3.0.0**
@@ -58,7 +65,6 @@ A shorthand method for `.filter('all')`.
 
 
 
-> 
 ### <a id="mixitup.Mixer#hide">mixitup.Mixer.hide</a>
 
 **Version added: 3.0.0**
@@ -75,7 +81,6 @@ A shorthand method for `.filter('none')`.
 
 
 
-> 
 ### <a id="mixitup.Mixer#isMixing">mixitup.Mixer.isMixing</a>
 
 **Version added: 2.0.0**
@@ -93,7 +98,6 @@ currently in progress.
 
 
 
-> 
 ### <a id="mixitup.Mixer#filter">mixitup.Mixer.filter</a>
 
 **Version added: 2.0.0**
@@ -113,7 +117,6 @@ Filters the mixer according to the specified filter command.
 
 
 
-> 
 ### <a id="mixitup.Mixer#toggleOn">mixitup.Mixer.toggleOn</a>
 
 **Version added: 3.0.0**
@@ -133,7 +136,6 @@ Adds a selector to the currently active set of toggles and filters the mixer.
 
 
 
-> 
 ### <a id="mixitup.Mixer#toggleOff">mixitup.Mixer.toggleOff</a>
 
 **Version added: 3.0.0**
@@ -153,7 +155,6 @@ Removes a selector from the currently active set of toggles and filters the mixe
 
 
 
-> 
 ### <a id="mixitup.Mixer#sort">mixitup.Mixer.sort</a>
 
 **Version added: 2.0.0**
@@ -173,7 +174,6 @@ Sorts the mixer according to the specified sort command.
 
 
 
-> 
 ### <a id="mixitup.Mixer#changeLayout">mixitup.Mixer.changeLayout</a>
 
 **Version added: 2.0.0**
@@ -188,7 +188,6 @@ Sorts the mixer according to the specified sort command.
 
 
 
-> 
 ### <a id="mixitup.Mixer#getOperation">mixitup.Mixer.getOperation</a>
 
 **Version added: 3.0.0**
@@ -205,7 +204,6 @@ Sorts the mixer according to the specified sort command.
 
 
 
-> 
 ### <a id="mixitup.Mixer#multimix">mixitup.Mixer.multimix</a>
 
 **Version added: 2.0.0**
@@ -226,7 +224,6 @@ operations as requested.
 
 
 
-> 
 ### <a id="mixitup.Mixer#tween">mixitup.Mixer.tween</a>
 
 **Version added: 3.0.0**
@@ -246,7 +243,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#insert">mixitup.Mixer.insert</a>
 
 **Version added: 2.0.0**
@@ -261,7 +257,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#insertBefore">mixitup.Mixer.insertBefore</a>
 
 **Version added: 3.0.0**
@@ -276,7 +271,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#insertAfter">mixitup.Mixer.insertAfter</a>
 
 **Version added: 3.0.0**
@@ -291,7 +285,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#prepend">mixitup.Mixer.prepend</a>
 
 **Version added: 2.0.0**
@@ -306,7 +299,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#append">mixitup.Mixer.append</a>
 
 **Version added: 2.0.0**
@@ -321,7 +313,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#remove">mixitup.Mixer.remove</a>
 
 **Version added: 3.0.0**
@@ -336,7 +327,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#getConfig">mixitup.Mixer.getConfig</a>
 
 **Version added: 2.0.0**
@@ -352,7 +342,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#configure">mixitup.Mixer.configure</a>
 
 **Version added: 2.0.0**
@@ -368,7 +357,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#getState">mixitup.Mixer.getState</a>
 
 **Version added: 2.0.0**
@@ -383,7 +371,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#forceRefresh">mixitup.Mixer.forceRefresh</a>
 
 **Version added: 2.1.2**
@@ -398,7 +385,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#destroy">mixitup.Mixer.destroy</a>
 
 **Version added: 2.0.0**
@@ -414,7 +400,6 @@ determined by a multiplier between 0 and 1.
 
 
 
-> 
 ### <a id="mixitup.Mixer#mixitup">mixitup.Mixer.mixitup</a>
 
 **Version added: 3.0.0**
@@ -433,14 +418,18 @@ to the method.
 |Returns |`Promise.<Array.<mixitup.State>>` | 
 
 
-```jsvar collection = new Collection([mixer1, mixer2]);
+```js
+var collection = new Collection([mixer1, mixer2]);
 
 return collection.mixer('filter', '.cat-1')
     .then(function(states) {
         console.log('all instances filtered');
     });
 ```
+
 > 
+
+
 ### <a id="mixitup.Mixer.attach">mixitup.Mixer.attach</a>
 
 
@@ -458,4 +447,3 @@ return collection.mixer('filter', '.cat-1')
 
 
 
-> 

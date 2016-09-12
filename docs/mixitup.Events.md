@@ -14,8 +14,6 @@ which includes a `detail` property containting references to the current `state`
 the `mixer` instance, and other event-specific properties described below.
 
 
-
-
 ## Members
 
 ### <a id="mixitup.Events.mixStart">mixitup.Events.mixStart</a>
@@ -36,7 +34,6 @@ the requested operation has completed.
 |`CustomEvent`
 
 
-> 
 ### <a id="mixitup.Events.mixBusy">mixitup.Events.mixBusy</a>
 
 
@@ -52,7 +49,6 @@ is disabled.
 |`CustomEvent`
 
 
-> 
 ### <a id="mixitup.Events.mixEnd">mixitup.Events.mixEnd</a>
 
 
@@ -67,7 +63,6 @@ state has been updated.
 |`CustomEvent`
 
 
-> 
 ### <a id="mixitup.Events.mixFail">mixitup.Events.mixFail</a>
 
 
@@ -82,7 +77,6 @@ could be found matching the filter.
 |`CustomEvent`
 
 
-> 
 ### <a id="mixitup.Events.mixClick">mixitup.Events.mixClick</a>
 
 
@@ -100,4 +94,3 @@ object, which holds a reference to the original click event.
 |`CustomEvent`
 
 
-> 

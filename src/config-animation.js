@@ -21,9 +21,7 @@ mixitup.ConfigAnimation = function() {
      * If `false`, all operations will occur instantly and syncronously, although callback
      * functions and any returned promises will still be fulfilled.
      *
-     * @example
-     * // Create a mixer with all animations disabled:
-     *
+     * @example <caption>Example: Create a mixer with all animations disabled</caption>
      * var mixer = mixitup(containerEl, {
      *     animation: {
      *         enable: false
