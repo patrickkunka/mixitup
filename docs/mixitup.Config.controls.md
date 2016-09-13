@@ -105,7 +105,7 @@ set of controls and keep the controls scope of each mixer set to `global`.
 
 |Type | Default
 |---  | ---
-|`string`| `true`
+|`string`| `'global'`
 
 > Example: Setting 'local' scoped controls
 
@@ -124,5 +124,96 @@ var mixerTwo = mixitup(containerTwo, {
 
 // Both mixers can now exist within the same document with
 // isolated controls placed within their container elements.
+```
+
+### <a id="mixitup.Config.controls#toggleLogic">mixitup.Config.controls.toggleLogic</a>
+
+
+
+
+A string dictating the type of logic to apply when concatenating the filter selectors of
+active toggle buttons (i.e. any clickable element with a `data-toggle` attribute).
+
+If set to `'or'` (default behavior), selectors will be concatenated together as
+a comma-seperated list. For example:
+
+`'.cat-1, .cat-2'` (shows any elements matching `'.cat-1'` OR `'.cat-2'`)
+
+If set to `'and'`, selectors will be directly concatenated together. For example:
+
+`'.cat-1.cat-2'` (shows any elements which match both `'.cat-1'` AND `'.cat-2'`)
+
+
+|Type | Default
+|---  | ---
+|`string`| `'or'`
+
+> Example: Setting "and" toggle logic
+
+```js
+var mixer = mixitup(containerEl, {
+    controls: {
+        toggleLogic: 'and'
+    }
+});
+```
+
+### <a id="mixitup.Config.controls#toggleDefault">mixitup.Config.controls.toggleDefault</a>
+
+
+
+
+A string dictating the filter behavior when all toggles are inactive.
+
+When set to `'all'` (default behavior), *all* targets will be shown by default
+when no toggles are active, or at the moment all active toggles are toggled off.
+
+When set to `'none'`, no targets will be shown by default when no toggles are
+active, or at the moment all active toggles are toggled off.
+
+
+|Type | Default
+|---  | ---
+|`string`| `'all'`
+
+> Example 1: Setting the default toggle behavior to `'all'`
+
+```js
+var mixer = mixitup(containerEl, {
+    controls: {
+        toggleDefault: 'all'
+    }
+});
+
+mixer.toggleOn('.cat-2')
+    .then(function() {
+        // Deactivate all active toggles
+
+        return mixer.toggleOff('.cat-2')
+    })
+    .then(function(state) {
+         console.log(state.activeFilter.selector); // 'all'
+         console.log(state.totalShow); // 12
+    });
+```
+> Example 2: Setting the default toggle behavior to `'none'`
+
+```js
+var mixer = mixitup(containerEl, {
+    controls: {
+        toggleDefault: 'none'
+    }
+});
+
+mixer.toggleOn('.cat-2')
+    .then(function() {
+        // Deactivate all active toggles
+
+        return mixer.toggleOff('.cat-2')
+    })
+    .then(function(state) {
+         console.log(state.activeFilter.selector); // 'none'
+         console.log(state.totalShow); // 0
+    });
 ```
 

@@ -47,7 +47,7 @@ mixitup.ConfigControls = function() {
      * @default     true
      */
 
-    this.enable         = true;
+    this.enable = true;
 
     /**
      * A boolean dictating whether or not to use event delegation when binding click events
@@ -119,10 +119,10 @@ mixitup.ConfigControls = function() {
      * @memberof    mixitup.Config.controls
      * @instance
      * @type        {string}
-     * @default     true
+     * @default     'global'
      */
 
-    this.scope          = 'global'; // enum: ['local' ,'global']
+    this.scope = 'global'; // enum: ['local' ,'global']
 
     /**
      * A string dictating the type of logic to apply when concatenating the filter selectors of
@@ -143,9 +143,15 @@ mixitup.ConfigControls = function() {
      *         toggleLogic: 'and'
      *     }
      * });
+     *
+     * @name        toggleLogic
+     * @memberof    mixitup.Config.controls
+     * @instance
+     * @type        {string}
+     * @default     'or'
      */
 
-    this.toggleLogic    = 'or'; // enum: ['or', 'and']
+    this.toggleLogic = 'or'; // enum: ['or', 'and']
 
     /**
      * A string dictating the filter behavior when all toggles are inactive.
@@ -191,9 +197,15 @@ mixitup.ConfigControls = function() {
      *          console.log(state.activeFilter.selector); // 'none'
      *          console.log(state.totalShow); // 0
      *     });
+     *
+     * @name        toggleDefault
+     * @memberof    mixitup.Config.controls
+     * @instance
+     * @type        {string}
+     * @default     'all'
      */
 
-    this.toggleDefault  = 'all'; // enum: ['all', 'none']
+    this.toggleDefault = 'all'; // enum: ['all', 'none']
 
     this.callActions('afterConstruct');
 
