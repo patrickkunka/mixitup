@@ -2,8 +2,8 @@
 
 /**
  * `mixitup.Config` is an interface implemented by MixItUp as a means of customising
- * the functionality of your mixitup instance. It is organised into several semantically
- * distinct sub-objects, each one dealing with a particular aspect of MixItUp functionality.
+ * the functionality of an instance. It is organised into several semantically
+ * distinct sub-objects, each one pertaining to a particular aspect of MixItUp functionality.
  *
  * An object literal containing any or all of the available properies,
  * known as the "configuration object", can be passed as the second parameter to
@@ -25,15 +25,9 @@
  *     }
  * };
  *
- * // The configuration object can then passed the mixitup factory function
- * // to customise the functionality of the mixer.
+ * // The configuration object is then passed to the mixitup factory function
  *
  * var mixer = mixitup(containerEl, config);
- *
- * console.log(mixer.getConfig('animation.enable')) // false
- * console.log(mixer.getConfig('selectors.target')) // '.item'
- *
- * // The mixer is configured according to the values we defined
  *
  * @example <caption>Example 2: Passing the configuration object inline</caption>
  * // Typically, the configuration object is passed inline for terseness.

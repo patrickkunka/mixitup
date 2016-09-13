@@ -93,8 +93,8 @@ mixitup.ConfigControls = function() {
      * to bind, or delegate click events from (see `config.controls.live`).
      *
      * When set to `'local'`, MixItUp will only query (or bind click events to) its own container element.
-     * This may be desireable if you require multiple active mixer instances within the same document, who's
-     * controls would would otherwise intefere with each other if scoped globally.
+     * This may be desireable if you require multiple active mixer instances within the same document, with
+     * controls that would otherwise intefere with each other if scoped globally.
      *
      * Conversely, if you wish to control multiple instances with a single UI, you would create one
      * set of controls and keep the controls scope of each mixer set to `global`.

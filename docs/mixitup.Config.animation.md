@@ -2,7 +2,7 @@
 
 ## Overview
 
-A group of configurable properties relating to MixItUp's animation and effects options.
+A group of properties defining MixItUp's animation and effects settings.
 
 
 ## Members

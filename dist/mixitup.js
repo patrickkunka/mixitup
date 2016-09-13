@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build f91e5bae-270e-4499-8391-553d7037138b
+ * Build 22807dee-4391-4686-b1f6-06af4aae5586
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1229,7 +1229,7 @@
     };
 
     /**
-     * A group of configurable properties relating to MixItUp's animation and effects options.
+     * A group of properties defining MixItUp's animation and effects settings.
      *
      * @constructor
      * @memberof    mixitup.Config
@@ -1790,8 +1790,8 @@
          * to bind, or delegate click events from (see `config.controls.live`).
          *
          * When set to `'local'`, MixItUp will only query (or bind click events to) its own container element.
-         * This may be desireable if you require multiple active mixer instances within the same document, who's
-         * controls would would otherwise intefere with each other if scoped globally.
+         * This may be desireable if you require multiple active mixer instances within the same document, with
+         * controls that would otherwise intefere with each other if scoped globally.
          *
          * Conversely, if you wish to control multiple instances with a single UI, you would create one
          * set of controls and keep the controls scope of each mixer set to `global`.
@@ -1916,6 +1916,17 @@
     mixitup.ConfigControls.prototype.constructor = mixitup.ConfigControls;
 
     /**
+     * A group of properties defining the output and structure of classnames programmatically
+     * added to controls and containers to reflect the state of the mixer.
+     *
+     * Using a "BEM" like structure, each classname is broken into the three parts by default:
+     * a block namespace ("mixitup"), an element name (e.g. "control"), and an optional modifier
+     * name (e.g. "active") reflecting the state of the element.
+     *
+     * By default, each part of the classname is concatenated together using single hyphens as
+     * delineators, but this can be easily customised to match the naming convention and style of
+     * your proejct.
+     *
      * @constructor
      * @memberof    mixitup.Config
      * @name        classnames
@@ -1929,14 +1940,94 @@
 
         this.callActions('beforeConstruct');
 
-        this.block              = 'mixitup';
-        this.elementFilter      = 'control';
-        this.elementSort        = 'control';
-        this.elementMultimix    = 'control';
-        this.elementToggle      = 'control';
-        this.modifierActive     = 'active';
-        this.modifierDisabled   = 'disabled';
-        this.delineatorElement  = '-';
+        /**
+         * @name        block
+         * @memberof    mixitup.Config.classnames
+         * @instance
+         * @type        {string}
+         * @default     'mixitup'
+         */
+
+        this.block = 'mixitup';
+
+        /**
+         * @name        elementFilter
+         * @memberof    mixitup.Config.classnames
+         * @instance
+         * @type        {string}
+         * @default     'control'
+         */
+
+        this.elementFilter = 'control';
+
+        /**
+         * @name        elementSort
+         * @memberof    mixitup.Config.classnames
+         * @instance
+         * @type        {string}
+         * @default     'control'
+         */
+
+        this.elementSort = 'control';
+
+        /**
+         * @name        elementMultimix
+         * @memberof    mixitup.Config.classnames
+         * @instance
+         * @type        {string}
+         * @default     'control'
+         */
+
+        this.elementMultimix = 'control';
+
+        /**
+         * @name        elementToggle
+         * @memberof    mixitup.Config.classnames
+         * @instance
+         * @type        {string}
+         * @default     'control'
+         */
+
+        this.elementToggle = 'control';
+
+        /**
+         * @name        modifierActive
+         * @memberof    mixitup.Config.classnames
+         * @instance
+         * @type        {string}
+         * @default     'active'
+         */
+
+        this.modifierActive = 'active';
+
+        /**
+         * @name        modifierDisabled
+         * @memberof    mixitup.Config.classnames
+         * @instance
+         * @type        {string}
+         * @default     'disabled'
+         */
+
+        this.modifierDisabled = 'disabled';
+
+        /**
+         * @name        delineatorElement
+         * @memberof    mixitup.Config.classnames
+         * @instance
+         * @type        {string}
+         * @default     '-'
+         */
+
+        this.delineatorElement = '-';
+
+        /**
+         * @name        delineatorModifier
+         * @memberof    mixitup.Config.classnames
+         * @instance
+         * @type        {string}
+         * @default     '-'
+         */
+
         this.delineatorModifier = '-';
 
         this.callActions('afterConstruct');
@@ -2091,8 +2182,8 @@
 
     /**
      * `mixitup.Config` is an interface implemented by MixItUp as a means of customising
-     * the functionality of your mixitup instance. It is organised into several semantically
-     * distinct sub-objects, each one dealing with a particular aspect of MixItUp functionality.
+     * the functionality of an instance. It is organised into several semantically
+     * distinct sub-objects, each one pertaining to a particular aspect of MixItUp functionality.
      *
      * An object literal containing any or all of the available properies,
      * known as the "configuration object", can be passed as the second parameter to
@@ -2114,15 +2205,9 @@
      *     }
      * };
      *
-     * // The configuration object can then passed the mixitup factory function
-     * // to customise the functionality of the mixer.
+     * // The configuration object is then passed to the mixitup factory function
      *
      * var mixer = mixitup(containerEl, config);
-     *
-     * console.log(mixer.getConfig('animation.enable')) // false
-     * console.log(mixer.getConfig('selectors.target')) // '.item'
-     *
-     * // The mixer is configured according to the values we defined
      *
      * @example <caption>Example 2: Passing the configuration object inline</caption>
      * // Typically, the configuration object is passed inline for terseness.

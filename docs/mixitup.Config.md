@@ -3,8 +3,8 @@
 ## Overview
 
 `mixitup.Config` is an interface implemented by MixItUp as a means of customising
-the functionality of your mixitup instance. It is organised into several semantically
-distinct sub-objects, each one dealing with a particular aspect of MixItUp functionality.
+the functionality of an instance. It is organised into several semantically
+distinct sub-objects, each one pertaining to a particular aspect of MixItUp functionality.
 
 An object literal containing any or all of the available properies,
 known as the "configuration object", can be passed as the second parameter to
@@ -23,7 +23,7 @@ configuration values detailed below.
 
 
 
-A group of configurable properties relating to MixItUp's animation and effects options.
+A group of properties defining MixItUp's animation and effects settings.
 
 
 
@@ -56,7 +56,16 @@ A group of configurable properties relating to MixItUp's animation and effects o
 
 
 
+A group of properties defining the output and structure of classnames programmatically
+added to controls and containers to reflect the state of the mixer.
 
+Using a "BEM" like structure, each classname is broken into the three parts by default:
+a block namespace ("mixitup"), an element name (e.g. "control"), and an optional modifier
+name (e.g. "active") reflecting the state of the element.
+
+By default, each part of the classname is concatenated together using single hyphens as
+delineators, but this can be easily customised to match the naming convention and style of
+your proejct.
 
 
 
