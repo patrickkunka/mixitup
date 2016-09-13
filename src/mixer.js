@@ -2550,16 +2550,18 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        operation.startFilter = operation.newFilter = operation.startState.activeFilter;
+        operation.startFilter = operation.startState.activeFilter;
 
         if (filterCommand) {
             operation.newFilter = filterCommand;
+        } else {
+            operation.newFilter = h.extend(new mixitup.CommandFilter(), operation.startFilter);
+        }
 
-            if (operation.newFilter.selector === 'all') {
-                operation.newFilter.selector = self.config.selectors.target;
-            } else if (operation.newFilter.selector === 'none') {
-                operation.newFilter.selector = '';
-            }
+        if (operation.newFilter.selector === 'all') {
+            operation.newFilter.selector = self.config.selectors.target;
+        } else if (operation.newFilter.selector === 'none') {
+            operation.newFilter.selector = '';
         }
 
         self.filterOperation(operation);
