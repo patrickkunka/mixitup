@@ -51,7 +51,7 @@ gulp.task('uglify', ['build'], function() {
 });
 
 gulp.task('build', ['build-dist'], function(done) {
-    exec('node node_modules/mixitup-build/docs.js', function(e, out) {
+    exec('node node_modules/mixitup-build/docs.js -s mixitup.js', function(e, out) {
         if (out) {
             console.log(out);
         }
