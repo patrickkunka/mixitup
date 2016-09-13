@@ -2,14 +2,17 @@
 
 ## Overview
 
-The `mixitup.Config` class encompasses the full set of user-configurable
-options for each MixItUp instance, and is organised into to several
-semantically distinct sub-objects.
+`mixitup.Config` is an interface implemented by MixItUp as a means of customising
+the functionality of your mixitup instance. It is organised into several semantically
+distinct sub-objects, each one dealing with a particular aspect of MixItUp functionality.
 
-An optional object literal containing any or all of these properies,
+An object literal containing any or all of the available properies,
 known as the "configuration object", can be passed as the second parameter to
 the `mixitup` factory function when creating a mixer instance to customise its
-functionality as desired.
+functionality as needed.
+
+If no congiguration object is passed, the mixer instance will take on the default
+configuration values detailed below.
 
 
 ## Members

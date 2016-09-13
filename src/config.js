@@ -1,17 +1,20 @@
 /* global mixitup, h */
 
 /**
- * The `mixitup.Config` class encompasses the full set of user-configurable
- * options for each MixItUp instance, and is organised into to several
- * semantically distinct sub-objects.
+ * `mixitup.Config` is an interface implemented by MixItUp as a means of customising
+ * the functionality of your mixitup instance. It is organised into several semantically
+ * distinct sub-objects, each one dealing with a particular aspect of MixItUp functionality.
  *
- * An optional object literal containing any or all of these properies,
+ * An object literal containing any or all of the available properies,
  * known as the "configuration object", can be passed as the second parameter to
  * the `mixitup` factory function when creating a mixer instance to customise its
- * functionality as desired.
+ * functionality as needed.
  *
- * @example <caption>Example: Creating and passing the configuration object</caption>
- * // Create a configuration object with your desired values
+ * If no congiguration object is passed, the mixer instance will take on the default
+ * configuration values detailed below.
+ *
+ * @example <caption>Example 1: Creating and passing the configuration object</caption>
+ * // Firstly we create a configuration object with our desired values
  *
  * var config = {
  *     animation: {
@@ -22,10 +25,26 @@
  *     }
  * };
  *
- * // Pass it to the mixitup factory function to customise
- * // the functionality of your mixer.
+ * // The configuration object can then passed the mixitup factory function
+ * // to customise the functionality of the mixer.
  *
  * var mixer = mixitup(containerEl, config);
+ *
+ * console.log(mixer.getConfig('animation.enable')) // false
+ * console.log(mixer.getConfig('selectors.target')) // '.item'
+ *
+ * // The mixer is configured according to the values we defined
+ *
+ * @example <caption>Example 2: Passing the configuration object inline</caption>
+ * // Typically, the configuration object is passed inline for terseness.
+ *
+ * var mixer = mixitup(containerEl, {
+ *     controls: {
+ *         live: true,
+ *         toggleLogic: 'and'
+ *     }
+ * });
+ *
  *
  * @constructor
  * @memberof    mixitup
