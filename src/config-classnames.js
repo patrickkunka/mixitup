@@ -4,9 +4,12 @@
  * A group of properties defining the output and structure of classnames programmatically
  * added to controls and containers to reflect the state of the mixer.
  *
- * Using a "BEM" like structure, each classname is broken into the three parts by default:
- * a block namespace ("mixitup"), an element name (e.g. "control"), and an optional modifier
- * name (e.g. "active") reflecting the state of the element.
+ * Most commonly, classnames are added to control buttons by MixItUp to indicate that
+ * the control is active so that it can be styled accordingly - `'mixitup-control-active'` by default.
+ *
+ * Using a "BEM" like structure, each classname is broken into the three parts:
+ * a block namespace (`'mixitup'`), an element name (e.g. `'control'`), and an optional modifier
+ * name (e.g. `'active'`) reflecting the state of the element.
  *
  * By default, each part of the classname is concatenated together using single hyphens as
  * delineators, but this can be easily customised to match the naming convention and style of
@@ -26,6 +29,26 @@ mixitup.ConfigClassnames = function() {
     this.callActions('beforeConstruct');
 
     /**
+     * The "block" portion, or top-level namespace added to the start of all classnames created by MixItUp.
+     *
+     * @example <caption>Example 1: changing the `config.classnames.block` value</caption>
+     * var mixer = mixitup(containerEl, {
+     *     classnames: {
+     *         block: 'portfolio'
+     *     }
+     * });
+     *
+     * // example active control output: "portfolio-control-active"
+     *
+     * @example <caption>Example 2: Removing `config.classnames.block`</caption>
+     * var mixer = mixitup(containerEl, {
+     *     classnames: {
+     *         block: ''
+     *     }
+     * });
+     *
+     * // example active control output: "control-active"
+     *
      * @name        block
      * @memberof    mixitup.Config.classnames
      * @instance
@@ -36,6 +59,30 @@ mixitup.ConfigClassnames = function() {
     this.block = 'mixitup';
 
     /**
+     * The "element" portion for a filter control button.
+     *
+     * By default, all filter, sort, multimix and toggle buttons take the same element value of `'control'`, but
+     * each type's element value can be individually overwritten to match the UI classnames of your project as needed.
+     *
+     * @example <caption>Example 1: changing the `config.classnames.elementFilter` value</caption>
+     * var mixer = mixitup(containerEl, {
+     *     classnames: {
+     *         elementFilter: 'filter'
+     *     }
+     * });
+     *
+     * // example active control output: "mixitup-filter-active"
+     *
+     * @example <caption>Example 2: changing the `config.classnames.block` and `config.classnames.elementFilter` values</caption>
+     * var mixer = mixitup(containerEl, {
+     *     classnames: {
+     *         block: 'portfolio',
+     *         elementFilter: 'filter'
+     *     }
+     * });
+     *
+     * // example active control output: "portfolio-filter-active"
+     *
      * @name        elementFilter
      * @memberof    mixitup.Config.classnames
      * @instance
@@ -46,6 +93,30 @@ mixitup.ConfigClassnames = function() {
     this.elementFilter = 'control';
 
     /**
+     * The "element" portion for a sort control button.
+     *
+     * By default, all filter, sort, multimix and toggle buttons take the same element value of `'control'`, but
+     * each type's element value can be individually overwritten to match the UI classnames of your project as needed.
+     *
+     * @example <caption>Example 1: changing the `config.classnames.elementSort` value</caption>
+     * var mixer = mixitup(containerEl, {
+     *     classnames: {
+     *         elementSort: 'sort'
+     *     }
+     * });
+     *
+     * // example active control output: "mixitup-sort-active"
+     *
+     * @example <caption>Example 2: changing the `config.classnames.block` and `config.classnames.elementSort` values</caption>
+     * var mixer = mixitup(containerEl, {
+     *     classnames: {
+     *         block: 'portfolio',
+     *         elementSort: 'sort'
+     *     }
+     * });
+     *
+     * // example active control output: "portfolio-sort-active"
+     *
      * @name        elementSort
      * @memberof    mixitup.Config.classnames
      * @instance
@@ -56,6 +127,30 @@ mixitup.ConfigClassnames = function() {
     this.elementSort = 'control';
 
     /**
+     * The "element" portion for a multimix control button.
+     *
+     * By default, all filter, sort, multimix and toggle buttons take the same element value of `'control'`, but
+     * each type's element value can be individually overwritten to match the UI classnames of your project as needed.
+     *
+     * @example <caption>Example 1: changing the `config.classnames.elementMultimix` value</caption>
+     * var mixer = mixitup(containerEl, {
+     *     classnames: {
+     *         elementMultimix: 'multimix'
+     *     }
+     * });
+     *
+     * // example active control output: "mixitup-multimix-active"
+     *
+     * @example <caption>Example 2: changing the `config.classnames.block` and `config.classnames.elementMultimix` values</caption>
+     * var mixer = mixitup(containerEl, {
+     *     classnames: {
+     *         block: 'portfolio',
+     *         elementSort: 'multimix'
+     *     }
+     * });
+     *
+     * // example active control output: "portfolio-multimix-active"
+     *
      * @name        elementMultimix
      * @memberof    mixitup.Config.classnames
      * @instance
