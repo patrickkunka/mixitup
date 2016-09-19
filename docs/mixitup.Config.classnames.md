@@ -24,7 +24,7 @@ your proejct.
 
 
 
-The "block" portion, or top-level namespace added to the start of all classnames created by MixItUp.
+The "block" portion, or top-level namespace added to the start of any classnames created by MixItUp.
 
 
 |Type | Default
@@ -59,10 +59,10 @@ var mixer = mixitup(containerEl, {
 
 
 
-The "element" portion for a filter control button.
+The "element" portion of the classname added to filter controls.
 
-By default, all filter, sort, multimix and toggle buttons take the same element value of `'control'`, but
-each type's element value can be individually overwritten to match the UI classnames of your project as needed.
+By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
+each type's element value can be individually overwritten to match the unique classnames of your controls as needed.
 
 
 |Type | Default
@@ -78,7 +78,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active control output: "mixitup-filter-active"
+// example active filter output: "mixitup-filter-active"
 ```
 > Example 2: changing the `config.classnames.block` and `config.classnames.elementFilter` values
 
@@ -90,7 +90,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active control output: "portfolio-filter-active"
+// example active filter output: "portfolio-filter-active"
 ```
 
 ### <a id="mixitup.Config.classnames#elementSort">mixitup.Config.classnames.elementSort</a>
@@ -98,10 +98,10 @@ var mixer = mixitup(containerEl, {
 
 
 
-The "element" portion for a sort control button.
+The "element" portion of the classname added to sort controls.
 
-By default, all filter, sort, multimix and toggle buttons take the same element value of `'control'`, but
-each type's element value can be individually overwritten to match the UI classnames of your project as needed.
+By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
+each type's element value can be individually overwritten to match the unique classnames of your controls as needed.
 
 
 |Type | Default
@@ -117,7 +117,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active control output: "mixitup-sort-active"
+// example active sort output: "mixitup-sort-active"
 ```
 > Example 2: changing the `config.classnames.block` and `config.classnames.elementSort` values
 
@@ -129,7 +129,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active control output: "portfolio-sort-active"
+// example active sort output: "portfolio-sort-active"
 ```
 
 ### <a id="mixitup.Config.classnames#elementMultimix">mixitup.Config.classnames.elementMultimix</a>
@@ -137,10 +137,10 @@ var mixer = mixitup(containerEl, {
 
 
 
-The "element" portion for a multimix control button.
+The "element" portion of the classname added to multimix controls.
 
-By default, all filter, sort, multimix and toggle buttons take the same element value of `'control'`, but
-each type's element value can be individually overwritten to match the UI classnames of your project as needed.
+By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
+each type's element value can be individually overwritten to match the unique classnames of your controls as needed.
 
 
 |Type | Default
@@ -156,7 +156,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active control output: "mixitup-multimix-active"
+// example active multimix output: "mixitup-multimix-active"
 ```
 > Example 2: changing the `config.classnames.block` and `config.classnames.elementMultimix` values
 
@@ -168,7 +168,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active control output: "portfolio-multimix-active"
+// example active multimix output: "portfolio-multimix-active"
 ```
 
 ### <a id="mixitup.Config.classnames#elementToggle">mixitup.Config.classnames.elementToggle</a>
@@ -176,20 +176,46 @@ var mixer = mixitup(containerEl, {
 
 
 
+The "element" portion of the classname added to toggle controls.
 
+By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
+each type's element value can be individually overwritten to match the unique classnames of your controls as needed.
 
 
 |Type | Default
 |---  | ---
 |`string`| `'control'`
 
+> Example 1: changing the `config.classnames.elementToggle` value
+
+```js
+var mixer = mixitup(containerEl, {
+    classnames: {
+        elementToggle: 'toggle'
+    }
+});
+
+// example active toggle output: "mixitup-toggle-active"
+```
+> Example 2: changing the `config.classnames.block` and `config.classnames.elementToggle` values
+
+```js
+var mixer = mixitup(containerEl, {
+    classnames: {
+        block: 'portfolio',
+        elementToggle: 'toggle'
+    }
+});
+
+// example active toggle output: "portfolio-toggle-active"
+```
 
 ### <a id="mixitup.Config.classnames#modifierActive">mixitup.Config.classnames.modifierActive</a>
 
 
 
 
-
+The "modifier" portion of the classname added to active controls.
 
 
 |Type | Default
@@ -202,7 +228,7 @@ var mixer = mixitup(containerEl, {
 
 
 
-
+The "modifier" portion of the classname added to disabled controls.
 
 
 |Type | Default
@@ -215,24 +241,51 @@ var mixer = mixitup(containerEl, {
 
 
 
+The delineator used between the "block" and "element" portions of any classname added by MixItUp.
 
+If the block portion is ommited by setting it to an empty string, no delineator will be added.
 
 
 |Type | Default
 |---  | ---
 |`string`| `'-'`
 
+> Example: changing the delineator to match BEM convention
+
+```js
+var mixer = mixitup(containerEl, {
+    classnames: {
+        delineatorElement: '__'
+    }
+});
+
+// example active control output: "mixitup__control-active"
+```
 
 ### <a id="mixitup.Config.classnames#delineatorModifier">mixitup.Config.classnames.delineatorModifier</a>
 
 
 
 
+The delineator used between the "element" and "modifier" portions of any classname added by MixItUp.
 
+If the element portion is ommited by setting it to an empty string, no delineator will be added.
 
 
 |Type | Default
 |---  | ---
 |`string`| `'-'`
 
+> Example: changing both delineators to match BEM convention
+
+```js
+var mixer = mixitup(containerEl, {
+    classnames: {
+        delineatorElement: '__'
+        delineatorModifer: '--'
+    }
+});
+
+// example active control output: "mixitup__control--active"
+```
 
