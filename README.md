@@ -1,3 +1,7 @@
+> October 2016 Update: Development on MixItUp 3 is nearing completion on the <a href="https://github.com/patrickkunka/mixitup/tree/v3">`v3 branch`</a>. Over the next month we hope to complete the full documentation and launch a brand-new accompanying marketing & documentation site.
+>
+> In the meantime, please feel free to try it out (as the documentation appears), and please get in touch with any questions.
+
 MixItUp
 =========
 
