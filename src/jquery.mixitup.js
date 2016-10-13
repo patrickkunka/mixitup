@@ -455,9 +455,25 @@
 					self._processClick($(this), 'sort');
 				});
 
-				self._$filterButtons.on('click.mixItUp.'+self._id, function(){
-					self._processClick($(this), 'filter');
-				});
+				self._$filterButtons.each(function(i) {
+                var e = $(this);
+                switch(e.prop('tagName').toLowerCase()) {
+                    case 'option':
+                        var p = e.parent();
+                        if (!p.hasClass('mixItUp-bound')) {
+                            p.on('change.mixItUp.'+self._id, function(){
+                                self._processClick(p, 'filter');
+                            });
+                            p.addClass('mixItUp-bound');
+                        }
+                        break;
+                    default:
+                        e.on('click.mixItUp.'+self._id, function(){
+                            self._processClick(e, 'filter');
+                        });
+                }
+            });
+
 			}
 
 			filters[self.selectors.filter] = (filters[self.selectors.filter] === undf) ? 1 : filters[self.selectors.filter] + 1;
@@ -504,6 +520,7 @@
 				}
 
 				if(type === 'filter') {
+					$button = ($button.prop('tagName').toLowerCase() == 'select') ? $button.find(":selected") : $button;
 					var filter = $button.attr('data-filter'),
 						ndx,
 						seperator = self.controls.toggleLogic === 'or' ? ',' : '';
