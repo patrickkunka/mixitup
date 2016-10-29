@@ -153,11 +153,11 @@ h.extend(mixitup.Target.prototype, {
      * @private
      * @instance
      * @since   3.0.0
-     * @param   {object}    options
+     * @param   {mixitup.IMoveData} moveData
      * @return  {void}
      */
 
-    move: function(options) {
+    move: function(moveData) {
         var self = this;
 
         self.callActions('beforeMove', arguments);
@@ -166,13 +166,10 @@ h.extend(mixitup.Target.prototype, {
             self.mixer.targetsMoved++;
         }
 
-        self.applyStylesIn({
-            posIn: options.posIn,
-            hideOrShow: options.hideOrShow
-        });
+        self.applyStylesIn(moveData);
 
         requestAnimationFrame(function() {
-            self.applyStylesOut(options);
+            self.applyStylesOut(moveData);
         });
 
         self.callActions('afterMove', arguments);
@@ -255,13 +252,13 @@ h.extend(mixitup.Target.prototype, {
      *
      * @private
      * @instance
-     * @param   {object}    options
+     * @param   {mixitup.IMoveData} moveData
      * @return  {void}
      */
 
-    applyStylesIn: function(options) {
+    applyStylesIn: function(moveData) {
         var self            = this,
-            posIn           = options.posIn,
+            posIn           = moveData.posIn,
             isFading        = self.mixer.effectsIn.opacity !== 1,
             transformValues = [];
 
@@ -270,7 +267,7 @@ h.extend(mixitup.Target.prototype, {
         transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
 
         if (self.mixer.config.animation.animateResizeTargets) {
-            if (options.hideOrShow !== 'show') {
+            if (moveData.statusChange !== 'show') {
                 // Don't apply posIn width or height or showing, as will be 0
 
                 self.dom.el.style.width  = posIn.width + 'px';
@@ -283,7 +280,7 @@ h.extend(mixitup.Target.prototype, {
 
         isFading && (self.dom.el.style.opacity = posIn.opacity);
 
-        if (options.hideOrShow === 'show') {
+        if (moveData.statusChange === 'show') {
             transformValues = transformValues.concat(self.mixer.transformIn);
         }
 
@@ -298,11 +295,11 @@ h.extend(mixitup.Target.prototype, {
      *
      * @private
      * @instance
-     * @param   {object}    options
+     * @param   {mixitup.IMoveData} moveData
      * @return  {void}
      */
 
-    applyStylesOut: function(options) {
+    applyStylesOut: function(moveData) {
         var self            = this,
             transitionRules = [],
             transformValues = [],
@@ -315,41 +312,41 @@ h.extend(mixitup.Target.prototype, {
 
         transitionRules.push(self.writeTransitionRule(
             mixitup.features.transformRule,
-            options.staggerIndex
+            moveData.staggerIndex
         ));
 
-        if (options.hideOrShow) {
+        if (moveData.statusChange !== 'none') {
             transitionRules.push(self.writeTransitionRule(
                 'opacity',
-                options.staggerIndex,
-                options.duration
+                moveData.staggerIndex,
+                moveData.duration
             ));
         }
 
         if (isResizing) {
             transitionRules.push(self.writeTransitionRule(
                 'width',
-                options.staggerIndex,
-                options.duration
+                moveData.staggerIndex,
+                moveData.duration
             ));
 
             transitionRules.push(self.writeTransitionRule(
                 'height',
-                options.staggerIndex,
-                options.duration
+                moveData.staggerIndex,
+                moveData.duration
             ));
 
             transitionRules.push(self.writeTransitionRule(
                 'margin',
-                options.staggerIndex,
-                options.duration
+                moveData.staggerIndex,
+                moveData.duration
             ));
         }
 
         // If no callback was provided, the element will
         // not transition in any way so tag it as "immovable"
 
-        if (!options.callback) {
+        if (!moveData.callback) {
             self.mixer.targetsImmovable++;
 
             if (self.mixer.targetsMoved === self.mixer.targetsImmovable) {
@@ -357,7 +354,7 @@ h.extend(mixitup.Target.prototype, {
                 // number of immovable targets, the operation
                 // should be considered finished
 
-                self.mixer.cleanUp(options.operation);
+                self.mixer.cleanUp(moveData.operation);
             }
 
             return;
@@ -366,8 +363,8 @@ h.extend(mixitup.Target.prototype, {
         // If the target will transition in some fasion,
         // assign a callback function
 
-        self.operation = options.operation;
-        self.callback = options.callback;
+        self.operation = moveData.operation;
+        self.callback = moveData.callback;
 
         // As long as the target is not excluded, increment
         // the total number of targets bound
@@ -385,24 +382,24 @@ h.extend(mixitup.Target.prototype, {
 
         // Apply width, height and margin negation
 
-        if (isResizing && options.posOut.width > 0 && options.posOut.height > 0) {
-            self.dom.el.style.width        = options.posOut.width + 'px';
-            self.dom.el.style.height       = options.posOut.height + 'px';
-            self.dom.el.style.marginRight  = options.posOut.marginRight + 'px';
-            self.dom.el.style.marginBottom = options.posOut.marginBottom + 'px';
+        if (isResizing && moveData.posOut.width > 0 && moveData.posOut.height > 0) {
+            self.dom.el.style.width        = moveData.posOut.width + 'px';
+            self.dom.el.style.height       = moveData.posOut.height + 'px';
+            self.dom.el.style.marginRight  = moveData.posOut.marginRight + 'px';
+            self.dom.el.style.marginBottom = moveData.posOut.marginBottom + 'px';
         }
 
-        if (!self.mixer.config.animation.nudge && options.hideOrShow === 'hide') {
+        if (!self.mixer.config.animation.nudge && moveData.statusChange === 'hide') {
             // If we're not nudging, the translation should be
             // applied before any other transforms to prevent
             // lateral movement
 
-            transformValues.push('translate(' + options.posOut.x + 'px, ' + options.posOut.y + 'px)');
+            transformValues.push('translate(' + moveData.posOut.x + 'px, ' + moveData.posOut.y + 'px)');
         }
 
         // Apply fade
 
-        switch (options.hideOrShow) {
+        switch (moveData.statusChange) {
             case 'hide':
                 isFading && (self.dom.el.style.opacity = self.mixer.effectsOut.opacity);
 
@@ -415,12 +412,12 @@ h.extend(mixitup.Target.prototype, {
 
         if (
             self.mixer.config.animation.nudge ||
-            (!self.mixer.config.animation.nudge && options.hideOrShow !== 'hide')
+            (!self.mixer.config.animation.nudge && moveData.statusChange !== 'hide')
         ) {
             // Opposite of above - apply translate after
             // other transform
 
-            transformValues.push('translate(' + options.posOut.x + 'px, ' + options.posOut.y + 'px)');
+            transformValues.push('translate(' + moveData.posOut.x + 'px, ' + moveData.posOut.y + 'px)');
         }
 
         // Apply transforms
@@ -439,7 +436,7 @@ h.extend(mixitup.Target.prototype, {
      * @since   3.0.0
      * @param   {string}    property
      * @param   {number}    staggerIndex
-     * @param   {number}    [duration]
+     * @param   {number}    duration
      * @return  {string}
      */
 
@@ -449,7 +446,7 @@ h.extend(mixitup.Target.prototype, {
             rule  = '';
 
         rule = property + ' ' +
-            (duration || self.mixer.config.animation.duration) + 'ms ' +
+            (duration > 0 ? duration : self.mixer.config.animation.duration) + 'ms ' +
             delay + 'ms ' +
             (property === 'opacity' ? 'linear' : self.mixer.config.animation.easing);
 

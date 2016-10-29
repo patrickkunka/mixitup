@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build d57b47c1-30b4-46ce-a3c5-6e70527d514e
+ * Build f4faa3e6-ecc9-4e6a-be25-fa9c7e62cd80
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -5209,8 +5209,9 @@
         moveTargets: function(operation) {
             var self            = this,
                 target          = null,
+                moveData        = null,
                 posData         = null,
-                hideOrShow      = '',
+                statusChange    = '',
                 willTransition  = false,
                 staggerIndex    = -1,
                 i               = -1,
@@ -5219,15 +5220,16 @@
             self.callActions('beforeMoveTargets', arguments);
 
             // TODO: this is an extra loop in addition to the calcs
-            // done in getOperation, can we get around somehow?
+            // done in getOperation, could some of this be done there?
 
             for (i = 0; target = operation.show[i]; i++) {
-                posData = operation.showPosData[i];
+                moveData    = new mixitup.IMoveData();
+                posData     = operation.showPosData[i];
 
-                hideOrShow = target.isShown ? false : 'show'; // TODO: can we not mix types here?
+                statusChange = target.isShown ? 'none' : 'show';
 
                 willTransition = self.willTransition(
-                    hideOrShow,
+                    statusChange,
                     operation.hasEffect,
                     posData.posIn,
                     posData.posOut
@@ -5241,31 +5243,32 @@
 
                 target.show();
 
-                target.move({
-                    posIn: posData.posIn,
-                    posOut: posData.posOut,
-                    hideOrShow: hideOrShow,
-                    staggerIndex: staggerIndex,
-                    operation: operation,
-                    callback: willTransition ? checkProgress : null
-                });
+                moveData.posIn          = posData.posIn;
+                moveData.posOut         = posData.posOut;
+                moveData.statusChange   = statusChange;
+                moveData.staggerIndex   = staggerIndex;
+                moveData.operation      = operation;
+                moveData.callback       = willTransition ? checkProgress : null;
+
+                target.move(moveData);
             }
 
             for (i = 0; target = operation.toHide[i]; i++) {
-                posData = operation.toHidePosData[i];
+                posData  = operation.toHidePosData[i];
+                moveData = new mixitup.IMoveData();
 
-                hideOrShow = 'hide';
+                statusChange = 'hide';
 
-                willTransition = self.willTransition(hideOrShow, posData.posIn, posData.posOut);
+                willTransition = self.willTransition(statusChange, posData.posIn, posData.posOut);
 
-                target.move({
-                    posIn: posData.posIn,
-                    posOut: posData.posOut,
-                    hideOrShow: hideOrShow,
-                    staggerIndex: i,
-                    operation: operation,
-                    callback: willTransition ? checkProgress : null
-                });
+                moveData.posIn          = posData.posIn;
+                moveData.posOut         = posData.posOut;
+                moveData.statusChange   = statusChange;
+                moveData.staggerIndex   = i;
+                moveData.operation      = operation;
+                moveData.callback       = willTransition ? checkProgress : null;
+
+                target.move(moveData);
             }
 
             if (self.config.animation.animateResizeContainer) {
@@ -5333,14 +5336,14 @@
          * @private
          * @instance
          * @since   3.0.0
-         * @param   {string}        hideOrShow
+         * @param   {string}        statusChange
          * @param   {boolean}       hasEffect
          * @param   {StyleData}     posIn
          * @param   {StyleData}     posOut
          * @return  {boolean}
          */
 
-        willTransition: function(hideOrShow, hasEffect, posIn, posOut) {
+        willTransition: function(statusChange, hasEffect, posIn, posOut) {
             var self    = this,
                 result  = false;
 
@@ -5350,7 +5353,7 @@
 
                 result = false;
             } else if (
-                (hideOrShow && hasEffect) ||
+                (statusChange !== 'none' && hasEffect) ||
                 posIn.x !== posOut.x ||
                 posIn.y !== posOut.y
             ) {
@@ -6500,6 +6503,37 @@
      * @since       3.0.0
      */
 
+    mixitup.IMoveData = function() {
+        mixitup.Base.call(this);
+
+        this.callActions('beforeConstruct');
+
+        this.posIn          = null;
+        this.posOut         = null;
+        this.operation      = null;
+        this.callback       = null;
+        this.statusChange   = '';
+        this.duration       = -1;
+        this.staggerIndex   = -1;
+
+        this.callActions('afterConstruct');
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.IMoveData);
+
+    mixitup.IMoveData.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.IMoveData.prototype.constructor = mixitup.IMoveData;
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
     mixitup.TargetDom = function() {
         mixitup.Base.call(this);
 
@@ -6671,11 +6705,11 @@
          * @private
          * @instance
          * @since   3.0.0
-         * @param   {object}    options
+         * @param   {mixitup.IMoveData} moveData
          * @return  {void}
          */
 
-        move: function(options) {
+        move: function(moveData) {
             var self = this;
 
             self.callActions('beforeMove', arguments);
@@ -6684,13 +6718,10 @@
                 self.mixer.targetsMoved++;
             }
 
-            self.applyStylesIn({
-                posIn: options.posIn,
-                hideOrShow: options.hideOrShow
-            });
+            self.applyStylesIn(moveData);
 
             requestAnimationFrame(function() {
-                self.applyStylesOut(options);
+                self.applyStylesOut(moveData);
             });
 
             self.callActions('afterMove', arguments);
@@ -6773,13 +6804,13 @@
          *
          * @private
          * @instance
-         * @param   {object}    options
+         * @param   {mixitup.IMoveData} moveData
          * @return  {void}
          */
 
-        applyStylesIn: function(options) {
+        applyStylesIn: function(moveData) {
             var self            = this,
-                posIn           = options.posIn,
+                posIn           = moveData.posIn,
                 isFading        = self.mixer.effectsIn.opacity !== 1,
                 transformValues = [];
 
@@ -6788,7 +6819,7 @@
             transformValues.push('translate(' + posIn.x + 'px, ' + posIn.y + 'px)');
 
             if (self.mixer.config.animation.animateResizeTargets) {
-                if (options.hideOrShow !== 'show') {
+                if (moveData.statusChange !== 'show') {
                     // Don't apply posIn width or height or showing, as will be 0
 
                     self.dom.el.style.width  = posIn.width + 'px';
@@ -6801,7 +6832,7 @@
 
             isFading && (self.dom.el.style.opacity = posIn.opacity);
 
-            if (options.hideOrShow === 'show') {
+            if (moveData.statusChange === 'show') {
                 transformValues = transformValues.concat(self.mixer.transformIn);
             }
 
@@ -6816,11 +6847,11 @@
          *
          * @private
          * @instance
-         * @param   {object}    options
+         * @param   {mixitup.IMoveData} moveData
          * @return  {void}
          */
 
-        applyStylesOut: function(options) {
+        applyStylesOut: function(moveData) {
             var self            = this,
                 transitionRules = [],
                 transformValues = [],
@@ -6833,41 +6864,41 @@
 
             transitionRules.push(self.writeTransitionRule(
                 mixitup.features.transformRule,
-                options.staggerIndex
+                moveData.staggerIndex
             ));
 
-            if (options.hideOrShow) {
+            if (moveData.statusChange !== 'none') {
                 transitionRules.push(self.writeTransitionRule(
                     'opacity',
-                    options.staggerIndex,
-                    options.duration
+                    moveData.staggerIndex,
+                    moveData.duration
                 ));
             }
 
             if (isResizing) {
                 transitionRules.push(self.writeTransitionRule(
                     'width',
-                    options.staggerIndex,
-                    options.duration
+                    moveData.staggerIndex,
+                    moveData.duration
                 ));
 
                 transitionRules.push(self.writeTransitionRule(
                     'height',
-                    options.staggerIndex,
-                    options.duration
+                    moveData.staggerIndex,
+                    moveData.duration
                 ));
 
                 transitionRules.push(self.writeTransitionRule(
                     'margin',
-                    options.staggerIndex,
-                    options.duration
+                    moveData.staggerIndex,
+                    moveData.duration
                 ));
             }
 
             // If no callback was provided, the element will
             // not transition in any way so tag it as "immovable"
 
-            if (!options.callback) {
+            if (!moveData.callback) {
                 self.mixer.targetsImmovable++;
 
                 if (self.mixer.targetsMoved === self.mixer.targetsImmovable) {
@@ -6875,7 +6906,7 @@
                     // number of immovable targets, the operation
                     // should be considered finished
 
-                    self.mixer.cleanUp(options.operation);
+                    self.mixer.cleanUp(moveData.operation);
                 }
 
                 return;
@@ -6884,8 +6915,8 @@
             // If the target will transition in some fasion,
             // assign a callback function
 
-            self.operation = options.operation;
-            self.callback = options.callback;
+            self.operation = moveData.operation;
+            self.callback = moveData.callback;
 
             // As long as the target is not excluded, increment
             // the total number of targets bound
@@ -6903,24 +6934,24 @@
 
             // Apply width, height and margin negation
 
-            if (isResizing && options.posOut.width > 0 && options.posOut.height > 0) {
-                self.dom.el.style.width        = options.posOut.width + 'px';
-                self.dom.el.style.height       = options.posOut.height + 'px';
-                self.dom.el.style.marginRight  = options.posOut.marginRight + 'px';
-                self.dom.el.style.marginBottom = options.posOut.marginBottom + 'px';
+            if (isResizing && moveData.posOut.width > 0 && moveData.posOut.height > 0) {
+                self.dom.el.style.width        = moveData.posOut.width + 'px';
+                self.dom.el.style.height       = moveData.posOut.height + 'px';
+                self.dom.el.style.marginRight  = moveData.posOut.marginRight + 'px';
+                self.dom.el.style.marginBottom = moveData.posOut.marginBottom + 'px';
             }
 
-            if (!self.mixer.config.animation.nudge && options.hideOrShow === 'hide') {
+            if (!self.mixer.config.animation.nudge && moveData.statusChange === 'hide') {
                 // If we're not nudging, the translation should be
                 // applied before any other transforms to prevent
                 // lateral movement
 
-                transformValues.push('translate(' + options.posOut.x + 'px, ' + options.posOut.y + 'px)');
+                transformValues.push('translate(' + moveData.posOut.x + 'px, ' + moveData.posOut.y + 'px)');
             }
 
             // Apply fade
 
-            switch (options.hideOrShow) {
+            switch (moveData.statusChange) {
                 case 'hide':
                     isFading && (self.dom.el.style.opacity = self.mixer.effectsOut.opacity);
 
@@ -6933,12 +6964,12 @@
 
             if (
                 self.mixer.config.animation.nudge ||
-                (!self.mixer.config.animation.nudge && options.hideOrShow !== 'hide')
+                (!self.mixer.config.animation.nudge && moveData.statusChange !== 'hide')
             ) {
                 // Opposite of above - apply translate after
                 // other transform
 
-                transformValues.push('translate(' + options.posOut.x + 'px, ' + options.posOut.y + 'px)');
+                transformValues.push('translate(' + moveData.posOut.x + 'px, ' + moveData.posOut.y + 'px)');
             }
 
             // Apply transforms
@@ -6957,7 +6988,7 @@
          * @since   3.0.0
          * @param   {string}    property
          * @param   {number}    staggerIndex
-         * @param   {number}    [duration]
+         * @param   {number}    duration
          * @return  {string}
          */
 
@@ -6967,7 +6998,7 @@
                 rule  = '';
 
             rule = property + ' ' +
-                (duration || self.mixer.config.animation.duration) + 'ms ' +
+                (duration > 0 ? duration : self.mixer.config.animation.duration) + 'ms ' +
                 delay + 'ms ' +
                 (property === 'opacity' ? 'linear' : self.mixer.config.animation.easing);
 

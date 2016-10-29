@@ -1632,8 +1632,9 @@ h.extend(mixitup.Mixer.prototype,
     moveTargets: function(operation) {
         var self            = this,
             target          = null,
+            moveData        = null,
             posData         = null,
-            hideOrShow      = '',
+            statusChange    = '',
             willTransition  = false,
             staggerIndex    = -1,
             i               = -1,
@@ -1642,15 +1643,16 @@ h.extend(mixitup.Mixer.prototype,
         self.callActions('beforeMoveTargets', arguments);
 
         // TODO: this is an extra loop in addition to the calcs
-        // done in getOperation, can we get around somehow?
+        // done in getOperation, could some of this be done there?
 
         for (i = 0; target = operation.show[i]; i++) {
-            posData = operation.showPosData[i];
+            moveData    = new mixitup.IMoveData();
+            posData     = operation.showPosData[i];
 
-            hideOrShow = target.isShown ? false : 'show'; // TODO: can we not mix types here?
+            statusChange = target.isShown ? 'none' : 'show';
 
             willTransition = self.willTransition(
-                hideOrShow,
+                statusChange,
                 operation.hasEffect,
                 posData.posIn,
                 posData.posOut
@@ -1664,31 +1666,32 @@ h.extend(mixitup.Mixer.prototype,
 
             target.show();
 
-            target.move({
-                posIn: posData.posIn,
-                posOut: posData.posOut,
-                hideOrShow: hideOrShow,
-                staggerIndex: staggerIndex,
-                operation: operation,
-                callback: willTransition ? checkProgress : null
-            });
+            moveData.posIn          = posData.posIn;
+            moveData.posOut         = posData.posOut;
+            moveData.statusChange   = statusChange;
+            moveData.staggerIndex   = staggerIndex;
+            moveData.operation      = operation;
+            moveData.callback       = willTransition ? checkProgress : null;
+
+            target.move(moveData);
         }
 
         for (i = 0; target = operation.toHide[i]; i++) {
-            posData = operation.toHidePosData[i];
+            posData  = operation.toHidePosData[i];
+            moveData = new mixitup.IMoveData();
 
-            hideOrShow = 'hide';
+            statusChange = 'hide';
 
-            willTransition = self.willTransition(hideOrShow, posData.posIn, posData.posOut);
+            willTransition = self.willTransition(statusChange, posData.posIn, posData.posOut);
 
-            target.move({
-                posIn: posData.posIn,
-                posOut: posData.posOut,
-                hideOrShow: hideOrShow,
-                staggerIndex: i,
-                operation: operation,
-                callback: willTransition ? checkProgress : null
-            });
+            moveData.posIn          = posData.posIn;
+            moveData.posOut         = posData.posOut;
+            moveData.statusChange   = statusChange;
+            moveData.staggerIndex   = i;
+            moveData.operation      = operation;
+            moveData.callback       = willTransition ? checkProgress : null;
+
+            target.move(moveData);
         }
 
         if (self.config.animation.animateResizeContainer) {
@@ -1756,14 +1759,14 @@ h.extend(mixitup.Mixer.prototype,
      * @private
      * @instance
      * @since   3.0.0
-     * @param   {string}        hideOrShow
+     * @param   {string}        statusChange
      * @param   {boolean}       hasEffect
      * @param   {StyleData}     posIn
      * @param   {StyleData}     posOut
      * @return  {boolean}
      */
 
-    willTransition: function(hideOrShow, hasEffect, posIn, posOut) {
+    willTransition: function(statusChange, hasEffect, posIn, posOut) {
         var self    = this,
             result  = false;
 
@@ -1773,7 +1776,7 @@ h.extend(mixitup.Mixer.prototype,
 
             result = false;
         } else if (
-            (hideOrShow && hasEffect) ||
+            (statusChange !== 'none' && hasEffect) ||
             posIn.x !== posOut.x ||
             posIn.y !== posOut.y
         ) {

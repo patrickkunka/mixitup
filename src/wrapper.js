@@ -66,6 +66,8 @@
 
     {{>mixer}}
 
+    {{>i-move-data}}
+
     {{>target-dom}}
 
     {{>target}}
