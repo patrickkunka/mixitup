@@ -45,7 +45,7 @@ To get started, follow these few simple steps:
 
 By default, MixItUp will query the container for targets using the selector `'.mix'`.
 
-Targets can be filtered using any valid selector string (e.g. `'.category-a'`), and are sorted via custom data attributes (e.g. `'data-order'`).
+Targets can be filtered using any valid selector string e.g. `'.category-a'`, and are sorted via custom data attributes e.g. `'data-order'`.
 
 *NB: When structuring your markup, ensure that all targets are adjacent siblings in your container.*
 
@@ -62,7 +62,7 @@ If you prefer to use classes exclusively for styling, HTML5 data attributes can 
 </div>
 ```
 
-Simply configure MixItUp to query your targets via an attribute selector (e.g. `[data-ref="mix"]`), and filter accordingly (e.g. `[data-category~="a"]`).
+Simply configure MixItUp to query your targets via an attribute selector e.g. `[data-ref="mix"]`, and filter accordingly e.g. `[data-category~="a"]`.
 
 #### 2. Build Your Controls
 
@@ -70,7 +70,7 @@ One way that filtering and sorting happens is when controls are clicked. You may
 
 ##### Filter Controls
 
-Filter controls are queried based on the presence of a `data-filter` attribute, whose value must be a valid selector string (e.g. `'.category-a'`), `'all'` or `'none'`;
+Filter controls are queried based on the presence of a `data-filter` attribute, whose value must be a `'all'`, `'none'`, or a valid selector string e.g. `'.category-a'`.
 
 ```html
 <button type="button" data-filter="all">All</button>
@@ -83,12 +83,12 @@ For more information on MixItUp's full filtering functionality, see our [--websi
 
 ##### Sort Controls
 
-Sort controls are queried based on the presence of a `data-sort` attribute, whose value takes the form of a "sort string" made up of the name of the attribute to sort by, followed by an optional colon-separated sorting order (e.g. `'order'`, `'order:asc'`, `'order:desc'`).
+Sort controls are queried based on the presence of a `data-sort` attribute, whose value takes the form of a "sort string" made up of the name of the attribute to sort by, followed by an optional colon-separated sorting order e.g. `'order'`, `'order:asc'`, `'order:desc'`.
 
 ```html
-    <button type="button" data-sort="order:asc">Ascending</button>
-    <button type="button" data-sort="order:descending">Descending</button>
-    <button type="button" data-sort="random">Random</button>
+<button type="button" data-sort="order:asc">Ascending</button>
+<button type="button" data-sort="order:descending">Descending</button>
+<button type="button" data-sort="random">Random</button>
 ```
 
 The values `'default'` and `'random'` are also valid, with `'default'` referring to the original order of target elements in the DOM at the time of mixer instantiation.
@@ -170,7 +170,7 @@ With the `mixitup` factory function loaded, you may now instantiate a "mixer" on
 ```js
 mixitup('.container');
 ```
-> Instantiate a mixer on the element matching the selector `'.container'`
+> Instantiating a mixer
 
 Your mixer is now ready to interact with, either via physical controls, or its API. Click a control or call an API method to see if everything is working correctly.
 
@@ -203,6 +203,7 @@ var mixer = mixitup(containerEl);
 
 mixer.filter('.category-a');
 ```
+> Calling a mixer API method
 
 Starting from MixItUp 3, all targets start from their shown state and no loading animation occurs which is great for quickly progressively enhancing pre-rendered UI.
 
