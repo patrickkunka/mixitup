@@ -68,9 +68,11 @@ If you prefer to use classes exclusively for styling, HTML5 data attributes can 
 
 #### 2. Build Your Controls
 
-Filtering and sorting happens when controls are clicked. You may use any clickable element as a control, but `<button type="button">` is recommended for accessibility and keyboard control.
+One way that filtering and sorting happens is when controls are clicked. You may use any clickable element as a control, but `<button type="button">` is recommended for accessibility.
 
-Starting with MixItUp 3, it is expected (by default) that controls are within your container to prevent accidental interaction with other active MixItup instances in the DOM. You may want to keep your grid of target elements isolated from your controls at a block level. In such cases an additional wrapper element can be added around target elements:
+Starting with MixItUp 3, controls should be placed within your container to prevent accidental interaction with other active MixItup instances in the DOM.
+
+To keep your grid of target elements isolated from your controls and help with styling, additional wrapper elements can be added around controls and target elements:
 
 ```html
 <div class="container">
@@ -78,17 +80,17 @@ Starting with MixItUp 3, it is expected (by default) that controls are within yo
         <!-- controls here -->
     </div>
 
-    <div class="grid">
+    <div class="targets">
         <!-- targets here -->
     </div>
 </div>
 ```
 
-If you wish to place your controls outside the container, or anywhere elsewhere in the DOM, simply change the `controls.scope` configuration option from `'local'` (default) to `'global'`, and MixItUp will query the entire document for controls.
+If you wish to place your controls outside the container simply change the `controls.scope` configuration option from `'local'` (default) to `'global'`, and MixItUp will query the entire document for controls.
 
 ##### Filter Controls
 
-Filter controls are queried and bound by MixItUp based on the presence of a `data-filter` attribute, whose value must be a valid selector string (e.g. `'.category-a'`), or the values `'all'` or `'none'`;
+Filter controls are queried based on the presence of a `data-filter` attribute, whose value must be a valid selector string (e.g. `'.category-a'`), `'all'` or `'none'`;
 
 ```html
 <button type="button" data-filter="all">All</button>
@@ -101,7 +103,7 @@ For more information on MixItUp's full filtering functionality, see our [--websi
 
 ##### Sort Controls
 
-Sort controls are queried and bound based on the presence of a `data-sort` attribute, whose value takes the form of a "sort string" made up of the name of the attribute to sort by, followed by an optional colon-separated sorting order (e.g. `'order'`, `'order:asc'`, `'order:desc'`).
+Sort controls are queried based on the presence of a `data-sort` attribute, whose value takes the form of a "sort string" made up of the name of the attribute to sort by, followed by an optional colon-separated sorting order (e.g. `'order'`, `'order:asc'`, `'order:desc'`).
 
 ```html
     <button type="button" data-sort="order:asc">Ascending</button>
@@ -135,7 +137,7 @@ With this technique, the MixItUp factory function will be made available via the
 
 ##### Module Loader
 
-If you are building a modular JavaScript project with Webpack, Browserify, or RequireJS, MixItUp can be installed via your package manager of choice and imported into any of your project's modules with local scoping.
+If you are building a modular JavaScript project with Webpack, Browserify, or RequireJS, MixItUp can be installed using your package manager of choice and imported into any of your project's modules.
 
 `npm install mixitup --save`
 
@@ -166,7 +168,7 @@ mixitup('.container');
 
 Your mixer is now ready to interact with, either via physical controls, or its API. Click a control or call an API method to see if everything is working correctly.
 
-##### Configuration
+##### Custom Configuration
 
 If you wish to customize the functionality of your mixer, an optional "configuration object" can be passed as the second parameter to the `mixitup` function. If no configuration object is passed, the default settings will be used.
 
