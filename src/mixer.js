@@ -136,7 +136,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.callActions('beforeGetInitialState', arguments);
 
-        // Map in whatever state values we can
+        // Map initial values into a mock state object
 
         state.activeFilter          = self.parseFilterArgs([self.config.load.filter]).command;
         state.activeSort            = self.parseSortArgs([self.config.load.sort]).command;
@@ -149,8 +149,6 @@ h.extend(mixitup.Mixer.prototype,
             state.activeSort.collection || state.activeSort.attribute ||
             state.activeSort.order === 'random' || state.activeSort.order === 'desc'
         ) {
-            // Perform a syncronous sort without an operation
-
             operation.newSort = state.activeSort;
 
             self.sortOperation(operation);
@@ -158,10 +156,14 @@ h.extend(mixitup.Mixer.prototype,
             self.printSort(false, operation);
 
             self.targets = operation.newOrder;
+        } else {
+            operation.startOrder = operation.newOrder = self.targets;
         }
 
         operation.startFilter   = state.activeFilter;
         operation.newFilter     = state.activeFilter;
+        operation.startSort     = state.activeSort;
+        operation.newSort       = state.activeSort;
 
         if (operation.newFilter.selector === 'all') {
             operation.newFilter.selector = self.config.selectors.target;

@@ -11,42 +11,6 @@ on mixer instances.
 
 ## Members
 
-### <a id="mixitup.Mixer#init">mixitup.Mixer.init</a>
-
-**Version added: 3.0.0**
-
-```js
-.init([startFromHidden])
-```
-
-Initialises a newly instantiated mixer by filtering in all targets, or those
-specified via the `load.filter` configuration option.
-
-|   |Type | Name | Description
-|---|--- | --- | ---
-|Returns |`Promise.<mixitup.State>` | 
-
-
-> Example 1: Running init after mixer instantiation
-
-```js
-var container = document.querySelector('.mixitup-container');
-var mixer = mixitup(container);
-
-mixer.init();
-```
-> 
-
-```js
-var mixer = mixitup(.mixitup-container, {
-    selectors: {
-        target: '.item'
-    }
-});
-
-mixer.init();
-```
-
 ### <a id="mixitup.Mixer#show">mixitup.Mixer.show</a>
 
 **Version added: 3.0.0**

@@ -18,6 +18,7 @@ var mixer = mixitup('.sandbox', {
         maxPagers: 6
     },
     load: {
+        filter: 'none',
         sort: 'random'
     },
     // dragndrop: {

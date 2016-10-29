@@ -11,7 +11,7 @@ known as the "configuration object", can be passed as the second parameter to
 the `mixitup` factory function when creating a mixer instance to customise its
 functionality as needed.
 
-If no congiguration object is passed, the mixer instance will take on the default
+If no configuration object is passed, the mixer instance will take on the default
 configuration values detailed below.
 
 

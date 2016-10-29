@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build f4faa3e6-ecc9-4e6a-be25-fa9c7e62cd80
+ * Build 78c2b45f-7de0-41a3-b296-23b31dd85ee8
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2420,7 +2420,7 @@
      * the `mixitup` factory function when creating a mixer instance to customise its
      * functionality as needed.
      *
-     * If no congiguration object is passed, the mixer instance will take on the default
+     * If no configuration object is passed, the mixer instance will take on the default
      * configuration values detailed below.
      *
      * @example <caption>Example 1: Creating and passing the configuration object</caption>
@@ -3713,7 +3713,7 @@
 
             self.callActions('beforeGetInitialState', arguments);
 
-            // Map in whatever state values we can
+            // Map initial values into a mock state object
 
             state.activeFilter          = self.parseFilterArgs([self.config.load.filter]).command;
             state.activeSort            = self.parseSortArgs([self.config.load.sort]).command;
@@ -3726,8 +3726,6 @@
                 state.activeSort.collection || state.activeSort.attribute ||
                 state.activeSort.order === 'random' || state.activeSort.order === 'desc'
             ) {
-                // Perform a syncronous sort without an operation
-
                 operation.newSort = state.activeSort;
 
                 self.sortOperation(operation);
@@ -3735,10 +3733,14 @@
                 self.printSort(false, operation);
 
                 self.targets = operation.newOrder;
+            } else {
+                operation.startOrder = operation.newOrder = self.targets;
             }
 
             operation.startFilter   = state.activeFilter;
             operation.newFilter     = state.activeFilter;
+            operation.startSort     = state.activeSort;
+            operation.newSort       = state.activeSort;
 
             if (operation.newFilter.selector === 'all') {
                 operation.newFilter.selector = self.config.selectors.target;
