@@ -2,9 +2,9 @@
 
 MixItUp is a high-performance, dependency-free library for animated DOM manipulation. MixItUp gives you the power to filter, sort, add and remove DOM elements with beautiful animations — on top of native CSS layouts.
 
-For full documentation, tutorials, and more please visit [website pending](pending).
+For full documentation, tutorials, and more please visit [_website pending_](pending).
 
-MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [website pending](pending).
+MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [_website pending_](pending).
 
 #### API Docs
 
@@ -18,7 +18,7 @@ MixItUp is open source and free to use for non-commercial, educational and non-p
 
 Most commonly, MixItUp is applied to a "container" of "target" elements, which can then be filtered, sorted, added and removed as needed.
 
-To get started, build and style your layout as desired. For grid-based layouts, we strongly recommend inline-block or flex-box-based styling over floats and grid-frameworks for a number of reasons. Find out more about MixItUp-compatible grid layouts [here]().
+To get started, build and style your layout as desired. For grid-based layouts, we strongly recommend "inline-block" or "flex-box"-based styling over floats and legacy grid frameworks for a number of reasons. Find out more about MixItUp-compatible grid layouts [_website pending_]().
 
 ### HTML
 
@@ -35,9 +35,9 @@ When structuring your markup, ensure that all target elements are adjacent sibli
 </div>
 ```
 
-By default, MixItUp will query the container for any elements matching the selector `.mix`, and index them as "targets", although this can be configured to match the desired markup of your project via the configuration option `selectors.target`.
+By default, MixItUp will query the container for any elements matching the selector `.mix`, and index them as "targets", although you configure MixItUp to query targets via any valid selector using the configuration option `selectors.target`.
 
-Aditional classes or attributes on your targets may then be used to filter elements according to any valid selector string, e.g.: `.category-a`.
+Aditional classes or attributes on your targets may then be used to filter those matching a valid selector string, e.g.: `.category-a`.
 
 Data attributes can be added to target elements to enable sorting:
 
@@ -50,7 +50,7 @@ Data attributes can be added to target elements to enable sorting:
 </div>
 ```
 
-If you prefer to use the `class` attribute exclusively for styling, `data` attributes can be used as an alternative to the above and provide a seperation of presentational and behavioral information in your markup:
+If you prefer to use the `class` attribute exclusively for styling, HTML5 data attributes can be used as an alternative to the above and provide a seperation of presentational and behavioral information in your markup:
 
 ```html
 <div class="my-container-styling-class" data-ref="container">
@@ -76,7 +76,7 @@ You can perform filtering and sorting of target elements via "control" elements 
 </div>
 ```
 
-Filter controls are queried and bound by MixItUp based on the presence of a `data-filter` attribute, whose value must be a valid selector string (e.g. `'.category-a'`), or `'all'` or `'none'`;
+Filter controls are queried and bound by MixItUp based on the presence of a `data-filter` attribute, whose value must be a valid selector string (e.g. `'.category-a'`), or the values `'all'` or `'none'`;
 
 ```html
 <div class="controls">
@@ -88,6 +88,8 @@ Filter controls are queried and bound by MixItUp based on the presence of a `dat
 
 Sort controls are queried and bound based on the presence of a `data-sort` attribute, whose value must a valid sort string made up of the name of the attribute to sort by, followed by an optional sorting order (e.g. `'order'`, `'order:asc'`, `'order:desc'`). The values `'default'` and `'random'` are also valid, with `'default'` referring to the original order of target elements in the DOM at the time of mixer instantiation.
 
+#### Multi-attribute Sorting
+
 Multiple space-seperated sort strings can be used to sort elements by two or more attributes:
 
 ```html
@@ -95,13 +97,17 @@ Multiple space-seperated sort strings can be used to sort elements by two or mor
 ```
 > Sort elements first by the value of `data-publish-date` and then by the value of `data-sort-date`
 
-For more information on MixItUp's full sorting functionality, see our [Advanced Sorting](pending) tutorial.
+For more information on MixItUp's full sorting functionality, see our [_website pending_]() tutorial.
+
+Simulataneous Filtering and Sorting (Multimix Controls)
 
 Starting with MixItUp 3, controls can be used for simulataneous filtering and sorting (as per the `.multimix()` API method) by including both `data-filter` and `data-sort` attributes:
 
 ``` html
 <button type="button" data-filter=".category-a" data-sort="default:asc">Category A / Ascending</button>
 ```
+
+#### Toggle Controls
 
 Also new with MixItUp 3, is the ability to define filter "toggle" controls via markup (rather than configuration), by using `data-toggle` attributes instead of `data-filter`. The toggling behavior (`'and'` or `'or'`) must still be defined via the configuration object).
 
@@ -113,9 +119,9 @@ Also new with MixItUp 3, is the ability to define filter "toggle" controls via m
 </div>
 ```
 
-For more information on MixItUp's full filtering functionality, see our [Advanced Filtering](pending) tutorial.
+For more information on MixItUp's full filtering functionality, see our [_website pending_]() tutorial.
 
-### JavaScript
+### JavaScript - Loading MixItUp
 
 Firstly, load the MixItUp library into your project. This can be done in a number of ways.
 
@@ -139,19 +145,19 @@ If you are building a modular JavaScript project with webpack, browserify, or re
 
 `npm install mixitup --save`
 
-**ES2015**
+##### ES2015
 
 ```js
 import mixitup from 'mixitup';
 ```
 
-**CommonJS**
+##### CommonJS
 
 ```js
 var mixitup = require('mixitup');
 ```
 
-**AMD**
+##### AMD
 
 ```js
 require(['mixitup'], function(mixitup) {
@@ -159,7 +165,9 @@ require(['mixitup'], function(mixitup) {
 });
 ```
 
-With the `mixitup` factory function loaded, you may now instantiate a "mixer" on your container.
+### JavaScript - Using MixItUp
+
+With the `mixitup` factory function loaded, you may now instantiate a "mixer" on your container to enable MixItUp functionality.
 
 ```js
 var containerEl = document.querySelector('.container');
@@ -167,7 +175,9 @@ var containerEl = document.querySelector('.container');
 var mixer = mixitup(containerEl);
 ```
 
-To create a mixer, call the `mixitup` factory function passing a reference to your container element as the first parameter. A mixer instance will be created and returned, which can then be used to interact with the mixer via its API. NB: If you intend only to control MixItUp via physical DOM controls, you may not need the mixer reference.
+To create a mixer, call the `mixitup` factory function passing a reference to your container element as the first parameter. A mixer instance will be created and returned, which can then be used to interact with the mixer via its API if needed.
+
+*NB: If you intend only to control MixItUp via physical DOM controls, you may not need the mixer reference, and can call mixitup() as a void.*
 
 If you wish to customize the functionality of your mixer, an optional "configuration object" can be passed as the second parameter to the factory function. If no configuration object is passed, the default settings will be used.
 
@@ -181,4 +191,4 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-Your mixer is now ready to interact with, either via physical DOM controls, or its API. See the [Mixer API] documentation for the full set of public API methods.
+Your mixer is now ready to interact with, either via physical DOM controls, or its API. See the [Mixer API](./docs/mixitup.Mixer.md) documentation for the full set of public API methods.
