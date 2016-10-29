@@ -37,7 +37,7 @@ While MixItUp can be added on top of any existing CSS layout, we strongly recomm
 
 ### HTML
 
-#### Build Your Container
+#### 1. Build Your Container
 
 ```html
 <div class="container">
@@ -48,11 +48,13 @@ While MixItUp can be added on top of any existing CSS layout, we strongly recomm
 </div>
 ```
 
-By default, MixItUp will query the container for any elements matching the selector `.mix`, and index them as "targets", although you configure MixItUp to query targets via any valid selector using the `selectors.target` configuration option.
+By default, MixItUp will query the container for any elements matching the selector `'.mix'`, and index them as "targets".
 
-Additional classes or attributes on your targets may then be used to filter those matching a valid selector string (e.g. `.category-a`). Data attributes can be added to target elements to enable sorting (as shown).
+Targets can be filtered using any valid selector string (e.g. `'.category-a'`), and are sorted via custom data attributes (e.g. `'data-order'`).
 
 *NB: When structuring your markup, ensure that all target elements are adjacent siblings in your container.*
+
+##### Using Attributes Over Classes
 
 If you prefer to use classes exclusively for styling, HTML5 data attributes can be used as an alternative to the above and provide a separation of presentational and behavioral information in your markup. Simply configure MixItUp to query your targets via an attribute selector (e.g. `[data-ref="mix"]`), and filter accordingly (e.g. `[data-category~="a"]`). For example:
 
@@ -65,30 +67,16 @@ If you prefer to use classes exclusively for styling, HTML5 data attributes can 
 </div>
 ```
 
-#### Build Your Controls
+#### 2. Build Your Controls
 
-You can perform filtering and sorting of target elements via "control" buttons within in your container. You may use any clickable element for controls, but `<button type="button">` is recommended for accessibility and keyboard control.
+Filtering and sorting happens when controls are clicked. You may use any clickable element as a control, but `<button type="button">` is recommended for accessibility and keyboard control.
 
-Starting with MixItUp 3, it is expected (by default) that controls are within your container to prevent accidental interaction with other active MixItup instances in the DOM.
-
-```html
-<div class="container">
-    <div class="controls">
-         <!-- control buttons here -->
-    </div>
-
-    <div class="mix category-1"></div>
-    <div class="mix category-2"></div>
-    ...
-</div>
-```
-
-You may want to keep your grid of target elements isolated from your controls at a block level. In such cases an additional wrapper element can be added around target elements:
+Starting with MixItUp 3, it is expected (by default) that controls are within your container to prevent accidental interaction with other active MixItup instances in the DOM. You may want to keep your grid of target elements isolated from your controls at a block level. In such cases an additional wrapper element can be added around target elements:
 
 ```html
 <div class="container">
     <div class="controls">
-        <!-- control buttons here -->
+        <!-- controls here -->
     </div>
 
     <div class="grid">
@@ -104,33 +92,29 @@ If you wish to place your controls outside the container, or anywhere elsewhere 
 Filter controls are queried and bound by MixItUp based on the presence of a `data-filter` attribute, whose value must be a valid selector string (e.g. `'.category-a'`), or the values `'all'` or `'none'`;
 
 ```html
-<div class="controls">
-    <button type="button" data-filter="all">All</button>
-    <button type="button" data-filter=".category-a">Category A</button>
-    <button type="button" data-filter=".category-b">Category B</button>
-    <button type="button" data-filter=".category-c">Category C</button>
-</div>
+<button type="button" data-filter="all">All</button>
+<button type="button" data-filter=".category-a">Category A</button>
+<button type="button" data-filter=".category-b">Category B</button>
+<button type="button" data-filter=".category-c">Category C</button>
 ```
 
 For more information on MixItUp's full filtering functionality, see our [--website pending--]() tutorial.
 
 ##### Sort Controls
 
-Sort controls are queried and bound based on the presence of a `data-sort` attribute, whose value must a valid sort string made up of the name of the attribute to sort by, followed by an optional colon-separated sorting order (e.g. `'order'`, `'order:asc'`, `'order:desc'`).
+Sort controls are queried and bound based on the presence of a `data-sort` attribute, whose value takes the form of a "sort string" made up of the name of the attribute to sort by, followed by an optional colon-separated sorting order (e.g. `'order'`, `'order:asc'`, `'order:desc'`).
 
 ```html
-<div class="controls">
     <button type="button" data-sort="order:asc">Ascending</button>
     <button type="button" data-sort="order:descending">Descending</button>
     <button type="button" data-sort="random">Random</button>
-</div>
 ```
 
 The values `'default'` and `'random'` are also valid, with `'default'` referring to the original order of target elements in the DOM at the time of mixer instantiation.
 
 For more information on MixItUp's full sorting functionality, see our [--website pending--]() tutorial.
 
-### Loading the MixItUp JavaScript
+### 3. Loading the MixItUp JavaScript
 
 Firstly, load the MixItUp library into your project. This can be done in a number of ways.
 
@@ -170,7 +154,7 @@ require(['mixitup'], function(mixitup) {
 });
 ```
 
-### Creating a Mixer
+### 4. Creating a Mixer
 
 With the `mixitup` factory function loaded, you may now instantiate a "mixer" on your container to enable MixItUp functionality. Call the function passing a selector string or a reference to your container element as the first parameter.
 
@@ -180,6 +164,8 @@ mixitup('.container');
 > Instantiate a mixer on the element matching the selector `'.container'`
 
 Your mixer is now ready to interact with, either via physical controls, or its API. Click a control or call an API method to see if everything is working correctly.
+
+#### Configuration
 
 If you wish to customize the functionality of your mixer, an optional "configuration object" can be passed as the second parameter to the `mixitup` function. If no configuration object is passed, the default settings will be used.
 
@@ -196,6 +182,8 @@ mixitup('.container', {
 });
 ```
 > Passing a configuration object as the second parameter
+
+#### Using the API
 
 If you wish to interact with your mixer via its API, the factory function creates and returns a reference to your mixer which can then be used to call API methods on.
 
