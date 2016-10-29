@@ -4,6 +4,8 @@ MixItUp is a high-performance, dependency-free library for animated DOM manipula
 
 For full documentation, tutorials, and more please visit [--website pending--](pending).
 
+#### Licensing
+
 MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [--website pending--](pending).
 
 #### API Docs
@@ -46,9 +48,9 @@ When structuring your markup, ensure that all target elements are adjacent sibli
 </div>
 ```
 
-By default, MixItUp will query the container for any elements matching the selector `.mix`, and index them as "targets", although you configure MixItUp to query targets via any valid selector using the configuration option `selectors.target`.
+By default, MixItUp will query the container for any elements matching the selector `.mix`, and index them as "targets", although you configure MixItUp to query targets via any valid selector using the `selectors.target` configuration option.
 
-Aditional classes or attributes on your targets may then be used to filter those matching a valid selector string, e.g.: `.category-a`.
+Aditional classes or attributes on your targets may then be used to filter those matching a valid selector string (e.g. `.category-a`).
 
 Data attributes can be added to target elements to enable sorting:
 
@@ -72,7 +74,7 @@ If you prefer to use the `class` attribute exclusively for styling, HTML5 data a
 </div>
 ```
 
-Simply configure MixItUp to query your targets via an attribute selector (e.g. `[data-ref="mix"]`), and filter accordingly, e.g `[data-category~="a"]`.
+Simply configure MixItUp to query your targets via an attribute selector (e.g. `[data-ref="mix"]`), and filter accordingly (e.g. `[data-category~="a"]`).
 
 #### Filtering and Sorting Controls
 
