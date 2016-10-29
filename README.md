@@ -43,26 +43,11 @@ To get started, follow these few simple steps:
 </div>
 ```
 
-By default, MixItUp will query the container for targets using the selector `'.mix'`.
+By default, MixItUp will query the container for targets matching the selector `'.mix'`, although any valid selector can be used.
 
-Targets can be filtered using any valid selector string e.g. `'.category-a'`, and are sorted via custom data attributes e.g. `'data-order'`.
+Targets can be filtered using any valid selector e.g. `'.category-a'`, and are sorted via custom data attributes e.g. `'data-order'`.
 
 *NB: When structuring your markup, ensure that all targets are adjacent siblings in your container.*
-
-##### Using Attributes Over Classes
-
-If you prefer to use classes exclusively for styling, HTML5 data attributes can be used as an alternative to the above and provide a separation of presentational and behavioral information in your markup. For example:
-
-```html
-<div class="my-container-styling-class" data-ref="container">
-    <div class="my-target-styling-class" data-ref="mix" data-category="a" data-order="1"></div>
-    <div class="my-target-styling-class" data-ref="mix" data-category="b" data-order="2"></div>
-    <div class="my-target-styling-class" data-ref="mix" data-category="b c" data-order="3"></div>
-    <div class="my-target-styling-class" data-ref="mix" data-category="a d" data-order="4"></div>
-</div>
-```
-
-Simply configure MixItUp to query your targets via an attribute selector e.g. `[data-ref="mix"]`, and filter accordingly e.g. `[data-category~="a"]`.
 
 #### 2. Build Your Controls
 
@@ -70,7 +55,7 @@ One way that filtering and sorting happens is when controls are clicked. You may
 
 ##### Filter Controls
 
-Filter controls are queried based on the presence of a `data-filter` attribute, whose value must be a `'all'`, `'none'`, or a valid selector string e.g. `'.category-a'`.
+Filter controls are queried based on the presence of a `data-filter` attribute, whose value must be `'all'`, `'none'`, or a valid selector string e.g. `'.category-a'`.
 
 ```html
 <button type="button" data-filter="all">All</button>
@@ -97,9 +82,9 @@ For more information on MixItUp's full sorting functionality, see our [--website
 
 ##### Control Scoping
 
-Starting with MixItUp 3, controls should be placed within your container (local scoping) to prevent accidental interaction with other active MixItup instances in the DOM.
+Starting with MixItUp 3, controls should be placed within your container (local scoping) to prevent accidental interaction with other active MixItUp instances in the DOM.
 
-To keep your grid of target elements isolated from your controls and help with styling, additional wrapper elements can be added around controls and target elements:
+To keep your grid of target elements isolated from your controls and aid with styling, additional wrapper elements can be added to ringfence controls and target elements:
 
 ```html
 <div class="container">
@@ -112,6 +97,7 @@ To keep your grid of target elements isolated from your controls and help with s
     </div>
 </div>
 ```
+> Structuring your container
 
 If you wish to place your controls outside the container simply change the `controls.scope` configuration option from `'local'` (default) to `'global'`, and MixItUp will query the entire document for controls.
 
@@ -172,7 +158,7 @@ mixitup('.container');
 ```
 > Instantiating a mixer
 
-Your mixer is now ready to interact with, either via physical controls, or its API. Click a control or call an API method to see if everything is working correctly.
+Your mixer is now ready to interact with, either via physical controls, or its API. Click a control or call an API method to check that everything is working correctly.
 
 ##### Custom Configuration
 
@@ -205,6 +191,8 @@ mixer.filter('.category-a');
 ```
 > Calling a mixer API method
 
-Starting from MixItUp 3, all targets start from their shown state and no loading animation occurs which is great for quickly progressively enhancing pre-rendered UI.
+##### Loading Animations
+
+Starting from MixItUp 3, all targets start from their shown state and no loading animation occurs which is ideal for quickly progressively enhancing pre-rendered UI.
 
 However, you may wish to have your targets start from hidden and feature a loading animation. Please see our [--website pending--]() tutorial for more information on different ways to initialise your mixer.
