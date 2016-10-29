@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build ef1f1691-99ee-4d25-b74e-30e57abe68d4
+ * Build d57b47c1-30b4-46ce-a3c5-6e70527d514e
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3655,7 +3655,9 @@
          */
 
         attach: function(container, document, id, config) {
-            var self = this;
+            var self    = this,
+                target  = null,
+                i       = -1;
 
             self.callActions('beforeAttach', arguments);
 
@@ -3679,14 +3681,18 @@
 
             self.state = self.getInitialState();
 
+            for (i = 0; target = self.lastOperation.toHide[i]; i++) {
+                target.hide();
+            }
+
+            self.initControls();
+
             self.updateControls({
                 filter: self.state.activeFilterSelector,
                 sort: self.state.activeSort
             });
 
             self.parseEffects();
-
-            self.initControls();
 
             self.buildToggleArray(null, self.state);
 
@@ -3696,7 +3702,7 @@
         /**
          * @private
          * @instance
-         * @since   2.0.0
+         * @since   3.0.0
          * @return  {mixitup.State}
          */
 
@@ -3714,6 +3720,8 @@
             state.activeContainerClass  = self.config.layout.containerClass;
             state.totalTargets          = self.targets.length;
 
+            state = self.callFilters('stateGetInitialState', state, arguments);
+
             if (
                 state.activeSort.collection || state.activeSort.attribute ||
                 state.activeSort.order === 'random' || state.activeSort.order === 'desc'
@@ -3729,13 +3737,24 @@
                 self.targets = operation.newOrder;
             }
 
-            // TODO: the initial state should be fully mapped, but as the operation is fake we don't have this data
+            operation.startFilter   = state.activeFilter;
+            operation.newFilter     = state.activeFilter;
 
-            // state.totalShow         = operation.show.length
-            // state.totalHide         = operation.hide.length
-            // state.totalMatching     = operation.matching.length;
+            if (operation.newFilter.selector === 'all') {
+                operation.newFilter.selector = self.config.selectors.target;
+            } else if (operation.newFilter.selector === 'none') {
+                operation.newFilter.selector = '';
+            }
 
-            return self.callFilters('stateGetInitialState', state, arguments);
+            operation = self.callFilters('operationGetInitialState', operation, [state]);
+
+            self.lastOperation = operation;
+
+            self.filterOperation(operation);
+
+            state = self.buildState(operation);
+
+            return state;
         },
 
         /**
@@ -5862,51 +5881,6 @@
         },
 
         /**
-         * Initialises a newly instantiated mixer by filtering in all targets, or those
-         * specified via the `load.filter` configuration option.
-         *
-         * @example
-         * .init([startFromHidden])
-         *
-         * @example <caption>Example 1: Running init after mixer instantiation</caption>
-         * var container = document.querySelector('.mixitup-container');
-         * var mixer = mixitup(container);
-         *
-         * mixer.init();
-         *
-         * @example
-         * var mixer = mixitup(.mixitup-container, {
-         *     selectors: {
-         *         target: '.item'
-         *     }
-         * });
-         *
-         * mixer.init();
-         *
-         * @public
-         * @instance
-         * @since       3.0.0
-         * @return      {Promise.<mixitup.State>}
-         */
-
-        init: function() {
-            var self            = this,
-                target          = null,
-                filterCommand   = self.parseFilterArgs([self.config.load.filter]).command,
-                i               = -1;
-
-            for (i = 0; target = self.targets[i]; i++) {
-                if (!target.isShown) {
-                    target.hide();
-                }
-            }
-
-            return self.multimix({
-                filter: filterCommand
-            }, self.config.load.animate);
-        },
-
-        /**
          * A shorthand method for `.filter('all')`.
          *
          * @example
@@ -7965,7 +7939,6 @@
 
         this.callActions('beforeConstruct', arguments);
 
-        this.init               = mixer.init.bind(mixer);
         this.configure          = mixer.configure.bind(mixer);
         this.show               = mixer.show.bind(mixer);
         this.hide               = mixer.hide.bind(mixer);

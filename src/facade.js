@@ -13,7 +13,6 @@ mixitup.Facade = function Mixer(mixer) {
 
     this.callActions('beforeConstruct', arguments);
 
-    this.init               = mixer.init.bind(mixer);
     this.configure          = mixer.configure.bind(mixer);
     this.show               = mixer.show.bind(mixer);
     this.hide               = mixer.hide.bind(mixer);

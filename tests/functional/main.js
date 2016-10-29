@@ -1,9 +1,8 @@
 /* global mixitup */
 
 var sandbox = document.querySelector('.sandbox');
-var mixer   = null;
 
-mixer = mixitup('.sandbox', {
+var mixer = mixitup('.sandbox', {
     animation: {
         effects: 'fade',
         easing: 'cubic-bezier(1, 0, 0, 1)',
@@ -12,6 +11,7 @@ mixer = mixitup('.sandbox', {
     controls: {
         scope: 'global',
         live: false
+        // toggleLogic: 'and'
     },
     pagination: {
         limit: 4,
