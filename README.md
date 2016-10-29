@@ -2,9 +2,9 @@
 
 MixItUp is a high-performance, dependency-free library for animated DOM manipulation. MixItUp gives you the power to filter, sort, add and remove DOM elements with beautiful animations — on top of native CSS layouts.
 
-For full documentation, tutorials, and more please visit [_website pending_](pending).
+For full documentation, tutorials, and more please visit [<website pending>](pending).
 
-MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [_website pending_](pending).
+MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [<website pending>](pending).
 
 #### API Docs
 
@@ -14,11 +14,22 @@ MixItUp is open source and free to use for non-commercial, educational and non-p
 - [Mixer Events](./docs/mixitup.Events.md)
 - [State Object](./docs/mixitup.State.md)
 
-## Get Started
+## Getting Started
 
 Most commonly, MixItUp is applied to a "container" of "target" elements, which can then be filtered, sorted, added and removed as needed.
 
-To get started, build and style your layout as desired. For grid-based layouts, we strongly recommend "inline-block" or "flex-box"-based styling over floats and legacy grid frameworks for a number of reasons. Find out more about MixItUp-compatible grid layouts [_website pending_]().
+To get started, firstly build and style your layout as desired, then add MixItUp to your project's JavaScript.
+
+#### Contents
+
+- [CSS](#css)
+- [HTML](#html)
+- [Loading the MixItUp JavaScript](#loading-the-mixitup-javascript)
+- [Creating a Mixer](#creating-a-mixer)
+
+# CSS
+
+While MixItUp can be added on top of any existing CSS layout, we strongly recommend "inline-block" or "flex-box"-based styling over floats and legacy grid frameworks when dealing with grid-based designs for a number of reasons. Find out more about MixItUp-compatible grid layouts [<website pending>]().
 
 ### HTML
 
@@ -67,6 +78,8 @@ Simply configure MixItUp to query your targets via an attribute selector (e.g. `
 
 You can perform filtering and sorting of target elements via "control" elements within in your container.
 
+Filter controls are queried and bound by MixItUp based on the presence of a `data-filter` attribute, whose value must be a valid selector string (e.g. `'.category-a'`), or the values `'all'` or `'none'`;
+
 ```html
 <div class="controls">
     <button type="button" data-filter="all">All</button>
@@ -76,7 +89,7 @@ You can perform filtering and sorting of target elements via "control" elements 
 </div>
 ```
 
-Filter controls are queried and bound by MixItUp based on the presence of a `data-filter` attribute, whose value must be a valid selector string (e.g. `'.category-a'`), or the values `'all'` or `'none'`;
+Sort controls are queried and bound based on the presence of a `data-sort` attribute, whose value must a valid sort string made up of the name of the attribute to sort by, followed by an optional sorting order (e.g. `'order'`, `'order:asc'`, `'order:desc'`).
 
 ```html
 <div class="controls">
@@ -86,18 +99,17 @@ Filter controls are queried and bound by MixItUp based on the presence of a `dat
 </div>
 ```
 
-Sort controls are queried and bound based on the presence of a `data-sort` attribute, whose value must a valid sort string made up of the name of the attribute to sort by, followed by an optional sorting order (e.g. `'order'`, `'order:asc'`, `'order:desc'`). The values `'default'` and `'random'` are also valid, with `'default'` referring to the original order of target elements in the DOM at the time of mixer instantiation.
+The values `'default'` and `'random'` are also valid, with `'default'` referring to the original order of target elements in the DOM at the time of mixer instantiation.
 
 #### Multi-attribute Sorting
 
-Multiple space-seperated sort strings can be used to sort elements by two or more attributes:
+Multiple space-seperated sort strings can be used to sort elements by two or more attributes. For example, to sort elements first by the value of `data-publish-date` and then by the value of `data-sort-date`, you could do the following:
 
 ```html
 <button type="button" data-sort="publish-date:descending edited-date:descending">Publish date / Descending</button>
 ```
-> Sort elements first by the value of `data-publish-date` and then by the value of `data-sort-date`
 
-For more information on MixItUp's full sorting functionality, see our [_website pending_]() tutorial.
+For more information on MixItUp's full sorting functionality, see our [<website pending>]() tutorial.
 
 Simulataneous Filtering and Sorting (Multimix Controls)
 
@@ -119,9 +131,9 @@ Also new with MixItUp 3, is the ability to define filter "toggle" controls via m
 </div>
 ```
 
-For more information on MixItUp's full filtering functionality, see our [_website pending_]() tutorial.
+For more information on MixItUp's full filtering functionality, see our [<website pending>]() tutorial.
 
-### JavaScript - Loading MixItUp
+### Loading the MixItUp JavaScript
 
 Firstly, load the MixItUp library into your project. This can be done in a number of ways.
 
@@ -165,7 +177,7 @@ require(['mixitup'], function(mixitup) {
 });
 ```
 
-### JavaScript - Using MixItUp
+### Creating a Mixer
 
 With the `mixitup` factory function loaded, you may now instantiate a "mixer" on your container to enable MixItUp functionality.
 
