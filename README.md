@@ -22,17 +22,13 @@ MixItUp is open source and free to use for non-commercial, educational and non-p
 
 #### Contents
 
-- [CSS](#css)
 - [HTML](#html)
+- [CSS](#css)
 - [JavaScript](#javascript)
 
-Most commonly, MixItUp is applied to a "container" of "target" elements, which could be a portfolio of projects, a list of blog posts, a selection of products, or anything kind of UI where filtering and/or sorting would be advantageous.
+Most commonly, MixItUp is applied to a **"container"** of **"target"** elements, which could be a portfolio of projects, a list of blog posts, a selection of products, or anything kind of UI where filtering and/or sorting would be advantageous.
 
-To get started, firstly build and style your layout as desired, then add MixItUp to your project's JavaScript.
-
-### CSS
-
-While MixItUp can be added on top of any existing CSS layout, we strongly recommend inline-block or flexbox-based styling over floats and legacy grid frameworks when dealing with grid-based designs for a number of reasons. Find out more about MixItUp-compatible grid layouts [--website pending--]().
+To get started, follow these few simple steps:
 
 ### HTML
 
@@ -47,15 +43,15 @@ While MixItUp can be added on top of any existing CSS layout, we strongly recomm
 </div>
 ```
 
-By default, MixItUp will query the container for any elements matching the selector `'.mix'`, and index them as "targets".
+By default, MixItUp will query the container for targets using the selector `'.mix'`.
 
 Targets can be filtered using any valid selector string (e.g. `'.category-a'`), and are sorted via custom data attributes (e.g. `'data-order'`).
 
-*NB: When structuring your markup, ensure that all target elements are adjacent siblings in your container.*
+*NB: When structuring your markup, ensure that all targets are adjacent siblings in your container.*
 
 ##### Using Attributes Over Classes
 
-If you prefer to use classes exclusively for styling, HTML5 data attributes can be used as an alternative to the above and provide a separation of presentational and behavioral information in your markup. Simply configure MixItUp to query your targets via an attribute selector (e.g. `[data-ref="mix"]`), and filter accordingly (e.g. `[data-category~="a"]`). For example:
+If you prefer to use classes exclusively for styling, HTML5 data attributes can be used as an alternative to the above and provide a separation of presentational and behavioral information in your markup. For example:
 
 ```html
 <div class="my-container-styling-class" data-ref="container">
@@ -66,27 +62,11 @@ If you prefer to use classes exclusively for styling, HTML5 data attributes can 
 </div>
 ```
 
+Simply configure MixItUp to query your targets via an attribute selector (e.g. `[data-ref="mix"]`), and filter accordingly (e.g. `[data-category~="a"]`).
+
 #### 2. Build Your Controls
 
 One way that filtering and sorting happens is when controls are clicked. You may use any clickable element as a control, but `<button type="button">` is recommended for accessibility.
-
-Starting with MixItUp 3, controls should be placed within your container to prevent accidental interaction with other active MixItup instances in the DOM.
-
-To keep your grid of target elements isolated from your controls and help with styling, additional wrapper elements can be added around controls and target elements:
-
-```html
-<div class="container">
-    <div class="controls">
-        <!-- controls here -->
-    </div>
-
-    <div class="targets">
-        <!-- targets here -->
-    </div>
-</div>
-```
-
-If you wish to place your controls outside the container simply change the `controls.scope` configuration option from `'local'` (default) to `'global'`, and MixItUp will query the entire document for controls.
 
 ##### Filter Controls
 
@@ -114,6 +94,32 @@ Sort controls are queried based on the presence of a `data-sort` attribute, whos
 The values `'default'` and `'random'` are also valid, with `'default'` referring to the original order of target elements in the DOM at the time of mixer instantiation.
 
 For more information on MixItUp's full sorting functionality, see our [--website pending--]() tutorial.
+
+##### Control Scoping
+
+Starting with MixItUp 3, controls should be placed within your container (local scoping) to prevent accidental interaction with other active MixItup instances in the DOM.
+
+To keep your grid of target elements isolated from your controls and help with styling, additional wrapper elements can be added around controls and target elements:
+
+```html
+<div class="container">
+    <div class="controls">
+        <!-- controls here -->
+    </div>
+
+    <div class="targets">
+        <!-- targets here -->
+    </div>
+</div>
+```
+
+If you wish to place your controls outside the container simply change the `controls.scope` configuration option from `'local'` (default) to `'global'`, and MixItUp will query the entire document for controls.
+
+### CSS
+
+While MixItUp can be added on top of any existing CSS layout, we strongly recommend inline-block or flexbox-based styling over floats and legacy grid frameworks when dealing with grid-based designs for a number of reasons.
+
+Find out more about MixItUp-compatible grid layouts [--website pending--]().
 
 ### JavaScript
 
