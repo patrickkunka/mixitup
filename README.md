@@ -2,9 +2,9 @@
 
 MixItUp is a high-performance, dependency-free library for animated DOM manipulation. MixItUp gives you the power to filter, sort, add and remove DOM elements with beautiful animations — on top of native CSS layouts.
 
-For full documentation, tutorials, and more please visit [<website pending>](pending).
+For full documentation, tutorials, and more please visit [--website pending--](pending).
 
-MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [<website pending>](pending).
+MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [--website pending--](pending).
 
 #### API Docs
 
@@ -27,9 +27,9 @@ To get started, firstly build and style your layout as desired, then add MixItUp
 - [Loading the MixItUp JavaScript](#loading-the-mixitup-javascript)
 - [Creating a Mixer](#creating-a-mixer)
 
-# CSS
+### CSS
 
-While MixItUp can be added on top of any existing CSS layout, we strongly recommend "inline-block" or "flex-box"-based styling over floats and legacy grid frameworks when dealing with grid-based designs for a number of reasons. Find out more about MixItUp-compatible grid layouts [<website pending>]().
+While MixItUp can be added on top of any existing CSS layout, we strongly recommend "inline-block" or "flex-box"-based styling over floats and legacy grid frameworks when dealing with grid-based designs for a number of reasons. Find out more about MixItUp-compatible grid layouts [--website pending--]().
 
 ### HTML
 
@@ -109,7 +109,7 @@ Multiple space-seperated sort strings can be used to sort elements by two or mor
 <button type="button" data-sort="publish-date:descending edited-date:descending">Publish date / Descending</button>
 ```
 
-For more information on MixItUp's full sorting functionality, see our [<website pending>]() tutorial.
+For more information on MixItUp's full sorting functionality, see our [--website pending--]() tutorial.
 
 Simulataneous Filtering and Sorting (Multimix Controls)
 
@@ -131,7 +131,7 @@ Also new with MixItUp 3, is the ability to define filter "toggle" controls via m
 </div>
 ```
 
-For more information on MixItUp's full filtering functionality, see our [<website pending>]() tutorial.
+For more information on MixItUp's full filtering functionality, see our [--website pending--]() tutorial.
 
 ### Loading the MixItUp JavaScript
 
