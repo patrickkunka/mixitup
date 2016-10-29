@@ -55,46 +55,127 @@ h = {
      */
 
     extend: function(destination, source, deep) {
-        var self        = this,
-            sourceKeys  = [],
+        var sourceKeys  = [],
             key         = '',
             i           = -1;
 
-        if (Array.isArray(source)) {
-            for (i = 0; i < source.length; i++) {
-                sourceKeys.push(i);
-            }
-        } else if (source) {
-            sourceKeys = Object.keys(source);
-        }
-
-        for (i = 0; i < sourceKeys.length; i++) {
-            key = sourceKeys[i];
-
-            if (!deep || typeof source[key] !== 'object') {
-                // All non-object properties, or all properties if shallow extend
-
-                destination[key] = source[key];
-            } else if (Array.isArray(source[key])) {
-                // Arrays
-
-                if (!destination[key]) {
-                    destination[key] = [];
+        try {
+            if (Array.isArray(source)) {
+                for (i = 0; i < source.length; i++) {
+                    sourceKeys.push(i);
                 }
-
-                self.extend(destination[key], source[key]);
-            } else {
-                // Objects
-
-                if (!destination[key]) {
-                    destination[key] = {};
-                }
-
-                self.extend(destination[key], source[key]);
+            } else if (source) {
+                sourceKeys = Object.keys(source);
             }
+
+            for (i = 0; i < sourceKeys.length; i++) {
+                key = sourceKeys[i];
+
+                if (!deep || typeof source[key] !== 'object') {
+                    // All non-object properties, or all properties if shallow extend
+
+                    destination[key] = source[key];
+                } else if (Array.isArray(source[key])) {
+                    // Arrays
+
+                    if (!destination[key]) {
+                        destination[key] = [];
+                    }
+
+                    this.extend(destination[key], source[key]);
+                } else {
+                    // Objects
+
+                    if (!destination[key]) {
+                        destination[key] = {};
+                    }
+
+                    this.extend(destination[key], source[key]);
+                }
+            }
+        } catch(err) {
+            this.handleExtendError(err, destination);
         }
 
         return destination;
+    },
+
+    /**
+     * @private
+     * @param   {Error}  err
+     * @param   {object} destination
+     * @return  {void}
+     */
+
+    handleExtendError: function(err, destination) {
+        var re                  = /property "?(\w*)"?[,:] object/i,
+            matches             = null,
+            erroneous           = '',
+            message             = '',
+            suggestion          = '',
+            probableMatch       = '',
+            key                 = '',
+            mostMatchingChars   = -1,
+            i                   = -1;
+
+        if (err instanceof TypeError && (matches = re.exec(err.message))) {
+            erroneous = matches[1];
+
+            for (key in destination) {
+                i = 0;
+
+                while (i < erroneous.length && erroneous.charAt(i) === key.charAt(i)) {
+                    i++;
+                }
+
+                if (i > mostMatchingChars) {
+                    mostMatchingChars = i;
+                    probableMatch = key;
+                }
+            }
+
+            if (mostMatchingChars > 1) {
+                suggestion = mixitup.messages.ERROR_CONFIG_INVALID_PROPERTY_SUGGESTION({
+                    probableMatch: probableMatch
+                });
+            }
+
+            message = mixitup.messages.ERROR_CONFIG_INVALID_PROPERTY({
+                erroneous: erroneous,
+                suggestion: suggestion
+            });
+
+            throw new TypeError(message);
+        }
+
+        throw err;
+    },
+
+    /**
+     * @private
+     * @param   {string} str
+     * @return  {function}
+     */
+
+    template: function(str) {
+        var re          = /\${([\w]*)}/g,
+            dynamics    = {},
+            matches     = null;
+
+        while ((matches = re.exec(str))) {
+            dynamics[matches[1]] = new RegExp('\\${' + matches[1] + '}', 'g');
+        }
+
+        return function(data) {
+            var key     = '',
+                output  = str;
+
+            for (key in dynamics) {
+                output = output.replace(dynamics[key], data[key] || '');
+            }
+
+            return output;
+        };
     },
 
     /**

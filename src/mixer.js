@@ -259,7 +259,7 @@ h.extend(mixitup.Mixer.prototype,
 
                 break;
             default:
-                throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_CONTROLS_SCOPE);
+                throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_CONTROLS_SCOPE());
         }
 
         for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
@@ -389,9 +389,7 @@ h.extend(mixitup.Mixer.prototype,
 
     buildToggleArray: function(command, state) {
         var self                    = this,
-            activeFilterSelector    = '',
-            filter                  = '',
-            i                       = -1;
+            activeFilterSelector    = '';
 
         self.callActions('beforeBuildToggleArray', arguments);
 
@@ -410,20 +408,50 @@ h.extend(mixitup.Mixer.prototype,
         if (self.config.controls.toggleLogic === 'or') {
             self.toggleArray = activeFilterSelector.split(',');
         } else {
-            self.toggleArray = activeFilterSelector.split('.');
-
-            // TODO: selectors may not be class names, we need to be able to split any selectors
-
-            !self.toggleArray[0] && self.toggleArray.shift();
-
-            for (i = 0; filter = self.toggleArray[i]; i++) {
-                self.toggleArray[i] = '.' + filter;
-            }
+            self.toggleArray = self.splitCompoundSelector(activeFilterSelector);
         }
 
         self.toggleArray = h.clean(self.toggleArray);
 
         self.callActions('afterBuildToggleArray', arguments);
+    },
+
+    /**
+     * Takes a compound selector (e.g. `.cat-1.cat-2`, `[data-cat="1"][data-cat="2"]`)
+     * and breaks into its individual selectors.
+     *
+     * @private
+     * @instance
+     * @since   3.0.0
+     * @param   {string} compoundSelector
+     * @return  {string[]}
+     */
+
+    splitCompoundSelector: function(compoundSelector) {
+        // Break at a `.` or `[`, capturing the delineator
+
+        var partials    = compoundSelector.split(/([\.\[])/g),
+            toggleArray = [],
+            selector    = '',
+            i           = -1;
+
+        if (partials[0] === '') {
+            partials.shift();
+        }
+
+        for (i = 0; i < partials.length; i++) {
+            if (i % 2 === 0) {
+                selector = '';
+            }
+
+            selector += partials[i];
+
+            if (i % 2 !== 0) {
+                toggleArray.push(selector);
+            }
+        }
+
+        return toggleArray;
     },
 
     /**
@@ -503,7 +531,7 @@ h.extend(mixitup.Mixer.prototype,
         if (command.collection) {
             for (i = 0; el = command.collection[i]; i++) {
                 if (self.dom.targets.indexOf(el) > -1) {
-                    throw new Error(mixitup.messages.ERROR_INSERT_PREEXISTING_ELEMENT);
+                    throw new Error(mixitup.messages.ERROR_INSERT_PREEXISTING_ELEMENT());
                 }
 
                 // Ensure elements are hidden when they are added to the DOM, so they can
@@ -769,7 +797,7 @@ h.extend(mixitup.Mixer.prototype,
                 // Encourage users to assign values to all targets to avoid erroneous sorting
                 // when types are mixed
 
-                console.warn(mixitup.messages.WARNING_INCONSISTENT_SORTING_ATTRIBUTES);
+                console.warn(mixitup.messages.WARNING_INCONSISTENT_SORTING_ATTRIBUTES());
             }
         }
 
@@ -965,7 +993,7 @@ h.extend(mixitup.Mixer.prototype,
         self.callActions('beforeParseEffect', arguments);
 
         if (typeof effectString !== 'string') {
-            throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS);
+            throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS());
         }
 
         if (effectString.indexOf(effectName) < 0) {
@@ -2115,7 +2143,7 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         if (!instruction.command.collection.length && self.config.debug.showWarnings) {
-            console.warn(mixitup.messages.WARNING_INSERT_NO_ELEMENTS);
+            console.warn(mixitup.messages.WARNING_INSERT_NO_ELEMENTS());
         }
 
         instruction = self.callFilters('instructionParseInsertArgs', instruction, arguments);
@@ -2238,7 +2266,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         } else {
             if (self.config.debug.showWarnings) {
-                console.warn(mixitup.messages.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL);
+                console.warn(mixitup.messages.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL());
             }
 
             deferred.resolve(self.state);
@@ -2517,7 +2545,7 @@ h.extend(mixitup.Mixer.prototype,
 
         if (self.isBusy) {
             if (self.config.debug.showWarnings) {
-                console.warn(mixitup.messages.WARNING_GET_OPERATION_INSTANCE_BUSY);
+                console.warn(mixitup.messages.WARNING_GET_OPERATION_INSTANCE_BUSY());
             }
 
             return null;

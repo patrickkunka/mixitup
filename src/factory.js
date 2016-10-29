@@ -71,7 +71,7 @@ mixitup = function(container, config, foreignDoc) {
         ) &&
         h.canReportErrors(config)
     ) {
-        throw new Error(mixitup.messages.ERROR_FACTORY_INVALID_CONTAINER);
+        throw new Error(mixitup.messages.ERROR_FACTORY_INVALID_CONTAINER());
     }
 
     switch (typeof container) {
@@ -114,7 +114,7 @@ mixitup = function(container, config, foreignDoc) {
             instance = mixitup.instances[id];
 
             if (!config || (config && config.debug && config.debug.showErrors !== false)) {
-                console.warn(mixitup.messages.WARNING_FACTORY_PREEXISTING_INSTANCE);
+                console.warn(mixitup.messages.WARNING_FACTORY_PREEXISTING_INSTANCE());
             }
         }
 

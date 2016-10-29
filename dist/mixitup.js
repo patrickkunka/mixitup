@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build e22dd59f-720b-48ff-a70b-315d32c110e0
+ * Build ef1f1691-99ee-4d25-b74e-30e57abe68d4
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -90,7 +90,7 @@
             ) &&
             h.canReportErrors(config)
         ) {
-            throw new Error(mixitup.messages.ERROR_FACTORY_INVALID_CONTAINER);
+            throw new Error(mixitup.messages.ERROR_FACTORY_INVALID_CONTAINER());
         }
 
         switch (typeof container) {
@@ -133,7 +133,7 @@
                 instance = mixitup.instances[id];
 
                 if (!config || (config && config.debug && config.debug.showErrors !== false)) {
-                    console.warn(mixitup.messages.WARNING_FACTORY_PREEXISTING_INSTANCE);
+                    console.warn(mixitup.messages.WARNING_FACTORY_PREEXISTING_INSTANCE());
                 }
             }
 
@@ -249,46 +249,127 @@
          */
 
         extend: function(destination, source, deep) {
-            var self        = this,
-                sourceKeys  = [],
+            var sourceKeys  = [],
                 key         = '',
                 i           = -1;
 
-            if (Array.isArray(source)) {
-                for (i = 0; i < source.length; i++) {
-                    sourceKeys.push(i);
-                }
-            } else if (source) {
-                sourceKeys = Object.keys(source);
-            }
-
-            for (i = 0; i < sourceKeys.length; i++) {
-                key = sourceKeys[i];
-
-                if (!deep || typeof source[key] !== 'object') {
-                    // All non-object properties, or all properties if shallow extend
-
-                    destination[key] = source[key];
-                } else if (Array.isArray(source[key])) {
-                    // Arrays
-
-                    if (!destination[key]) {
-                        destination[key] = [];
+            try {
+                if (Array.isArray(source)) {
+                    for (i = 0; i < source.length; i++) {
+                        sourceKeys.push(i);
                     }
-
-                    self.extend(destination[key], source[key]);
-                } else {
-                    // Objects
-
-                    if (!destination[key]) {
-                        destination[key] = {};
-                    }
-
-                    self.extend(destination[key], source[key]);
+                } else if (source) {
+                    sourceKeys = Object.keys(source);
                 }
+
+                for (i = 0; i < sourceKeys.length; i++) {
+                    key = sourceKeys[i];
+
+                    if (!deep || typeof source[key] !== 'object') {
+                        // All non-object properties, or all properties if shallow extend
+
+                        destination[key] = source[key];
+                    } else if (Array.isArray(source[key])) {
+                        // Arrays
+
+                        if (!destination[key]) {
+                            destination[key] = [];
+                        }
+
+                        this.extend(destination[key], source[key]);
+                    } else {
+                        // Objects
+
+                        if (!destination[key]) {
+                            destination[key] = {};
+                        }
+
+                        this.extend(destination[key], source[key]);
+                    }
+                }
+            } catch(err) {
+                this.handleExtendError(err, destination);
             }
 
             return destination;
+        },
+
+        /**
+         * @private
+         * @param   {Error}  err
+         * @param   {object} destination
+         * @return  {void}
+         */
+
+        handleExtendError: function(err, destination) {
+            var re                  = /property "?(\w*)"?[,:] object/i,
+                matches             = null,
+                erroneous           = '',
+                message             = '',
+                suggestion          = '',
+                probableMatch       = '',
+                key                 = '',
+                mostMatchingChars   = -1,
+                i                   = -1;
+
+            if (err instanceof TypeError && (matches = re.exec(err.message))) {
+                erroneous = matches[1];
+
+                for (key in destination) {
+                    i = 0;
+
+                    while (i < erroneous.length && erroneous.charAt(i) === key.charAt(i)) {
+                        i++;
+                    }
+
+                    if (i > mostMatchingChars) {
+                        mostMatchingChars = i;
+                        probableMatch = key;
+                    }
+                }
+
+                if (mostMatchingChars > 1) {
+                    suggestion = mixitup.messages.ERROR_CONFIG_INVALID_PROPERTY_SUGGESTION({
+                        probableMatch: probableMatch
+                    });
+                }
+
+                message = mixitup.messages.ERROR_CONFIG_INVALID_PROPERTY({
+                    erroneous: erroneous,
+                    suggestion: suggestion
+                });
+
+                throw new TypeError(message);
+            }
+
+            throw err;
+        },
+
+        /**
+         * @private
+         * @param   {string} str
+         * @return  {function}
+         */
+
+        template: function(str) {
+            var re          = /\${([\w]*)}/g,
+                dynamics    = {},
+                matches     = null;
+
+            while ((matches = re.exec(str))) {
+                dynamics[matches[1]] = new RegExp('\\${' + matches[1] + '}', 'g');
+            }
+
+            return function(data) {
+                var key     = '',
+                    output  = str;
+
+                for (key in dynamics) {
+                    output = output.replace(dynamics[key], data[key] || '');
+                }
+
+                return output;
+            };
         },
 
         /**
@@ -2232,7 +2313,7 @@
 
         this.callActions('beforeConstruct');
 
-        this.allowNestedTargets = false;
+        this.allowNestedTargets = true;
         this.containerClass     = '';
         this.containerClassFail = 'mixitup-container-fail';
 
@@ -3755,7 +3836,7 @@
 
                     break;
                 default:
-                    throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_CONTROLS_SCOPE);
+                    throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_CONTROLS_SCOPE());
             }
 
             for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
@@ -3885,9 +3966,7 @@
 
         buildToggleArray: function(command, state) {
             var self                    = this,
-                activeFilterSelector    = '',
-                filter                  = '',
-                i                       = -1;
+                activeFilterSelector    = '';
 
             self.callActions('beforeBuildToggleArray', arguments);
 
@@ -3906,20 +3985,50 @@
             if (self.config.controls.toggleLogic === 'or') {
                 self.toggleArray = activeFilterSelector.split(',');
             } else {
-                self.toggleArray = activeFilterSelector.split('.');
-
-                // TODO: selectors may not be class names, we need to be able to split any selectors
-
-                !self.toggleArray[0] && self.toggleArray.shift();
-
-                for (i = 0; filter = self.toggleArray[i]; i++) {
-                    self.toggleArray[i] = '.' + filter;
-                }
+                self.toggleArray = self.splitCompoundSelector(activeFilterSelector);
             }
 
             self.toggleArray = h.clean(self.toggleArray);
 
             self.callActions('afterBuildToggleArray', arguments);
+        },
+
+        /**
+         * Takes a compound selector (e.g. `.cat-1.cat-2`, `[data-cat="1"][data-cat="2"]`)
+         * and breaks into its individual selectors.
+         *
+         * @private
+         * @instance
+         * @since   3.0.0
+         * @param   {string} compoundSelector
+         * @return  {string[]}
+         */
+
+        splitCompoundSelector: function(compoundSelector) {
+            // Break at a `.` or `[`, capturing the delineator
+
+            var partials    = compoundSelector.split(/([\.\[])/g),
+                toggleArray = [],
+                selector    = '',
+                i           = -1;
+
+            if (partials[0] === '') {
+                partials.shift();
+            }
+
+            for (i = 0; i < partials.length; i++) {
+                if (i % 2 === 0) {
+                    selector = '';
+                }
+
+                selector += partials[i];
+
+                if (i % 2 !== 0) {
+                    toggleArray.push(selector);
+                }
+            }
+
+            return toggleArray;
         },
 
         /**
@@ -3999,7 +4108,7 @@
             if (command.collection) {
                 for (i = 0; el = command.collection[i]; i++) {
                     if (self.dom.targets.indexOf(el) > -1) {
-                        throw new Error(mixitup.messages.ERROR_INSERT_PREEXISTING_ELEMENT);
+                        throw new Error(mixitup.messages.ERROR_INSERT_PREEXISTING_ELEMENT());
                     }
 
                     // Ensure elements are hidden when they are added to the DOM, so they can
@@ -4265,7 +4374,7 @@
                     // Encourage users to assign values to all targets to avoid erroneous sorting
                     // when types are mixed
 
-                    console.warn(mixitup.messages.WARNING_INCONSISTENT_SORTING_ATTRIBUTES);
+                    console.warn(mixitup.messages.WARNING_INCONSISTENT_SORTING_ATTRIBUTES());
                 }
             }
 
@@ -4461,7 +4570,7 @@
             self.callActions('beforeParseEffect', arguments);
 
             if (typeof effectString !== 'string') {
-                throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS);
+                throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS());
             }
 
             if (effectString.indexOf(effectName) < 0) {
@@ -5611,7 +5720,7 @@
             }
 
             if (!instruction.command.collection.length && self.config.debug.showWarnings) {
-                console.warn(mixitup.messages.WARNING_INSERT_NO_ELEMENTS);
+                console.warn(mixitup.messages.WARNING_INSERT_NO_ELEMENTS());
             }
 
             instruction = self.callFilters('instructionParseInsertArgs', instruction, arguments);
@@ -5734,7 +5843,7 @@
                 }
             } else {
                 if (self.config.debug.showWarnings) {
-                    console.warn(mixitup.messages.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL);
+                    console.warn(mixitup.messages.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL());
                 }
 
                 deferred.resolve(self.state);
@@ -6013,7 +6122,7 @@
 
             if (self.isBusy) {
                 if (self.config.debug.showWarnings) {
-                    console.warn(mixitup.messages.WARNING_GET_OPERATION_INSTANCE_BUSY);
+                    console.warn(mixitup.messages.WARNING_GET_OPERATION_INSTANCE_BUSY());
                 }
 
                 return null;
@@ -7495,37 +7604,60 @@
         /* Errors
         ----------------------------------------------------------------------------- */
 
-        this.ERROR_FACTORY_INVALID_CONTAINER = '[MixItUp] An invalid selector or element reference was passed to the mixitup factory function';
+        this.ERROR_FACTORY_INVALID_CONTAINER = h.template(
+            '[MixItUp] An invalid selector or element reference was passed to the mixitup factory function'
+        );
 
-        this.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS = '[MixItUp] Invalid value for `config.animation.effects`';
+        this.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS = h.template(
+            '[MixItUp] Invalid value for `config.animation.effects`'
+        );
 
-        this.ERROR_CONFIG_INVALID_CONTROLS_SCOPE = '[MixItUp] Invalid value for `config.controls.scope`';
+        this.ERROR_CONFIG_INVALID_CONTROLS_SCOPE = h.template(
+            '[MixItUp] Invalid value for `config.controls.scope`'
+        );
 
-        this.ERROR_INSERT_PREEXISTING_ELEMENT = '[MixItUp] An element to be inserted already exists in the container';
+        this.ERROR_CONFIG_INVALID_PROPERTY = h.template(
+            '[MixitUp] Invalid configuration object property "${erroneous}"${suggestion}'
+        );
+
+        this.ERROR_CONFIG_INVALID_PROPERTY_SUGGESTION = h.template(
+            '. Did you mean "${probableMatch}"?'
+        );
+
+        this.ERROR_INSERT_PREEXISTING_ELEMENT = h.template(
+            '[MixItUp] An element to be inserted already exists in the container'
+        );
 
         /* Warnings
         ----------------------------------------------------------------------------- */
 
-        this.WARNING_FACTORY_PREEXISTING_INSTANCE =
+        this.WARNING_FACTORY_PREEXISTING_INSTANCE = h.template(
             '[MixItUp] WARNING: This element already has an active MixItUp instance. The provided configuration object will be ignored.' +
-            ' If you wish to perform additional methods on this instance, please create a reference.';
+            ' If you wish to perform additional methods on this instance, please create a reference.'
+        );
 
-        this.WARNING_INSERT_NO_ELEMENTS = '[MixItUp] WARNING: No element were passed to `.insert()`';
+        this.WARNING_INSERT_NO_ELEMENTS = h.template(
+            '[MixItUp] WARNING: No element were passed to `.insert()`'
+        );
 
-        this.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL =
+        this.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL = h.template(
             '[MixItUp] WARNING: An operation was requested but the MixItUp instance was busy. The operation was rejected because the ' +
-            ' queue is full or queuing is disabled.';
+            ' queue is full or queuing is disabled.'
+        );
 
-        this.WARNING_GET_OPERATION_INSTANCE_BUSY =
-            '[MixItUp] WARNING: Operations can be be created while the MixItUp instance is busy.';
+        this.WARNING_GET_OPERATION_INSTANCE_BUSY = h.template(
+            '[MixItUp] WARNING: Operations can be be created while the MixItUp instance is busy.'
+        );
 
-        this.WARNING_NO_PROMISE_IMPLEMENTATION =
+        this.WARNING_NO_PROMISE_IMPLEMENTATION = h.template(
             '[MixItUp] WARNING: No Promise implementations could be found. If you wish to use promises with MixItUp please install' +
-            ' an ES6 Promise polyfill.';
+            ' an ES6 Promise polyfill.'
+        );
 
-        this.WARNING_INCONSISTENT_SORTING_ATTRIBUTES =
+        this.WARNING_INCONSISTENT_SORTING_ATTRIBUTES = h.template(
             '[MixItUp] WARNING: The requested sorting data attribute was not present on one or more target elements which may product' +
-            ' unexpected sort output';
+            ' unexpected sort output'
+        );
 
         this.callActions('afterConstruct');
 
