@@ -43,7 +43,7 @@ To get started, follow these few simple steps:
 </div>
 ```
 
-By default, MixItUp will query the container for targets matching the selector `'.mix'`, although any valid selector can be used.
+By default, MixItUp will query the container for targets matching the selector `'.mix'`, although any valid selector can be used via the `selectors.target` configuration option.
 
 Targets can be filtered using any valid selector e.g. `'.category-a'`, and are sorted via custom data attributes e.g. `'data-order'`.
 
