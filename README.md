@@ -24,8 +24,7 @@ MixItUp is open source and free to use for non-commercial, educational and non-p
 
 - [CSS](#css)
 - [HTML](#html)
-- [Loading the MixItUp JavaScript](#loading-the-mixitup-javascript)
-- [Creating a Mixer](#creating-a-mixer)
+- [JavaScript](#javascript)
 
 Most commonly, MixItUp is applied to a "container" of "target" elements, which could be a portfolio of projects, a list of blog posts, a selection of products, or anything kind of UI where filtering and/or sorting would be advantageous.
 
@@ -114,11 +113,13 @@ The values `'default'` and `'random'` are also valid, with `'default'` referring
 
 For more information on MixItUp's full sorting functionality, see our [--website pending--]() tutorial.
 
-### 3. Loading the MixItUp JavaScript
+### JavaScript
+
+#### 4. Load MixItUp
 
 Firstly, load the MixItUp library into your project. This can be done in a number of ways.
 
-#### Script Tag
+##### Script Tag
 
 The most simple way to load MixItUp in your project is to include it via a `<script>` tag before the closing `</body>` tag on your page.
 
@@ -132,7 +133,7 @@ The most simple way to load MixItUp in your project is to include it via a `<scr
 
 With this technique, the MixItUp factory function will be made available via the global variable `mixitup`.
 
-#### Module Loader
+##### Module Loader
 
 If you are building a modular JavaScript project with Webpack, Browserify, or RequireJS, MixItUp can be installed via your package manager of choice and imported into any of your project's modules with local scoping.
 
@@ -154,7 +155,7 @@ require(['mixitup'], function(mixitup) {
 });
 ```
 
-### 4. Creating a Mixer
+#### 5. Create a Mixer
 
 With the `mixitup` factory function loaded, you may now instantiate a "mixer" on your container to enable MixItUp functionality. Call the function passing a selector string or a reference to your container element as the first parameter.
 
@@ -165,7 +166,7 @@ mixitup('.container');
 
 Your mixer is now ready to interact with, either via physical controls, or its API. Click a control or call an API method to see if everything is working correctly.
 
-#### Configuration
+##### Configuration
 
 If you wish to customize the functionality of your mixer, an optional "configuration object" can be passed as the second parameter to the `mixitup` function. If no configuration object is passed, the default settings will be used.
 
@@ -183,7 +184,7 @@ mixitup('.container', {
 ```
 > Passing a configuration object as the second parameter
 
-#### Using the API
+##### Using the API
 
 If you wish to interact with your mixer via its API, the factory function creates and returns a reference to your mixer which can then be used to call API methods on.
 
