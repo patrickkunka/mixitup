@@ -127,5 +127,5 @@ document.querySelector('.js-api-limit-10').addEventListener('click', function() 
     mixer.paginate({limit: 10});
 });
 
-mixer.init(true)
-    .then(function(state) {console.log(mixer, state)});
+// mixer.init(true)
+//    .then(function(state) {console.log(mixer, state)});
