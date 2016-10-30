@@ -1,6 +1,7 @@
 /* global mixitup */
 
-var sandbox = document.querySelector('.sandbox');
+var sandbox     = document.querySelector('.sandbox');
+var dataSandbox = document.querySelector('.data-sandbox');
 
 var mixer = mixitup('.sandbox', {
     animation: {
@@ -35,6 +36,8 @@ var mixer = mixitup('.sandbox', {
         // }
     }
 }, null);
+
+console.log(mixer.getState());
 
 sandbox.addEventListener('mixStart', function(e) {
     console.log('mixStart', e.detail);
@@ -128,5 +131,17 @@ document.querySelector('.js-api-limit-10').addEventListener('click', function() 
     mixer.paginate({limit: 10});
 });
 
-// mixer.init(true)
-//    .then(function(state) {console.log(mixer, state)});
+var dataMixer = mixitup(dataSandbox, {
+    load: {
+        dataset: []
+    },
+    data: {
+        uid: 'id'
+    }
+});
+
+console.log(dataMixer.getState());
+
+dataMixer.dataset([{
+    id: '12'
+}]);

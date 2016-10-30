@@ -22,6 +22,8 @@
 
     {{>config-classnames}}
 
+    {{>config-data}}
+
     {{>config-debug}}
 
     {{>config-layout}}

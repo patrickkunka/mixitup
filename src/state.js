@@ -26,10 +26,10 @@ mixitup.State = function() {
      * @memberof    mixitup.State
      * @instance
      * @type        {mixitup.CommandFilter}
-     * @default     ''
+     * @default     null
      */
 
-    this.activeFilter = new mixitup.CommandFilter();
+    this.activeFilter = null;
 
     /**
      * The currently active sort command as set by a control click or API call.
@@ -37,11 +37,11 @@ mixitup.State = function() {
      * @name        activeSort
      * @memberof    mixitup.State
      * @instance
-     * @type        {string}
-     * @default     ''
+     * @type        {mixitup.CommandSort}
+     * @default     null
      */
 
-    this.activeSort = new mixitup.CommandSort();
+    this.activeSort = null;
 
     /**
      * The currently active containerClass, if applied.
@@ -184,6 +184,19 @@ mixitup.State = function() {
      */
 
     this.triggerElement = null;
+
+    /**
+     * The currently active dataset underlying the rendered targets, if the
+     * dataset API is in use.
+     *
+     * @name        activeDataset
+     * @memberof    mixitup.State
+     * @instance
+     * @type        {Array.<object>}
+     * @default     null
+     */
+
+    this.activeDataset = null;
 
     this.callActions('afterConstruct');
 

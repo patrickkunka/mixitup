@@ -19,7 +19,7 @@ mixitup.Mixer = function() {
 
     this.callActions('beforeConstruct');
 
-    this.config             = new mixitup.Config();
+    this.config            = new mixitup.Config();
 
     this.id                = '';
 
@@ -30,6 +30,7 @@ mixitup.Mixer = function() {
     this.controls          = [];
     this.targets           = [];
     this.origOrder         = [];
+    this.cache             = {};
 
     this.toggleArray       = [];
 
@@ -100,6 +101,10 @@ h.extend(mixitup.Mixer.prototype,
             self.config.animation.enable = false;
         }
 
+        if (self.config.load.dataset) {
+            self.config.controls.enable = false;
+        }
+
         self.indexTargets();
 
         self.state = self.getInitialState();
@@ -108,16 +113,18 @@ h.extend(mixitup.Mixer.prototype,
             target.hide();
         }
 
-        self.initControls();
+        if (self.config.controls.enable) {
+            self.initControls();
 
-        self.updateControls({
-            filter: self.state.activeFilterSelector,
-            sort: self.state.activeSort
-        });
+            self.updateControls({
+                filter: self.state.activeFilterSelector,
+                sort: self.state.activeSort
+            });
+
+            self.buildToggleArray(null, self.state);
+        }
 
         self.parseEffects();
-
-        self.buildToggleArray(null, self.state);
 
         self.callActions('afterAttach', arguments);
     },
@@ -138,44 +145,60 @@ h.extend(mixitup.Mixer.prototype,
 
         // Map initial values into a mock state object
 
-        state.activeFilter          = self.parseFilterArgs([self.config.load.filter]).command;
-        state.activeSort            = self.parseSortArgs([self.config.load.sort]).command;
-        state.activeContainerClass  = self.config.layout.containerClass;
-        state.totalTargets          = self.targets.length;
+        if (self.config.load.dataset) {
+            // Dataset API
 
-        state = self.callFilters('stateGetInitialState', state, arguments);
+            if (!self.config.data.uid || typeof self.config.data.uid !== 'string') {
+                throw new TypeError(mixitup.messages.ERROR_CONFIG_DATA_UID_NOT_SET());
+            }
 
-        if (
-            state.activeSort.collection || state.activeSort.attribute ||
-            state.activeSort.order === 'random' || state.activeSort.order === 'desc'
-        ) {
-            operation.newSort = state.activeSort;
+            operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset;
 
-            self.sortOperation(operation);
-
-            self.printSort(false, operation);
-
-            self.targets = operation.newOrder;
+            state = self.callFilters('stateGetInitialState', state, arguments);
         } else {
-            operation.startOrder = operation.newOrder = self.targets;
-        }
+            // DOM API
 
-        operation.startFilter   = state.activeFilter;
-        operation.newFilter     = state.activeFilter;
-        operation.startSort     = state.activeSort;
-        operation.newSort       = state.activeSort;
+            state.activeFilter          = self.parseFilterArgs([self.config.load.filter]).command;
+            state.activeSort            = self.parseSortArgs([self.config.load.sort]).command;
+            state.activeContainerClass  = self.config.layout.containerClass;
+            state.totalTargets          = self.targets.length;
 
-        if (operation.newFilter.selector === 'all') {
-            operation.newFilter.selector = self.config.selectors.target;
-        } else if (operation.newFilter.selector === 'none') {
-            operation.newFilter.selector = '';
+            state = self.callFilters('stateGetInitialState', state, arguments);
+
+            if (
+                state.activeSort.collection || state.activeSort.attribute ||
+                state.activeSort.order === 'random' || state.activeSort.order === 'desc'
+            ) {
+                // Sorting on load
+
+                operation.newSort = state.activeSort;
+
+                self.sortOperation(operation);
+
+                self.printSort(false, operation);
+
+                self.targets = operation.newOrder;
+            } else {
+                operation.startOrder = operation.newOrder = self.targets;
+            }
+
+            operation.startFilter   = operation.newFilter   = state.activeFilter;
+            operation.startSort     = operation.newSort     = state.activeSort;
+
+            if (operation.newFilter.selector === 'all') {
+                operation.newFilter.selector = self.config.selectors.target;
+            } else if (operation.newFilter.selector === 'none') {
+                operation.newFilter.selector = '';
+            }
         }
 
         operation = self.callFilters('operationGetInitialState', operation, [state]);
 
         self.lastOperation = operation;
 
-        self.filterOperation(operation);
+        if (operation.newFilter) {
+            self.filterOperation(operation);
+        }
 
         state = self.buildState(operation);
 
@@ -217,10 +240,11 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     indexTargets: function() {
-        var self    = this,
-            target  = null,
-            el      = null,
-            i       = -1;
+        var self            = this,
+            target          = null,
+            el              = null,
+            dataset         = null,
+            i               = -1;
 
         self.callActions('beforeIndexTargets', arguments);
 
@@ -232,11 +256,17 @@ h.extend(mixitup.Mixer.prototype,
 
         self.targets = [];
 
+        if ((dataset = self.config.load.dataset) && dataset.length !== self.dom.targets.length) {
+            throw new Error(mixitup.messages.ERROR_DATASET_PRERENDERED_MISMATCH());
+        }
+
         if (self.dom.targets.length) {
             for (i = 0; el = self.dom.targets[i]; i++) {
                 target = new mixitup.Target();
 
-                target.init(el, self);
+                target.init(el, self, dataset ? dataset[i] : void(0));
+
+                target.isInDom = true;
 
                 self.targets.push(target);
             }
@@ -263,12 +293,6 @@ h.extend(mixitup.Mixer.prototype,
             j                   = -1;
 
         self.callActions('beforeInitControls', arguments);
-
-        if (!self.config.controls.enable) {
-            self.callActions('afterInitControls', arguments);
-
-            return;
-        }
 
         switch (self.config.controls.scope) {
             case 'local':
@@ -568,6 +592,8 @@ h.extend(mixitup.Mixer.prototype,
                 target = new mixitup.Target();
 
                 target.init(el, self);
+
+                target.isInDom = true;
 
                 self.targets.splice(command.index, 0, target);
 
@@ -1014,7 +1040,7 @@ h.extend(mixitup.Mixer.prototype,
         self.callActions('beforeParseEffect', arguments);
 
         if (typeof effectString !== 'string') {
-            throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS());
+            throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS());
         }
 
         if (effectString.indexOf(effectName) < 0) {
@@ -1142,6 +1168,7 @@ h.extend(mixitup.Mixer.prototype,
         state.totalShow                 = operation.show.length;
         state.totalHide                 = operation.hide.length;
         state.totalMatching             = operation.matching.length;
+        state.activeDataset             = operation.newDataset;
         state.triggerElement            = self.lastClicked;
 
         return self.callFilters('stateBuildState', state, arguments);
@@ -1879,6 +1906,8 @@ h.extend(mixitup.Mixer.prototype,
 
                     self.targets.splice(i, 1);
 
+                    target.isInDom = false;
+
                     i--;
                 }
             }
@@ -2495,6 +2524,119 @@ h.extend(mixitup.Mixer.prototype,
     /**
      * @public
      * @instance
+     * @since       3.0.0
+     * @param       {Array.<object>}    newDataset
+     * @return      {Promise.<mixitup.State>}
+     */
+
+    dataset: function(newDataset) {
+        var self            = this,
+            operation       = new mixitup.Operation(),
+            insertions      = {},
+            startDataset    = null,
+            data            = null,
+            target          = null,
+            el              = null,
+            id              = '',
+            i               = -1;
+
+        if (!(startDataset = self.state.activeDataset)) {
+            throw new Error(mixitup.messages.ERROR_DATASET_NOT_SET());
+        }
+
+        operation.id            = h.randomHex();
+        operation.startState    = self.state;
+        operation.startOrder    = self.targets;
+
+        for (i = 0; data = newDataset[i]; i++) {
+            if (typeof (id = data[self.config.data.uid]) === 'undefined') {
+                throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID({
+                    uid: self.config.data.uid
+                }));
+            }
+
+            if ((target = self.cache[id]) instanceof mixitup.Target) {
+                // Already in cache
+
+                if (self.config.data.dataCheck) {
+                    // dirty check for changes if enabled
+
+                    console.log('dirty checking for changes');
+                }
+            } else {
+                // New target
+
+                el = self.renderTarget(data);
+
+                target = new mixitup.Target();
+
+                target.init(el, self, data);
+
+                insertions[i] = el;
+
+                // TODO: insert consecutive inserts via frags
+            }
+
+            if (!target.isInDom) {
+                operation.toShow.push(target);
+            }
+
+            operation.show.push(target);
+        }
+
+        for (i = 0; data = startDataset[i]; i++) {
+            id = data[self.config.data.uid];
+
+            target = self.cache[id];
+
+            if (operation.show.indexOf(target) < 0) {
+                // Previously shown but now absent
+
+                operation.hide.push(target);
+                operation.toHide.push(target);
+                operation.toRemove.push(target);
+            }
+        }
+
+        operation.newOrder = operation.show;
+
+        self.getStartMixData(operation);
+        self.setInter(operation);
+
+        operation.docState = h.getDocumentState();
+
+        self.getInterMixData(operation);
+        self.setFinal(operation);
+        self.getFinalMixData(operation);
+
+        self.parseEffects();
+
+        operation.hasEffect = self.hasEffect();
+
+        self.getTweenData(operation);
+
+        operation.newState = self.buildState(operation);
+
+        console.log(operation);
+
+        // SHOW/HIDE
+
+        // iterate through dataset, find target with corresponding UID in cache, push into
+        // show array (if not in dom, add to toInsert/toShow)
+        // when retreiving from cache, dirty check for changes, if present, update target data, re-render
+        // if an item is not in cache, render, index and add to cache, add to show array, add to toInsert, toShow
+        // iterate through old show array, if item not in new show array, add to toRemove/hide
+
+        // SORT
+
+        // create newOrder array from new dataset
+
+        // An operation object should be produced from the above with all neccessary values, which can then be sent to goMix
+    },
+
+    /**
+     * @public
+     * @instance
      * @since   3.0.0
      * @param   {object}            command
      * @param   {boolean}           [isPreFetch]
@@ -2502,7 +2644,7 @@ h.extend(mixitup.Mixer.prototype,
      * @return  {Operation|null}
      */
 
-    getOperation: function(command, isPreFetch) {
+    getOperation: function(command) {
         var self                = this,
             sortCommand         = command.sort,
             filterCommand       = command.filter,
@@ -2513,14 +2655,9 @@ h.extend(mixitup.Mixer.prototype,
 
         operation = self.callFilters('operationUnmappedGetOperation', operation, arguments);
 
-        // NB: `isPreFetch` is passed as may be useful for extensions, not used in this function
-        // but placed here to satisfy jscs
-
-        isPreFetch;
-
+        operation.id            = h.randomHex();
         operation.command       = command;
         operation.startState    = self.state;
-        operation.id            = h.randomHex();
 
         if (self.isBusy) {
             if (self.config.debug.showWarnings) {

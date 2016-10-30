@@ -13,14 +13,17 @@ mixitup.Target = function() {
 
     this.callActions('beforeConstruct');
 
+    this.id         = '';
     this.sortString = '';
     this.mixer      = null;
     this.callback   = null;
     this.isShown    = false;
     this.isBound    = false;
     this.isExcluded = false;
+    this.isInDom    = false;
     this.handler    = null;
     this.operation  = null;
+    this.data       = null;
     this.dom        = new mixitup.TargetDom();
 
     this.callActions('afterConstruct');
@@ -43,11 +46,13 @@ h.extend(mixitup.Target.prototype, {
      * @since   3.0.0
      * @param   {Element}   el
      * @param   {object}    mixer
+     * @param   {object}    [data]
      * @return  {void}
      */
 
-    init: function(el, mixer) {
-        var self = this;
+    init: function(el, mixer, data) {
+        var self = this,
+            id   = '';
 
         self.callActions('beforeInit', arguments);
 
@@ -59,6 +64,16 @@ h.extend(mixitup.Target.prototype, {
 
         if (self.dom.el.style.display !== 'none') {
             self.isShown = true;
+        }
+
+        if (data) {
+            if (typeof (id = data[self.config.data.uid]) === 'undefined') {
+                throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID());
+            }
+
+            self.id = id;
+
+            mixer.cache[id] = self;
         }
 
         self.callActions('afterInit', arguments);

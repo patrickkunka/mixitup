@@ -16,7 +16,7 @@ mixitup.ConfigLoad = function() {
 
     this.filter     = 'all';
     this.sort       = 'default:asc';
-    this.animate    = false;
+    this.dataset    = null;
 
     this.callActions('afterConstruct');
 

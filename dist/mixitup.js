@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 78c2b45f-7de0-41a3-b296-23b31dd85ee8
+ * Build 1a6dc80c-e6ac-4d81-8cf5-a456b5d8d50a
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2274,6 +2274,34 @@
     /**
      * @constructor
      * @memberof    mixitup.Config
+     * @name        data
+     * @namespace
+     * @public
+     * @since       3.0.0
+     */
+
+    mixitup.ConfigData = function() {
+        mixitup.Base.call(this);
+
+        this.callActions('beforeConstruct');
+
+        this.uid        = '';
+        this.dirtyCheck = false;
+
+        this.callActions('afterConstruct');
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.ConfigData);
+
+    mixitup.ConfigData.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.ConfigData.prototype.constructor = mixitup.ConfigData;
+
+    /**
+     * @constructor
+     * @memberof    mixitup.Config
      * @name        debug
      * @namespace
      * @public
@@ -2344,7 +2372,7 @@
 
         this.filter     = 'all';
         this.sort       = 'default:asc';
-        this.animate    = false;
+        this.dataset    = null;
 
         this.callActions('afterConstruct');
 
@@ -2466,6 +2494,7 @@
         this.callbacks          = new mixitup.ConfigCallbacks();
         this.controls           = new mixitup.ConfigControls();
         this.classnames         = new mixitup.ConfigClassnames();
+        this.data               = new mixitup.ConfigData();
         this.debug              = new mixitup.ConfigDebug();
         this.layout             = new mixitup.ConfigLayout();
         this.load               = new mixitup.ConfigLoad();
@@ -3596,7 +3625,7 @@
 
         this.callActions('beforeConstruct');
 
-        this.config             = new mixitup.Config();
+        this.config            = new mixitup.Config();
 
         this.id                = '';
 
@@ -3607,6 +3636,7 @@
         this.controls          = [];
         this.targets           = [];
         this.origOrder         = [];
+        this.cache             = {};
 
         this.toggleArray       = [];
 
@@ -3677,6 +3707,10 @@
                 self.config.animation.enable = false;
             }
 
+            if (self.config.load.dataset) {
+                self.config.controls.enable = false;
+            }
+
             self.indexTargets();
 
             self.state = self.getInitialState();
@@ -3685,16 +3719,18 @@
                 target.hide();
             }
 
-            self.initControls();
+            if (self.config.controls.enable) {
+                self.initControls();
 
-            self.updateControls({
-                filter: self.state.activeFilterSelector,
-                sort: self.state.activeSort
-            });
+                self.updateControls({
+                    filter: self.state.activeFilterSelector,
+                    sort: self.state.activeSort
+                });
+
+                self.buildToggleArray(null, self.state);
+            }
 
             self.parseEffects();
-
-            self.buildToggleArray(null, self.state);
 
             self.callActions('afterAttach', arguments);
         },
@@ -3715,44 +3751,60 @@
 
             // Map initial values into a mock state object
 
-            state.activeFilter          = self.parseFilterArgs([self.config.load.filter]).command;
-            state.activeSort            = self.parseSortArgs([self.config.load.sort]).command;
-            state.activeContainerClass  = self.config.layout.containerClass;
-            state.totalTargets          = self.targets.length;
+            if (self.config.load.dataset) {
+                // Dataset API
 
-            state = self.callFilters('stateGetInitialState', state, arguments);
+                if (!self.config.data.uid || typeof self.config.data.uid !== 'string') {
+                    throw new TypeError(mixitup.messages.ERROR_CONFIG_DATA_UID_NOT_SET());
+                }
 
-            if (
-                state.activeSort.collection || state.activeSort.attribute ||
-                state.activeSort.order === 'random' || state.activeSort.order === 'desc'
-            ) {
-                operation.newSort = state.activeSort;
+                operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset;
 
-                self.sortOperation(operation);
-
-                self.printSort(false, operation);
-
-                self.targets = operation.newOrder;
+                state = self.callFilters('stateGetInitialState', state, arguments);
             } else {
-                operation.startOrder = operation.newOrder = self.targets;
-            }
+                // DOM API
 
-            operation.startFilter   = state.activeFilter;
-            operation.newFilter     = state.activeFilter;
-            operation.startSort     = state.activeSort;
-            operation.newSort       = state.activeSort;
+                state.activeFilter          = self.parseFilterArgs([self.config.load.filter]).command;
+                state.activeSort            = self.parseSortArgs([self.config.load.sort]).command;
+                state.activeContainerClass  = self.config.layout.containerClass;
+                state.totalTargets          = self.targets.length;
 
-            if (operation.newFilter.selector === 'all') {
-                operation.newFilter.selector = self.config.selectors.target;
-            } else if (operation.newFilter.selector === 'none') {
-                operation.newFilter.selector = '';
+                state = self.callFilters('stateGetInitialState', state, arguments);
+
+                if (
+                    state.activeSort.collection || state.activeSort.attribute ||
+                    state.activeSort.order === 'random' || state.activeSort.order === 'desc'
+                ) {
+                    // Sorting on load
+
+                    operation.newSort = state.activeSort;
+
+                    self.sortOperation(operation);
+
+                    self.printSort(false, operation);
+
+                    self.targets = operation.newOrder;
+                } else {
+                    operation.startOrder = operation.newOrder = self.targets;
+                }
+
+                operation.startFilter   = operation.newFilter   = state.activeFilter;
+                operation.startSort     = operation.newSort     = state.activeSort;
+
+                if (operation.newFilter.selector === 'all') {
+                    operation.newFilter.selector = self.config.selectors.target;
+                } else if (operation.newFilter.selector === 'none') {
+                    operation.newFilter.selector = '';
+                }
             }
 
             operation = self.callFilters('operationGetInitialState', operation, [state]);
 
             self.lastOperation = operation;
 
-            self.filterOperation(operation);
+            if (operation.newFilter) {
+                self.filterOperation(operation);
+            }
 
             state = self.buildState(operation);
 
@@ -3794,10 +3846,11 @@
          */
 
         indexTargets: function() {
-            var self    = this,
-                target  = null,
-                el      = null,
-                i       = -1;
+            var self            = this,
+                target          = null,
+                el              = null,
+                dataset         = null,
+                i               = -1;
 
             self.callActions('beforeIndexTargets', arguments);
 
@@ -3809,11 +3862,17 @@
 
             self.targets = [];
 
+            if ((dataset = self.config.load.dataset) && dataset.length !== self.dom.targets.length) {
+                throw new Error(mixitup.messages.ERROR_DATASET_PRERENDERED_MISMATCH());
+            }
+
             if (self.dom.targets.length) {
                 for (i = 0; el = self.dom.targets[i]; i++) {
                     target = new mixitup.Target();
 
-                    target.init(el, self);
+                    target.init(el, self, dataset ? dataset[i] : void(0));
+
+                    target.isInDom = true;
 
                     self.targets.push(target);
                 }
@@ -3840,12 +3899,6 @@
                 j                   = -1;
 
             self.callActions('beforeInitControls', arguments);
-
-            if (!self.config.controls.enable) {
-                self.callActions('afterInitControls', arguments);
-
-                return;
-            }
 
             switch (self.config.controls.scope) {
                 case 'local':
@@ -4145,6 +4198,8 @@
                     target = new mixitup.Target();
 
                     target.init(el, self);
+
+                    target.isInDom = true;
 
                     self.targets.splice(command.index, 0, target);
 
@@ -4591,7 +4646,7 @@
             self.callActions('beforeParseEffect', arguments);
 
             if (typeof effectString !== 'string') {
-                throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS());
+                throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS());
             }
 
             if (effectString.indexOf(effectName) < 0) {
@@ -4719,6 +4774,7 @@
             state.totalShow                 = operation.show.length;
             state.totalHide                 = operation.hide.length;
             state.totalMatching             = operation.matching.length;
+            state.activeDataset             = operation.newDataset;
             state.triggerElement            = self.lastClicked;
 
             return self.callFilters('stateBuildState', state, arguments);
@@ -5456,6 +5512,8 @@
 
                         self.targets.splice(i, 1);
 
+                        target.isInDom = false;
+
                         i--;
                     }
                 }
@@ -6072,6 +6130,119 @@
         /**
          * @public
          * @instance
+         * @since       3.0.0
+         * @param       {Array.<object>}    newDataset
+         * @return      {Promise.<mixitup.State>}
+         */
+
+        dataset: function(newDataset) {
+            var self            = this,
+                operation       = new mixitup.Operation(),
+                insertions      = {},
+                startDataset    = null,
+                data            = null,
+                target          = null,
+                el              = null,
+                id              = '',
+                i               = -1;
+
+            if (!(startDataset = self.state.activeDataset)) {
+                throw new Error(mixitup.messages.ERROR_DATASET_NOT_SET());
+            }
+
+            operation.id            = h.randomHex();
+            operation.startState    = self.state;
+            operation.startOrder    = self.targets;
+
+            for (i = 0; data = newDataset[i]; i++) {
+                if (typeof (id = data[self.config.data.uid]) === 'undefined') {
+                    throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID({
+                        uid: self.config.data.uid
+                    }));
+                }
+
+                if ((target = self.cache[id]) instanceof mixitup.Target) {
+                    // Already in cache
+
+                    if (self.config.data.dataCheck) {
+                        // dirty check for changes if enabled
+
+                        console.log('dirty checking for changes');
+                    }
+                } else {
+                    // New target
+
+                    el = self.renderTarget(data);
+
+                    target = new mixitup.Target();
+
+                    target.init(el, self, data);
+
+                    insertions[i] = el;
+
+                    // TODO: insert consecutive inserts via frags
+                }
+
+                if (!target.isInDom) {
+                    operation.toShow.push(target);
+                }
+
+                operation.show.push(target);
+            }
+
+            for (i = 0; data = startDataset[i]; i++) {
+                id = data[self.config.data.uid];
+
+                target = self.cache[id];
+
+                if (operation.show.indexOf(target) < 0) {
+                    // Previously shown but now absent
+
+                    operation.hide.push(target);
+                    operation.toHide.push(target);
+                    operation.toRemove.push(target);
+                }
+            }
+
+            operation.newOrder = operation.show;
+
+            self.getStartMixData(operation);
+            self.setInter(operation);
+
+            operation.docState = h.getDocumentState();
+
+            self.getInterMixData(operation);
+            self.setFinal(operation);
+            self.getFinalMixData(operation);
+
+            self.parseEffects();
+
+            operation.hasEffect = self.hasEffect();
+
+            self.getTweenData(operation);
+
+            operation.newState = self.buildState(operation);
+
+            console.log(operation);
+
+            // SHOW/HIDE
+
+            // iterate through dataset, find target with corresponding UID in cache, push into
+            // show array (if not in dom, add to toInsert/toShow)
+            // when retreiving from cache, dirty check for changes, if present, update target data, re-render
+            // if an item is not in cache, render, index and add to cache, add to show array, add to toInsert, toShow
+            // iterate through old show array, if item not in new show array, add to toRemove/hide
+
+            // SORT
+
+            // create newOrder array from new dataset
+
+            // An operation object should be produced from the above with all neccessary values, which can then be sent to goMix
+        },
+
+        /**
+         * @public
+         * @instance
          * @since   3.0.0
          * @param   {object}            command
          * @param   {boolean}           [isPreFetch]
@@ -6079,7 +6250,7 @@
          * @return  {Operation|null}
          */
 
-        getOperation: function(command, isPreFetch) {
+        getOperation: function(command) {
             var self                = this,
                 sortCommand         = command.sort,
                 filterCommand       = command.filter,
@@ -6090,14 +6261,9 @@
 
             operation = self.callFilters('operationUnmappedGetOperation', operation, arguments);
 
-            // NB: `isPreFetch` is passed as may be useful for extensions, not used in this function
-            // but placed here to satisfy jscs
-
-            isPreFetch;
-
+            operation.id            = h.randomHex();
             operation.command       = command;
             operation.startState    = self.state;
-            operation.id            = h.randomHex();
 
             if (self.isBusy) {
                 if (self.config.debug.showWarnings) {
@@ -6567,14 +6733,17 @@
 
         this.callActions('beforeConstruct');
 
+        this.id         = '';
         this.sortString = '';
         this.mixer      = null;
         this.callback   = null;
         this.isShown    = false;
         this.isBound    = false;
         this.isExcluded = false;
+        this.isInDom    = false;
         this.handler    = null;
         this.operation  = null;
+        this.data       = null;
         this.dom        = new mixitup.TargetDom();
 
         this.callActions('afterConstruct');
@@ -6597,11 +6766,13 @@
          * @since   3.0.0
          * @param   {Element}   el
          * @param   {object}    mixer
+         * @param   {object}    [data]
          * @return  {void}
          */
 
-        init: function(el, mixer) {
-            var self = this;
+        init: function(el, mixer, data) {
+            var self = this,
+                id   = '';
 
             self.callActions('beforeInit', arguments);
 
@@ -6613,6 +6784,16 @@
 
             if (self.dom.el.style.display !== 'none') {
                 self.isShown = true;
+            }
+
+            if (data) {
+                if (typeof (id = data[self.config.data.uid]) === 'undefined') {
+                    throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID());
+                }
+
+                self.id = id;
+
+                mixer.cache[id] = self;
             }
 
             self.callActions('afterInit', arguments);
@@ -7349,6 +7530,8 @@
         this.newSort             = null;
         this.startFilter         = null;
         this.newFilter           = null;
+        this.startDataset        = null;
+        this.newDataset          = null;
         this.startX              = 0;
         this.startY              = 0;
         this.startHeight         = 0;
@@ -7399,10 +7582,10 @@
          * @memberof    mixitup.State
          * @instance
          * @type        {mixitup.CommandFilter}
-         * @default     ''
+         * @default     null
          */
 
-        this.activeFilter = new mixitup.CommandFilter();
+        this.activeFilter = null;
 
         /**
          * The currently active sort command as set by a control click or API call.
@@ -7410,11 +7593,11 @@
          * @name        activeSort
          * @memberof    mixitup.State
          * @instance
-         * @type        {string}
-         * @default     ''
+         * @type        {mixitup.CommandSort}
+         * @default     null
          */
 
-        this.activeSort = new mixitup.CommandSort();
+        this.activeSort = null;
 
         /**
          * The currently active containerClass, if applied.
@@ -7558,6 +7741,19 @@
 
         this.triggerElement = null;
 
+        /**
+         * The currently active dataset underlying the rendered targets, if the
+         * dataset API is in use.
+         *
+         * @name        activeDataset
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {Array.<object>}
+         * @default     null
+         */
+
+        this.activeDataset = null;
+
         this.callActions('afterConstruct');
 
         h.seal(this);
@@ -7633,6 +7829,22 @@
 
         this.ERROR_INSERT_PREEXISTING_ELEMENT = h.template(
             '[MixItUp] An element to be inserted already exists in the container'
+        );
+
+        this.ERROR_CONFIG_DATA_UID_NOT_SET = h.template(
+            '[MixItUp] To use the dataset API, a UID key must be specified using `config.data.uid`'
+        );
+
+        this.ERROR_CONFIG_INVALID_DATA_UID = h.template(
+            '[MixItUp] The specified UID key "${uid}" is not present on one or more dataset items'
+        );
+
+        this.ERROR_DATASET_NOT_SET = h.template(
+            '[MixItUp] To use the dataset API, a starting dataset must be set using `config.load.dataset`'
+        );
+
+        this.ERROR_DATASET_PRERENDERED_MISMATCH = h.template(
+            '[MixItUp] `config.load.dataset` does not match pre-rendered targets'
         );
 
         /* Warnings
@@ -7980,6 +8192,7 @@
         this.changeLayout       = mixer.changeLayout.bind(mixer);
         this.multimix           = mixer.multimix.bind(mixer);
         this.multiMix           = mixer.multimix.bind(mixer);
+        this.dataset            = mixer.dataset.bind(mixer);
         this.tween              = mixer.tween.bind(mixer);
         this.insert             = mixer.insert.bind(mixer);
         this.insertBefore       = mixer.insertBefore.bind(mixer);

@@ -56,6 +56,7 @@ mixitup.Config = function() {
     this.callbacks          = new mixitup.ConfigCallbacks();
     this.controls           = new mixitup.ConfigControls();
     this.classnames         = new mixitup.ConfigClassnames();
+    this.data               = new mixitup.ConfigData();
     this.debug              = new mixitup.ConfigDebug();
     this.layout             = new mixitup.ConfigLayout();
     this.load               = new mixitup.ConfigLoad();

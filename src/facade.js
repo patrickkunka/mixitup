@@ -21,6 +21,7 @@ mixitup.Facade = function Mixer(mixer) {
     this.changeLayout       = mixer.changeLayout.bind(mixer);
     this.multimix           = mixer.multimix.bind(mixer);
     this.multiMix           = mixer.multimix.bind(mixer);
+    this.dataset            = mixer.dataset.bind(mixer);
     this.tween              = mixer.tween.bind(mixer);
     this.insert             = mixer.insert.bind(mixer);
     this.insertBefore       = mixer.insertBefore.bind(mixer);
