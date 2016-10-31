@@ -150,6 +150,22 @@ Sorts the mixer according to the specified sort command.
 
 
 
+### <a id="mixitup.Mixer#dataset">mixitup.Mixer.dataset</a>
+
+**Version added: 3.0.0**
+
+
+
+
+
+|   |Type | Name | Description
+|---|--- | --- | ---
+|Param   |`Array.<object>` | `newDataset` | 
+|Param   |`boolean` | `[animate]` | 
+|Returns |`Promise.<mixitup.State>` | 
+
+
+
 ### <a id="mixitup.Mixer#getOperation">mixitup.Mixer.getOperation</a>
 
 **Version added: 3.0.0**

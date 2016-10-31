@@ -21,7 +21,7 @@ call.
 
 |Type | Default
 |---  | ---
-|`mixitup.CommandFilter`| `''`
+|`mixitup.CommandFilter`| `null`
 
 
 ### <a id="mixitup.State#activeSort">mixitup.State.activeSort</a>
@@ -34,7 +34,7 @@ The currently active sort command as set by a control click or API call.
 
 |Type | Default
 |---  | ---
-|`string`| `''`
+|`mixitup.CommandSort`| `null`
 
 
 ### <a id="mixitup.State#activeContainerClass">mixitup.State.activeContainerClass</a>
@@ -188,5 +188,19 @@ clicking of a control and not an API call.
 |Type | Default
 |---  | ---
 |`Elementnull`| `null`
+
+
+### <a id="mixitup.State#activeDataset">mixitup.State.activeDataset</a>
+
+
+
+
+The currently active dataset underlying the rendered targets, if the
+dataset API is in use.
+
+
+|Type | Default
+|---  | ---
+|`Array.<object>`| `null`
 
 

@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build e307a969-1c6e-4d8f-91d1-3b665f8d8c7d
+ * Build 16068cf0-b7d0-40c4-8d75-10ce3d8113ca
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -83,13 +83,7 @@
             returnCollection = typeof returnCollection === 'boolean';
         }
 
-        if (
-            (
-                !container ||
-                (typeof container !== 'string' && typeof container !== 'object')
-            ) &&
-            h.canReportErrors(config)
-        ) {
+        if (!container || (typeof container !== 'string' && typeof container !== 'object')) {
             throw new Error(mixitup.messages.ERROR_FACTORY_INVALID_CONTAINER());
         }
 
@@ -530,7 +524,7 @@
 
             if (
                 window.HTMLElement &&
-                el instanceof HTMLElement
+                el instanceof window.HTMLElement
             ) {
                 return true;
             } else if (
@@ -8153,22 +8147,22 @@
             self.boxSizingPrefix    = h.getPrefix(self.canary, 'BoxSizing', self.VENDORS);
 
             self.boxSizingProp = self.boxSizingPrefix ?
-                self.boxSizingPrefix + h.PascalCase(self.BOX_SIZING_PROP) : self.BOX_SIZING_PROP;
+                self.boxSizingPrefix + h.pascalCase(self.BOX_SIZING_PROP) : self.BOX_SIZING_PROP;
 
             self.transitionProp = self.transitionPrefix ?
-                self.transitionPrefix + h.PascalCase(self.TRANSITION_PROP) : self.TRANSITION_PROP;
+                self.transitionPrefix + h.pascalCase(self.TRANSITION_PROP) : self.TRANSITION_PROP;
 
             self.transformProp = self.transformPrefix ?
-                self.transformPrefix + h.PascalCase(self.TRANSFORM_PROP) : self.TRANSFORM_PROP;
+                self.transformPrefix + h.pascalCase(self.TRANSFORM_PROP) : self.TRANSFORM_PROP;
 
             self.transformRule = self.transformPrefix ?
                 '-' + self.transformPrefix + '-' + self.TRANSFORM_PROP : self.TRANSFORM_PROP;
 
             self.perspectiveProp = self.transformPrefix ?
-                self.transformPrefix + h.PascalCase(self.PERSPECTIVE_PROP) : self.PERSPECTIVE_PROP;
+                self.transformPrefix + h.pascalCase(self.PERSPECTIVE_PROP) : self.PERSPECTIVE_PROP;
 
             self.perspectiveOriginProp = self.transformPrefix ?
-                self.transformPrefix + h.PascalCase(self.PERSPECTIVE_ORIGIN_PROP) :
+                self.transformPrefix + h.pascalCase(self.PERSPECTIVE_ORIGIN_PROP) :
                 self.PERSPECTIVE_ORIGIN_PROP;
 
             self.callActions('afterSetPrefixes', arguments);
@@ -8194,7 +8188,7 @@
             // Element.nextElementSibling
 
             if (typeof self.canary.nextElementSibling === 'undefined') {
-                Object.defineProperty(Element.prototype, 'nextElementSibling', {
+                Object.defineProperty(window.Element.prototype, 'nextElementSibling', {
                     get: function() {
                         var el = this.nextSibling;
 
@@ -8229,7 +8223,7 @@
                             return !!nodes[i];
                         }
                     };
-            })(Element.prototype);
+            })(window.Element.prototype);
 
             // Object.keys
             // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys

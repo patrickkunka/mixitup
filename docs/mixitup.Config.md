@@ -73,6 +73,17 @@ your proejct.
 
 
 
+### <a id="mixitup.Config.data">mixitup.Config.data</a>
+
+**Version added: 3.0.0**
+
+
+
+
+
+
+
+
 ### <a id="mixitup.Config.debug">mixitup.Config.debug</a>
 
 **Version added: 3.0.0**

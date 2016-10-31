@@ -336,7 +336,7 @@ h = {
 
         if (
             window.HTMLElement &&
-            el instanceof HTMLElement
+            el instanceof window.HTMLElement
         ) {
             return true;
         } else if (

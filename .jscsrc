@@ -38,9 +38,7 @@
     },
     "disallowFunctionDeclarations": true,
     "requireSpaceBetweenArguments": true,
-    "requireMultipleVarDecl": {
-        "allExcept": ["require"]
-    },
+    "requireMultipleVarDecl": false,
     "requireBlocksOnNewline": true,
     "requireSemicolons": true,
     "disallowEmptyBlocks": true,

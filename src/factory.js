@@ -64,13 +64,7 @@ mixitup = function(container, config, foreignDoc) {
         returnCollection = typeof returnCollection === 'boolean';
     }
 
-    if (
-        (
-            !container ||
-            (typeof container !== 'string' && typeof container !== 'object')
-        ) &&
-        h.canReportErrors(config)
-    ) {
+    if (!container || (typeof container !== 'string' && typeof container !== 'object')) {
         throw new Error(mixitup.messages.ERROR_FACTORY_INVALID_CONTAINER());
     }
 
