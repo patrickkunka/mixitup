@@ -55,6 +55,10 @@ mixitup.Messages = function() {
         '[MixItUp] `config.load.dataset` does not match pre-rendered targets'
     );
 
+    this.ERROR_DATASET_RENDERER_NOT_SET = h.template(
+        '[MixItUp] To insert an element via the dataset API, a target renderer function must be provided to `config.render.target`'
+    );
+
     /* Warnings
     ----------------------------------------------------------------------------- */
 

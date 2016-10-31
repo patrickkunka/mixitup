@@ -12,8 +12,6 @@ mixitup.ConfigTemplates = function() {
 
     this.callActions('beforeConstruct');
 
-    this.target = '';
-
     this.callActions('afterConstruct');
 
     h.seal(this);

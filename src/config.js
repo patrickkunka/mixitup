@@ -61,6 +61,7 @@ mixitup.Config = function() {
     this.layout             = new mixitup.ConfigLayout();
     this.load               = new mixitup.ConfigLoad();
     this.selectors          = new mixitup.ConfigSelectors();
+    this.render             = new mixitup.ConfigRender();
     this.templates          = new mixitup.ConfigTemplates();
 
     this.callActions('afterConstruct');

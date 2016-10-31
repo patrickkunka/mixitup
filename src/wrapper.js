@@ -32,6 +32,8 @@
 
     {{>config-selectors}}
 
+    {{>config-render}}
+
     {{>config-templates}}
 
     {{>config}}

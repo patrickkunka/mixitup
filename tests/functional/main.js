@@ -142,6 +142,11 @@ var dataMixer = mixitup('#sandbox-2', {
     data: {
         uid: 'id',
         dirtyCheck: true
+    },
+    render: {
+        target: function(data) {
+            return `<div class="mix cat-${data.category}" id="${data.id}"></div>`;
+        }
     }
 });
 

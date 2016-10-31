@@ -2628,7 +2628,7 @@ h.extend(mixitup.Mixer.prototype,
                 if (self.config.data.dirtyCheck && !h.deepEquals(data, target.data)) {
                     // change detected
 
-                    el = h.createElement('<div class="mix cat-' + data.category + '" id="' + id + '"></div>').firstElementChild;
+                    el = self.renderTarget(data);
 
                     target.data = data;
 
@@ -2641,9 +2641,7 @@ h.extend(mixitup.Mixer.prototype,
             } else {
                 // New target
 
-                // TODO: el = self.renderTarget(data);
-
-                el = h.createElement('<div class="mix cat-' + data.category + '" id="' + id + '"></div>').firstElementChild;
+                el = el = self.renderTarget(data);
 
                 target = new mixitup.Target();
 
@@ -2703,6 +2701,31 @@ h.extend(mixitup.Mixer.prototype,
         if (!h.isEqualArray(persistantStartIds, persistantNewIds)) {
             operation.willSort = true;
         }
+    },
+
+    /**
+     * @private
+     * @instance
+     * @since   3.0.0
+     * @param   {object} data
+     * @return  {void}
+     */
+
+    renderTarget: function(data) {
+        var self    = this,
+            render  = null,
+            temp    = document.createElement('div'),
+            html    = '';
+
+        if (typeof (render = self.config.render.target) !== 'function') {
+            throw new TypeError(mixitup.messages.ERROR_DATASET_RENDERER_NOT_SET());
+        }
+
+        html = render(data);
+
+        temp.innerHTML = html;
+
+        return temp.firstElementChild;
     },
 
     /**

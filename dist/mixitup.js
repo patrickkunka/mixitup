@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build e2f5ff95-bef1-49eb-81fb-e0b50e2a4e9b
+ * Build e307a969-1c6e-4d8f-91d1-3b665f8d8c7d
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2445,12 +2445,35 @@
      * @since       3.0.0
      */
 
-    mixitup.ConfigTemplates = function() {
+    mixitup.ConfigRender = function() {
         mixitup.Base.call(this);
 
         this.callActions('beforeConstruct');
 
-        this.target = '';
+        this.target = null;
+
+        this.callActions('afterConstruct');
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.ConfigRender);
+
+    mixitup.ConfigRender.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.ConfigRender.prototype.constructor = mixitup.ConfigRender;
+
+    /**
+     * @constructor
+     * @memberof    mixitup
+     * @private
+     * @since       3.0.0
+     */
+
+    mixitup.ConfigTemplates = function() {
+        mixitup.Base.call(this);
+
+        this.callActions('beforeConstruct');
 
         this.callActions('afterConstruct');
 
@@ -2524,6 +2547,7 @@
         this.layout             = new mixitup.ConfigLayout();
         this.load               = new mixitup.ConfigLoad();
         this.selectors          = new mixitup.ConfigSelectors();
+        this.render             = new mixitup.ConfigRender();
         this.templates          = new mixitup.ConfigTemplates();
 
         this.callActions('afterConstruct');
@@ -6259,7 +6283,7 @@
                     if (self.config.data.dirtyCheck && !h.deepEquals(data, target.data)) {
                         // change detected
 
-                        el = h.createElement('<div class="mix cat-' + data.category + '" id="' + id + '"></div>').firstElementChild;
+                        el = self.renderTarget(data);
 
                         target.data = data;
 
@@ -6272,9 +6296,7 @@
                 } else {
                     // New target
 
-                    // TODO: el = self.renderTarget(data);
-
-                    el = h.createElement('<div class="mix cat-' + data.category + '" id="' + id + '"></div>').firstElementChild;
+                    el = el = self.renderTarget(data);
 
                     target = new mixitup.Target();
 
@@ -6334,6 +6356,31 @@
             if (!h.isEqualArray(persistantStartIds, persistantNewIds)) {
                 operation.willSort = true;
             }
+        },
+
+        /**
+         * @private
+         * @instance
+         * @since   3.0.0
+         * @param   {object} data
+         * @return  {void}
+         */
+
+        renderTarget: function(data) {
+            var self    = this,
+                render  = null,
+                temp    = document.createElement('div'),
+                html    = '';
+
+            if (typeof (render = self.config.render.target) !== 'function') {
+                throw new TypeError(mixitup.messages.ERROR_DATASET_RENDERER_NOT_SET());
+            }
+
+            html = render(data);
+
+            temp.innerHTML = html;
+
+            return temp.firstElementChild;
         },
 
         /**
@@ -7942,6 +7989,10 @@
 
         this.ERROR_DATASET_PRERENDERED_MISMATCH = h.template(
             '[MixItUp] `config.load.dataset` does not match pre-rendered targets'
+        );
+
+        this.ERROR_DATASET_RENDERER_NOT_SET = h.template(
+            '[MixItUp] To insert an element via the dataset API, a target renderer function must be provided to `config.render.target`'
         );
 
         /* Warnings
