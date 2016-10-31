@@ -152,7 +152,7 @@ h.extend(mixitup.Mixer.prototype,
                 throw new TypeError(mixitup.messages.ERROR_CONFIG_DATA_UID_NOT_SET());
             }
 
-            operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset;
+            operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset.slice();
 
             state = self.callFilters('stateGetInitialState', state, arguments);
         } else {
@@ -1162,13 +1162,13 @@ h.extend(mixitup.Mixer.prototype,
 
         state.activeFilter              = operation.newFilter;
         state.activeSort                = operation.newSort;
+        state.activeDataset             = operation.newDataset;
         state.activeContainerClass      = operation.newContainerClass;
         state.hasFailed                 = operation.hasFailed;
         state.totalTargets              = self.targets.length;
         state.totalShow                 = operation.show.length;
         state.totalHide                 = operation.hide.length;
         state.totalMatching             = operation.matching.length;
-        state.activeDataset             = operation.newDataset;
         state.triggerElement            = self.lastClicked;
 
         return self.callFilters('stateBuildState', state, arguments);
@@ -2526,20 +2526,33 @@ h.extend(mixitup.Mixer.prototype,
      * @instance
      * @since       3.0.0
      * @param       {Array.<object>}    newDataset
+     * @param       {boolean}           [animate]
      * @return      {Promise.<mixitup.State>}
      */
 
-    dataset: function(newDataset) {
-        var self            = this,
-            operation       = new mixitup.Operation(),
-            frag            = null,
-            nextEl          = null,
-            startDataset    = null,
-            data            = null,
-            target          = null,
-            el              = null,
-            id              = '',
-            i               = -1;
+    dataset: function(newDataset, animate) {
+        var self      = this,
+            operation = self.getDataOperation(newDataset);
+
+        animate = typeof animate === 'boolean' ? animate : true;
+
+        animate = (animate ^ self.config.animation.enable) ? animate : self.config.animation.enable;
+
+        return self.goMix(animate, operation);
+    },
+
+    /**
+     * @private
+     * @instance
+     * @since   3.0.0
+     * @param   {Array.<object>}    newDataset
+     * @return  {Operation}
+     */
+
+    getDataOperation: function(newDataset) {
+        var self                = this,
+            operation           = new mixitup.Operation(),
+            startDataset        = null;
 
         if (!(startDataset = self.state.activeDataset)) {
             throw new Error(mixitup.messages.ERROR_DATASET_NOT_SET());
@@ -2548,76 +2561,17 @@ h.extend(mixitup.Mixer.prototype,
         operation.id            = h.randomHex();
         operation.startState    = self.state;
         operation.startOrder    = self.targets;
+        operation.startDataset  = startDataset;
+        operation.newDataset    = newDataset.slice();
 
-        for (i = 0; data = newDataset[i]; i++) {
-            if (typeof (id = data[self.config.data.uid]) === 'undefined') {
-                throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID({
-                    uid: self.config.data.uid
-                }));
-            }
-
-            if ((target = self.cache[id]) instanceof mixitup.Target) {
-                // Already in cache
-
-                if (self.config.data.dataCheck) {
-                    // dirty check for changes if enabled
-
-                    console.log('dirty checking for changes');
-                }
-            } else {
-                // New target
-
-                // el = self.renderTarget(data);
-
-                el = h.createElement('<div class="mix"></div>').firstElementChild;
-
-                target = new mixitup.Target();
-
-                target.init(el, self, data);
-            }
-
-            if (!target.isInDom) {
-                if (!frag) {
-                    frag = new DocumentFragment();
-                }
-
-                frag.appendChild(el);
-
-                operation.toShow.push(target);
-            } else if (frag) {
-                self.dom.parent.insertBefore(frag, target.dom.el);
-
-                nextEl = target.dom.el.nextElementSibling;
-                frag = null;
-            }
-
-            operation.show.push(target);
-        }
-
-        if (frag) {
-            self.dom.parent.insertBefore(frag, nextEl);
-        }
-
-        for (i = 0; data = startDataset[i]; i++) {
-            id = data[self.config.data.uid];
-
-            target = self.cache[id];
-
-            if (operation.show.indexOf(target) < 0) {
-                // Previously shown but now absent
-
-                operation.hide.push(target);
-                operation.toHide.push(target);
-                operation.toRemove.push(target);
-            }
-        }
+        self.diffDatasets(operation);
 
         operation.newOrder = operation.show;
 
         self.getStartMixData(operation);
         self.setInter(operation);
 
-        operation.docState = h.getDocumentState();
+        operation.docState = h.getDocumentState(self.dom.document);
 
         self.getInterMixData(operation);
         self.setFinal(operation);
@@ -2629,23 +2583,126 @@ h.extend(mixitup.Mixer.prototype,
 
         self.getTweenData(operation);
 
+        self.targets = operation.show.slice();
+
         operation.newState = self.buildState(operation);
 
-        console.log(operation);
+        // NB: Targets to be removed must be included in `self.targets` for removal during clean up,
+        // but are added after state is built so that state is accurate
 
-        // SHOW/HIDE
+        Array.prototype.push.apply(self.targets, operation.toRemove);
 
-        // iterate through dataset, find target with corresponding UID in cache, push into
-        // show array (if not in dom, add to toInsert/toShow)
-        // when retreiving from cache, dirty check for changes, if present, update target data, re-render
-        // if an item is not in cache, render, index and add to cache, add to show array, add to toInsert, toShow
-        // iterate through old show array, if item not in new show array, add to toRemove/hide
+        return operation;
+    },
 
-        // SORT
+    /**
+     * @private
+     * @instance
+     * @since   3.0.0
+     * @param   {mixitup.Operation} operation
+     * @return  {void}
+     */
 
-        // create newOrder array from new dataset
+    diffDatasets: function(operation) {
+        var self                = this,
+            persistantStartIds  = [],
+            persistantNewIds    = [],
+            data                = null,
+            target              = null,
+            el                  = null,
+            frag                = null,
+            nextEl              = null,
+            id                  = '',
+            i                   = 0;
 
-        // An operation object should be produced from the above with all neccessary values, which can then be sent to goMix
+        for (i = 0; data = operation.newDataset[i]; i++) {
+            if (typeof (id = data[self.config.data.uid]) === 'undefined') {
+                throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID({
+                    uid: self.config.data.uid
+                }));
+            }
+
+            if ((target = self.cache[id]) instanceof mixitup.Target) {
+                // Already in cache
+
+                if (self.config.data.dirtyCheck && !h.deepEquals(data, target.data)) {
+                    // change detected
+
+                    el = h.createElement('<div class="mix cat-' + data.category + '" id="' + id + '"></div>').firstElementChild;
+
+                    target.data = data;
+
+                    self.dom.parent.replaceChild(el, target.dom.el);
+
+                    target.dom.el = el;
+                }
+
+                el = target.dom.el;
+            } else {
+                // New target
+
+                // TODO: el = self.renderTarget(data);
+
+                el = h.createElement('<div class="mix cat-' + data.category + '" id="' + id + '"></div>').firstElementChild;
+
+                target = new mixitup.Target();
+
+                target.init(el, self, data);
+            }
+
+            if (!target.isInDom) {
+                // Adding to DOM
+
+                if (!frag) {
+                    frag = new DocumentFragment();
+                }
+
+                frag.appendChild(el);
+                frag.appendChild(self.dom.document.createTextNode(' '));
+
+                target.isInDom = true;
+
+                operation.toShow.push(target);
+            } else {
+                // Already in DOM
+
+                nextEl = target.dom.el.nextElementSibling;
+
+                persistantNewIds.push(id);
+
+                if (frag) {
+                    self.dom.parent.insertBefore(frag, target.dom.el);
+
+                    frag = null;
+                }
+            }
+
+            operation.show.push(target);
+        }
+
+        if (frag) {
+            self.dom.parent.insertBefore(frag, nextEl);
+        }
+
+        for (i = 0; data = operation.startDataset[i]; i++) {
+            id = data[self.config.data.uid];
+
+            target = self.cache[id];
+
+            if (operation.show.indexOf(target) < 0) {
+                // Previously shown but now absent
+
+                operation.hide.push(target);
+                operation.toHide.push(target);
+                operation.toRemove.push(target);
+            } else {
+                persistantStartIds.push(id);
+            }
+        }
+
+        if (!h.isEqualArray(persistantStartIds, persistantNewIds)) {
+            operation.willSort = true;
+        }
     },
 
     /**
@@ -2739,7 +2796,7 @@ h.extend(mixitup.Mixer.prototype,
         self.getStartMixData(operation);
         self.setInter(operation);
 
-        operation.docState = h.getDocumentState();
+        operation.docState = h.getDocumentState(self.dom.document);
 
         self.getInterMixData(operation);
         self.setFinal(operation);

@@ -1,9 +1,8 @@
 /* global mixitup */
 
 var sandbox     = document.querySelector('.sandbox');
-var dataSandbox = document.querySelector('.data-sandbox');
 
-var mixer = mixitup('.sandbox', {
+var mixer = mixitup('#sandbox-1', {
     animation: {
         effects: 'fade',
         easing: 'cubic-bezier(1, 0, 0, 1)',
@@ -131,17 +130,57 @@ document.querySelector('.js-api-limit-10').addEventListener('click', function() 
     mixer.paginate({limit: 10});
 });
 
-var dataMixer = mixitup(dataSandbox, {
+var dataset = [{
+    id: '12',
+    category: '1'
+}];
+
+var dataMixer = mixitup('#sandbox-2', {
     load: {
-        dataset: []
+        dataset: dataset
     },
     data: {
-        uid: 'id'
+        uid: 'id',
+        dirtyCheck: true
     }
 });
 
-console.log(dataMixer.getState());
+dataset.push({
+    id: '14',
+    category: '2'
+}, {
+    id: '2',
+    category: '3'
+});
 
-dataMixer.dataset([{
-    id: '12'
-}]);
+var first;
+
+dataMixer.dataset(dataset)
+    .then(function() {
+        dataset.reverse();
+
+        return dataMixer.dataset(dataset);
+    })
+    .then(function() {
+        first = dataset.shift();
+
+        return dataMixer.dataset(dataset);
+    })
+    .then(function() {
+        dataset.push(first);
+
+        return dataMixer.dataset(dataset);
+    })
+    .then(function() {
+        dataset = [dataset[2], dataset[0]];
+
+        return dataMixer.dataset(dataset);
+    })
+    .then(function() {
+        dataset[1] = {
+            id: '14',
+            category: '4'
+        };
+
+        return dataMixer.dataset(dataset);
+    });

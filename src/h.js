@@ -412,6 +412,31 @@ h = {
 
     /**
      * @private
+     * @param   {object}  a
+     * @param   {object}  b
+     * @return  {boolean}
+     */
+
+    deepEquals: function(a, b) {
+        var key;
+
+        console.log('comparing', a, b);
+
+        if (typeof a === 'object' && a && typeof b === 'object' && b) {
+            if (Object.keys(a).length !== Object.keys(b).length) return false;
+
+            for (key in a) {
+                if (!b.hasOwnProperty(key) || !this.deepEquals(a[key], b[key])) return false;
+            }
+        } else if (a !== b) {
+            return false;
+        }
+
+        return true;
+    },
+
+    /**
+     * @private
      * @param   {Array<*>}  oldArray
      * @return  {Array<*>}
      */

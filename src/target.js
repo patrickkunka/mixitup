@@ -71,7 +71,8 @@ h.extend(mixitup.Target.prototype, {
                 throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID());
             }
 
-            self.id = id;
+            self.id     = id;
+            self.data   = data;
 
             mixer.cache[id] = self;
         }

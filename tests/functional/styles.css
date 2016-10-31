@@ -110,6 +110,7 @@ body {
     overflow: hidden;
     text-align: justify;
     background: #333;
+    min-height: 2rem;
 }
 
 .sandbox:after {
