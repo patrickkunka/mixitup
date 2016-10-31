@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 1a6dc80c-e6ac-4d81-8cf5-a456b5d8d50a
+ * Build 253e54b0-307c-4ffb-8c5b-7b0c00bcb4f6
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -6138,7 +6138,8 @@
         dataset: function(newDataset) {
             var self            = this,
                 operation       = new mixitup.Operation(),
-                insertions      = {},
+                frag            = null,
+                nextEl          = null,
                 startDataset    = null,
                 data            = null,
                 target          = null,
@@ -6172,22 +6173,35 @@
                 } else {
                     // New target
 
-                    el = self.renderTarget(data);
+                    // el = self.renderTarget(data);
+
+                    el = h.createElement('<div class="mix"></div>').firstElementChild;
 
                     target = new mixitup.Target();
 
                     target.init(el, self, data);
-
-                    insertions[i] = el;
-
-                    // TODO: insert consecutive inserts via frags
                 }
 
                 if (!target.isInDom) {
+                    if (!frag) {
+                        frag = new DocumentFragment();
+                    }
+
+                    frag.appendChild(el);
+
                     operation.toShow.push(target);
+                } else if (frag) {
+                    self.dom.parent.insertBefore(frag, target.dom.el);
+
+                    nextEl = target.dom.el.nextElementSibling;
+                    frag = null;
                 }
 
                 operation.show.push(target);
+            }
+
+            if (frag) {
+                self.dom.parent.insertBefore(frag, nextEl);
             }
 
             for (i = 0; data = startDataset[i]; i++) {
@@ -6787,7 +6801,7 @@
             }
 
             if (data) {
-                if (typeof (id = data[self.config.data.uid]) === 'undefined') {
+                if (typeof (id = data[mixer.config.data.uid]) === 'undefined') {
                     throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID());
                 }
 

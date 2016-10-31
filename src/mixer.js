@@ -2532,7 +2532,8 @@ h.extend(mixitup.Mixer.prototype,
     dataset: function(newDataset) {
         var self            = this,
             operation       = new mixitup.Operation(),
-            insertions      = {},
+            frag            = null,
+            nextEl          = null,
             startDataset    = null,
             data            = null,
             target          = null,
@@ -2566,22 +2567,35 @@ h.extend(mixitup.Mixer.prototype,
             } else {
                 // New target
 
-                el = self.renderTarget(data);
+                // el = self.renderTarget(data);
+
+                el = h.createElement('<div class="mix"></div>').firstElementChild;
 
                 target = new mixitup.Target();
 
                 target.init(el, self, data);
-
-                insertions[i] = el;
-
-                // TODO: insert consecutive inserts via frags
             }
 
             if (!target.isInDom) {
+                if (!frag) {
+                    frag = new DocumentFragment();
+                }
+
+                frag.appendChild(el);
+
                 operation.toShow.push(target);
+            } else if (frag) {
+                self.dom.parent.insertBefore(frag, target.dom.el);
+
+                nextEl = target.dom.el.nextElementSibling;
+                frag = null;
             }
 
             operation.show.push(target);
+        }
+
+        if (frag) {
+            self.dom.parent.insertBefore(frag, nextEl);
         }
 
         for (i = 0; data = startDataset[i]; i++) {
