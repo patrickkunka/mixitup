@@ -56,6 +56,18 @@ mixitup.State = function() {
     this.activeContainerClass = '';
 
     /**
+     * A reference to the container element that the mixer is instantiated on.
+     *
+     * @name        container
+     * @memberof    mixitup.State
+     * @instance
+     * @type        {Element}
+     * @default     null
+     */
+
+    this.container = null;
+
+    /**
      * An array of all target elements indexed by the mixer.
      *
      * @name        targets

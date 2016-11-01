@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 16068cf0-b7d0-40c4-8d75-10ce3d8113ca
+ * Build 68cdd6a2-5c12-4779-9ad2-a4acb10894d2
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -4809,6 +4809,7 @@
                 }
             }
 
+            state.container                 = self.dom.container;
             state.activeFilter              = operation.newFilter;
             state.activeSort                = operation.newSort;
             state.activeDataset             = operation.newDataset;
@@ -7748,6 +7749,18 @@
          */
 
         this.activeContainerClass = '';
+
+        /**
+         * A reference to the container element that the mixer is instantiated on.
+         *
+         * @name        container
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {Element}
+         * @default     null
+         */
+
+        this.container = null;
 
         /**
          * An array of all target elements indexed by the mixer.

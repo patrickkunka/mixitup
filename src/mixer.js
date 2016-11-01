@@ -1160,6 +1160,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
+        state.container                 = self.dom.container;
         state.activeFilter              = operation.newFilter;
         state.activeSort                = operation.newSort;
         state.activeDataset             = operation.newDataset;
