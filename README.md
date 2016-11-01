@@ -113,7 +113,7 @@ Find out more about MixItUp-compatible grid layouts [--website pending--]().
 
 #### 4. Load MixItUp
 
-Firstly, load the MixItUp library into your project using the method for your project.
+Firstly, load the MixItUp library into your project using the preferred method for your project.
 
 ##### Module Loader
 
