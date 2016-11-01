@@ -1,5 +1,7 @@
 # MixItUp 3
 
+[![Build Status](https://travis-ci.org/patrickkunka/mixitup.svg?branch=v3)](https://travis-ci.org/patrickkunka/mixitup)
+
 MixItUp is a high-performance, dependency-free library for animated DOM manipulation, giving you the power to filter, sort, add and remove DOM elements with beautiful animations.
 
 MixItUp plays nice with your existing HTML and CSS, making it a great choice for responsive layouts. Want to use percentages, media queries, inline-block, or even flexbox? No problem!
@@ -111,21 +113,7 @@ Find out more about MixItUp-compatible grid layouts [--website pending--]().
 
 #### 4. Load MixItUp
 
-Firstly, load the MixItUp library into your project. This can be done in a number of ways.
-
-##### Script Tag
-
-The most simple way to load MixItUp in your project is to include it via a `<script>` tag before the closing `</body>` tag on your page.
-
-```html
-        ...
-
-        <script src="/path/to/mixitup.min.js"></script>
-    </body>
-</html>
-```
-
-With this technique, the MixItUp factory function will be made available via the global variable `mixitup`.
+Firstly, load the MixItUp library into your project using the method for your project.
 
 ##### Module Loader
 
@@ -148,6 +136,20 @@ require(['mixitup'], function(mixitup) {
 
 });
 ```
+
+##### Script Tag
+
+The most simple way to load MixItUp in your project is to include it via a `<script>` tag before the closing `</body>` tag on your page.
+
+```html
+        ...
+
+        <script src="/path/to/mixitup.min.js"></script>
+    </body>
+</html>
+```
+
+With this technique, the MixItUp factory function will be made available via the global variable `mixitup`.
 
 #### 5. Create a Mixer
 
