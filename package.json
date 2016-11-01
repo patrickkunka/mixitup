@@ -10,12 +10,14 @@
   "main": "./dist/mixitup.min.js",
   "scripts": {
     "test": "mocha ./tests/unit/main.js",
-    "cover": "istanbul cover _mocha ./tests/unit/main.js"
+    "cover": "istanbul cover _mocha ./tests/unit/main.js",
+    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
     "chai-shallow-deep-equal": "^1.4.0",
+    "coveralls": "^2.11.14",
     "gulp": "^3.8.8",
     "gulp-jscs": "^4.0.0",
     "gulp-jshint": "^1.8.5",
@@ -30,6 +32,7 @@
     "merge-stream": "^0.1.7",
     "mixitup-build": "git://github.com/patrickkunka/mixitup-build.git",
     "mocha": "^3.0.2",
+    "mocha-lcov-reporter": "^1.2.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }
