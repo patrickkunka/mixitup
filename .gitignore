@@ -2,3 +2,4 @@ node_modules
 components
 .tmp
 .DS_Store
+coverage/

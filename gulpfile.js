@@ -15,6 +15,7 @@ gulp.task('watch', function() {
 
     gulp.watch([
         './src/*.js',
+        './src/*.hbs',
         './build/*.js',
         './build/*.md'
     ], ['reload-js'])
