@@ -95,5 +95,13 @@ describe('mixitup.Mixer', function() {
                     chai.assert.deepEqual(state.show, state.targets);
                 });
         });
+
+        it('should fail if queried with a non matching selector', function() {
+            return mixer.filter('.non-mathing-selector')
+                .then(function(state) {
+                    chai.assert.deepEqual(state.show, []);
+                    chai.assert.equal(state.hasFailed, true);
+                });
+        });
     });
 });
