@@ -236,7 +236,7 @@ h = {
         doc = doc || window.document;
 
         if (typeof window.CustomEvent === 'function') {
-            event = new CustomEvent(eventType, {
+            event = new window.CustomEvent(eventType, {
                 detail: detail,
                 bubbles: true,
                 cancelable: true

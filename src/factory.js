@@ -64,27 +64,22 @@ mixitup = function(container, config, foreignDoc) {
         returnCollection = typeof returnCollection === 'boolean';
     }
 
-    if (!container || (typeof container !== 'string' && typeof container !== 'object')) {
+    if (typeof container === 'string') {
+        elements = doc.querySelectorAll(container);
+    } else if (container && typeof container === 'object' && h.isElement(container, doc)) {
+        elements = [container];
+    } else if (container && typeof container === 'object' && container.length) {
+        // Although not documented, the container may also be an array-like list of
+        // elements such as a NodeList or jQuery collection. In the case if using the
+        // V2 API via a jQuery shim, the container will typically be passed in this form.
+
+        elements = container;
+    } else {
         throw new Error(mixitup.messages.ERROR_FACTORY_INVALID_CONTAINER());
     }
 
-    switch (typeof container) {
-        case 'string':
-            elements = doc.querySelectorAll(container);
-
-            break;
-        case 'object':
-            if (h.isElement(container, doc)) {
-                elements = [container];
-            } else if (container.length) {
-                // Although not documented, the container may also be an array-like list of
-                // elements such as a NodeList or jQuery collection. In the case if using the
-                // V2 API via a jQuery shim, the container will typically be passed in this form.
-
-                elements = container;
-            }
-
-            break;
+    if (elements.length < 1) {
+        throw new Error(mixitup.messages.ERROR_FACTORY_CONTAINER_NOT_FOUND());
     }
 
     for (i = 0; el = elements[i]; i++) {
@@ -98,18 +93,18 @@ mixitup = function(container, config, foreignDoc) {
             id = el.id;
         }
 
-        if (typeof mixitup.instances[id] === 'undefined') {
+        if (mixitup.instances[id] instanceof mixitup.Mixer) {
+            instance = mixitup.instances[id];
+
+            if (!config || (config && config.debug && config.debug.showWarnings !== false)) {
+                console.warn(mixitup.messages.WARNING_FACTORY_PREEXISTING_INSTANCE());
+            }
+        } else {
             instance = new mixitup.Mixer();
 
             instance.attach(el, doc, id, config);
 
             mixitup.instances[id] = instance;
-        } else if (mixitup.instances[id] instanceof mixitup.Mixer) {
-            instance = mixitup.instances[id];
-
-            if (!config || (config && config.debug && config.debug.showErrors !== false)) {
-                console.warn(mixitup.messages.WARNING_FACTORY_PREEXISTING_INSTANCE());
-            }
         }
 
         facade = new mixitup.Facade(instance);

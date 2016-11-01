@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build b8bdd35a-a94d-434c-a3ad-1d9723ae6012
+ * Build b781b352-3750-4ce2-942b-ca726993d8ee
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -83,27 +83,22 @@
             returnCollection = typeof returnCollection === 'boolean';
         }
 
-        if (!container || (typeof container !== 'string' && typeof container !== 'object')) {
+        if (typeof container === 'string') {
+            elements = doc.querySelectorAll(container);
+        } else if (container && typeof container === 'object' && h.isElement(container, doc)) {
+            elements = [container];
+        } else if (container && typeof container === 'object' && container.length) {
+            // Although not documented, the container may also be an array-like list of
+            // elements such as a NodeList or jQuery collection. In the case if using the
+            // V2 API via a jQuery shim, the container will typically be passed in this form.
+
+            elements = container;
+        } else {
             throw new Error(mixitup.messages.ERROR_FACTORY_INVALID_CONTAINER());
         }
 
-        switch (typeof container) {
-            case 'string':
-                elements = doc.querySelectorAll(container);
-
-                break;
-            case 'object':
-                if (h.isElement(container, doc)) {
-                    elements = [container];
-                } else if (container.length) {
-                    // Although not documented, the container may also be an array-like list of
-                    // elements such as a NodeList or jQuery collection. In the case if using the
-                    // V2 API via a jQuery shim, the container will typically be passed in this form.
-
-                    elements = container;
-                }
-
-                break;
+        if (elements.length < 1) {
+            throw new Error(mixitup.messages.ERROR_FACTORY_CONTAINER_NOT_FOUND());
         }
 
         for (i = 0; el = elements[i]; i++) {
@@ -117,18 +112,18 @@
                 id = el.id;
             }
 
-            if (typeof mixitup.instances[id] === 'undefined') {
+            if (mixitup.instances[id] instanceof mixitup.Mixer) {
+                instance = mixitup.instances[id];
+
+                if (!config || (config && config.debug && config.debug.showWarnings !== false)) {
+                    console.warn(mixitup.messages.WARNING_FACTORY_PREEXISTING_INSTANCE());
+                }
+            } else {
                 instance = new mixitup.Mixer();
 
                 instance.attach(el, doc, id, config);
 
                 mixitup.instances[id] = instance;
-            } else if (mixitup.instances[id] instanceof mixitup.Mixer) {
-                instance = mixitup.instances[id];
-
-                if (!config || (config && config.debug && config.debug.showErrors !== false)) {
-                    console.warn(mixitup.messages.WARNING_FACTORY_PREEXISTING_INSTANCE());
-                }
             }
 
             facade = new mixitup.Facade(instance);
@@ -424,7 +419,7 @@
             doc = doc || window.document;
 
             if (typeof window.CustomEvent === 'function') {
-                event = new CustomEvent(eventType, {
+                event = new window.CustomEvent(eventType, {
                     detail: detail,
                     bubbles: true,
                     cancelable: true
@@ -4809,6 +4804,7 @@
                 }
             }
 
+            state.id                        = self.id;
             state.container                 = self.dom.container;
             state.activeFilter              = operation.newFilter;
             state.activeSort                = operation.newSort;
@@ -7714,6 +7710,18 @@
         this.callActions('beforeConstruct');
 
         /**
+         * The ID of the mixer instance.
+         *
+         * @name        id
+         * @memberof    mixitup.State
+         * @instance
+         * @type        {string}
+         * @default     ''
+         */
+
+        this.id = '';
+
+        /**
          * The currently active filter command as set by a control click or API call
          * call.
          *
@@ -7960,6 +7968,10 @@
 
         this.ERROR_FACTORY_INVALID_CONTAINER = h.template(
             '[MixItUp] An invalid selector or element reference was passed to the mixitup factory function'
+        );
+
+        this.ERROR_FACTORY_CONTAINER_NOT_FOUND = h.template(
+            '[MixItUp] The provided selector yielded no container element'
         );
 
         this.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS = h.template(

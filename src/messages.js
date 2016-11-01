@@ -19,6 +19,10 @@ mixitup.Messages = function() {
         '[MixItUp] An invalid selector or element reference was passed to the mixitup factory function'
     );
 
+    this.ERROR_FACTORY_CONTAINER_NOT_FOUND = h.template(
+        '[MixItUp] The provided selector yielded no container element'
+    );
+
     this.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS = h.template(
         '[MixItUp] Invalid value for `config.animation.effects`'
     );

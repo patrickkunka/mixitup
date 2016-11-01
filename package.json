@@ -10,7 +10,7 @@
   "main": "./dist/mixitup.min.js",
   "scripts": {
     "test": "mocha ./tests/unit/main.js",
-    "test-coverage": "istanbul cover _mocha ./tests/unit/main.js"
+    "coverage": "istanbul cover _mocha ./tests/unit/main.js"
   },
   "devDependencies": {
     "chai": "^3.5.0",

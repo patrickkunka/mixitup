@@ -1160,6 +1160,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
+        state.id                        = self.id;
         state.container                 = self.dom.container;
         state.activeFilter              = operation.newFilter;
         state.activeSort                = operation.newSort;

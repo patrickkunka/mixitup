@@ -19,6 +19,18 @@ mixitup.State = function() {
     this.callActions('beforeConstruct');
 
     /**
+     * The ID of the mixer instance.
+     *
+     * @name        id
+     * @memberof    mixitup.State
+     * @instance
+     * @type        {string}
+     * @default     ''
+     */
+
+    this.id = '';
+
+    /**
      * The currently active filter command as set by a control click or API call
      * call.
      *
