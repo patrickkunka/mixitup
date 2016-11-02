@@ -1,7 +1,7 @@
 # MixItUp 3
 
 [![Build Status](https://travis-ci.org/patrickkunka/mixitup.svg?branch=v3)](https://travis-ci.org/patrickkunka/mixitup)
-[![Coverage Status](https://coveralls.io/repos/github/patrickkunka/mixitup/badge.svg?branch=v3&ver=1)](https://coveralls.io/github/patrickkunka/mixitup?branch=v3)
+[![Coverage Status](https://coveralls.io/repos/github/patrickkunka/mixitup/badge.svg?branch=v3)](https://coveralls.io/github/patrickkunka/mixitup?branch=v3)
 
 MixItUp is a high-performance, dependency-free library for animated DOM manipulation, giving you the power to filter, sort, add and remove DOM elements with beautiful animations.
 
@@ -29,7 +29,7 @@ MixItUp is open source and free to use for non-commercial, educational and non-p
 - [CSS](#css)
 - [JavaScript](#javascript)
 
-Most commonly, MixItUp is applied to a **"container"** of **"target"** elements, which could be a portfolio of projects, a list of blog posts, a selection of products, or anything kind of UI where filtering and/or sorting would be advantageous.
+Most commonly, MixItUp is applied to a **"container"** of **"target"** elements, which could be a portfolio of projects, a list of blog posts, a selection of products, or any kind of UI where filtering and/or sorting would be advantageous.
 
 To get started, follow these few simple steps:
 
@@ -48,9 +48,9 @@ To get started, follow these few simple steps:
 
 By default, MixItUp will query the container for targets matching the selector `'.mix'`, although any valid selector can be used via the `selectors.target` configuration option.
 
-Targets can be filtered using any valid selector e.g. `'.category-a'`, and are sorted via custom data attributes e.g. `'data-order'`.
+Targets can be filtered using any valid selector e.g. `'.category-a'`, and are sorted via optional custom data attributes e.g. `'data-order'`.
 
-*NB: When structuring your markup, ensure that all targets are adjacent siblings in your container.*
+*NB: Other non-target elements may be included inside your container, but all targets must be adjacent siblings.*
 
 #### 2. Build Your Controls
 
@@ -114,11 +114,11 @@ Find out more about MixItUp-compatible grid layouts [--website pending--]().
 
 #### 4. Load MixItUp
 
-Firstly, load the MixItUp library into your project using the preferred method for your project.
+Firstly, load the MixItUp JavaScript library using the preferred method for your project.
 
 ##### Module Loader
 
-If you are building a modular JavaScript project with Webpack, Browserify, or RequireJS, MixItUp can be installed using your package manager of choice and imported into any of your project's modules.
+If you are building a modular JavaScript project with Webpack, Browserify, or RequireJS, MixItUp can be installed using your package manager of choice (e.g. npm, jspm, yarn) and then imported into any of your project's modules.
 
 `npm install mixitup --save`
 
@@ -161,7 +161,7 @@ mixitup('.container');
 ```
 > Instantiating a mixer
 
-Your mixer is now ready to interact with, either via physical controls, or its API. Click a control or call an API method to check that everything is working correctly.
+Your mixer is now ready for you to interact with, either via physical controls, or its API. Click a control or call an API method to check that everything is working correctly.
 
 ##### Custom Configuration
 
@@ -193,6 +193,12 @@ var mixer = mixitup(containerEl);
 mixer.filter('.category-a');
 ```
 > Calling a mixer API method
+
+##### Building a modern JavaScript application?
+
+You may wish to use MixItUp 3's new "dataset" API. When using dataset, MixItUp will act as the "view" layer of your UI component — allowing you to interface purely via your data model, and avoiding interaction with the DOM entirely.
+
+For more information check out our [--website pending--]() tutorial.
 
 ##### Loading Animations
 
