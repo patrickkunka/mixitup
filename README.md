@@ -196,9 +196,9 @@ mixer.filter('.category-a');
 
 ##### Building a modern JavaScript application?
 
-You may wish to use MixItUp 3's new "dataset" API. When using dataset, MixItUp becomes "view" layer of your UI component allowing you to interface purely via your data model, and avoiding the DOM API entirely.
+You may wish to use MixItUp 3's new "dataset" API. When using dataset, MixItUp will act as the "view" layer of your UI component — allowing you to interface purely via your data model, and avoiding interaction with the DOM entirely.
 
-For more information check out out [--website pending--]() tutorial.
+For more information check out our [--website pending--]() tutorial.
 
 ##### Loading Animations
 
