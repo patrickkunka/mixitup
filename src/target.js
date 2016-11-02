@@ -66,7 +66,7 @@ h.extend(mixitup.Target.prototype, {
             self.isShown = true;
         }
 
-        if (data) {
+        if (data && mixer.config.data.uid) {
             if (typeof (id = data[mixer.config.data.uid]) === 'undefined') {
                 throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID());
             }

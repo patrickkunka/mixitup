@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 7003562a-f908-483f-8522-7bd1dcb03e95
+ * Build 3f2289b3-5299-4290-9446-ce0689b11cc2
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3797,6 +3797,7 @@
                 }
 
                 operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset.slice();
+                operation.show = self.targets.slice();
 
                 state = self.callFilters('stateGetInitialState', state, arguments);
             } else {
@@ -6924,7 +6925,7 @@
                 self.isShown = true;
             }
 
-            if (data) {
+            if (data && mixer.config.data.uid) {
                 if (typeof (id = data[mixer.config.data.uid]) === 'undefined') {
                     throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID());
                 }

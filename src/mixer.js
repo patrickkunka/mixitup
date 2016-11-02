@@ -153,6 +153,7 @@ h.extend(mixitup.Mixer.prototype,
             }
 
             operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset.slice();
+            operation.show = self.targets.slice();
 
             state = self.callFilters('stateGetInitialState', state, arguments);
         } else {

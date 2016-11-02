@@ -13,9 +13,9 @@ describe('mixitup.Mixer', function() {
         var mixer = mixitup(container);
 
         it('should accept a class selector', function() {
-            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-1'));
+            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-a'));
 
-            return mixer.filter('.category-1')
+            return mixer.filter('.category-a')
                 .then(function(state) {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
@@ -24,9 +24,9 @@ describe('mixitup.Mixer', function() {
         });
 
         it('should accept an attribute selector', function() {
-            var matching = Array.prototype.slice.call(container.querySelectorAll('[data-category~="1"]'));
+            var matching = Array.prototype.slice.call(container.querySelectorAll('[data-category~="a"]'));
 
-            return mixer.filter('[data-category~="1"]')
+            return mixer.filter('[data-category~="a"]')
                 .then(function(state) {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
@@ -35,9 +35,9 @@ describe('mixitup.Mixer', function() {
         });
 
         it('should accept a compound OR class selector', function() {
-            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-1, .category-2'));
+            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-a, .category-b'));
 
-            return mixer.filter('.category-1, .category-2')
+            return mixer.filter('.category-a, .category-b')
                 .then(function(state) {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
@@ -46,9 +46,9 @@ describe('mixitup.Mixer', function() {
         });
 
         it('should accept a compound AND class selector', function() {
-            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-1.category-3'));
+            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-a.category-c'));
 
-            return mixer.filter('.category-1.category-3')
+            return mixer.filter('.category-a.category-c')
                 .then(function(state) {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
@@ -57,9 +57,9 @@ describe('mixitup.Mixer', function() {
         });
 
         it('should accept a compound OR attribute selector', function() {
-            var matching = Array.prototype.slice.call(container.querySelectorAll('[data-category~="1"], [data-category~="3"]'));
+            var matching = Array.prototype.slice.call(container.querySelectorAll('[data-category~="a"], [data-category~="c"]'));
 
-            return mixer.filter('[data-category~="1"], [data-category~="3"]')
+            return mixer.filter('[data-category~="a"], [data-category~="c"]')
                 .then(function(state) {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
@@ -68,9 +68,9 @@ describe('mixitup.Mixer', function() {
         });
 
         it('should accept a compound AND attribute selector', function() {
-            var matching = Array.prototype.slice.call(container.querySelectorAll('[data-category~="1"][data-category~="3"]'));
+            var matching = Array.prototype.slice.call(container.querySelectorAll('[data-category~="a"][data-category~="c"]'));
 
-            return mixer.filter('[data-category~="1"][data-category~="3"]')
+            return mixer.filter('[data-category~="a"][data-category~="c"]')
                 .then(function(state) {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.equal(state.totalShow, 1);
@@ -150,29 +150,29 @@ describe('mixitup.Mixer', function() {
 
         it('should accept a full CommandFilter object, allowing for inverse filtering via selector', function() {
             var command = {
-                selector: '.category-1',
+                selector: '.category-a',
                 action: 'hide'
             };
 
-            var collection = Array.prototype.slice.call(container.querySelectorAll(':not(.category-1)'));
+            var collection = Array.prototype.slice.call(container.querySelectorAll(':not(.category-a)'));
 
             return mixer.filter(command)
                 .then(function(state) {
                     chai.assert.deepEqual(state.show, collection);
-                    chai.assert.equal(state.activeFilter.selector, '.category-1');
+                    chai.assert.equal(state.activeFilter.selector, '.category-a');
                     chai.assert.equal(state.activeFilter.action, 'hide');
                 });
         });
 
         it('should accept a full CommandFilter object, allowing for inverse filtering via a collection', function() {
-            var el = container.querySelector('.category-1.category-3');
+            var el = container.querySelector('.category-a.category-c');
 
             var command = {
                 collection: [el],
                 action: 'hide'
             };
 
-            var collection = Array.prototype.slice.call(container.querySelectorAll(':not(.category-1.category-3)'));
+            var collection = Array.prototype.slice.call(container.querySelectorAll(':not(.category-a.category-c)'));
 
             return mixer.filter(command)
                 .then(function(state) {
@@ -183,10 +183,10 @@ describe('mixitup.Mixer', function() {
         });
 
         it('should accept a callback function which is invoked after filtering', function() {
-            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-1'));
+            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-a'));
 
             var promise = new Promise(function(resolve) {
-                mixer.filter('.category-1', resolve);
+                mixer.filter('.category-a', resolve);
             });
 
             chai.assert.isFulfilled(promise);
@@ -200,9 +200,9 @@ describe('mixitup.Mixer', function() {
         });
 
         it('should return a promise which is resolved after filtering', function() {
-            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-1'));
+            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-a'));
 
-            return mixer.filter('.category-1')
+            return mixer.filter('.category-a')
                 .then(function(state) {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
@@ -211,9 +211,9 @@ describe('mixitup.Mixer', function() {
         });
 
         it('should accept a boolean allowing toggling of animation', function() {
-            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-1'));
+            var matching = Array.prototype.slice.call(container.querySelectorAll('.category-a'));
 
-            return mixer.filter('.category-1', false)
+            return mixer.filter('.category-a', false)
                 .then(function(state) {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);

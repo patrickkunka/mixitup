@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "categories": ["a"]
+    },
+    {
+        "id": 2,
+        "categories": ["a"]
+    },
+    {
+        "id": 3,
+        "categories": ["b"]
+    },
+    {
+        "id": 4,
+        "categories": ["b"]
+    },
+    {
+        "id": 5,
+        "categories": ["c"]
+    },
+    {
+        "id": 6,
+        "categories": ["a", "c"]
+    }
+]
