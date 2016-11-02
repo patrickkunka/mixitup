@@ -869,44 +869,53 @@ h.extend(mixitup.Mixer.prototype,
 
     printSort: function(isResetting, operation) {
         var self        = this,
-            order       = isResetting ? operation.startOrder : operation.newOrder,
-            targets     = h.children(self.dom.parent, self.config.selectors.target, self.dom.document),
-            nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
+            startOrder  = isResetting ? operation.newOrder : operation.startOrder,
+            newOrder    = isResetting ? operation.startOrder : operation.newOrder,
+            nextSibling = startOrder.length ? startOrder[startOrder.length - 1].dom.el.nextElementSibling : null,
             frag        = self.dom.document.createDocumentFragment(),
+            whitespace  = null,
             target      = null,
-            whiteSpace  = null,
             el          = null,
             i           = -1;
 
         self.callActions('beforePrintSort', arguments);
 
-        for (i = 0; el = targets[i]; i++) {
-            // Empty the container
+        // Empty the container
 
-            whiteSpace = el.nextSibling;
+        for (i = 0; target = startOrder[i]; i++) {
+            el = target.dom.el;
 
             if (el.style.position === 'absolute') continue;
 
-            if (whiteSpace && whiteSpace.nodeName === '#text') {
-                self.dom.parent.removeChild(whiteSpace);
-            }
+            h.removeWhitespace(el.previousSibling);
 
-            self.dom.parent.removeChild(el);
+            el.parentElement.removeChild(el);
         }
 
-        for (i = 0; target = order[i]; i++) {
+        whitespace = nextSibling ? nextSibling.previousSibling : self.dom.parent.lastChild;
+
+        if (whitespace && whitespace.nodeName === '#text') {
+            h.removeWhitespace(whitespace);
+        }
+
+        for (i = 0; target = newOrder[i]; i++) {
             // Add targets into a document fragment
 
             el = target.dom.el;
 
+            if (frag.lastElementChild) {
+                frag.appendChild(self.dom.document.createTextNode(' '));
+            }
+
             frag.appendChild(el);
-            frag.appendChild(self.dom.document.createTextNode(' '));
         }
 
         // Insert the document fragment into the container
         // before any other non-target elements
 
         if (nextSibling) {
+            frag.appendChild(self.dom.document.createTextNode(' '));
+
             self.dom.parent.insertBefore(frag, nextSibling);
         } else {
             self.dom.parent.appendChild(frag);
@@ -1858,10 +1867,12 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     cleanUp: function(operation) {
-        var self        = this,
-            target      = null,
-            nextInQueue = null,
-            i           = -1;
+        var self                = this,
+            target              = null,
+            whitespaceBefore    = null,
+            whitespaceAfter     = null,
+            nextInQueue         = null,
+            i                   = -1;
 
         self.callActions('beforeCleanUp', arguments);
 
@@ -1904,8 +1915,14 @@ h.extend(mixitup.Mixer.prototype,
         if (operation.toRemove.length) {
             for (i = 0; target = self.targets[i]; i++) {
                 if (operation.toRemove.indexOf(target) > -1) {
+                    if (
+                        (whitespaceBefore = target.dom.el.previousSibling) && whitespaceBefore.nodeName === '#text' &&
+                        (whitespaceAfter = target.dom.el.nextSibling) && whitespaceAfter.nodeName === '#text'
+                    ) {
+                        h.removeWhitespace(whitespaceBefore);
+                    }
 
-                    h.deleteElement(target.dom.el);
+                    self.dom.parent.removeChild(target.dom.el);
 
                     self.targets.splice(i, 1);
 
@@ -2619,13 +2636,22 @@ h.extend(mixitup.Mixer.prototype,
             el                  = null,
             frag                = null,
             nextEl              = null,
+            uids                = {},
             id                  = '',
             i                   = 0;
 
         for (i = 0; data = operation.newDataset[i]; i++) {
-            if (typeof (id = data[self.config.data.uid]) === 'undefined') {
-                throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID({
+            if (typeof (id = data[self.config.data.uid]) === 'undefined' || id.toString().length < 1) {
+                throw new TypeError(mixitup.messages.ERROR_DATASET_INVALID_UID({
                     uid: self.config.data.uid
+                }));
+            }
+
+            if (!uids[id]) {
+                uids[id] = true;
+            } else {
+                throw new Error(mixitup.messages.ERROR_DATASET_DUPLICATE_UID({
+                    uid: id
                 }));
             }
 
@@ -2659,11 +2685,14 @@ h.extend(mixitup.Mixer.prototype,
                 // Adding to DOM
 
                 if (!frag) {
-                    frag = new DocumentFragment();
+                    frag = self.dom.document.createDocumentFragment();
+                }
+
+                if (frag.lastElementChild) {
+                    frag.appendChild(self.dom.document.createTextNode(' '));
                 }
 
                 frag.appendChild(el);
-                frag.appendChild(self.dom.document.createTextNode(' '));
 
                 target.isInDom = true;
 

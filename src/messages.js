@@ -43,8 +43,12 @@ mixitup.Messages = function() {
         '[MixItUp] To use the dataset API, a UID key must be specified using `config.data.uid`'
     );
 
-    this.ERROR_CONFIG_INVALID_DATA_UID = h.template(
+    this.ERROR_DATASET_INVALID_UID = h.template(
         '[MixItUp] The specified UID key "${uid}" is not present on one or more dataset items'
+    );
+
+    this.ERROR_DATASET_DUPLICATE_UID = h.template(
+        '[MixItUp] The UID "${uid}" was found on two or more dataset items. UIDs must be unique.'
     );
 
     this.ERROR_INSERT_PREEXISTING_ELEMENT = h.template(

@@ -170,8 +170,10 @@ h = {
             var key     = '',
                 output  = str;
 
+            data = data || {};
+
             for (key in dynamics) {
-                output = output.replace(dynamics[key], data[key] || '');
+                output = output.replace(dynamics[key], typeof data[key] !== 'undefined' ? data[key] : '');
             }
 
             return output;
@@ -388,6 +390,24 @@ h = {
     deleteElement: function(el) {
         if (el.parentElement) {
             el.parentElement.removeChild(el);
+        }
+    },
+
+    /**
+     * @private
+     * @param   {Node} node
+     * @return  {void}
+     */
+
+    removeWhitespace: function(node) {
+        var deleting;
+
+        while (node && node.nodeName === '#text') {
+            deleting = node;
+
+            node = node.previousSibling;
+
+            deleting.parentElement && deleting.parentElement.removeChild(deleting);
         }
     },
 

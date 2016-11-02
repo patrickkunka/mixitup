@@ -1,4 +1,5 @@
 {
+    "esnext": true,
     "-W030": true,
     "-W053": true,
     "-W084": true,

@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 3f2289b3-5299-4290-9446-ce0689b11cc2
+ * Build b9813ae2-b677-4e0b-9935-806409ccb739
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -353,8 +353,10 @@
                 var key     = '',
                     output  = str;
 
+                data = data || {};
+
                 for (key in dynamics) {
-                    output = output.replace(dynamics[key], data[key] || '');
+                    output = output.replace(dynamics[key], typeof data[key] !== 'undefined' ? data[key] : '');
                 }
 
                 return output;
@@ -571,6 +573,24 @@
         deleteElement: function(el) {
             if (el.parentElement) {
                 el.parentElement.removeChild(el);
+            }
+        },
+
+        /**
+         * @private
+         * @param   {Node} node
+         * @return  {void}
+         */
+
+        removeWhitespace: function(node) {
+            var deleting;
+
+            while (node && node.nodeName === '#text') {
+                deleting = node;
+
+                node = node.previousSibling;
+
+                deleting.parentElement && deleting.parentElement.removeChild(deleting);
             }
         },
 
@@ -4513,44 +4533,53 @@
 
         printSort: function(isResetting, operation) {
             var self        = this,
-                order       = isResetting ? operation.startOrder : operation.newOrder,
-                targets     = h.children(self.dom.parent, self.config.selectors.target, self.dom.document),
-                nextSibling = targets.length ? targets[targets.length - 1].nextElementSibling : null,
+                startOrder  = isResetting ? operation.newOrder : operation.startOrder,
+                newOrder    = isResetting ? operation.startOrder : operation.newOrder,
+                nextSibling = startOrder.length ? startOrder[startOrder.length - 1].dom.el.nextElementSibling : null,
                 frag        = self.dom.document.createDocumentFragment(),
+                whitespace  = null,
                 target      = null,
-                whiteSpace  = null,
                 el          = null,
                 i           = -1;
 
             self.callActions('beforePrintSort', arguments);
 
-            for (i = 0; el = targets[i]; i++) {
-                // Empty the container
+            // Empty the container
 
-                whiteSpace = el.nextSibling;
+            for (i = 0; target = startOrder[i]; i++) {
+                el = target.dom.el;
 
                 if (el.style.position === 'absolute') continue;
 
-                if (whiteSpace && whiteSpace.nodeName === '#text') {
-                    self.dom.parent.removeChild(whiteSpace);
-                }
+                h.removeWhitespace(el.previousSibling);
 
-                self.dom.parent.removeChild(el);
+                el.parentElement.removeChild(el);
             }
 
-            for (i = 0; target = order[i]; i++) {
+            whitespace = nextSibling ? nextSibling.previousSibling : self.dom.parent.lastChild;
+
+            if (whitespace && whitespace.nodeName === '#text') {
+                h.removeWhitespace(whitespace);
+            }
+
+            for (i = 0; target = newOrder[i]; i++) {
                 // Add targets into a document fragment
 
                 el = target.dom.el;
 
+                if (frag.lastElementChild) {
+                    frag.appendChild(self.dom.document.createTextNode(' '));
+                }
+
                 frag.appendChild(el);
-                frag.appendChild(self.dom.document.createTextNode(' '));
             }
 
             // Insert the document fragment into the container
             // before any other non-target elements
 
             if (nextSibling) {
+                frag.appendChild(self.dom.document.createTextNode(' '));
+
                 self.dom.parent.insertBefore(frag, nextSibling);
             } else {
                 self.dom.parent.appendChild(frag);
@@ -5502,10 +5531,12 @@
          */
 
         cleanUp: function(operation) {
-            var self        = this,
-                target      = null,
-                nextInQueue = null,
-                i           = -1;
+            var self                = this,
+                target              = null,
+                whitespaceBefore    = null,
+                whitespaceAfter     = null,
+                nextInQueue         = null,
+                i                   = -1;
 
             self.callActions('beforeCleanUp', arguments);
 
@@ -5548,8 +5579,14 @@
             if (operation.toRemove.length) {
                 for (i = 0; target = self.targets[i]; i++) {
                     if (operation.toRemove.indexOf(target) > -1) {
+                        if (
+                            (whitespaceBefore = target.dom.el.previousSibling) && whitespaceBefore.nodeName === '#text' &&
+                            (whitespaceAfter = target.dom.el.nextSibling) && whitespaceAfter.nodeName === '#text'
+                        ) {
+                            h.removeWhitespace(whitespaceBefore);
+                        }
 
-                        h.deleteElement(target.dom.el);
+                        self.dom.parent.removeChild(target.dom.el);
 
                         self.targets.splice(i, 1);
 
@@ -6263,13 +6300,22 @@
                 el                  = null,
                 frag                = null,
                 nextEl              = null,
+                uids                = {},
                 id                  = '',
                 i                   = 0;
 
             for (i = 0; data = operation.newDataset[i]; i++) {
-                if (typeof (id = data[self.config.data.uid]) === 'undefined') {
-                    throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID({
+                if (typeof (id = data[self.config.data.uid]) === 'undefined' || id.toString().length < 1) {
+                    throw new TypeError(mixitup.messages.ERROR_DATASET_INVALID_UID({
                         uid: self.config.data.uid
+                    }));
+                }
+
+                if (!uids[id]) {
+                    uids[id] = true;
+                } else {
+                    throw new Error(mixitup.messages.ERROR_DATASET_DUPLICATE_UID({
+                        uid: id
                     }));
                 }
 
@@ -6303,11 +6349,14 @@
                     // Adding to DOM
 
                     if (!frag) {
-                        frag = new DocumentFragment();
+                        frag = self.dom.document.createDocumentFragment();
+                    }
+
+                    if (frag.lastElementChild) {
+                        frag.appendChild(self.dom.document.createTextNode(' '));
                     }
 
                     frag.appendChild(el);
-                    frag.appendChild(self.dom.document.createTextNode(' '));
 
                     target.isInDom = true;
 
@@ -6926,8 +6975,8 @@
             }
 
             if (data && mixer.config.data.uid) {
-                if (typeof (id = data[mixer.config.data.uid]) === 'undefined') {
-                    throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_DATA_UID());
+                if (typeof (id = data[mixer.config.data.uid]) === 'undefined' || id.toString().length < 1) {
+                    throw new TypeError(mixitup.messages.ERROR_DATASET_INVALID_UID());
                 }
 
                 self.id     = id;
@@ -7999,8 +8048,12 @@
             '[MixItUp] To use the dataset API, a UID key must be specified using `config.data.uid`'
         );
 
-        this.ERROR_CONFIG_INVALID_DATA_UID = h.template(
+        this.ERROR_DATASET_INVALID_UID = h.template(
             '[MixItUp] The specified UID key "${uid}" is not present on one or more dataset items'
+        );
+
+        this.ERROR_DATASET_DUPLICATE_UID = h.template(
+            '[MixItUp] The UID "${uid}" was found on two or more dataset items. UIDs must be unique.'
         );
 
         this.ERROR_INSERT_PREEXISTING_ELEMENT = h.template(

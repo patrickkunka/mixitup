@@ -36,7 +36,7 @@
     "disallowSpacesInFunctionDeclaration": {
         "beforeOpeningRoundBrace": true
     },
-    "disallowFunctionDeclarations": true,
+    "disallowFunctionDeclarations": false,
     "requireSpaceBetweenArguments": true,
     "requireMultipleVarDecl": false,
     "requireBlocksOnNewline": true,

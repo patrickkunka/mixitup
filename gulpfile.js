@@ -1,16 +1,18 @@
-var gulp            = require('gulp');
-var jshint          = require('gulp-jshint');
-var stylish         = require('jshint-stylish');
-var rename          = require('gulp-rename');
-var jscs            = require('gulp-jscs');
-var uglify          = require('gulp-uglify');
-var livereload      = require('gulp-livereload');
-var sourcemaps      = require('gulp-sourcemaps');
-var exec            = require('child_process').exec;
+'use strict';
+
+const gulp            = require('gulp');
+const jshint          = require('gulp-jshint');
+const stylish         = require('jshint-stylish');
+const rename          = require('gulp-rename');
+const jscs            = require('gulp-jscs');
+const uglify          = require('gulp-uglify');
+const livereload      = require('gulp-livereload');
+const sourcemaps      = require('gulp-sourcemaps');
+const exec            = require('child_process').exec;
 
 gulp.task('default', ['watch']);
 
-gulp.task('watch', function() {
+gulp.task('watch', () => {
     livereload.listen(35730);
 
     gulp.watch([
@@ -30,13 +32,13 @@ gulp.task('watch', function() {
         });
 });
 
-gulp.task('reload-js', ['build-dist'], function() {
+gulp.task('reload-js', ['build-dist'], () => {
     return livereload.changed();
 });
 
 gulp.task('prod', ['uglify']);
 
-gulp.task('uglify', ['build'], function() {
+gulp.task('uglify', ['build'], () => {
     return gulp.src([
         './dist/mixitup.js'
     ])
@@ -44,15 +46,13 @@ gulp.task('uglify', ['build'], function() {
             preserveComments: 'license'
         }))
         .pipe(rename('mixitup.min.js'))
-        .on('error', function(e) {
-            console.error('[uglify] ' + e.message);
-        })
+        .on('error', e => console.error('[uglify] ' + e.message))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('build', ['build-dist'], function(done) {
-    exec('node node_modules/mixitup-build/docs.js -s mixitup.js', function(e, out) {
+gulp.task('build', ['build-dist'], done => {
+    exec('node node_modules/mixitup-build/docs.js -s mixitup.js', (e, out) => {
         if (out) {
             console.log(out);
         }
@@ -61,8 +61,8 @@ gulp.task('build', ['build-dist'], function(done) {
     });
 });
 
-gulp.task('build-dist', ['lint', 'code-style'], function(done) {
-    exec('node node_modules/mixitup-build/dist.js -o mixitup.js', function(e, out) {
+gulp.task('build-dist', ['lint', 'code-style'], done => {
+    exec('node node_modules/mixitup-build/dist.js -o mixitup.js', (e, out) => {
         if (out) {
             console.log(out);
         }
@@ -71,12 +71,11 @@ gulp.task('build-dist', ['lint', 'code-style'], function(done) {
     });
 });
 
-gulp.task('lint', function() {
+gulp.task('lint', () => {
     return gulp.src([
         './src/*.js',
         '!./src/wrapper.js'
-    ],
-    {
+    ], {
         base: '/'
     })
         .pipe(jshint('./.jshintrc'))
@@ -84,12 +83,11 @@ gulp.task('lint', function() {
         .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('code-style', function() {
+gulp.task('code-style', () => {
     return gulp.src([
         './src/*.js',
         '!./src/wrapper.js'
-    ],
-    {
+    ], {
         base: '/'
     })
         .pipe(jscs())
