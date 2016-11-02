@@ -39,16 +39,20 @@ mixitup.Messages = function() {
         '. Did you mean "${probableMatch}"?'
     );
 
-    this.ERROR_INSERT_PREEXISTING_ELEMENT = h.template(
-        '[MixItUp] An element to be inserted already exists in the container'
-    );
-
     this.ERROR_CONFIG_DATA_UID_NOT_SET = h.template(
         '[MixItUp] To use the dataset API, a UID key must be specified using `config.data.uid`'
     );
 
     this.ERROR_CONFIG_INVALID_DATA_UID = h.template(
         '[MixItUp] The specified UID key "${uid}" is not present on one or more dataset items'
+    );
+
+    this.ERROR_INSERT_PREEXISTING_ELEMENT = h.template(
+        '[MixItUp] An element to be inserted already exists in the container'
+    );
+
+    this.ERROR_FILTER_INVALID_ARGUMENTS = h.template(
+        '[MixItUp] Please provide either a selector or collection `.filter()`, not both'
     );
 
     this.ERROR_DATASET_NOT_SET = h.template(

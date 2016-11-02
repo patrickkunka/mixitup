@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build b781b352-3750-4ce2-942b-ca726993d8ee
+ * Build 7003562a-f908-483f-8522-7bd1dcb03e95
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -5693,17 +5693,17 @@
             for (i = 0; i < args.length; i++) {
                 arg = args[i];
 
-                if (arg === null) continue;
-
                 if (typeof arg === 'string') {
                     // Selector
 
                     instruction.command.selector = arg;
+                } else if (arg === null) {
+                    instruction.command.collection = [];
                 } else if (typeof arg === 'object' && h.isElement(arg, self.dom.document)) {
                     // Single element
 
                     instruction.command.collection = [arg];
-                } else if (typeof arg === 'object' && arg.length) {
+                } else if (typeof arg === 'object' && typeof arg.length !== 'undefined') {
                     // Multiple elements in array, NodeList or jQuery collection
 
                     instruction.command.collection = Array.prototype.slice.call(arg);
@@ -5716,6 +5716,10 @@
                 } else if (typeof arg === 'function') {
                     instruction.callback = arg;
                 }
+            }
+
+            if (instruction.command.selector && instruction.command.collection) {
+                throw new Error(mixitup.messages.ERROR_FILTER_INVALID_ARGUMENTS());
             }
 
             instruction = self.callFilters('instructionParseFilterArgs', instruction, arguments);
@@ -7990,16 +7994,20 @@
             '. Did you mean "${probableMatch}"?'
         );
 
-        this.ERROR_INSERT_PREEXISTING_ELEMENT = h.template(
-            '[MixItUp] An element to be inserted already exists in the container'
-        );
-
         this.ERROR_CONFIG_DATA_UID_NOT_SET = h.template(
             '[MixItUp] To use the dataset API, a UID key must be specified using `config.data.uid`'
         );
 
         this.ERROR_CONFIG_INVALID_DATA_UID = h.template(
             '[MixItUp] The specified UID key "${uid}" is not present on one or more dataset items'
+        );
+
+        this.ERROR_INSERT_PREEXISTING_ELEMENT = h.template(
+            '[MixItUp] An element to be inserted already exists in the container'
+        );
+
+        this.ERROR_FILTER_INVALID_ARGUMENTS = h.template(
+            '[MixItUp] Please provide either a selector or collection `.filter()`, not both'
         );
 
         this.ERROR_DATASET_NOT_SET = h.template(

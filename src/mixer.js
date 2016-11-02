@@ -2049,17 +2049,17 @@ h.extend(mixitup.Mixer.prototype,
         for (i = 0; i < args.length; i++) {
             arg = args[i];
 
-            if (arg === null) continue;
-
             if (typeof arg === 'string') {
                 // Selector
 
                 instruction.command.selector = arg;
+            } else if (arg === null) {
+                instruction.command.collection = [];
             } else if (typeof arg === 'object' && h.isElement(arg, self.dom.document)) {
                 // Single element
 
                 instruction.command.collection = [arg];
-            } else if (typeof arg === 'object' && arg.length) {
+            } else if (typeof arg === 'object' && typeof arg.length !== 'undefined') {
                 // Multiple elements in array, NodeList or jQuery collection
 
                 instruction.command.collection = Array.prototype.slice.call(arg);
@@ -2072,6 +2072,10 @@ h.extend(mixitup.Mixer.prototype,
             } else if (typeof arg === 'function') {
                 instruction.callback = arg;
             }
+        }
+
+        if (instruction.command.selector && instruction.command.collection) {
+            throw new Error(mixitup.messages.ERROR_FILTER_INVALID_ARGUMENTS());
         }
 
         instruction = self.callFilters('instructionParseFilterArgs', instruction, arguments);
