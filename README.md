@@ -194,7 +194,11 @@ mixer.filter('.category-a');
 ```
 > Calling a mixer API method
 
-*Building a JavaScript web application?* You may wish to use MixItUp 3's new "dataset" API. When using dataset, MixItUp acts purely as the "view" layer of your UI component allowing you to interact with it purely via your data model, and avoiding the DOM API entirely. For more information check out out [--website pending--]() tutorial.
+##### Building a modern JavaScript application?
+
+You may wish to use MixItUp 3's new "dataset" API. When using dataset, MixItUp becomes "view" layer of your UI component allowing you to interface purely via your data model, and avoiding the DOM API entirely.
+
+For more information check out out [--website pending--]() tutorial.
 
 ##### Loading Animations
 
