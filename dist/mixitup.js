@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build b9813ae2-b677-4e0b-9935-806409ccb739
+ * Build a74aaaef-922c-4332-8ed8-5678a06c1f8d
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -622,8 +622,6 @@
 
         deepEquals: function(a, b) {
             var key;
-
-            console.log('comparing', a, b);
 
             if (typeof a === 'object' && a && typeof b === 'object' && b) {
                 if (Object.keys(a).length !== Object.keys(b).length) return false;
@@ -4192,9 +4190,9 @@
             }
 
             if (command.sort) {
-                output.sort = command.sort.sortString;
+                output.sort = self.buildSortString(command.sort);
             } else {
-                output.sort = self.state.activeSort.sortString;
+                output.sort = self.buildSortString(self.state.activeSort);
             }
 
             if (output.filter === self.config.selectors.target) {
@@ -4212,6 +4210,27 @@
             }
 
             self.callActions('afterUpdateControls', arguments);
+        },
+
+        /**
+         * @private
+         * @instance
+         * @since   3.0.0
+         * @param   {mixitup.CommandSort}   command
+         * @return  {string}
+         */
+
+        buildSortString: function(command) {
+            var self    = this;
+            var output  = '';
+
+            output += command.sortString;
+
+            if (command.next) {
+                output += ' ' + self.buildSortString(command.next);
+            }
+
+            return output;
         },
 
         /**
@@ -4606,11 +4625,12 @@
                 rule        = [],
                 i           = -1;
 
-            command.sortString = sortString;
+            // command.sortString = sortString;
 
             for (i = 0; i < rules.length; i++) {
                 rule = rules[i].split(':');
 
+                current.sortString  = rules[i];
                 current.attribute   = h.dashCase(rule[0]);
                 current.order       = rule[1] || 'asc';
 
@@ -6026,6 +6046,233 @@
         },
 
         /**
+         * @private
+         * @instance
+         * @since   3.0.0
+         * @param   {Array.<object>}    newDataset
+         * @return  {Operation}
+         */
+
+        getDataOperation: function(newDataset) {
+            var self                = this,
+                operation           = new mixitup.Operation(),
+                startDataset        = null;
+
+            if (!(startDataset = self.state.activeDataset)) {
+                throw new Error(mixitup.messages.ERROR_DATASET_NOT_SET());
+            }
+
+            operation.id            = h.randomHex();
+            operation.startState    = self.state;
+            operation.startOrder    = self.targets;
+            operation.startDataset  = startDataset;
+            operation.newDataset    = newDataset.slice();
+
+            self.diffDatasets(operation);
+
+            operation.newOrder = operation.show;
+
+            self.getStartMixData(operation);
+            self.setInter(operation);
+
+            operation.docState = h.getDocumentState(self.dom.document);
+
+            self.getInterMixData(operation);
+            self.setFinal(operation);
+            self.getFinalMixData(operation);
+
+            self.parseEffects();
+
+            operation.hasEffect = self.hasEffect();
+
+            self.getTweenData(operation);
+
+            self.targets = operation.show.slice();
+
+            operation.newState = self.buildState(operation);
+
+            // NB: Targets to be removed must be included in `self.targets` for removal during clean up,
+            // but are added after state is built so that state is accurate
+
+            Array.prototype.push.apply(self.targets, operation.toRemove);
+
+            return operation;
+        },
+
+        /**
+         * @private
+         * @instance
+         * @since   3.0.0
+         * @param   {mixitup.Operation} operation
+         * @return  {void}
+         */
+
+        diffDatasets: function(operation) {
+            var self                = this,
+                persistantStartIds  = [],
+                persistantNewIds    = [],
+                data                = null,
+                target              = null,
+                el                  = null,
+                frag                = null,
+                nextEl              = null,
+                uids                = {},
+                id                  = '',
+                i                   = 0;
+
+            for (i = 0; data = operation.newDataset[i]; i++) {
+                if (typeof (id = data[self.config.data.uid]) === 'undefined' || id.toString().length < 1) {
+                    throw new TypeError(mixitup.messages.ERROR_DATASET_INVALID_UID({
+                        uid: self.config.data.uid
+                    }));
+                }
+
+                if (!uids[id]) {
+                    uids[id] = true;
+                } else {
+                    throw new Error(mixitup.messages.ERROR_DATASET_DUPLICATE_UID({
+                        uid: id
+                    }));
+                }
+
+                if ((target = self.cache[id]) instanceof mixitup.Target) {
+                    // Already in cache
+
+                    if (self.config.data.dirtyCheck && !h.deepEquals(data, target.data)) {
+                        // change detected
+
+                        el = self.renderTarget(data);
+
+                        target.data = data;
+
+                        self.dom.parent.replaceChild(el, target.dom.el);
+
+                        target.dom.el = el;
+                    }
+
+                    el = target.dom.el;
+                } else {
+                    // New target
+
+                    el = el = self.renderTarget(data);
+
+                    target = new mixitup.Target();
+
+                    target.init(el, self, data);
+                }
+
+                if (!target.isInDom) {
+                    // Adding to DOM
+
+                    if (!frag) {
+                        frag = self.dom.document.createDocumentFragment();
+                    }
+
+                    if (frag.lastElementChild) {
+                        frag.appendChild(self.dom.document.createTextNode(' '));
+                    }
+
+                    frag.appendChild(el);
+
+                    target.isInDom = true;
+
+                    operation.toShow.push(target);
+                } else {
+                    // Already in DOM
+
+                    nextEl = target.dom.el.nextElementSibling;
+
+                    persistantNewIds.push(id);
+
+                    if (frag) {
+                        self.dom.parent.insertBefore(frag, target.dom.el);
+
+                        frag = null;
+                    }
+                }
+
+                operation.show.push(target);
+            }
+
+            if (frag) {
+                self.dom.parent.insertBefore(frag, nextEl);
+            }
+
+            for (i = 0; data = operation.startDataset[i]; i++) {
+                id = data[self.config.data.uid];
+
+                target = self.cache[id];
+
+                if (operation.show.indexOf(target) < 0) {
+                    // Previously shown but now absent
+
+                    operation.hide.push(target);
+                    operation.toHide.push(target);
+                    operation.toRemove.push(target);
+                } else {
+                    persistantStartIds.push(id);
+                }
+            }
+
+            if (!h.isEqualArray(persistantStartIds, persistantNewIds)) {
+                operation.willSort = true;
+            }
+        },
+
+        /**
+         * @private
+         * @instance
+         * @since   3.0.0
+         * @param   {object} data
+         * @return  {void}
+         */
+
+        renderTarget: function(data) {
+            var self    = this,
+                render  = null,
+                temp    = document.createElement('div'),
+                html    = '';
+
+            if (typeof (render = self.config.render.target) !== 'function') {
+                throw new TypeError(mixitup.messages.ERROR_DATASET_RENDERER_NOT_SET());
+            }
+
+            html = render(data);
+
+            temp.innerHTML = html;
+
+            return temp.firstElementChild;
+        },
+
+        /**
+         * @private
+         * @instance
+         * @since   3.0.0
+         * @param   {mixitup.CommandSort} sortCommandA
+         * @param   {mixitup.CommandSort} sortCommandB
+         * @return  {boolean}
+         */
+
+        willSort: function(sortCommandA, sortCommandB) {
+            var self = this;
+
+            if (
+                sortCommandA.order       === 'random' ||
+                sortCommandA.attribute   !== sortCommandB.attribute ||
+                sortCommandA.order       !== sortCommandB.order ||
+                sortCommandA.collection  !== sortCommandB.collection ||
+                (sortCommandA.next === null && sortCommandB.next) ||
+                (sortCommandA.next && sortCommandB.next === null)
+            ) {
+                return true;
+            } else if (sortCommandA.next && sortCommandB.next) {
+                return self.willSort(sortCommandA.next, sortCommandB.next);
+            } else {
+                return false;
+            }
+        },
+
+        /**
          * A shorthand method for `.filter('all')`.
          *
          * @example
@@ -6230,205 +6477,6 @@
         },
 
         /**
-         * @private
-         * @instance
-         * @since   3.0.0
-         * @param   {Array.<object>}    newDataset
-         * @return  {Operation}
-         */
-
-        getDataOperation: function(newDataset) {
-            var self                = this,
-                operation           = new mixitup.Operation(),
-                startDataset        = null;
-
-            if (!(startDataset = self.state.activeDataset)) {
-                throw new Error(mixitup.messages.ERROR_DATASET_NOT_SET());
-            }
-
-            operation.id            = h.randomHex();
-            operation.startState    = self.state;
-            operation.startOrder    = self.targets;
-            operation.startDataset  = startDataset;
-            operation.newDataset    = newDataset.slice();
-
-            self.diffDatasets(operation);
-
-            operation.newOrder = operation.show;
-
-            self.getStartMixData(operation);
-            self.setInter(operation);
-
-            operation.docState = h.getDocumentState(self.dom.document);
-
-            self.getInterMixData(operation);
-            self.setFinal(operation);
-            self.getFinalMixData(operation);
-
-            self.parseEffects();
-
-            operation.hasEffect = self.hasEffect();
-
-            self.getTweenData(operation);
-
-            self.targets = operation.show.slice();
-
-            operation.newState = self.buildState(operation);
-
-            // NB: Targets to be removed must be included in `self.targets` for removal during clean up,
-            // but are added after state is built so that state is accurate
-
-            Array.prototype.push.apply(self.targets, operation.toRemove);
-
-            return operation;
-        },
-
-        /**
-         * @private
-         * @instance
-         * @since   3.0.0
-         * @param   {mixitup.Operation} operation
-         * @return  {void}
-         */
-
-        diffDatasets: function(operation) {
-            var self                = this,
-                persistantStartIds  = [],
-                persistantNewIds    = [],
-                data                = null,
-                target              = null,
-                el                  = null,
-                frag                = null,
-                nextEl              = null,
-                uids                = {},
-                id                  = '',
-                i                   = 0;
-
-            for (i = 0; data = operation.newDataset[i]; i++) {
-                if (typeof (id = data[self.config.data.uid]) === 'undefined' || id.toString().length < 1) {
-                    throw new TypeError(mixitup.messages.ERROR_DATASET_INVALID_UID({
-                        uid: self.config.data.uid
-                    }));
-                }
-
-                if (!uids[id]) {
-                    uids[id] = true;
-                } else {
-                    throw new Error(mixitup.messages.ERROR_DATASET_DUPLICATE_UID({
-                        uid: id
-                    }));
-                }
-
-                if ((target = self.cache[id]) instanceof mixitup.Target) {
-                    // Already in cache
-
-                    if (self.config.data.dirtyCheck && !h.deepEquals(data, target.data)) {
-                        // change detected
-
-                        el = self.renderTarget(data);
-
-                        target.data = data;
-
-                        self.dom.parent.replaceChild(el, target.dom.el);
-
-                        target.dom.el = el;
-                    }
-
-                    el = target.dom.el;
-                } else {
-                    // New target
-
-                    el = el = self.renderTarget(data);
-
-                    target = new mixitup.Target();
-
-                    target.init(el, self, data);
-                }
-
-                if (!target.isInDom) {
-                    // Adding to DOM
-
-                    if (!frag) {
-                        frag = self.dom.document.createDocumentFragment();
-                    }
-
-                    if (frag.lastElementChild) {
-                        frag.appendChild(self.dom.document.createTextNode(' '));
-                    }
-
-                    frag.appendChild(el);
-
-                    target.isInDom = true;
-
-                    operation.toShow.push(target);
-                } else {
-                    // Already in DOM
-
-                    nextEl = target.dom.el.nextElementSibling;
-
-                    persistantNewIds.push(id);
-
-                    if (frag) {
-                        self.dom.parent.insertBefore(frag, target.dom.el);
-
-                        frag = null;
-                    }
-                }
-
-                operation.show.push(target);
-            }
-
-            if (frag) {
-                self.dom.parent.insertBefore(frag, nextEl);
-            }
-
-            for (i = 0; data = operation.startDataset[i]; i++) {
-                id = data[self.config.data.uid];
-
-                target = self.cache[id];
-
-                if (operation.show.indexOf(target) < 0) {
-                    // Previously shown but now absent
-
-                    operation.hide.push(target);
-                    operation.toHide.push(target);
-                    operation.toRemove.push(target);
-                } else {
-                    persistantStartIds.push(id);
-                }
-            }
-
-            if (!h.isEqualArray(persistantStartIds, persistantNewIds)) {
-                operation.willSort = true;
-            }
-        },
-
-        /**
-         * @private
-         * @instance
-         * @since   3.0.0
-         * @param   {object} data
-         * @return  {void}
-         */
-
-        renderTarget: function(data) {
-            var self    = this,
-                render  = null,
-                temp    = document.createElement('div'),
-                html    = '';
-
-            if (typeof (render = self.config.render.target) !== 'function') {
-                throw new TypeError(mixitup.messages.ERROR_DATASET_RENDERER_NOT_SET());
-            }
-
-            html = render(data);
-
-            temp.innerHTML = html;
-
-            return temp.firstElementChild;
-        },
-
-        /**
          * @public
          * @instance
          * @since   3.0.0
@@ -6476,14 +6524,9 @@
                 operation.startSort = operation.startState.activeSort;
                 operation.newSort   = sortCommand;
 
-                if (
-                    sortCommand.order       === 'random' ||
-                    sortCommand.attribute   !== operation.startState.activeSort.attribute ||
-                    sortCommand.order       !== operation.startState.activeSort.order ||
-                    sortCommand.collection  !== operation.startState.activeSort.collection
-                ) {
-                    operation.willSort = true;
+                operation.willSort = self.willSort(sortCommand, operation.startState.activeSort);
 
+                if (operation.willSort) {
                     self.sortOperation(operation);
                 }
             }

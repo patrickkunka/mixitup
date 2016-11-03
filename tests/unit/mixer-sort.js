@@ -31,6 +31,36 @@ describe('mixitup.Mixer', () => {
             return 0;
         }).map(item => item.id.toString());
 
+        let idsByViewsThenPublishedDate = dataset.slice().sort((a, b) => {
+            let viewsA = a.views;
+            let viewsB = b.views;
+
+            let sortByPublishedDate = function(a, b) {
+                let dateA = a.published;
+                let dateB = b.published;
+
+                if (dateA < dateB) {
+                    return -1;
+                }
+
+                if (dateA > dateB) {
+                    return 1;
+                }
+
+                return 0;
+            };
+
+            if (viewsA < viewsB) {
+                return -1;
+            }
+
+            if (viewsA > viewsB) {
+                return 1;
+            }
+
+            sortByPublishedDate(a, b);
+        }).map(item => item.id.toString());
+
         it('accept `default` as a sort string, but should have no effect on the order', () => {
             var startOrder = mixer.getState().show;
 
@@ -107,6 +137,37 @@ describe('mixitup.Mixer', () => {
                     chai.assert.equal(state.activeSort.attribute, 'published');
 
                     chai.assert.deepEqual(targetIds, idsByPublishedDateDesc);
+                });
+        });
+
+        it('should accept multiple sort strings for multi attribute sorting', () => {
+            return mixer.sort('views published')
+                .then(state => {
+                    let targetIds = state.show.map(el => el.id);
+
+                    chai.assert.isOk(state.activeSort.next);
+                    chai.assert.instanceOf(state.activeSort.next, mixitup.CommandSort);
+
+                    chai.assert.equal(state.activeSort.sortString, 'views');
+                    chai.assert.equal(state.activeSort.order, 'asc');
+                    chai.assert.equal(state.activeSort.attribute, 'views');
+
+                    chai.assert.equal(state.activeSort.next.sortString, 'published');
+                    chai.assert.equal(state.activeSort.next.order, 'asc');
+                    chai.assert.equal(state.activeSort.next.attribute, 'published');
+
+                    chai.assert.deepEqual(targetIds, idsByViewsThenPublishedDate);
+                });
+        });
+
+        it('should accept multiple sort strings with orders for multi attribute sorting', () => {
+            let idsByViewsThenPublishedDateDesc = idsByViewsThenPublishedDate.slice().reverse();
+
+            return mixer.sort('views:desc published:desc')
+                .then(state => {
+                    let targetIds = state.show.map(el => el.id);
+
+                    chai.assert.deepEqual(targetIds, idsByViewsThenPublishedDateDesc);
                 });
         });
     });

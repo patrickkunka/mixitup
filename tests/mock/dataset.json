@@ -2,31 +2,37 @@
     {
         "id": 1,
         "categories": ["a"],
-        "published": "20161102"
+        "published": "20161102",
+        "views": 100
     },
     {
         "id": 2,
         "categories": ["a"],
-        "published": "20130501"
+        "published": "20130501",
+        "views": 54
     },
     {
         "id": 3,
         "categories": ["b"],
-        "published": "20121231"
+        "published": "20121231",
+        "views": 3
     },
     {
         "id": 4,
         "categories": ["b"],
-        "published": "20160407"
+        "published": "20160407",
+        "views": 62
     },
     {
         "id": 5,
         "categories": ["c"],
-        "published": "20160820"
+        "published": "20160820",
+        "views": 54
     },
     {
         "id": 6,
         "categories": ["a", "c"],
-        "published": "20151020"
+        "published": "20151020",
+        "views": 95
     }
 ]

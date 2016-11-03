@@ -13,12 +13,12 @@ const renderElement = (html) => {
 module.exports = {
     getContainer() {
         return renderElement('<div class="container" data-ref="container">' +
-            '<div id="1" class="mix category-a" data-ref="mix" data-category="a" data-published="20161102"></div> ' +
-            '<div id="2" class="mix category-a" data-ref="mix" data-category="a" data-published="20130501"></div> ' +
-            '<div id="3" class="mix category-b" data-ref="mix" data-category="b" data-published="20121231"></div> ' +
-            '<div id="4" class="mix category-b" data-ref="mix" data-category="b" data-published="20160407"></div> ' +
-            '<div id="5" class="mix category-c" data-ref="mix" data-category="c" data-published="20160820"></div> ' +
-            '<div id="6" class="mix category-a category-c" data-ref="mix" data-category="a c" data-published="20151020"></div>' +
+            '<div id="1" class="mix category-a" data-ref="mix" data-category="a" data-published="20161102" data-views="100"></div> ' +
+            '<div id="2" class="mix category-a" data-ref="mix" data-category="a" data-published="20130501" data-views="54"></div> ' +
+            '<div id="3" class="mix category-b" data-ref="mix" data-category="b" data-published="20121231" data-views="3"></div> ' +
+            '<div id="4" class="mix category-b" data-ref="mix" data-category="b" data-published="20160407" data-views="62"></div> ' +
+            '<div id="5" class="mix category-c" data-ref="mix" data-category="c" data-published="20160820" data-views="54"></div> ' +
+            '<div id="6" class="mix category-a category-c" data-ref="mix" data-category="a c" data-published="20151020" data-views="95"></div>' +
         '</div>');
     },
 
@@ -40,8 +40,12 @@ module.exports = {
 
     Item: class Item {
         constructor(data) {
-            this.id = typeof data !== 'undefined' ? data.id : undefined;
+            this.id         = typeof data !== 'undefined' ? data.id : undefined;
             this.categories = Array.prototype.slice.call(data.categories) || [];
+            this.published  = typeof data.published === 'string' ? data.published : '';
+            this.views      = typeof data.views === 'number' ? data.views : 0;
+
+            Object.seal(this);
         }
 
         get classList() {
@@ -53,5 +57,5 @@ module.exports = {
         }
     },
 
-    ITEM_TEMPLATE: '<div id="${id}" class="${classList}" data-ref="mix" data-category="${categoryList}" data-published="${published}"></div>'
+    ITEM_TEMPLATE: '<div id="${id}" class="${classList}" data-ref="mix" data-category="${categoryList}" data-published="${published}" data-views="${views}"></div>'
 };

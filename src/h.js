@@ -440,8 +440,6 @@ h = {
     deepEquals: function(a, b) {
         var key;
 
-        console.log('comparing', a, b);
-
         if (typeof a === 'object' && a && typeof b === 'object' && b) {
             if (Object.keys(a).length !== Object.keys(b).length) return false;
 
