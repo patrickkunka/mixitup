@@ -44,8 +44,8 @@ module.exports = {
             this.categories = Array.prototype.slice.call(data.categories) || [];
         }
 
-        get categoryClassList() {
-            return this.categories.map(category => 'category-' + category).join(' ');
+        get classList() {
+            return 'mix ' + this.categories.map(category => 'category-' + category).join(' ');
         }
 
         get categoryList() {
@@ -53,5 +53,5 @@ module.exports = {
         }
     },
 
-    ITEM_TEMPLATE: '<div id="${id}" class="mix ${categoryClassList}" data-ref="mix" data-category="${categoryList}"></div>'
+    ITEM_TEMPLATE: '<div id="${id}" class="${classList}" data-ref="mix" data-category="${categoryList}" data-published="${published}"></div>'
 };
