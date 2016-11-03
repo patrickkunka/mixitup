@@ -1,26 +1,32 @@
 [
     {
         "id": 1,
-        "categories": ["a"]
+        "categories": ["a"],
+        "published": "20161102"
     },
     {
         "id": 2,
-        "categories": ["a"]
+        "categories": ["a"],
+        "published": "20130501"
     },
     {
         "id": 3,
-        "categories": ["b"]
+        "categories": ["b"],
+        "published": "20121231"
     },
     {
         "id": 4,
-        "categories": ["b"]
+        "categories": ["b"],
+        "published": "20160407"
     },
     {
         "id": 5,
-        "categories": ["c"]
+        "categories": ["c"],
+        "published": "20160820"
     },
     {
         "id": 6,
-        "categories": ["a", "c"]
+        "categories": ["a", "c"],
+        "published": "20151020"
     }
 ]

@@ -2,46 +2,15 @@
 
 require('jsdom-global')();
 
-const chai    = require('chai');
+const chai          = require('chai');
+const dom           = require('../mock/dom');
+const mixitup       = require('../../dist/mixitup.js');
+const JSONDataset   = require('../mock/dataset');
+
+const dataset       = JSONDataset.map(data => new dom.Item(data));
 
 chai.use(require('chai-shallow-deep-equal'));
 chai.use(require('chai-as-promised'));
-
-const dom     = require('../mock/dom');
-const mixitup = require('../../dist/mixitup.js');
-
-let dataset = require('../mock/dataset');
-
-const ITEM_TEMPLATE = '<div id="${id}" class="mix ${categoryClassList}" data-ref="mix" data-category="${categoryList}"></div>';
-
-class Item {
-    constructor(data) {
-        this.id = typeof data !== 'undefined' ? data.id : undefined;
-        this.categories = Array.prototype.slice.call(data.categories) || [];
-    }
-
-    get categoryClassList() {
-        return this.categories.map(category => 'category-' + category).join(' ');
-    }
-
-    get categoryList() {
-        return this.categories.join(' ');
-    }
-}
-
-function getTotalWhitespace(html) {
-    let re = /[>? ]( )[<? ]/g;
-    let totalWhitespace = 0;
-    let matches;
-
-    while (matches = re.exec(html)) {
-        totalWhitespace++;
-    }
-
-    return totalWhitespace;
-}
-
-dataset = dataset.map(data => new Item(data));
 
 describe('mixitup()', () => {
     it('should throw an error if `load.dataset` does not match pre-rendered targets', () => {
@@ -101,7 +70,7 @@ describe('mixitup.Mixer', () => {
                 uid: 'id'
             },
             render: {
-                target: mixitup.h.template(ITEM_TEMPLATE)
+                target: mixitup.h.template(dom.ITEM_TEMPLATE)
             },
             load: {
                 dataset: dataset
@@ -110,7 +79,7 @@ describe('mixitup.Mixer', () => {
 
         let mixer = mixitup(container, config);
 
-        let startTotalWhitespace = getTotalWhitespace(container.outerHTML);
+        let startTotalWhitespace = dom.getTotalWhitespace(container.outerHTML);
 
         it('should throw an error if an item is added to the dataset, without a render function defined', () => {
             let newDataset = dataset.slice();
@@ -124,7 +93,7 @@ describe('mixitup.Mixer', () => {
                 }
             });
 
-            newDataset.push(new Item({
+            newDataset.push(new dom.Item({
                 id: 99,
                 categories: ['d']
             }));
@@ -140,7 +109,7 @@ describe('mixitup.Mixer', () => {
 
             let erMixer = mixitup(container, config);
 
-            newDataset.push(new Item({
+            newDataset.push(new dom.Item({
                 categories: ['d']
             }));
 
@@ -157,7 +126,7 @@ describe('mixitup.Mixer', () => {
 
             let erMixer = mixitup(container, config);
 
-            newDataset.push(new Item({
+            newDataset.push(new dom.Item({
                 id: 1,
                 categories: ['d']
             }));
@@ -170,7 +139,7 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should insert a target when a new item is added to end of the dataset', () => {
-            workingDataset.push(new Item({
+            workingDataset.push(new dom.Item({
                 id: 7,
                 categories: ['d']
             }));
@@ -184,7 +153,7 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should insert a target when a new item is added to the start of the dataset', () => {
-            workingDataset.unshift(new Item({
+            workingDataset.unshift(new dom.Item({
                 id: 0,
                 categories: ['d']
             }));
@@ -198,7 +167,7 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should insert a target when a new item is added at an arbitrary point in the dataset', () => {
-            workingDataset.splice(3, 0, new Item({
+            workingDataset.splice(3, 0, new dom.Item({
                 id: 999,
                 categories: ['d']
             }));
@@ -258,7 +227,7 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should not insert excessive whitespace after DOM manipulations', () => {
-            chai.assert.equal(getTotalWhitespace(container.outerHTML), startTotalWhitespace);
+            chai.assert.equal(dom.getTotalWhitespace(container.outerHTML), startTotalWhitespace);
         });
     });
 });
