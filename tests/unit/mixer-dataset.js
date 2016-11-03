@@ -22,7 +22,7 @@ describe('mixitup()', () => {
                     dataset: dataset
                 }
             });
-        }, mixitup.messages.ERROR_DATASET_PRERENDERED_MISMATCH());
+        }, mixitup.messages.errorDatasetPrerenderedMismatch());
     });
 
     it('should throw an error if UID not provided in dataset API mode', () => {
@@ -34,7 +34,7 @@ describe('mixitup()', () => {
                     dataset: dataset
                 }
             });
-        }, mixitup.messages.ERROR_CONFIG_DATA_UID_NOT_SET());
+        }, mixitup.messages.errorConfigDataUidNotSet());
     });
 
     it('should instantiate in dataset API mode when provided with `load.dataset` and a matching container', () => {
@@ -100,7 +100,7 @@ describe('mixitup.Mixer', () => {
 
             chai.assert.throws(() => {
                 erMixer.dataset(newDataset);
-            }, mixitup.messages.ERROR_DATASET_RENDERER_NOT_SET());
+            }, mixitup.messages.errorDatasetRendererNotSet());
         });
 
         it('should throw an error if an item is added to the dataset without a valid UID', () => {
@@ -115,7 +115,7 @@ describe('mixitup.Mixer', () => {
 
             chai.assert.throws(() => {
                 erMixer.dataset(newDataset);
-            }, mixitup.messages.ERROR_DATASET_INVALID_UID({
+            }, mixitup.messages.errorDatasetInvalidUid({
                 uid: 'id'
             }));
         });
@@ -133,7 +133,7 @@ describe('mixitup.Mixer', () => {
 
             chai.assert.throws(() => {
                 erMixer.dataset(newDataset);
-            }, mixitup.messages.ERROR_DATASET_DUPLICATE_UID({
+            }, mixitup.messages.errorDatasetDuplicateUid({
                 uid: '1'
             }));
         });

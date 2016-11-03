@@ -75,11 +75,11 @@ mixitup = function(container, config, foreignDoc) {
 
         elements = container;
     } else {
-        throw new Error(mixitup.messages.ERROR_FACTORY_INVALID_CONTAINER());
+        throw new Error(mixitup.messages.errorFactoryInvalidContainer());
     }
 
     if (elements.length < 1) {
-        throw new Error(mixitup.messages.ERROR_FACTORY_CONTAINER_NOT_FOUND());
+        throw new Error(mixitup.messages.errorFactoryContainerNotFound());
     }
 
     for (i = 0; el = elements[i]; i++) {
@@ -97,7 +97,7 @@ mixitup = function(container, config, foreignDoc) {
             instance = mixitup.instances[id];
 
             if (!config || (config && config.debug && config.debug.showWarnings !== false)) {
-                console.warn(mixitup.messages.WARNING_FACTORY_PREEXISTING_INSTANCE());
+                console.warn(mixitup.messages.warningFactoryPreexistingInstance());
             }
         } else {
             instance = new mixitup.Mixer();
@@ -153,10 +153,6 @@ mixitup.use = function(extension) {
         // jQuery
 
         mixitup.libraries.$ = extension;
-    } else if (typeof extension.compile === 'function' && typeof extension.partials === 'object' && typeof extension.helpers === 'object') {
-        // Handlebars
-
-        mixitup.libraries.handlebars = extension;
     }
 };
 

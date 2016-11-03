@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build a74aaaef-922c-4332-8ed8-5678a06c1f8d
+ * Build 5f308ddc-735d-4b6b-aac0-6879aad2caf6
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -94,11 +94,11 @@
 
             elements = container;
         } else {
-            throw new Error(mixitup.messages.ERROR_FACTORY_INVALID_CONTAINER());
+            throw new Error(mixitup.messages.errorFactoryInvalidContainer());
         }
 
         if (elements.length < 1) {
-            throw new Error(mixitup.messages.ERROR_FACTORY_CONTAINER_NOT_FOUND());
+            throw new Error(mixitup.messages.errorFactoryContainerNotFound());
         }
 
         for (i = 0; el = elements[i]; i++) {
@@ -116,7 +116,7 @@
                 instance = mixitup.instances[id];
 
                 if (!config || (config && config.debug && config.debug.showWarnings !== false)) {
-                    console.warn(mixitup.messages.WARNING_FACTORY_PREEXISTING_INSTANCE());
+                    console.warn(mixitup.messages.warningFactoryPreexistingInstance());
                 }
             } else {
                 instance = new mixitup.Mixer();
@@ -172,10 +172,6 @@
             // jQuery
 
             mixitup.libraries.$ = extension;
-        } else if (typeof extension.compile === 'function' && typeof extension.partials === 'object' && typeof extension.helpers === 'object') {
-            // Handlebars
-
-            mixitup.libraries.handlebars = extension;
         }
     };
 
@@ -318,12 +314,12 @@
                 }
 
                 if (mostMatchingChars > 1) {
-                    suggestion = mixitup.messages.ERROR_CONFIG_INVALID_PROPERTY_SUGGESTION({
+                    suggestion = mixitup.messages.errorConfigInvalidPropertySuggestion({
                         probableMatch: probableMatch
                     });
                 }
 
-                message = mixitup.messages.ERROR_CONFIG_INVALID_PROPERTY({
+                message = mixitup.messages.errorConfigInvalidProperty({
                     erroneous: erroneous,
                     suggestion: suggestion
                 });
@@ -479,7 +475,7 @@
          */
 
         camelCase: function(str) {
-            return str.replace(/([_-][a-z])/g, function($1) {
+            return str.toLowerCase().replace(/([_-][a-z])/g, function($1) {
                 return $1.toUpperCase().replace(/[_-]/, '');
             });
         },
@@ -887,7 +883,7 @@
             } else {
                 // No implementation
 
-                console.warn(mixitup.messages.WARNING_NO_PROMISE_IMPLEMENTATION);
+                console.warn(mixitup.messages.warningNoPromiseImplementation());
             }
 
             return promiseWrapper;
@@ -916,7 +912,7 @@
 
             // No implementation
 
-            console.warn(mixitup.messages.WARNING_NO_PROMISE_IMPLEMENTATION);
+            console.warn(mixitup.messages.warningNoPromiseImplementation());
 
             return [];
         },
@@ -1160,40 +1156,6 @@
             } else {
                 return null;
             }
-        },
-
-        /**
-         * @param   {string} templateString
-         * @param   {object} data
-         * @param   {object} [engine]
-         * @return  {string}
-         */
-
-        renderTemplate: function(templateString, data, engine) {
-            var template = null,
-                re       = null,
-                output   = '',
-                key      = '';
-
-            if (!templateString || (data && typeof data !== 'object')) return '';
-
-            engine = engine || window.Handlebars;
-
-            if (engine && typeof engine.compile === 'function') {
-                template = engine.compile(templateString);
-
-                return template(data);
-            }
-
-            output = templateString;
-
-            for (key in data) {
-                re = new RegExp('\{\{' + key + '\}\}', 'g');
-
-                output = output.replace(re, data[key]);
-            }
-
-            return output;
         }
     };
 
@@ -3811,7 +3773,7 @@
                 // Dataset API
 
                 if (!self.config.data.uid || typeof self.config.data.uid !== 'string') {
-                    throw new TypeError(mixitup.messages.ERROR_CONFIG_DATA_UID_NOT_SET());
+                    throw new TypeError(mixitup.messages.errorConfigDataUidNotSet());
                 }
 
                 operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset.slice();
@@ -3920,7 +3882,7 @@
             self.targets = [];
 
             if ((dataset = self.config.load.dataset) && dataset.length !== self.dom.targets.length) {
-                throw new Error(mixitup.messages.ERROR_DATASET_PRERENDERED_MISMATCH());
+                throw new Error(mixitup.messages.errorDatasetPrerenderedMismatch());
             }
 
             if (self.dom.targets.length) {
@@ -3967,7 +3929,7 @@
 
                     break;
                 default:
-                    throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_CONTROLS_SCOPE());
+                    throw new Error(mixitup.messages.errorConfigInvalidControlsScope());
             }
 
             for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
@@ -4260,7 +4222,7 @@
             if (command.collection) {
                 for (i = 0; el = command.collection[i]; i++) {
                     if (self.dom.targets.indexOf(el) > -1) {
-                        throw new Error(mixitup.messages.ERROR_INSERT_PREEXISTING_ELEMENT());
+                        throw new Error(mixitup.messages.errorInsertPreexistingElement());
                     }
 
                     // Ensure elements are hidden when they are added to the DOM, so they can
@@ -4528,7 +4490,9 @@
                     // Encourage users to assign values to all targets to avoid erroneous sorting
                     // when types are mixed
 
-                    console.warn(mixitup.messages.WARNING_INCONSISTENT_SORTING_ATTRIBUTES());
+                    console.warn(mixitup.messages.warningInconsistentSortingAttributes({
+                        attribute: 'data-' + attribute
+                    }));
                 }
             }
 
@@ -4734,7 +4698,7 @@
             self.callActions('beforeParseEffect', arguments);
 
             if (typeof effectString !== 'string') {
-                throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS());
+                throw new TypeError(mixitup.messages.errorConfigInvalidAnimationEffects());
             }
 
             if (effectString.indexOf(effectName) < 0) {
@@ -5777,7 +5741,7 @@
             }
 
             if (instruction.command.selector && instruction.command.collection) {
-                throw new Error(mixitup.messages.ERROR_FILTER_INVALID_ARGUMENTS());
+                throw new Error(mixitup.messages.errorFilterInvalidArguments());
             }
 
             instruction = self.callFilters('instructionParseFilterArgs', instruction, arguments);
@@ -5904,7 +5868,7 @@
             }
 
             if (!instruction.command.collection.length && self.config.debug.showWarnings) {
-                console.warn(mixitup.messages.WARNING_INSERT_NO_ELEMENTS());
+                console.warn(mixitup.messages.warningInsertNoElements());
             }
 
             instruction = self.callFilters('instructionParseInsertArgs', instruction, arguments);
@@ -6027,7 +5991,7 @@
                 }
             } else {
                 if (self.config.debug.showWarnings) {
-                    console.warn(mixitup.messages.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL());
+                    console.warn(mixitup.messages.warningMultimixInstanceQueueFull());
                 }
 
                 deferred.resolve(self.state);
@@ -6059,7 +6023,7 @@
                 startDataset        = null;
 
             if (!(startDataset = self.state.activeDataset)) {
-                throw new Error(mixitup.messages.ERROR_DATASET_NOT_SET());
+                throw new Error(mixitup.messages.errorDatasetNotSet());
             }
 
             operation.id            = h.randomHex();
@@ -6122,7 +6086,7 @@
 
             for (i = 0; data = operation.newDataset[i]; i++) {
                 if (typeof (id = data[self.config.data.uid]) === 'undefined' || id.toString().length < 1) {
-                    throw new TypeError(mixitup.messages.ERROR_DATASET_INVALID_UID({
+                    throw new TypeError(mixitup.messages.errorDatasetInvalidUid({
                         uid: self.config.data.uid
                     }));
                 }
@@ -6130,7 +6094,7 @@
                 if (!uids[id]) {
                     uids[id] = true;
                 } else {
-                    throw new Error(mixitup.messages.ERROR_DATASET_DUPLICATE_UID({
+                    throw new Error(mixitup.messages.errorDatasetDuplicateUid({
                         uid: id
                     }));
                 }
@@ -6234,7 +6198,7 @@
                 html    = '';
 
             if (typeof (render = self.config.render.target) !== 'function') {
-                throw new TypeError(mixitup.messages.ERROR_DATASET_RENDERER_NOT_SET());
+                throw new TypeError(mixitup.messages.errorDatasetRendererNotSet());
             }
 
             html = render(data);
@@ -6503,7 +6467,7 @@
 
             if (self.isBusy) {
                 if (self.config.debug.showWarnings) {
-                    console.warn(mixitup.messages.WARNING_GET_OPERATION_INSTANCE_BUSY());
+                    console.warn(mixitup.messages.warningGetOperationInstanceBusy());
                 }
 
                 return null;
@@ -7019,7 +6983,7 @@
 
             if (data && mixer.config.data.uid) {
                 if (typeof (id = data[mixer.config.data.uid]) === 'undefined' || id.toString().length < 1) {
-                    throw new TypeError(mixitup.messages.ERROR_DATASET_INVALID_UID());
+                    throw new TypeError(mixitup.messages.errorDatasetInvalidUid());
                 }
 
                 self.id     = id;
@@ -8063,94 +8027,76 @@
         /* Errors
         ----------------------------------------------------------------------------- */
 
-        this.ERROR_FACTORY_INVALID_CONTAINER = h.template(
-            '[MixItUp] An invalid selector or element reference was passed to the mixitup factory function'
-        );
+        this.ERROR_FACTORY_INVALID_CONTAINER =
+            '[MixItUp] An invalid selector or element reference was passed to the mixitup factory function';
 
-        this.ERROR_FACTORY_CONTAINER_NOT_FOUND = h.template(
-            '[MixItUp] The provided selector yielded no container element'
-        );
+        this.ERROR_FACTORY_CONTAINER_NOT_FOUND =
+            '[MixItUp] The provided selector yielded no container element';
 
-        this.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS = h.template(
-            '[MixItUp] Invalid value for `config.animation.effects`'
-        );
+        this.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS =
+            '[MixItUp] Invalid value for `config.animation.effects`';
 
-        this.ERROR_CONFIG_INVALID_CONTROLS_SCOPE = h.template(
-            '[MixItUp] Invalid value for `config.controls.scope`'
-        );
+        this.ERROR_CONFIG_INVALID_CONTROLS_SCOPE =
+            '[MixItUp] Invalid value for `config.controls.scope`';
 
-        this.ERROR_CONFIG_INVALID_PROPERTY = h.template(
-            '[MixitUp] Invalid configuration object property "${erroneous}"${suggestion}'
-        );
+        this.ERROR_CONFIG_INVALID_PROPERTY =
+            '[MixitUp] Invalid configuration object property "${erroneous}"${suggestion}';
 
-        this.ERROR_CONFIG_INVALID_PROPERTY_SUGGESTION = h.template(
-            '. Did you mean "${probableMatch}"?'
-        );
+        this.ERROR_CONFIG_INVALID_PROPERTY_SUGGESTION =
+            '. Did you mean "${probableMatch}"?';
 
-        this.ERROR_CONFIG_DATA_UID_NOT_SET = h.template(
-            '[MixItUp] To use the dataset API, a UID key must be specified using `config.data.uid`'
-        );
+        this.ERROR_CONFIG_DATA_UID_NOT_SET =
+            '[MixItUp] To use the dataset API, a UID key must be specified using `config.data.uid`';
 
-        this.ERROR_DATASET_INVALID_UID = h.template(
-            '[MixItUp] The specified UID key "${uid}" is not present on one or more dataset items'
-        );
+        this.ERROR_DATASET_INVALID_UID =
+            '[MixItUp] The specified UID key "${uid}" is not present on one or more dataset items';
 
-        this.ERROR_DATASET_DUPLICATE_UID = h.template(
-            '[MixItUp] The UID "${uid}" was found on two or more dataset items. UIDs must be unique.'
-        );
+        this.ERROR_DATASET_DUPLICATE_UID =
+            '[MixItUp] The UID "${uid}" was found on two or more dataset items. UIDs must be unique.';
 
-        this.ERROR_INSERT_PREEXISTING_ELEMENT = h.template(
-            '[MixItUp] An element to be inserted already exists in the container'
-        );
+        this.ERROR_INSERT_PREEXISTING_ELEMENT =
+            '[MixItUp] An element to be inserted already exists in the container';
 
-        this.ERROR_FILTER_INVALID_ARGUMENTS = h.template(
-            '[MixItUp] Please provide either a selector or collection `.filter()`, not both'
-        );
+        this.ERROR_FILTER_INVALID_ARGUMENTS =
+            '[MixItUp] Please provide either a selector or collection `.filter()`, not both';
 
-        this.ERROR_DATASET_NOT_SET = h.template(
-            '[MixItUp] To use the dataset API, a starting dataset must be set using `config.load.dataset`'
-        );
+        this.ERROR_DATASET_NOT_SET =
+            '[MixItUp] To use the dataset API, a starting dataset must be set using `config.load.dataset`';
 
-        this.ERROR_DATASET_PRERENDERED_MISMATCH = h.template(
-            '[MixItUp] `config.load.dataset` does not match pre-rendered targets'
-        );
+        this.ERROR_DATASET_PRERENDERED_MISMATCH =
+            '[MixItUp] `config.load.dataset` does not match pre-rendered targets';
 
-        this.ERROR_DATASET_RENDERER_NOT_SET = h.template(
-            '[MixItUp] To insert an element via the dataset API, a target renderer function must be provided to `config.render.target`'
-        );
+        this.ERROR_DATASET_RENDERER_NOT_SET =
+            '[MixItUp] To insert an element via the dataset API, a target renderer function must be provided to `config.render.target`';
 
         /* Warnings
         ----------------------------------------------------------------------------- */
 
-        this.WARNING_FACTORY_PREEXISTING_INSTANCE = h.template(
+        this.WARNING_FACTORY_PREEXISTING_INSTANCE =
             '[MixItUp] WARNING: This element already has an active MixItUp instance. The provided configuration object will be ignored.' +
-            ' If you wish to perform additional methods on this instance, please create a reference.'
-        );
+            ' If you wish to perform additional methods on this instance, please create a reference.';
 
-        this.WARNING_INSERT_NO_ELEMENTS = h.template(
-            '[MixItUp] WARNING: No element were passed to `.insert()`'
-        );
+        this.WARNING_INSERT_NO_ELEMENTS =
+            '[MixItUp] WARNING: No element were passed to `.insert()`';
 
-        this.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL = h.template(
+        this.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL =
             '[MixItUp] WARNING: An operation was requested but the MixItUp instance was busy. The operation was rejected because the ' +
-            ' queue is full or queuing is disabled.'
-        );
+            ' queue is full or queuing is disabled.';
 
-        this.WARNING_GET_OPERATION_INSTANCE_BUSY = h.template(
-            '[MixItUp] WARNING: Operations can be be created while the MixItUp instance is busy.'
-        );
+        this.WARNING_GET_OPERATION_INSTANCE_BUSY =
+            '[MixItUp] WARNING: Operations can be be created while the MixItUp instance is busy.';
 
-        this.WARNING_NO_PROMISE_IMPLEMENTATION = h.template(
+        this.WARNING_NO_PROMISE_IMPLEMENTATION =
             '[MixItUp] WARNING: No Promise implementations could be found. If you wish to use promises with MixItUp please install' +
-            ' an ES6 Promise polyfill.'
-        );
+            ' an ES6 Promise polyfill.';
 
-        this.WARNING_INCONSISTENT_SORTING_ATTRIBUTES = h.template(
-            '[MixItUp] WARNING: The requested sorting data attribute was not present on one or more target elements which may product' +
-            ' unexpected sort output'
-        );
+        this.WARNING_INCONSISTENT_SORTING_ATTRIBUTES =
+            '[MixItUp] WARNING: The requested sorting data attribute "${attribute}" was not present on one or more target elements' +
+            ' which may product unexpected sort output';
 
         this.callActions('afterConstruct');
+
+        this.compileTemplates();
 
         h.seal(this);
     };
@@ -8160,6 +8106,21 @@
     mixitup.Messages.prototype = Object.create(mixitup.Base.prototype);
 
     mixitup.Messages.prototype.constructor = mixitup.Messages;
+
+    /**
+     * @return {void}
+     */
+
+    mixitup.Messages.prototype.compileTemplates = function() {
+        var errorKey        = '';
+        var errorMessage    = '';
+
+        for (errorKey in this) {
+            if (typeof (errorMessage = this[errorKey]) !== 'string') continue;
+
+            this[h.camelCase(errorKey)] = h.template(errorMessage);
+        }
+    };
 
     mixitup.messages = new mixitup.Messages();
 

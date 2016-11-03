@@ -149,7 +149,7 @@ h.extend(mixitup.Mixer.prototype,
             // Dataset API
 
             if (!self.config.data.uid || typeof self.config.data.uid !== 'string') {
-                throw new TypeError(mixitup.messages.ERROR_CONFIG_DATA_UID_NOT_SET());
+                throw new TypeError(mixitup.messages.errorConfigDataUidNotSet());
             }
 
             operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset.slice();
@@ -258,7 +258,7 @@ h.extend(mixitup.Mixer.prototype,
         self.targets = [];
 
         if ((dataset = self.config.load.dataset) && dataset.length !== self.dom.targets.length) {
-            throw new Error(mixitup.messages.ERROR_DATASET_PRERENDERED_MISMATCH());
+            throw new Error(mixitup.messages.errorDatasetPrerenderedMismatch());
         }
 
         if (self.dom.targets.length) {
@@ -305,7 +305,7 @@ h.extend(mixitup.Mixer.prototype,
 
                 break;
             default:
-                throw new Error(mixitup.messages.ERROR_CONFIG_INVALID_CONTROLS_SCOPE());
+                throw new Error(mixitup.messages.errorConfigInvalidControlsScope());
         }
 
         for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
@@ -598,7 +598,7 @@ h.extend(mixitup.Mixer.prototype,
         if (command.collection) {
             for (i = 0; el = command.collection[i]; i++) {
                 if (self.dom.targets.indexOf(el) > -1) {
-                    throw new Error(mixitup.messages.ERROR_INSERT_PREEXISTING_ELEMENT());
+                    throw new Error(mixitup.messages.errorInsertPreexistingElement());
                 }
 
                 // Ensure elements are hidden when they are added to the DOM, so they can
@@ -866,7 +866,9 @@ h.extend(mixitup.Mixer.prototype,
                 // Encourage users to assign values to all targets to avoid erroneous sorting
                 // when types are mixed
 
-                console.warn(mixitup.messages.WARNING_INCONSISTENT_SORTING_ATTRIBUTES());
+                console.warn(mixitup.messages.warningInconsistentSortingAttributes({
+                    attribute: 'data-' + attribute
+                }));
             }
         }
 
@@ -1072,7 +1074,7 @@ h.extend(mixitup.Mixer.prototype,
         self.callActions('beforeParseEffect', arguments);
 
         if (typeof effectString !== 'string') {
-            throw new TypeError(mixitup.messages.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS());
+            throw new TypeError(mixitup.messages.errorConfigInvalidAnimationEffects());
         }
 
         if (effectString.indexOf(effectName) < 0) {
@@ -2115,7 +2117,7 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         if (instruction.command.selector && instruction.command.collection) {
-            throw new Error(mixitup.messages.ERROR_FILTER_INVALID_ARGUMENTS());
+            throw new Error(mixitup.messages.errorFilterInvalidArguments());
         }
 
         instruction = self.callFilters('instructionParseFilterArgs', instruction, arguments);
@@ -2242,7 +2244,7 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         if (!instruction.command.collection.length && self.config.debug.showWarnings) {
-            console.warn(mixitup.messages.WARNING_INSERT_NO_ELEMENTS());
+            console.warn(mixitup.messages.warningInsertNoElements());
         }
 
         instruction = self.callFilters('instructionParseInsertArgs', instruction, arguments);
@@ -2365,7 +2367,7 @@ h.extend(mixitup.Mixer.prototype,
             }
         } else {
             if (self.config.debug.showWarnings) {
-                console.warn(mixitup.messages.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL());
+                console.warn(mixitup.messages.warningMultimixInstanceQueueFull());
             }
 
             deferred.resolve(self.state);
@@ -2397,7 +2399,7 @@ h.extend(mixitup.Mixer.prototype,
             startDataset        = null;
 
         if (!(startDataset = self.state.activeDataset)) {
-            throw new Error(mixitup.messages.ERROR_DATASET_NOT_SET());
+            throw new Error(mixitup.messages.errorDatasetNotSet());
         }
 
         operation.id            = h.randomHex();
@@ -2460,7 +2462,7 @@ h.extend(mixitup.Mixer.prototype,
 
         for (i = 0; data = operation.newDataset[i]; i++) {
             if (typeof (id = data[self.config.data.uid]) === 'undefined' || id.toString().length < 1) {
-                throw new TypeError(mixitup.messages.ERROR_DATASET_INVALID_UID({
+                throw new TypeError(mixitup.messages.errorDatasetInvalidUid({
                     uid: self.config.data.uid
                 }));
             }
@@ -2468,7 +2470,7 @@ h.extend(mixitup.Mixer.prototype,
             if (!uids[id]) {
                 uids[id] = true;
             } else {
-                throw new Error(mixitup.messages.ERROR_DATASET_DUPLICATE_UID({
+                throw new Error(mixitup.messages.errorDatasetDuplicateUid({
                     uid: id
                 }));
             }
@@ -2572,7 +2574,7 @@ h.extend(mixitup.Mixer.prototype,
             html    = '';
 
         if (typeof (render = self.config.render.target) !== 'function') {
-            throw new TypeError(mixitup.messages.ERROR_DATASET_RENDERER_NOT_SET());
+            throw new TypeError(mixitup.messages.errorDatasetRendererNotSet());
         }
 
         html = render(data);
@@ -2841,7 +2843,7 @@ h.extend(mixitup.Mixer.prototype,
 
         if (self.isBusy) {
             if (self.config.debug.showWarnings) {
-                console.warn(mixitup.messages.WARNING_GET_OPERATION_INSTANCE_BUSY());
+                console.warn(mixitup.messages.warningGetOperationInstanceBusy());
             }
 
             return null;

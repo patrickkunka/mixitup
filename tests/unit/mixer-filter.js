@@ -231,7 +231,7 @@ describe('mixitup.Mixer', () => {
 
             chai.assert.throws(() => {
                 mixer.filter(command);
-            }, Error, mixitup.messages.ERROR_FILTER_INVALID_ARGUMENTS());
+            }, Error, mixitup.messages.errorFilterInvalidArguments());
         });
     });
 });

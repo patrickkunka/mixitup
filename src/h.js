@@ -135,12 +135,12 @@ h = {
             }
 
             if (mostMatchingChars > 1) {
-                suggestion = mixitup.messages.ERROR_CONFIG_INVALID_PROPERTY_SUGGESTION({
+                suggestion = mixitup.messages.errorConfigInvalidPropertySuggestion({
                     probableMatch: probableMatch
                 });
             }
 
-            message = mixitup.messages.ERROR_CONFIG_INVALID_PROPERTY({
+            message = mixitup.messages.errorConfigInvalidProperty({
                 erroneous: erroneous,
                 suggestion: suggestion
             });
@@ -296,7 +296,7 @@ h = {
      */
 
     camelCase: function(str) {
-        return str.replace(/([_-][a-z])/g, function($1) {
+        return str.toLowerCase().replace(/([_-][a-z])/g, function($1) {
             return $1.toUpperCase().replace(/[_-]/, '');
         });
     },
@@ -704,7 +704,7 @@ h = {
         } else {
             // No implementation
 
-            console.warn(mixitup.messages.WARNING_NO_PROMISE_IMPLEMENTATION);
+            console.warn(mixitup.messages.warningNoPromiseImplementation());
         }
 
         return promiseWrapper;
@@ -733,7 +733,7 @@ h = {
 
         // No implementation
 
-        console.warn(mixitup.messages.WARNING_NO_PROMISE_IMPLEMENTATION);
+        console.warn(mixitup.messages.warningNoPromiseImplementation());
 
         return [];
     },
@@ -977,40 +977,6 @@ h = {
         } else {
             return null;
         }
-    },
-
-    /**
-     * @param   {string} templateString
-     * @param   {object} data
-     * @param   {object} [engine]
-     * @return  {string}
-     */
-
-    renderTemplate: function(templateString, data, engine) {
-        var template = null,
-            re       = null,
-            output   = '',
-            key      = '';
-
-        if (!templateString || (data && typeof data !== 'object')) return '';
-
-        engine = engine || window.Handlebars;
-
-        if (engine && typeof engine.compile === 'function') {
-            template = engine.compile(templateString);
-
-            return template(data);
-        }
-
-        output = templateString;
-
-        for (key in data) {
-            re = new RegExp('\{\{' + key + '\}\}', 'g');
-
-            output = output.replace(re, data[key]);
-        }
-
-        return output;
     }
 };
 
