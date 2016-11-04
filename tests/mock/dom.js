@@ -19,7 +19,12 @@ module.exports = {
             '<div id="4" class="mix category-b" data-ref="mix" data-category="b" data-published="20160407" data-views="62"></div> ' +
             '<div id="5" class="mix category-c" data-ref="mix" data-category="c" data-published="20160820" data-views="54"></div> ' +
             '<div id="6" class="mix category-a category-c" data-ref="mix" data-category="a c" data-published="20151020" data-views="95"></div>' +
+            '<span class="container_gap></span>' +
         '</div>');
+    },
+
+    getTarget() {
+        return renderElement('<div id="7" class="mix category-d" data-ref="mix" data-category="d" data-published="20161222" data-views="132"></div>');
     },
 
     getEmptyContainer() {

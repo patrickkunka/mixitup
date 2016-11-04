@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build c61578c5-6238-40cb-b899-bf08d80f6362
+ * Build 734bf273-a2c7-4587-99f9-74bd9694fc29
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -4205,12 +4205,13 @@
          */
 
         insertTargets: function(command, operation) {
-            var self        = this,
-                nextSibling = null,
-                frag        = null,
-                target      = null,
-                el          = null,
-                i           = -1;
+            var self            = this,
+                nextSibling     = null,
+                insertionIndex  = -1,
+                frag            = null,
+                target          = null,
+                el              = null,
+                i               = -1;
 
             self.callActions('beforeInsertTargets', arguments);
 
@@ -4218,6 +4219,12 @@
 
             nextSibling = self.getNextSibling(command.index, command.sibling, command.position);
             frag        = self.dom.document.createDocumentFragment();
+
+            if (nextSibling) {
+                insertionIndex = h.index(nextSibling, self.config.selectors.target);
+            } else {
+                insertionIndex = self.targets.length;
+            }
 
             if (command.collection) {
                 for (i = 0; el = command.collection[i]; i++) {
@@ -4241,9 +4248,9 @@
 
                     target.isInDom = true;
 
-                    self.targets.splice(command.index, 0, target);
+                    self.targets.splice(insertionIndex, 0, target);
 
-                    command.index++;
+                    insertionIndex++;
                 }
 
                 self.dom.parent.insertBefore(frag, nextSibling);
@@ -4269,6 +4276,8 @@
         getNextSibling: function(index, sibling, position) {
             var self    = this,
                 element = null;
+
+            index = Math.max(index, 0);
 
             if (sibling && position === 'before') {
                 element = sibling;
@@ -5865,6 +5874,10 @@
                 } else if (typeof arg === 'function') {
                     instruction.callback = arg;
                 }
+            }
+
+            if (instruction.command.index && instruction.command.sibling) {
+                throw new Error(mixitup.messages.errorInsertInvalidArguments());
             }
 
             if (!instruction.command.collection.length && self.config.debug.showWarnings) {
@@ -8053,6 +8066,9 @@
 
         this.ERROR_DATASET_DUPLICATE_UID =
             '[MixItUp] The UID "${uid}" was found on two or more dataset items. UIDs must be unique.';
+
+        this.ERROR_INSERT_INVALID_ARGUMENTS =
+            '[MixItUp] Please provider either an index or a sibling and position to insert, not both';
 
         this.ERROR_INSERT_PREEXISTING_ELEMENT =
             '[MixItUp] An element to be inserted already exists in the container';

@@ -233,3 +233,36 @@ describe('mixitup.Mixer', () => {
         });
     });
 });
+
+describe('mixitup.Mixer', () => {
+    describe('#hide()', () => {
+        let container = dom.getContainer();
+        let mixer = mixitup(container);
+
+        it('should hide all elements', () => {
+            return mixer.hide()
+                .then(state => {
+                    chai.assert.equal(state.totalShow, 0);
+                    chai.assert.equal(state.totalHide, state.targets.length);
+                    chai.assert.equal(state.activeFilter.selector, '');
+                });
+        });
+    });
+});
+
+describe('mixitup.Mixer', () => {
+    describe('#show()', () => {
+        let container = dom.getContainer();
+        let mixer = mixitup(container);
+
+        it('should show all elements', () => {
+            return mixer.filter('.category-a')
+                .then(mixer.show)
+                .then(state => {
+                    chai.assert.equal(state.totalShow, state.targets.length);
+                    chai.assert.equal(state.totalHide, 0);
+                    chai.assert.equal(state.activeFilter.selector, '.mix');
+                });
+        });
+    });
+});

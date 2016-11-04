@@ -42,6 +42,9 @@ mixitup.Messages = function() {
     this.ERROR_DATASET_DUPLICATE_UID =
         '[MixItUp] The UID "${uid}" was found on two or more dataset items. UIDs must be unique.';
 
+    this.ERROR_INSERT_INVALID_ARGUMENTS =
+        '[MixItUp] Please provider either an index or a sibling and position to insert, not both';
+
     this.ERROR_INSERT_PREEXISTING_ELEMENT =
         '[MixItUp] An element to be inserted already exists in the container';
 

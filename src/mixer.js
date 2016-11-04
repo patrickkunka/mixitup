@@ -581,12 +581,13 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     insertTargets: function(command, operation) {
-        var self        = this,
-            nextSibling = null,
-            frag        = null,
-            target      = null,
-            el          = null,
-            i           = -1;
+        var self            = this,
+            nextSibling     = null,
+            insertionIndex  = -1,
+            frag            = null,
+            target          = null,
+            el              = null,
+            i               = -1;
 
         self.callActions('beforeInsertTargets', arguments);
 
@@ -594,6 +595,12 @@ h.extend(mixitup.Mixer.prototype,
 
         nextSibling = self.getNextSibling(command.index, command.sibling, command.position);
         frag        = self.dom.document.createDocumentFragment();
+
+        if (nextSibling) {
+            insertionIndex = h.index(nextSibling, self.config.selectors.target);
+        } else {
+            insertionIndex = self.targets.length;
+        }
 
         if (command.collection) {
             for (i = 0; el = command.collection[i]; i++) {
@@ -617,9 +624,9 @@ h.extend(mixitup.Mixer.prototype,
 
                 target.isInDom = true;
 
-                self.targets.splice(command.index, 0, target);
+                self.targets.splice(insertionIndex, 0, target);
 
-                command.index++;
+                insertionIndex++;
             }
 
             self.dom.parent.insertBefore(frag, nextSibling);
@@ -645,6 +652,8 @@ h.extend(mixitup.Mixer.prototype,
     getNextSibling: function(index, sibling, position) {
         var self    = this,
             element = null;
+
+        index = Math.max(index, 0);
 
         if (sibling && position === 'before') {
             element = sibling;
@@ -2241,6 +2250,10 @@ h.extend(mixitup.Mixer.prototype,
             } else if (typeof arg === 'function') {
                 instruction.callback = arg;
             }
+        }
+
+        if (instruction.command.index && instruction.command.sibling) {
+            throw new Error(mixitup.messages.errorInsertInvalidArguments());
         }
 
         if (!instruction.command.collection.length && self.config.debug.showWarnings) {
