@@ -7,7 +7,7 @@
  * @since       3.0.0
  */
 
-mixitup.UiClassnames = function() {
+mixitup.UiClassNames = function() {
     mixitup.Base.call(this);
 
     this.callActions('beforeConstruct');
@@ -21,8 +21,8 @@ mixitup.UiClassnames = function() {
     h.seal(this);
 };
 
-mixitup.BaseStatic.call(mixitup.UiClassnames);
+mixitup.BaseStatic.call(mixitup.UiClassNames);
 
-mixitup.UiClassnames.prototype = Object.create(mixitup.Base.prototype);
+mixitup.UiClassNames.prototype = Object.create(mixitup.Base.prototype);
 
-mixitup.UiClassnames.prototype.constructor = mixitup.UiClassnames;
+mixitup.UiClassNames.prototype.constructor = mixitup.UiClassNames;

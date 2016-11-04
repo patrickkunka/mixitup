@@ -910,27 +910,27 @@ h = {
     },
 
     /**
-     * @param   {mixitup.Config.Classnames}   classnames
+     * @param   {mixitup.Config.ClassNames}   classNames
      * @param   {string}                      elementName
      * @param   {string}                      [modifier]
      * @return  {string}
      */
 
-    getClassname: function(classnames, elementName, modifier) {
+    getClassname: function(classNames, elementName, modifier) {
         var classname = '';
 
-        classname += classnames.block;
+        classname += classNames.block;
 
         if (classname.length) {
-            classname += classnames.delineatorElement;
+            classname += classNames.delineatorElement;
         }
 
-        classname += classnames['element' + this.pascalCase(elementName)];
+        classname += classNames['element' + this.pascalCase(elementName)];
 
         if (!modifier) return classname;
 
         if (classname.length) {
-            classname += classnames.delineatorModifier;
+            classname += classNames.delineatorModifier;
         }
 
         classname += modifier;

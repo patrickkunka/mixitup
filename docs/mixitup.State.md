@@ -10,6 +10,19 @@ for retrieval at any time via the API.
 
 ## Members
 
+### <a id="mixitup.State#id">mixitup.State.id</a>
+
+
+
+
+The ID of the mixer instance.
+
+
+|Type | Default
+|---  | ---
+|`string`| `''`
+
+
 ### <a id="mixitup.State#activeFilter">mixitup.State.activeFilter</a>
 
 
@@ -48,6 +61,19 @@ The currently active containerClass, if applied.
 |Type | Default
 |---  | ---
 |`string`| `''`
+
+
+### <a id="mixitup.State#container">mixitup.State.container</a>
+
+
+
+
+A reference to the container element that the mixer is instantiated on.
+
+
+|Type | Default
+|---  | ---
+|`Element`| `null`
 
 
 ### <a id="mixitup.State#targets">mixitup.State.targets</a>

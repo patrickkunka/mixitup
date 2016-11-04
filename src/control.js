@@ -22,7 +22,7 @@ mixitup.Control = function() {
     this.sort       = '';
     this.canDisable = false;
     this.handler    = null;
-    this.classnames = new mixitup.UiClassnames();
+    this.classNames = new mixitup.UiClassNames();
 
     this.callActions('afterConstruct');
 
@@ -244,7 +244,7 @@ h.extend(mixitup.Control.prototype,
                 command.filter  = self.filter || button.getAttribute('data-toggle');
 
                 if (self.status === 'live') {
-                    isActive = h.hasClass(button, self.classnames.active);
+                    isActive = h.hasClass(button, self.classNames.active);
                 } else {
                     isActive = self.status === 'active';
                 }
@@ -472,15 +472,15 @@ h.extend(mixitup.Control.prototype,
 
         switch (status) {
             case 'active':
-                h.addClass(button, self.classnames.active);
-                h.removeClass(button, self.classnames.disabled);
+                h.addClass(button, self.classNames.active);
+                h.removeClass(button, self.classNames.disabled);
 
                 if (self.canDisable) self.el.disabled = false;
 
                 break;
             case 'inactive':
-                h.removeClass(button, self.classnames.active);
-                h.removeClass(button, self.classnames.disabled);
+                h.removeClass(button, self.classNames.active);
+                h.removeClass(button, self.classNames.disabled);
 
                 if (self.canDisable) self.el.disabled = false;
 
@@ -488,8 +488,8 @@ h.extend(mixitup.Control.prototype,
             case 'disabled':
                 if (self.canDisable) self.el.disabled = true;
 
-                h.addClass(button, self.classnames.disabled);
-                h.removeClass(button, self.classnames.active);
+                h.addClass(button, self.classNames.disabled);
+                h.removeClass(button, self.classNames.active);
 
                 break;
         }

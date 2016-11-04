@@ -50,16 +50,16 @@ A group of properties defining MixItUp's animation and effects settings.
 
 
 
-### <a id="mixitup.Config.classnames">mixitup.Config.classnames</a>
+### <a id="mixitup.Config.classNames">mixitup.Config.classNames</a>
 
 **Version added: 3.0.0**
 
 
 
-A group of properties defining the output and structure of classnames programmatically
+A group of properties defining the output and structure of classNames programmatically
 added to controls and containers to reflect the state of the mixer.
 
-Most commonly, classnames are added to control buttons by MixItUp to indicate that
+Most commonly, classNames are added to control buttons by MixItUp to indicate that
 the control is active so that it can be styled accordingly - `'mixitup-control-active'` by default.
 
 Using a "BEM" like structure, each classname is broken into the three parts:

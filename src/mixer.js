@@ -381,9 +381,9 @@ h.extend(mixitup.Mixer.prototype,
 
         control.init(el, type, selector);
 
-        control.classnames.base     = h.getClassname(self.config.classnames, type);
-        control.classnames.active   = h.getClassname(self.config.classnames, type, self.config.classnames.modifierActive);
-        control.classnames.disabled = h.getClassname(self.config.classnames, type, self.config.classnames.modifierDisabled);
+        control.classNames.base     = h.getClassname(self.config.classNames, type);
+        control.classNames.active   = h.getClassname(self.config.classNames, type, self.config.classNames.modifierActive);
+        control.classNames.disabled = h.getClassname(self.config.classNames, type, self.config.classNames.modifierDisabled);
 
         // Add a reference to this mixer as a binding
 
