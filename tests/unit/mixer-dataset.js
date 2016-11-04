@@ -67,7 +67,8 @@ describe('mixitup.Mixer', () => {
         let workingDataset = dataset.slice();
         let config = {
             data: {
-                uid: 'id'
+                uid: 'id',
+                dirtyCheck: true
             },
             render: {
                 target: mixitup.h.template(dom.ITEM_TEMPLATE)
@@ -223,6 +224,17 @@ describe('mixitup.Mixer', () => {
 
                     chai.assert.equal(state.totalShow, 6);
                     chai.assert.deepEqual(ids, elIds);
+                });
+        });
+
+        it('should sort rerender targets if their data changes and dirtyChecking is enabled', () => {
+            workingDataset[0] = new dom.Item(Object.assign({}, workingDataset[0]));
+
+            workingDataset[0].categories.push('z');
+
+            return mixer.dataset(workingDataset)
+                .then((state) => {
+                    chai.assert.isOk(state.show[0].matches('.category-z'));
                 });
         });
 

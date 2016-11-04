@@ -18,7 +18,7 @@ describe('mixitup.Mixer', () => {
             let matching = Array.prototype.slice.call(container.querySelectorAll('.category-a'));
 
             return mixer.filter('.category-a')
-                .then(function(state) {
+                .then(state => {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
                     chai.assert.deepEqual(state.matching, matching);
@@ -29,7 +29,7 @@ describe('mixitup.Mixer', () => {
             let matching = Array.prototype.slice.call(container.querySelectorAll('[data-category~="a"]'));
 
             return mixer.filter('[data-category~="a"]')
-                .then(function(state) {
+                .then(state => {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
                     chai.assert.deepEqual(state.matching, matching);
@@ -40,7 +40,7 @@ describe('mixitup.Mixer', () => {
             let matching = Array.prototype.slice.call(container.querySelectorAll('.category-a, .category-b'));
 
             return mixer.filter('.category-a, .category-b')
-                .then(function(state) {
+                .then(state => {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
                     chai.assert.deepEqual(state.matching, matching);
@@ -51,7 +51,7 @@ describe('mixitup.Mixer', () => {
             let matching = Array.prototype.slice.call(container.querySelectorAll('.category-a.category-c'));
 
             return mixer.filter('.category-a.category-c')
-                .then(function(state) {
+                .then(state => {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
                     chai.assert.deepEqual(state.matching, matching);
@@ -62,7 +62,7 @@ describe('mixitup.Mixer', () => {
             let matching = Array.prototype.slice.call(container.querySelectorAll('[data-category~="a"], [data-category~="c"]'));
 
             return mixer.filter('[data-category~="a"], [data-category~="c"]')
-                .then(function(state) {
+                .then(state => {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
                     chai.assert.deepEqual(state.matching, matching);
@@ -73,7 +73,7 @@ describe('mixitup.Mixer', () => {
             let matching = Array.prototype.slice.call(container.querySelectorAll('[data-category~="a"][data-category~="c"]'));
 
             return mixer.filter('[data-category~="a"][data-category~="c"]')
-                .then(function(state) {
+                .then(state => {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.equal(state.totalShow, 1);
                     chai.assert.deepEqual(state.show, matching);
@@ -83,7 +83,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept "none"', () => {
             return mixer.filter('none')
-                .then(function(state) {
+                .then(state => {
                     chai.assert.equal(state.totalShow, 0);
                     chai.assert.equal(state.hasFailed, false);
                     chai.assert.deepEqual(state.hide, Array.prototype.slice.call(container.children));
@@ -93,7 +93,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept "all"', () => {
             return mixer.filter('all')
-                .then(function(state) {
+                .then(state => {
                     chai.assert.deepEqual(state.show, Array.prototype.slice.apply(container.children));
                     chai.assert.deepEqual(state.show, state.targets);
                 });
@@ -101,7 +101,7 @@ describe('mixitup.Mixer', () => {
 
         it('should fail if queried with a non matching selector', () => {
             return mixer.filter('.non-mathing-selector')
-                .then(function(state) {
+                .then(state => {
                     chai.assert.deepEqual(state.show, []);
                     chai.assert.equal(state.hasFailed, true);
                 });
@@ -111,7 +111,7 @@ describe('mixitup.Mixer', () => {
             let el = container.firstElementChild;
 
             return mixer.filter(el)
-                .then(function(state) {
+                .then(state => {
                     chai.assert.deepEqual(state.show, [el]);
                     chai.assert.equal(state.activeFilter.selector, '');
                     chai.assert.deepEqual(state.activeFilter.collection, [el]);
@@ -125,7 +125,7 @@ describe('mixitup.Mixer', () => {
             ];
 
             return mixer.filter(collection)
-                .then(function(state) {
+                .then(state => {
                     chai.assert.deepEqual(state.show, collection);
                     chai.assert.equal(state.activeFilter.selector, '');
                     chai.assert.deepEqual(state.activeFilter.collection, collection);
@@ -134,7 +134,7 @@ describe('mixitup.Mixer', () => {
 
         it('should interpret `null` as hide all', () => {
             return mixer.filter(null)
-                .then(function(state) {
+                .then(state => {
                     chai.assert.deepEqual(state.show, []);
                     chai.assert.equal(state.activeFilter.selector, '');
                     chai.assert.deepEqual(state.activeFilter.collection, []);
@@ -143,7 +143,7 @@ describe('mixitup.Mixer', () => {
 
         it('should interpret `[]` as hide all', () => {
             return mixer.filter(null)
-                .then(function(state) {
+                .then(state => {
                     chai.assert.deepEqual(state.show, []);
                     chai.assert.equal(state.activeFilter.selector, '');
                     chai.assert.deepEqual(state.activeFilter.collection, []);
@@ -159,7 +159,7 @@ describe('mixitup.Mixer', () => {
             let collection = Array.prototype.slice.call(container.querySelectorAll(':not(.category-a)'));
 
             return mixer.filter(command)
-                .then(function(state) {
+                .then(state => {
                     chai.assert.deepEqual(state.show, collection);
                     chai.assert.equal(state.activeFilter.selector, '.category-a');
                     chai.assert.equal(state.activeFilter.action, 'hide');
@@ -177,7 +177,7 @@ describe('mixitup.Mixer', () => {
             let collection = Array.prototype.slice.call(container.querySelectorAll(':not(.category-a.category-c)'));
 
             return mixer.filter(command)
-                .then(function(state) {
+                .then(state => {
                     chai.assert.deepEqual(state.show, collection);
                     chai.assert.deepEqual(state.activeFilter.collection, [el]);
                     chai.assert.equal(state.activeFilter.action, 'hide');
@@ -187,14 +187,12 @@ describe('mixitup.Mixer', () => {
         it('should accept a callback function which is invoked after filtering', () => {
             let matching = Array.prototype.slice.call(container.querySelectorAll('.category-a'));
 
-            let promise = new Promise(function(resolve) {
-                mixer.filter('.category-a', resolve);
-            });
+            let promise = new Promise(resolve => mixer.filter('.category-a', resolve));
 
             chai.assert.isFulfilled(promise);
 
             return promise
-                .then(function(state) {
+                .then(state => {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
                     chai.assert.deepEqual(state.matching, matching);
@@ -205,18 +203,18 @@ describe('mixitup.Mixer', () => {
             let matching = Array.prototype.slice.call(container.querySelectorAll('.category-a'));
 
             return mixer.filter('.category-a')
-                .then(function(state) {
+                .then(state => {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
                     chai.assert.deepEqual(state.matching, matching);
                 });
         });
 
-        it('should accept a boolean allowing toggling of animation', () => {
+        it('should accept a boolean allowing toggling off of animation', () => {
             let matching = Array.prototype.slice.call(container.querySelectorAll('.category-a'));
 
             return mixer.filter('.category-a', false)
-                .then(function(state) {
+                .then(state => {
                     chai.assert.equal(state.totalShow, matching.length);
                     chai.assert.deepEqual(state.show, matching);
                     chai.assert.deepEqual(state.matching, matching);

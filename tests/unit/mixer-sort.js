@@ -170,5 +170,30 @@ describe('mixitup.Mixer', () => {
                     chai.assert.deepEqual(targetIds, idsByViewsThenPublishedDateDesc);
                 });
         });
+
+        it('should accept multiple sort strings with orders for multi attribute sorting', () => {
+            let idsByViewsThenPublishedDateDesc = idsByViewsThenPublishedDate.slice().reverse();
+
+            return mixer.sort('views:desc published:desc')
+                .then(state => {
+                    let targetIds = state.show.map(el => el.id);
+
+                    chai.assert.deepEqual(targetIds, idsByViewsThenPublishedDateDesc);
+                });
+        });
+
+        it('should accept a callback function which is invoked after sorting', () => {
+            let promise = new Promise(resolve => mixer.sort('random', resolve));
+
+            chai.assert.isFulfilled(promise);
+
+            return promise
+                .then(state => chai.assert.equal(state.activeSort.sortString, 'random'));
+        });
+
+        it('should accept a boolean allowing toggling off of animation', () => {
+            return mixer.sort('random', false)
+                .then(state => chai.assert.equal(state.activeSort.sortString, 'random'));
+        });
     });
 });
