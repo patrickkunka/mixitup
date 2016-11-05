@@ -6,3 +6,4 @@ require('./mixer-dataset');
 require('./mixer-insert');
 require('./mixer-remove');
 require('./controls-filter');
+require('./controls-toggle');
