@@ -383,18 +383,6 @@ h = {
 
     /**
      * @private
-     * @param   {HTMLElement}   el
-     * @return  {void}
-     */
-
-    deleteElement: function(el) {
-        if (el.parentElement) {
-            el.parentElement.removeChild(el);
-        }
-    },
-
-    /**
-     * @private
      * @param   {Node} node
      * @return  {void}
      */
