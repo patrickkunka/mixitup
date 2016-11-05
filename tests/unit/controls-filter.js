@@ -441,7 +441,7 @@ describe('Controls', () => {
         });
 
         it('should return to "all" when all toggles are deactivated', () => {
-            let toggle = controls.querySelector('[data-toggle=".category-b"]');
+            let toggle = controls.querySelector('[data-toggle=".category-c"]');
 
             toggle.click();
 
