@@ -23,6 +23,16 @@ describe('mixitup()', () => {
         chai.assert.throws(() => mixitup(false), Error, mixitup.messages.errorFactoryInvalidContainer());
     });
 
+    it('should throw an error if an invalid configuration option is passed', function() {
+        let container = dom.getContainer();
+
+        chai.assert.throws(() => {
+            mixitup(container, {
+                animations: {}
+            });
+        }, TypeError);
+    });
+
     it('should accept an element reference as a container', () => {
         let container = dom.getContainer();
         let mixer = mixitup(container);
@@ -42,6 +52,20 @@ describe('mixitup()', () => {
 
         chai.assert.isOk(mixer);
         chai.assert.equal(state.container, window.document.querySelector('.mixitup-container'));
+    });
+
+    it('should accept a container and valid configuration object', function() {
+        let container = dom.getContainer();
+        let mixer = mixitup(container, {
+            selectors: {
+                target: '[data-ref="mix"]'
+            }
+        });
+
+        let state = mixer.getState();
+
+        chai.assert.isOk(mixer);
+        chai.assert.equal(state.activeFilter.selector, '[data-ref="mix"]');
     });
 
     it('should throw an error if the container selector yields no element', () => {
