@@ -37,11 +37,11 @@ describe('mixitup()', () => {
         window.document.write(container.outerHTML);
         window.document.close();
 
-        let mixer = mixitup('.container');
+        let mixer = mixitup('.mixitup-container');
         let state = mixer.getState();
 
         chai.assert.isOk(mixer);
-        chai.assert.equal(state.container, window.document.querySelector('.container'));
+        chai.assert.equal(state.container, window.document.querySelector('.mixitup-container'));
     });
 
     it('should throw an error if the container selector yields no element', () => {

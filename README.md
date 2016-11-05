@@ -85,24 +85,9 @@ For more information on MixItUp's full sorting functionality, see our [--website
 
 ##### Control Scoping
 
-Starting with MixItUp 3, controls should be placed within your container (local scoping) to prevent accidental interaction with other active MixItUp instances in the DOM.
+Controls can be placed anywhere in the document ("global" scoping) by default.
 
-To keep your grid of target elements isolated from your controls and aid with styling, additional wrapper elements can be added to ringfence controls and target elements:
-
-```html
-<div class="container">
-    <div class="controls">
-        <!-- controls here -->
-    </div>
-
-    <div class="targets">
-        <!-- targets here -->
-    </div>
-</div>
-```
-> Structuring your container
-
-If you wish to place your controls outside the container simply change the `controls.scope` configuration option from `'local'` (default) to `'global'`, and MixItUp will query the entire document for controls.
+If you intend to have multiple instances of MixItUp in the same document however, controls should be placed within each mixer's respective container ("local" scoping) to prevent accidental interaction with other active instances in the DOM. Simply change each mixer's `controls.scope` configuration option from `'global'` to `'local'` as needed.
 
 ### CSS
 

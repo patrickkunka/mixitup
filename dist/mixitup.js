@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 1e100baa-3562-417a-9494-3ff433a21014
+ * Build aca7977a-b9d7-44af-80f6-357546655dbf
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3130,8 +3130,8 @@
                 // Live control (status unknown)
 
                 self.updateLive(command, toggleArray);
-            } else if (status !== self.status) {
-                // Static control with a change in status
+            } else {
+                // Static control
 
                 actions.sort    = self.sort;
                 actions.filter  = self.filter;

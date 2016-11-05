@@ -328,8 +328,8 @@ h.extend(mixitup.Control.prototype,
             // Live control (status unknown)
 
             self.updateLive(command, toggleArray);
-        } else if (status !== self.status) {
-            // Static control with a change in status
+        } else {
+            // Static control
 
             actions.sort    = self.sort;
             actions.filter  = self.filter;

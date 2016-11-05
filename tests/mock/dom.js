@@ -12,14 +12,14 @@ const renderElement = (html) => {
 
 module.exports = {
     getContainer() {
-        return renderElement('<div class="container" data-ref="container">' +
+        return renderElement('<div class="mixitup-container" data-ref="container">' +
             '<div id="1" class="mix category-a" data-ref="mix" data-category="a" data-published="20161102" data-views="100"></div> ' +
             '<div id="2" class="mix category-a" data-ref="mix" data-category="a" data-published="20130501" data-views="54"></div> ' +
             '<div id="3" class="mix category-b" data-ref="mix" data-category="b" data-published="20121231" data-views="3"></div> ' +
             '<div id="4" class="mix category-b" data-ref="mix" data-category="b" data-published="20160407" data-views="62"></div> ' +
             '<div id="5" class="mix category-c" data-ref="mix" data-category="c" data-published="20160820" data-views="54"></div> ' +
             '<div id="6" class="mix category-a category-c" data-ref="mix" data-category="a c" data-published="20151020" data-views="95"></div>' +
-            '<span class="container_gap></span>' +
+            '<span class="mixitup-container-gap></span>' +
         '</div>');
     },
 
@@ -29,6 +29,22 @@ module.exports = {
 
     getEmptyContainer() {
         return renderElement('<div class="container" data-ref="container"></div>');
+    },
+
+    getFilterControls() {
+        return renderElement('<div class="mixitup-controlss">' +
+            '<div class="mixitup-control" data-filter="all">All</div> ' +
+            '<div class="mixitup-control" data-filter=".category-a">Category A</div> ' +
+            '<div class="mixitup-control" data-filter=".category-b">Category B</div> ' +
+            '<div class="mixitup-control" data-filter=".category-c">Category C</div> ' +
+            '<div class="mixitup-control" data-filter=".category-d">Category D</div> ' +
+            '<div class="mixitup-control" data-filter=".category-a, .category-b">Category A OR B</div> ' +
+            '<div class="mixitup-control" data-filter=".category-a.category-c">Category A AND B</div> ' +
+            '<div class="mixitup-control mixitup_control__attr-a" data-filter=\'[data-category="a"]\'>Category A (attribute)</div> ' +
+            '<div class="mixitup-control mixitup_control__attr-a-or-b" data-filter=\'[data-category="a"], [data-category="b"]\'>Category A OR B (attribute)</div> ' +
+            '<div class="mixitup-control mixitup_control__attr-a-and-c" data-filter=\'[data-category="a"][data-category="c"]\'>Category A AND C (attribute)</div> ' +
+            '<div class="mixitup-control" data-filter="none">None</div> ' +
+        '</div>');
     },
 
     getTotalWhitespace(html) {
