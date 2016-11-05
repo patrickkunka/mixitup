@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build a26f8f91-cc46-4999-9186-7cd1b220a294
+ * Build 34963331-29b0-4d42-abb8-7f7eb243ffae
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -4016,7 +4016,7 @@
 
         getToggleSelector: function() {
             var self            = this,
-                delineator      = self.config.controls.toggleLogic === 'or' ? ',' : '',
+                delineator      = self.config.controls.toggleLogic === 'or' ? ', ' : '',
                 toggleSelector  = '';
 
             self.callActions('beforeGetToggleSelector', arguments);

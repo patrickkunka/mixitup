@@ -404,7 +404,7 @@ h.extend(mixitup.Mixer.prototype,
 
     getToggleSelector: function() {
         var self            = this,
-            delineator      = self.config.controls.toggleLogic === 'or' ? ',' : '',
+            delineator      = self.config.controls.toggleLogic === 'or' ? ', ' : '',
             toggleSelector  = '';
 
         self.callActions('beforeGetToggleSelector', arguments);

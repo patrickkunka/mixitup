@@ -34,6 +34,7 @@ module.exports = {
     getFilterControls() {
         return renderElement('<div class="mixitup-controlss">' +
             '<div class="mixitup-control" data-filter="all">All</div> ' +
+            '<div class="mixitup-control" data-filter="none">None</div> ' +
             '<div class="mixitup-control" data-filter=".category-a">Category A</div> ' +
             '<div class="mixitup-control" data-filter=".category-b">Category B</div> ' +
             '<div class="mixitup-control" data-filter=".category-c">Category C</div> ' +
@@ -43,7 +44,9 @@ module.exports = {
             '<div class="mixitup-control mixitup_control__attr-a" data-filter=\'[data-category="a"]\'>Category A (attribute)</div> ' +
             '<div class="mixitup-control mixitup_control__attr-a-or-b" data-filter=\'[data-category="a"], [data-category="b"]\'>Category A OR B (attribute)</div> ' +
             '<div class="mixitup-control mixitup_control__attr-a-and-c" data-filter=\'[data-category="a"][data-category="c"]\'>Category A AND C (attribute)</div> ' +
-            '<div class="mixitup-control" data-filter="none">None</div> ' +
+            '<div class="mixitup-control" data-toggle=".category-a">Category A</div> ' +
+            '<div class="mixitup-control" data-toggle=".category-b">Category B</div> ' +
+            '<div class="mixitup-control" data-toggle=".category-c">Category C</div> ' +
         '</div>');
     },
 

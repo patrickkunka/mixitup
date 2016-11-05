@@ -10,7 +10,7 @@ chai.use(require('chai-shallow-deep-equal'));
 chai.use(require('chai-as-promised'));
 
 describe('Controls', () => {
-    describe('#filter (static)', () => {
+    describe('Filter (static)', () => {
         let container = dom.getContainer();
         let controls = dom.getFilterControls();
 
@@ -144,7 +144,7 @@ describe('Controls', () => {
         });
     });
 
-    describe('#filter (live)', () => {
+    describe('Filter (live)', () => {
         let container = dom.getContainer();
         let controls = dom.getFilterControls();
 
@@ -156,7 +156,8 @@ describe('Controls', () => {
 
         let mixer = mixitup(container, {
             controls: {
-                live: true
+                live: true,
+                scope: 'local'
             }
         });
 
@@ -296,6 +297,159 @@ describe('Controls', () => {
             chai.assert.equal(state.activeFilter.selector, '.category-d');
             chai.assert.equal(state.totalShow, totalMatching);
             chai.assert.isOk(filter.matches('.mixitup-control-active'));
+        });
+    });
+
+    describe('Toggle OR (static)', () => {
+        let container = dom.getContainer();
+        let controls = dom.getFilterControls();
+
+        container.insertBefore(controls, container.children[0]);
+
+        document.body.appendChild(container);
+
+        let mixer = mixitup(container, {
+            controls: {
+                scope: 'local'
+            }
+        });
+
+        after(() => mixer.destroy());
+
+        it('should accept toggle controls with a selector value', () => {
+            return mixer.hide()
+                .then(() => {
+                    let toggle = controls.querySelector('[data-toggle=".category-a"]');
+
+                    let totalMatching = container.querySelectorAll('.category-a').length;
+
+                    toggle.click();
+
+                    let state = mixer.getState();
+
+                    chai.assert.equal(state.activeFilter.selector, '.category-a');
+                    chai.assert.equal(state.totalShow, totalMatching);
+                    chai.assert.isOk(toggle.matches('.mixitup-control-active'));
+                });
+        });
+
+        it('should build up a compound selector as toggles are activated', () => {
+            let toggleA = controls.querySelector('[data-toggle=".category-a"]');
+            let toggleB = controls.querySelector('[data-toggle=".category-b"]');
+
+            let totalMatching = container.querySelectorAll('.category-a, .category-b').length;
+
+            toggleB.click();
+
+            let state = mixer.getState();
+
+            chai.assert.equal(state.activeFilter.selector, '.category-a, .category-b');
+            chai.assert.equal(state.totalShow, totalMatching);
+            chai.assert.isOk(toggleA.matches('.mixitup-control-active'));
+            chai.assert.isOk(toggleB.matches('.mixitup-control-active'));
+        });
+
+        it('should break down a compound selector as toggles are deactivated', () => {
+            let toggle = controls.querySelector('[data-toggle=".category-a"]');
+
+            let totalMatching = container.querySelectorAll('.category-b').length;
+
+            toggle.click();
+
+            let state = mixer.getState();
+
+            chai.assert.equal(state.activeFilter.selector, '.category-b');
+            chai.assert.equal(state.totalShow, totalMatching);
+            chai.assert.isNotOk(toggle.matches('.mixitup-control-active'));
+        });
+
+        it('should return to "all" when all toggles are deactivated', () => {
+            let toggle = controls.querySelector('[data-toggle=".category-b"]');
+
+            toggle.click();
+
+            let state = mixer.getState();
+
+            chai.assert.equal(state.activeFilter.selector, '.mix');
+            chai.assert.equal(state.totalHide, 0);
+            chai.assert.isNotOk(toggle.matches('.mixitup-control-active'));
+        });
+    });
+
+    describe('Toggle AND (static)', () => {
+        let container = dom.getContainer();
+        let controls = dom.getFilterControls();
+
+        container.insertBefore(controls, container.children[0]);
+
+        document.body.appendChild(container);
+
+        let mixer = mixitup(container, {
+            controls: {
+                scope: 'local',
+                toggleLogic: 'AND'
+            }
+        });
+
+        after(() => mixer.destroy());
+
+        it('should accept toggle controls with a selector value', () => {
+            return mixer.hide()
+                .then(() => {
+                    let toggle = controls.querySelector('[data-toggle=".category-a"]');
+
+                    let totalMatching = container.querySelectorAll('.category-a').length;
+
+                    toggle.click();
+
+                    let state = mixer.getState();
+
+                    chai.assert.equal(state.activeFilter.selector, '.category-a');
+                    chai.assert.equal(state.totalShow, totalMatching);
+                    chai.assert.isOk(toggle.matches('.mixitup-control-active'));
+                });
+        });
+
+        it('should build up a compound selector as toggles are activated', () => {
+            let toggleA = controls.querySelector('[data-toggle=".category-a"]');
+            let toggleB = controls.querySelector('[data-toggle=".category-c"]');
+
+            let totalMatching = container.querySelectorAll('.category-a.category-c').length;
+
+            toggleB.click();
+
+            let state = mixer.getState();
+
+            chai.assert.equal(state.activeFilter.selector, '.category-a.category-c');
+            chai.assert.equal(state.totalShow, totalMatching);
+            chai.assert.isOk(toggleA.matches('.mixitup-control-active'));
+            chai.assert.isOk(toggleB.matches('.mixitup-control-active'));
+        });
+
+        it('should break down a compound selector as toggles are deactivated', () => {
+            let toggle = controls.querySelector('[data-toggle=".category-a"]');
+
+            let totalMatching = container.querySelectorAll('.category-c').length;
+
+            toggle.click();
+
+            let state = mixer.getState();
+
+            chai.assert.equal(state.activeFilter.selector, '.category-c');
+            chai.assert.equal(state.totalShow, totalMatching);
+            chai.assert.isNotOk(toggle.matches('.mixitup-control-active'));
+        });
+
+        it('should return to "all" when all toggles are deactivated', () => {
+            let toggle = controls.querySelector('[data-toggle=".category-b"]');
+
+            toggle.click();
+
+            let state = mixer.getState();
+
+            chai.assert.equal(state.activeFilter.selector, '.mix');
+            chai.assert.equal(state.totalHide, 0);
+            chai.assert.isNotOk(toggle.matches('.mixitup-control-active'));
         });
     });
 });
