@@ -452,4 +452,80 @@ describe('Controls', () => {
             chai.assert.isNotOk(toggle.matches('.mixitup-control-active'));
         });
     });
+
+    describe('Toggle Defaults', () => {
+        describe('"none"', () => {
+            let container = dom.getContainer();
+            let controls = dom.getFilterControls();
+
+            container.insertBefore(controls, container.children[0]);
+
+            document.body.appendChild(container);
+
+            let mixer = mixitup(container, {
+                controls: {
+                    scope: 'local',
+                    toggleDefault: 'none'
+                }
+            });
+
+            after(() => mixer.destroy());
+
+            it('should default to "none" when all toggles are deactivated', () => {
+                return mixer.hide()
+                    .then(() => {
+                        let toggle = controls.querySelector('[data-toggle=".category-a"]');
+
+                        // on
+                        toggle.click();
+
+                        // off
+                        toggle.click();
+
+                        let state = mixer.getState();
+
+                        chai.assert.equal(state.activeFilter.selector, '');
+                        chai.assert.equal(state.totalShow, 0);
+                        chai.assert.isNotOk(toggle.matches('.mixitup-control-active'));
+                    });
+            });
+        });
+
+        describe('"all"', () => {
+            let container = dom.getContainer();
+            let controls = dom.getFilterControls();
+
+            container.insertBefore(controls, container.children[0]);
+
+            document.body.appendChild(container);
+
+            let mixer = mixitup(container, {
+                controls: {
+                    scope: 'local',
+                    toggleDefault: 'all'
+                }
+            });
+
+            after(() => mixer.destroy());
+
+            it('should default to "all" when all toggles are deactivated', () => {
+                return mixer.hide()
+                    .then(() => {
+                        let toggle = controls.querySelector('[data-toggle=".category-a"]');
+
+                        // on
+                        toggle.click();
+
+                        // off
+                        toggle.click();
+
+                        let state = mixer.getState();
+
+                        chai.assert.equal(state.activeFilter.selector, '.mix');
+                        chai.assert.equal(state.totalHide, 0);
+                        chai.assert.isNotOk(toggle.matches('.mixitup-control-active'));
+                    });
+            });
+        });
+    });
 });
