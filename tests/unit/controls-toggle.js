@@ -12,12 +12,13 @@ chai.use(require('chai-as-promised'));
 describe('Controls', () => {
     describe('Toggle', () => {
         describe('OR', () => {
+            let frag = document.createDocumentFragment();
             let container = dom.getContainer();
             let controls = dom.getFilterControls();
 
             container.insertBefore(controls, container.children[0]);
 
-            document.body.appendChild(container);
+            frag.appendChild(container);
 
             let mixer = mixitup(container, {
                 controls: {
@@ -88,12 +89,13 @@ describe('Controls', () => {
         });
 
         describe('AND', () => {
+            let frag = document.createDocumentFragment();
             let container = dom.getContainer();
             let controls = dom.getFilterControls();
 
             container.insertBefore(controls, container.children[0]);
 
-            document.body.appendChild(container);
+            frag.appendChild(container);
 
             let mixer = mixitup(container, {
                 controls: {
@@ -166,12 +168,13 @@ describe('Controls', () => {
 
         describe('Defaults', () => {
             it('should default to "none" when all toggles are deactivated and toggleDefault is set to "none"', () => {
+                let frag = document.createDocumentFragment();
                 let container = dom.getContainer();
                 let controls = dom.getFilterControls();
 
                 container.insertBefore(controls, container.children[0]);
 
-                document.body.appendChild(container);
+                frag.appendChild(container);
 
                 let mixer = mixitup(container, {
                     controls: {

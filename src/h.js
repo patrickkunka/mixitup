@@ -765,7 +765,7 @@ h = {
      */
 
     getDocumentState: function(doc) {
-        doc = doc || window.document;
+        doc = doc instanceof window.HTMLDocument ? doc : window.document;
 
         return {
             scrollTop: window.pageYOffset,

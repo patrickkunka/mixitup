@@ -32,7 +32,7 @@ module.exports = {
     },
 
     getFilterControls() {
-        return renderElement('<div class="mixitup-controlss">' +
+        return renderElement('<div class="mixitup-controls">' +
             '<div class="mixitup-control" data-filter="all">All</div> ' +
             '<div class="mixitup-control" data-filter="none">None</div> ' +
             '<div class="mixitup-control" data-filter=".category-a">Category A</div> ' +

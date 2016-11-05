@@ -10,16 +10,10 @@ chai.use(require('chai-shallow-deep-equal'));
 chai.use(require('chai-as-promised'));
 
 describe('mixitup.Mixer', () => {
-    let config = {
-        controls: {
-            enable: false
-        }
-    };
-
     describe('#remove()', () => {
         it('should accept an element as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let toRemove = container.children[3];
 
             return mixer.remove(toRemove)
@@ -34,7 +28,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept a collection of elements as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let toRemove = [container.children[3], container.children[0]];
 
             return mixer.remove(toRemove)
@@ -49,7 +43,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept an index as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
 
             return mixer.remove(3)
                 .then(state => {
@@ -62,7 +56,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept a selector as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
 
             return mixer.remove('.category-a')
                 .then(state => {
@@ -74,7 +68,7 @@ describe('mixitup.Mixer', () => {
 
         it('should allow no elements to be removed with a warning', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
 
             return mixer.remove()
                 .then(state => {

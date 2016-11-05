@@ -10,16 +10,10 @@ chai.use(require('chai-shallow-deep-equal'));
 chai.use(require('chai-as-promised'));
 
 describe('mixitup.Mixer', () => {
-    let config = {
-        controls: {
-            enable: false
-        }
-    };
-
     describe('#insert()', () => {
         it('should accept an element as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget)
@@ -32,7 +26,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept an element and an index as arguments', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget, 3)
@@ -45,7 +39,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept an html string as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget.outerHTML)
@@ -58,7 +52,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept an html and an index as arguments', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget.outerHTML, 5)
@@ -71,7 +65,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept accept an element collection as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
 
@@ -88,7 +82,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept accept an element collection and an index as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
 
@@ -105,7 +99,7 @@ describe('mixitup.Mixer', () => {
 
         it('should throw an error if an element, index and sibling are passed simultaneously', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
             let sibling = container.children[4];
 
@@ -116,7 +110,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept an element and sibling reference to insert before', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
             let sibling = container.children[4];
 
@@ -130,7 +124,7 @@ describe('mixitup.Mixer', () => {
 
         it('should accept an element, sibling reference and position string', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
             let sibling = container.children[4];
 
@@ -144,7 +138,7 @@ describe('mixitup.Mixer', () => {
 
         it('should insert at end if the insertion index is above range', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget, 10)
@@ -157,7 +151,7 @@ describe('mixitup.Mixer', () => {
 
         it('should insert at start if the insertion index is below range', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget, -2)
@@ -170,7 +164,7 @@ describe('mixitup.Mixer', () => {
 
         it('should throw an error if the element to insert already exists', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = container.children[1];
 
             chai.assert.throws(() => {
@@ -181,7 +175,7 @@ describe('mixitup.Mixer', () => {
         it('should allow no elements to be inserted with a warning', () => {
             let container = dom.getContainer();
             let totalTargets = container.children.length;
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
 
             return mixer.insert()
                 .then(state => {
@@ -195,7 +189,7 @@ describe('mixitup.Mixer', () => {
     describe('#prepend()', () => {
         it('should insert an element at the start', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
 
             return mixer.prepend(newTarget)
@@ -208,7 +202,7 @@ describe('mixitup.Mixer', () => {
 
         it('should insert a collection of elements at the start', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
 
@@ -227,7 +221,7 @@ describe('mixitup.Mixer', () => {
     describe('#append()', () => {
         it('should insert an element at the end', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
 
             return mixer.append(newTarget)
@@ -240,7 +234,7 @@ describe('mixitup.Mixer', () => {
 
         it('should insert a collection of elements at the end', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
 
@@ -259,7 +253,7 @@ describe('mixitup.Mixer', () => {
     describe('#insertBefore()', () => {
         it('should insert an element before the referenced element', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
             let sibling = container.children[3];
 
@@ -273,7 +267,7 @@ describe('mixitup.Mixer', () => {
 
         it('should insert a collection of elements before the referenced element', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
             let sibling = container.children[3];
@@ -293,7 +287,7 @@ describe('mixitup.Mixer', () => {
     describe('#insertAfter()', () => {
         it('should insert an element after the referenced element', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget = dom.getTarget();
             let sibling = container.children[3];
 
@@ -307,7 +301,7 @@ describe('mixitup.Mixer', () => {
 
         it('should insert a collection of elements after the referenced element', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container, config);
+            let mixer = mixitup(container);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
             let sibling = container.children[3];

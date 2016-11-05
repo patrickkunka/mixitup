@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 34963331-29b0-4d42-abb8-7f7eb243ffae
+ * Build a09b3050-8c27-40ed-89c5-666d21d52859
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -944,7 +944,7 @@
          */
 
         getDocumentState: function(doc) {
-            doc = doc || window.document;
+            doc = doc instanceof window.HTMLDocument ? doc : window.document;
 
             return {
                 scrollTop: window.pageYOffset,
@@ -3835,7 +3835,7 @@
             self.callActions('beforeCacheDom', arguments);
 
             self.dom.document  = document;
-            self.dom.body      = self.dom.document.getElementsByTagName('body')[0];
+            self.dom.body      = self.dom.document.querySelector('body');
             self.dom.container = el;
             self.dom.parent    = el;
 

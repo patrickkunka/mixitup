@@ -10,15 +10,9 @@ chai.use(require('chai-shallow-deep-equal'));
 
 describe('mixitup.Mixer', () => {
     describe('#getState()', () => {
-        let config = {
-            controls: {
-                enable: false
-            }
-        };
-
         let container = dom.getContainer();
         let id = container.id = 'test-id';
-        let mixer = mixitup(container, config);
+        let mixer = mixitup(container);
         let state = mixer.getState();
 
         after(() => mixer.destroy());

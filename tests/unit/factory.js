@@ -7,26 +7,20 @@ const dom     = require('../mock/dom');
 const mixitup = require('../../dist/mixitup.js');
 
 describe('mixitup()', () => {
-    let config = {
-        controls: {
-            enable: false
-        }
-    };
-
     it('should throw an error if no container reference', () => {
-        chai.assert.throws(() => mixitup(config), Error, mixitup.messages.errorFactoryInvalidContainer());
+        chai.assert.throws(() => mixitup(), Error, mixitup.messages.errorFactoryInvalidContainer());
     });
 
     it('should throw an error if a null container reference is passed', () => {
-        chai.assert.throws(() => mixitup(null, config), Error, mixitup.messages.errorFactoryInvalidContainer());
+        chai.assert.throws(() => mixitup(null), Error, mixitup.messages.errorFactoryInvalidContainer());
     });
 
     it('should throw an error if an invalid container reference is passed', () => {
-        chai.assert.throws(() => mixitup({}, config), Error, mixitup.messages.errorFactoryInvalidContainer());
+        chai.assert.throws(() => mixitup({}), Error, mixitup.messages.errorFactoryInvalidContainer());
     });
 
     it('should throw an error if an invalid reference or selector is passed', function() {
-        chai.assert.throws(() => mixitup(false, config), Error, mixitup.messages.errorFactoryInvalidContainer());
+        chai.assert.throws(() => mixitup(false), Error, mixitup.messages.errorFactoryInvalidContainer());
     });
 
     it('should throw an error if an invalid configuration option is passed', function() {
@@ -35,17 +29,13 @@ describe('mixitup()', () => {
         chai.assert.throws(() => {
             mixitup(container, {
                 animations: {}
-            }, {
-                controls: {
-                    enable: false
-                }
             });
         }, TypeError);
     });
 
     it('should accept an element reference as a container', () => {
         let container = dom.getContainer();
-        let mixer = mixitup(container, config);
+        let mixer = mixitup(container);
 
         chai.assert.isOk(mixer);
 
@@ -53,19 +43,16 @@ describe('mixitup()', () => {
     });
 
     it('should accept a container selector', () => {
+        let frag = document.createDocumentFragment();
         let container = dom.getContainer();
 
-        document.body.appendChild(container);
+        frag.appendChild(container);
 
-        // NB: Querying by className can bind the wrong mixer and interfere with other tests
-
-        container.id = 'unique-id';
-
-        let mixer = mixitup('#unique-id', config);
+        let mixer = mixitup('.mixitup-container', {}, frag);
         let state = mixer.getState();
 
         chai.assert.isOk(mixer);
-        chai.assert.equal(state.container, window.document.querySelector('#unique-id'));
+        chai.assert.equal(state.container, frag.querySelector('.mixitup-container'));
 
         mixer.destroy();
     });
@@ -90,12 +77,12 @@ describe('mixitup()', () => {
     });
 
     it('should throw an error if the container selector yields no element', () => {
-        chai.assert.throws(() => mixitup('.invalid-container-selector', config), Error, mixitup.messages.errorFactoryContainerNotFound());
+        chai.assert.throws(() => mixitup('.invalid-container-selector'), Error, mixitup.messages.errorFactoryContainerNotFound());
     });
 
     it('should return an instance of a facade by default', () => {
         let container = dom.getContainer();
-        let mixer = mixitup(container, config);
+        let mixer = mixitup(container);
 
         chai.assert.instanceOf(mixer, mixitup.Facade);
 
@@ -145,7 +132,7 @@ describe('mixitup()', () => {
             dom.getContainer()
         ];
 
-        let collection = mixitup(elementList, config, void(0), true);
+        let collection = mixitup(elementList, void(0), void(0), true);
 
         chai.assert.instanceOf(collection, mixitup.Collection);
         chai.assert.instanceOf(collection[0], mixitup.Facade);
@@ -156,7 +143,7 @@ describe('mixitup()', () => {
 
     it('should add a unique ID to the container if no ID present', () => {
         let container = dom.getContainer();
-        let mixer = mixitup(container, config);
+        let mixer = mixitup(container);
         let state = mixer.getState();
 
         chai.assert.equal(container.id, state.id);
@@ -170,7 +157,7 @@ describe('mixitup()', () => {
 
         container.id = id;
 
-        let mixer = mixitup(container, config);
+        let mixer = mixitup(container);
         let state = mixer.getState();
 
         chai.assert.equal(id, state.id);

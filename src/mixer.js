@@ -223,7 +223,7 @@ h.extend(mixitup.Mixer.prototype,
         self.callActions('beforeCacheDom', arguments);
 
         self.dom.document  = document;
-        self.dom.body      = self.dom.document.getElementsByTagName('body')[0];
+        self.dom.body      = self.dom.document.querySelector('body');
         self.dom.container = el;
         self.dom.parent    = el;
 

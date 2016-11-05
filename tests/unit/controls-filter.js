@@ -11,14 +11,19 @@ chai.use(require('chai-as-promised'));
 
 describe('Controls', () => {
     describe('Filter (static)', () => {
-        let container = dom.getContainer();
-        let controls = dom.getFilterControls();
+        let frag        = document.createDocumentFragment();
+        let container   = dom.getContainer();
+        let controls    = dom.getFilterControls();
 
         container.insertBefore(controls, container.children[0]);
 
-        document.body.appendChild(container);
+        frag.appendChild(container);
 
-        let mixer = mixitup(container);
+        let mixer = mixitup(container, {
+            controls: {
+                scope: 'local'
+            }
+        }, frag);
 
         after(() => mixer.destroy());
 
@@ -145,21 +150,20 @@ describe('Controls', () => {
     });
 
     describe('Filter (live)', () => {
-        let container = dom.getContainer();
-        let controls = dom.getFilterControls();
+        let frag        = document.createDocumentFragment();
+        let container   = dom.getContainer();
+        let controls    = dom.getFilterControls();
 
         container.insertBefore(controls, container.children[0]);
 
-        document.body.innerHTML = '';
-
-        document.body.appendChild(container);
+        frag.appendChild(container);
 
         let mixer = mixitup(container, {
             controls: {
-                live: true,
-                scope: 'local'
+                scope: 'local',
+                live: true
             }
-        });
+        }, frag);
 
         after(() => mixer.destroy());
 
@@ -296,6 +300,71 @@ describe('Controls', () => {
 
             chai.assert.equal(state.activeFilter.selector, '.category-d');
             chai.assert.equal(state.totalShow, totalMatching);
+            chai.assert.isOk(filter.matches('.mixitup-control-active'));
+        });
+    });
+
+    describe('Filter (multiple static)', () => {
+        let frag = document.createDocumentFragment();
+
+        let container1 = dom.getContainer();
+        let container2 = dom.getContainer();
+        let controls = dom.getFilterControls();
+
+        frag.appendChild(controls);
+        frag.appendChild(container1);
+        frag.appendChild(container2);
+
+        let mixer1 = mixitup(container1, {}, frag);
+        let mixer2 = mixitup(container2, {}, frag);
+
+        after(() => {
+            mixer1.destroy();
+            mixer2.destroy();
+        });
+
+        let filter = controls.querySelector('[data-filter=".category-a"]');
+
+        filter.click();
+
+        it ('should allow a single set of controls to control multiple mixer instance simultanously', () => {
+            chai.assert.equal(mixer1.getState().activeFilter.selector, '.category-a');
+            chai.assert.equal(mixer2.getState().activeFilter.selector, '.category-a');
+            chai.assert.isOk(filter.matches('.mixitup-control-active'));
+        });
+    });
+
+    describe('Filter (multiple live)', () => {
+        let frag = document.createDocumentFragment();
+
+        let container1 = dom.getContainer();
+        let container2 = dom.getContainer();
+        let controls = dom.getFilterControls();
+        let config = {
+            controls: {
+                live: true
+            }
+        };
+
+        frag.appendChild(controls);
+        frag.appendChild(container1);
+        frag.appendChild(container2);
+
+        let mixer1 = mixitup(container1, config, frag);
+        let mixer2 = mixitup(container2, config, frag);
+
+        after(() => {
+            mixer1.destroy();
+            mixer2.destroy();
+        });
+
+        let filter = controls.querySelector('[data-filter=".category-a"]');
+
+        filter.click();
+
+        it ('should allow a single set of controls to control multiple mixer instance simultanously', () => {
+            chai.assert.equal(mixer1.getState().activeFilter.selector, '.category-a');
+            chai.assert.equal(mixer2.getState().activeFilter.selector, '.category-a');
             chai.assert.isOk(filter.matches('.mixitup-control-active'));
         });
     });
