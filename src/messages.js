@@ -68,7 +68,10 @@ mixitup.Messages = function() {
         ' If you wish to perform additional methods on this instance, please create a reference.';
 
     this.WARNING_INSERT_NO_ELEMENTS =
-        '[MixItUp] WARNING: No element were passed to `.insert()`';
+        '[MixItUp] WARNING: No valid elements were passed to `.insert()`';
+
+    this.WARNING_REMOVE_NO_ELEMENTS =
+        '[MixItUp] WARNING: No valid elements were passed to `.remove()`';
 
     this.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL =
         '[MixItUp] WARNING: An operation was requested but the MixItUp instance was busy. The operation was rejected because the ' +

@@ -2332,7 +2332,9 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        instruction = self.callFilters('instructionParseRemoveArgs', instruction, arguments);
+        if (!instruction.command.targets.length && self.config.debug.showWarnings) {
+            console.warn(mixitup.messages.warningRemoveNoElements());
+        }
 
         h.freeze(instruction);
 

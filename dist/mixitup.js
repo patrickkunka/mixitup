@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 734bf273-a2c7-4587-99f9-74bd9694fc29
+ * Build 1e100baa-3562-417a-9494-3ff433a21014
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -5956,7 +5956,9 @@
                 }
             }
 
-            instruction = self.callFilters('instructionParseRemoveArgs', instruction, arguments);
+            if (!instruction.command.targets.length && self.config.debug.showWarnings) {
+                console.warn(mixitup.messages.warningRemoveNoElements());
+            }
 
             h.freeze(instruction);
 
@@ -8093,7 +8095,10 @@
             ' If you wish to perform additional methods on this instance, please create a reference.';
 
         this.WARNING_INSERT_NO_ELEMENTS =
-            '[MixItUp] WARNING: No element were passed to `.insert()`';
+            '[MixItUp] WARNING: No valid elements were passed to `.insert()`';
+
+        this.WARNING_REMOVE_NO_ELEMENTS =
+            '[MixItUp] WARNING: No valid elements were passed to `.remove()`';
 
         this.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL =
             '[MixItUp] WARNING: An operation was requested but the MixItUp instance was busy. The operation was rejected because the ' +
