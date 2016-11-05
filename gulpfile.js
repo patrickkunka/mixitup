@@ -7,7 +7,6 @@ const rename          = require('gulp-rename');
 const jscs            = require('gulp-jscs');
 const uglify          = require('gulp-uglify');
 const livereload      = require('gulp-livereload');
-const sourcemaps      = require('gulp-sourcemaps');
 const exec            = require('child_process').exec;
 
 gulp.task('default', ['watch']);
@@ -47,7 +46,6 @@ gulp.task('uglify', ['build'], () => {
         }))
         .pipe(rename('mixitup.min.js'))
         .on('error', e => console.error('[uglify] ' + e.message))
-        .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./dist/'));
 });
 
