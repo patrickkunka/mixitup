@@ -14,10 +14,11 @@ mixitup.CommandMultimix = function() {
 
     this.callActions('beforeConstruct');
 
-    this.filter = null;
-    this.sort   = null;
-    this.insert = null;
-    this.remove = null;
+    this.filter       = null;
+    this.sort         = null;
+    this.insert       = null;
+    this.remove       = null;
+    this.changeLayout = null;
 
     this.callActions('afterConstruct');
 

@@ -5,5 +5,6 @@ require('./mixer-sort');
 require('./mixer-dataset');
 require('./mixer-insert');
 require('./mixer-remove');
+require('./mixer-change-layout');
 require('./controls-filter');
 require('./controls-toggle');

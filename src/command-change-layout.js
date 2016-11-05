@@ -14,7 +14,7 @@ mixitup.CommandChangeLayout = function() {
 
     this.callActions('beforeConstruct');
 
-    this.containerClassname = '';
+    this.containerClassName = '';
 
     this.callActions('afterConstruct');
 

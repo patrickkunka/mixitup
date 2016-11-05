@@ -15,8 +15,7 @@ mixitup.ConfigLayout = function() {
     this.callActions('beforeConstruct');
 
     this.allowNestedTargets = true;
-    this.containerClass     = '';
-    this.containerClassFail = 'mixitup-container-fail';
+    this.containerClassName = '';
 
     this.callActions('afterConstruct');
 

@@ -39,8 +39,8 @@ describe('mixitup.Mixer', () => {
             chai.assert.equal(state.activeSort.sortString, 'default:asc');
         });
 
-        it('should contain an empty activeContainerClass string', () => {
-            chai.assert.equal(state.activeContainerClass, '');
+        it('should contain an empty activeContainerClassName string', () => {
+            chai.assert.equal(state.activeContainerClassName, '');
         });
 
         it('should contain a null activeDataset', () => {

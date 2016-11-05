@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build a09b3050-8c27-40ed-89c5-666d21d52859
+ * Build 668d617d-219f-420d-be2d-e468596e22ab
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2037,6 +2037,18 @@
         this.block = 'mixitup';
 
         /**
+         * The "element" portion of the classname added to container.
+         *
+         * @name        elementContainer
+         * @memberof    mixitup.Config.classNames
+         * @instance
+         * @type        {string}
+         * @default     'container'
+         */
+
+        this.elementContainer = 'container';
+
+        /**
          * The "element" portion of the classname added to filter controls.
          *
          * By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
@@ -2196,6 +2208,18 @@
         this.modifierDisabled = 'disabled';
 
         /**
+         * The "modifier" portion of the classname added to the container when in a "failed" state.
+         *
+         * @name        modifierFailed
+         * @memberof    mixitup.Config.classNames
+         * @instance
+         * @type        {string}
+         * @default     'failed'
+         */
+
+        this.modifierFailed = 'failed';
+
+        /**
          * The delineator used between the "block" and "element" portions of any classname added by MixItUp.
          *
          * If the block portion is ommited by setting it to an empty string, no delineator will be added.
@@ -2324,8 +2348,7 @@
         this.callActions('beforeConstruct');
 
         this.allowNestedTargets = true;
-        this.containerClass     = '';
-        this.containerClassFail = 'mixitup-container-fail';
+        this.containerClassName = '';
 
         this.callActions('afterConstruct');
 
@@ -2588,10 +2611,11 @@
 
         this.callActions('beforeConstruct');
 
-        this.filter = null;
-        this.sort   = null;
-        this.insert = null;
-        this.remove = null;
+        this.filter       = null;
+        this.sort         = null;
+        this.insert       = null;
+        this.remove       = null;
+        this.changeLayout = null;
 
         this.callActions('afterConstruct');
 
@@ -2736,7 +2760,7 @@
 
         this.callActions('beforeConstruct');
 
-        this.containerClassname = '';
+        this.containerClassName = '';
 
         this.callActions('afterConstruct');
 
@@ -3705,8 +3729,8 @@
 
             self.cacheDom(container, document);
 
-            if (self.config.layout.containerClass) {
-                h.addClass(self.dom.container, self.config.layout.containerClass);
+            if (self.config.layout.containerClassName) {
+                h.addClass(self.dom.container, self.config.layout.containerClassName);
             }
 
             if (!mixitup.features.has.transitions) {
@@ -3771,10 +3795,10 @@
             } else {
                 // DOM API
 
-                state.activeFilter          = self.parseFilterArgs([self.config.load.filter]).command;
-                state.activeSort            = self.parseSortArgs([self.config.load.sort]).command;
-                state.activeContainerClass  = self.config.layout.containerClass;
-                state.totalTargets          = self.targets.length;
+                state.activeFilter              = self.parseFilterArgs([self.config.load.filter]).command;
+                state.activeSort                = self.parseSortArgs([self.config.load.sort]).command;
+                state.activeContainerClassName  = self.config.layout.containerClassName;
+                state.totalTargets              = self.targets.length;
 
                 state = self.callFilters('stateGetInitialState', state, arguments);
 
@@ -4820,7 +4844,7 @@
             state.activeFilter              = operation.newFilter;
             state.activeSort                = operation.newSort;
             state.activeDataset             = operation.newDataset;
-            state.activeContainerClass      = operation.newContainerClass;
+            state.activeContainerClassName  = operation.newContainerClassName;
             state.hasFailed                 = operation.hasFailed;
             state.totalTargets              = self.targets.length;
             state.totalShow                 = operation.show.length;
@@ -4893,7 +4917,7 @@
                 );
             }
 
-            h.removeClass(self.dom.container, self.config.layout.containerClassFail);
+            h.removeClass(self.dom.container, h.getClassname(self.config.classNames, 'container', self.config.classNames.modifierFailed));
 
             deferred = self.userDeferred = h.defer(mixitup.libraries);
 
@@ -5015,8 +5039,8 @@
             }
 
             if (operation.willChangeLayout) {
-                h.removeClass(self.dom.container, operation.startContainerClass);
-                h.addClass(self.dom.container, operation.newContainerClass);
+                h.removeClass(self.dom.container, operation.startContainerClassName);
+                h.addClass(self.dom.container, operation.newContainerClassName);
             }
 
             self.callActions('afterSetInter', arguments);
@@ -5133,8 +5157,8 @@
             }
 
             if (operation.willChangeLayout) {
-                h.removeClass(self.dom.container, operation.newContainerClass);
-                h.addClass(self.dom.container, self.config.layout.containerClass);
+                h.removeClass(self.dom.container, operation.newContainerClassName);
+                h.addClass(self.dom.container, self.config.layout.containerClassName);
             }
 
             self.callActions('afterGetFinalMixData', arguments);
@@ -5392,8 +5416,8 @@
             }
 
             if (operation.willChangeLayout) {
-                h.removeClass(self.dom.container, self.config.layout.containerClass);
-                h.addClass(self.dom.container, operation.newContainerClass);
+                h.removeClass(self.dom.container, self.config.layout.ContainerClassName);
+                h.addClass(self.dom.container, operation.newContainerClassName);
             }
 
             self.callActions('afterMoveTargets', arguments);
@@ -5553,8 +5577,8 @@
                 self.dom.parent.style[mixitup.features.perspectiveOriginProp]  = '';
 
             if (operation.willChangeLayout) {
-                h.removeClass(self.dom.container, operation.startContainerClass);
-                h.addClass(self.dom.container, operation.newContainerClass);
+                h.removeClass(self.dom.container, operation.startContainerClassName);
+                h.addClass(self.dom.container, operation.newContainerClassName);
             }
 
             if (operation.toRemove.length) {
@@ -5610,7 +5634,7 @@
                     self.config.callbacks.onMixFail.call(self.dom.container, self.state, self);
                 }
 
-                h.addClass(self.dom.container, self.config.layout.containerClassFail);
+                h.addClass(self.dom.container, h.getClassname(self.config.classNames, 'container', self.config.classNames.modifierFailed));
             }
 
             // User-defined callback function
@@ -5691,6 +5715,10 @@
 
             if (instruction.command.sort && !(instruction.command.sort instanceof mixitup.CommandSort)) {
                 instruction.command.sort = self.parseSortArgs([instruction.command.sort]).command;
+            }
+
+            if (instruction.command.changeLayout && !(instruction.command.changeLayout instanceof mixitup.CommandChangeLayout)) {
+                instruction.command.changeLayout = self.parseChangeLayoutArgs([instruction.command.changeLayout]).command;
             }
 
             instruction = self.callFilters('instructionParseMultimixArgs', instruction, arguments);
@@ -5946,6 +5974,55 @@
 
             if (!instruction.command.targets.length && self.config.debug.showWarnings) {
                 console.warn(mixitup.messages.warningRemoveNoElements());
+            }
+
+            h.freeze(instruction);
+
+            return instruction;
+        },
+
+        /**
+         * @private
+         * @instance
+         * @since   3.0.0
+         * @param   {Array<*>}  args
+         * @return  {mixitup.UserInstruction}
+         */
+
+        parseChangeLayoutArgs: function(args) {
+            var self        = this,
+                instruction = new mixitup.UserInstruction(),
+                arg         = null,
+                i           = -1;
+
+            instruction.animate = self.config.animation.enable;
+            instruction.command = new mixitup.CommandChangeLayout();
+
+            for (i = 0; i < args.length; i++) {
+                arg = args[i];
+
+                if (arg === null) continue;
+
+                switch (typeof arg) {
+                    case 'string':
+                        instruction.command.containerClassName = arg;
+
+                        break;
+                    case 'object':
+                        // Change layout command
+
+                        h.extend(instruction.command, arg);
+
+                        break;
+                    case 'boolean':
+                        instruction.animate = arg;
+
+                        break;
+                    case 'function':
+                        instruction.callback = arg;
+
+                        break;
+                }
             }
 
             h.freeze(instruction);
@@ -6420,7 +6497,12 @@
          */
 
         changeLayout: function() {
-            // TODO: parse arguments, and map to multimix
+            var self = this,
+                args = self.parseChangeLayoutArgs(arguments);
+
+            return self.multimix({
+                changeLayout: args.command
+            }, args.animate, args.callback);
         },
 
         /**
@@ -6514,12 +6596,12 @@
 
             self.filterOperation(operation);
 
-            if (typeof changeLayoutCommand !== 'undefined') {
-                operation.startContainerClass = operation.startState.activeContainerClass;
+            if (changeLayoutCommand) {
+                operation.startContainerClassName = operation.startState.activeContainerClassName;
 
-                operation.newContainerClass = changeLayoutCommand.containerClass || operation.startContainerClass;
+                operation.newContainerClassName = changeLayoutCommand.containerClassName;
 
-                if (operation.newContainerClass !== operation.startContainerClass) {
+                if (operation.newContainerClassName !== operation.startContainerClassName) {
                     operation.willChangeLayout = true;
                 }
             }
@@ -7700,49 +7782,49 @@
 
         this.callActions('beforeConstruct');
 
-        this.id                  = '';
+        this.id                      = '';
 
-        this.args                = [];
-        this.command             = null;
-        this.showPosData         = [];
-        this.toHidePosData       = [];
+        this.args                    = [];
+        this.command                 = null;
+        this.showPosData             = [];
+        this.toHidePosData           = [];
 
-        this.startState          = null;
-        this.newState            = null;
-        this.docState            = null;
+        this.startState              = null;
+        this.newState                = null;
+        this.docState                = null;
 
-        this.willSort            = false;
-        this.willChangeLayout    = false;
-        this.hasEffect           = false;
-        this.hasFailed           = false;
+        this.willSort                = false;
+        this.willChangeLayout        = false;
+        this.hasEffect               = false;
+        this.hasFailed               = false;
 
-        this.show                = [];
-        this.hide                = [];
-        this.matching            = [];
-        this.toShow              = [];
-        this.toHide              = [];
-        this.toMove              = [];
-        this.toRemove            = [];
-        this.startOrder          = [];
-        this.newOrder            = [];
-        this.startSort           = null;
-        this.newSort             = null;
-        this.startFilter         = null;
-        this.newFilter           = null;
-        this.startDataset        = null;
-        this.newDataset          = null;
-        this.startX              = 0;
-        this.startY              = 0;
-        this.startHeight         = 0;
-        this.startWidth          = 0;
-        this.newX                = 0;
-        this.newY                = 0;
-        this.newHeight           = 0;
-        this.newWidth            = 0;
-        this.startContainerClass = '';
-        this.startDisplay        = '';
-        this.newContainerClass   = '';
-        this.newDisplay          = '';
+        this.show                    = [];
+        this.hide                    = [];
+        this.matching                = [];
+        this.toShow                  = [];
+        this.toHide                  = [];
+        this.toMove                  = [];
+        this.toRemove                = [];
+        this.startOrder              = [];
+        this.newOrder                = [];
+        this.startSort               = null;
+        this.newSort                 = null;
+        this.startFilter             = null;
+        this.newFilter               = null;
+        this.startDataset            = null;
+        this.newDataset              = null;
+        this.startX                  = 0;
+        this.startY                  = 0;
+        this.startHeight             = 0;
+        this.startWidth              = 0;
+        this.newX                    = 0;
+        this.newY                    = 0;
+        this.newHeight               = 0;
+        this.newWidth                = 0;
+        this.startContainerClassName = '';
+        this.startDisplay            = '';
+        this.newContainerClassName   = '';
+        this.newDisplay              = '';
 
         this.callActions('afterConstruct');
 
@@ -7820,7 +7902,7 @@
          * @default     ''
          */
 
-        this.activeContainerClass = '';
+        this.activeContainerClassName = '';
 
         /**
          * A reference to the container element that the mixer is instantiated on.

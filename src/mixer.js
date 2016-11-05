@@ -93,8 +93,8 @@ h.extend(mixitup.Mixer.prototype,
 
         self.cacheDom(container, document);
 
-        if (self.config.layout.containerClass) {
-            h.addClass(self.dom.container, self.config.layout.containerClass);
+        if (self.config.layout.containerClassName) {
+            h.addClass(self.dom.container, self.config.layout.containerClassName);
         }
 
         if (!mixitup.features.has.transitions) {
@@ -159,10 +159,10 @@ h.extend(mixitup.Mixer.prototype,
         } else {
             // DOM API
 
-            state.activeFilter          = self.parseFilterArgs([self.config.load.filter]).command;
-            state.activeSort            = self.parseSortArgs([self.config.load.sort]).command;
-            state.activeContainerClass  = self.config.layout.containerClass;
-            state.totalTargets          = self.targets.length;
+            state.activeFilter              = self.parseFilterArgs([self.config.load.filter]).command;
+            state.activeSort                = self.parseSortArgs([self.config.load.sort]).command;
+            state.activeContainerClassName  = self.config.layout.containerClassName;
+            state.totalTargets              = self.targets.length;
 
             state = self.callFilters('stateGetInitialState', state, arguments);
 
@@ -1208,7 +1208,7 @@ h.extend(mixitup.Mixer.prototype,
         state.activeFilter              = operation.newFilter;
         state.activeSort                = operation.newSort;
         state.activeDataset             = operation.newDataset;
-        state.activeContainerClass      = operation.newContainerClass;
+        state.activeContainerClassName  = operation.newContainerClassName;
         state.hasFailed                 = operation.hasFailed;
         state.totalTargets              = self.targets.length;
         state.totalShow                 = operation.show.length;
@@ -1281,7 +1281,7 @@ h.extend(mixitup.Mixer.prototype,
             );
         }
 
-        h.removeClass(self.dom.container, self.config.layout.containerClassFail);
+        h.removeClass(self.dom.container, h.getClassname(self.config.classNames, 'container', self.config.classNames.modifierFailed));
 
         deferred = self.userDeferred = h.defer(mixitup.libraries);
 
@@ -1403,8 +1403,8 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         if (operation.willChangeLayout) {
-            h.removeClass(self.dom.container, operation.startContainerClass);
-            h.addClass(self.dom.container, operation.newContainerClass);
+            h.removeClass(self.dom.container, operation.startContainerClassName);
+            h.addClass(self.dom.container, operation.newContainerClassName);
         }
 
         self.callActions('afterSetInter', arguments);
@@ -1521,8 +1521,8 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         if (operation.willChangeLayout) {
-            h.removeClass(self.dom.container, operation.newContainerClass);
-            h.addClass(self.dom.container, self.config.layout.containerClass);
+            h.removeClass(self.dom.container, operation.newContainerClassName);
+            h.addClass(self.dom.container, self.config.layout.containerClassName);
         }
 
         self.callActions('afterGetFinalMixData', arguments);
@@ -1780,8 +1780,8 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         if (operation.willChangeLayout) {
-            h.removeClass(self.dom.container, self.config.layout.containerClass);
-            h.addClass(self.dom.container, operation.newContainerClass);
+            h.removeClass(self.dom.container, self.config.layout.ContainerClassName);
+            h.addClass(self.dom.container, operation.newContainerClassName);
         }
 
         self.callActions('afterMoveTargets', arguments);
@@ -1941,8 +1941,8 @@ h.extend(mixitup.Mixer.prototype,
             self.dom.parent.style[mixitup.features.perspectiveOriginProp]  = '';
 
         if (operation.willChangeLayout) {
-            h.removeClass(self.dom.container, operation.startContainerClass);
-            h.addClass(self.dom.container, operation.newContainerClass);
+            h.removeClass(self.dom.container, operation.startContainerClassName);
+            h.addClass(self.dom.container, operation.newContainerClassName);
         }
 
         if (operation.toRemove.length) {
@@ -1998,7 +1998,7 @@ h.extend(mixitup.Mixer.prototype,
                 self.config.callbacks.onMixFail.call(self.dom.container, self.state, self);
             }
 
-            h.addClass(self.dom.container, self.config.layout.containerClassFail);
+            h.addClass(self.dom.container, h.getClassname(self.config.classNames, 'container', self.config.classNames.modifierFailed));
         }
 
         // User-defined callback function
@@ -2079,6 +2079,10 @@ h.extend(mixitup.Mixer.prototype,
 
         if (instruction.command.sort && !(instruction.command.sort instanceof mixitup.CommandSort)) {
             instruction.command.sort = self.parseSortArgs([instruction.command.sort]).command;
+        }
+
+        if (instruction.command.changeLayout && !(instruction.command.changeLayout instanceof mixitup.CommandChangeLayout)) {
+            instruction.command.changeLayout = self.parseChangeLayoutArgs([instruction.command.changeLayout]).command;
         }
 
         instruction = self.callFilters('instructionParseMultimixArgs', instruction, arguments);
@@ -2334,6 +2338,55 @@ h.extend(mixitup.Mixer.prototype,
 
         if (!instruction.command.targets.length && self.config.debug.showWarnings) {
             console.warn(mixitup.messages.warningRemoveNoElements());
+        }
+
+        h.freeze(instruction);
+
+        return instruction;
+    },
+
+    /**
+     * @private
+     * @instance
+     * @since   3.0.0
+     * @param   {Array<*>}  args
+     * @return  {mixitup.UserInstruction}
+     */
+
+    parseChangeLayoutArgs: function(args) {
+        var self        = this,
+            instruction = new mixitup.UserInstruction(),
+            arg         = null,
+            i           = -1;
+
+        instruction.animate = self.config.animation.enable;
+        instruction.command = new mixitup.CommandChangeLayout();
+
+        for (i = 0; i < args.length; i++) {
+            arg = args[i];
+
+            if (arg === null) continue;
+
+            switch (typeof arg) {
+                case 'string':
+                    instruction.command.containerClassName = arg;
+
+                    break;
+                case 'object':
+                    // Change layout command
+
+                    h.extend(instruction.command, arg);
+
+                    break;
+                case 'boolean':
+                    instruction.animate = arg;
+
+                    break;
+                case 'function':
+                    instruction.callback = arg;
+
+                    break;
+            }
         }
 
         h.freeze(instruction);
@@ -2808,7 +2861,12 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     changeLayout: function() {
-        // TODO: parse arguments, and map to multimix
+        var self = this,
+            args = self.parseChangeLayoutArgs(arguments);
+
+        return self.multimix({
+            changeLayout: args.command
+        }, args.animate, args.callback);
     },
 
     /**
@@ -2902,12 +2960,12 @@ h.extend(mixitup.Mixer.prototype,
 
         self.filterOperation(operation);
 
-        if (typeof changeLayoutCommand !== 'undefined') {
-            operation.startContainerClass = operation.startState.activeContainerClass;
+        if (changeLayoutCommand) {
+            operation.startContainerClassName = operation.startState.activeContainerClassName;
 
-            operation.newContainerClass = changeLayoutCommand.containerClass || operation.startContainerClass;
+            operation.newContainerClassName = changeLayoutCommand.containerClassName;
 
-            if (operation.newContainerClass !== operation.startContainerClass) {
+            if (operation.newContainerClassName !== operation.startContainerClassName) {
                 operation.willChangeLayout = true;
             }
         }

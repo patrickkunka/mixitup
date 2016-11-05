@@ -17,49 +17,49 @@ mixitup.Operation = function() {
 
     this.callActions('beforeConstruct');
 
-    this.id                  = '';
+    this.id                      = '';
 
-    this.args                = [];
-    this.command             = null;
-    this.showPosData         = [];
-    this.toHidePosData       = [];
+    this.args                    = [];
+    this.command                 = null;
+    this.showPosData             = [];
+    this.toHidePosData           = [];
 
-    this.startState          = null;
-    this.newState            = null;
-    this.docState            = null;
+    this.startState              = null;
+    this.newState                = null;
+    this.docState                = null;
 
-    this.willSort            = false;
-    this.willChangeLayout    = false;
-    this.hasEffect           = false;
-    this.hasFailed           = false;
+    this.willSort                = false;
+    this.willChangeLayout        = false;
+    this.hasEffect               = false;
+    this.hasFailed               = false;
 
-    this.show                = [];
-    this.hide                = [];
-    this.matching            = [];
-    this.toShow              = [];
-    this.toHide              = [];
-    this.toMove              = [];
-    this.toRemove            = [];
-    this.startOrder          = [];
-    this.newOrder            = [];
-    this.startSort           = null;
-    this.newSort             = null;
-    this.startFilter         = null;
-    this.newFilter           = null;
-    this.startDataset        = null;
-    this.newDataset          = null;
-    this.startX              = 0;
-    this.startY              = 0;
-    this.startHeight         = 0;
-    this.startWidth          = 0;
-    this.newX                = 0;
-    this.newY                = 0;
-    this.newHeight           = 0;
-    this.newWidth            = 0;
-    this.startContainerClass = '';
-    this.startDisplay        = '';
-    this.newContainerClass   = '';
-    this.newDisplay          = '';
+    this.show                    = [];
+    this.hide                    = [];
+    this.matching                = [];
+    this.toShow                  = [];
+    this.toHide                  = [];
+    this.toMove                  = [];
+    this.toRemove                = [];
+    this.startOrder              = [];
+    this.newOrder                = [];
+    this.startSort               = null;
+    this.newSort                 = null;
+    this.startFilter             = null;
+    this.newFilter               = null;
+    this.startDataset            = null;
+    this.newDataset              = null;
+    this.startX                  = 0;
+    this.startY                  = 0;
+    this.startHeight             = 0;
+    this.startWidth              = 0;
+    this.newX                    = 0;
+    this.newY                    = 0;
+    this.newHeight               = 0;
+    this.newWidth                = 0;
+    this.startContainerClassName = '';
+    this.startDisplay            = '';
+    this.newContainerClassName   = '';
+    this.newDisplay              = '';
 
     this.callActions('afterConstruct');
 

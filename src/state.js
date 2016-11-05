@@ -65,7 +65,7 @@ mixitup.State = function() {
      * @default     ''
      */
 
-    this.activeContainerClass = '';
+    this.activeContainerClassName = '';
 
     /**
      * A reference to the container element that the mixer is instantiated on.
