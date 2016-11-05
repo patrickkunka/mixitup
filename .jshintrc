@@ -17,6 +17,7 @@
         "define",
         "console",
         "describe",
+        "after",
         "it"
     ]
 }

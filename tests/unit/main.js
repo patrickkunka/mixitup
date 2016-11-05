@@ -5,4 +5,4 @@ require('./mixer-sort');
 require('./mixer-dataset');
 require('./mixer-insert');
 require('./mixer-remove');
-require('./controls');
+require('./controls-filter');

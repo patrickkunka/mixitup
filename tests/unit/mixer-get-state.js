@@ -10,10 +10,18 @@ chai.use(require('chai-shallow-deep-equal'));
 
 describe('mixitup.Mixer', () => {
     describe('#getState()', () => {
+        let config = {
+            controls: {
+                enable: false
+            }
+        };
+
         let container = dom.getContainer();
         let id = container.id = 'test-id';
-        let mixer = mixitup(container);
+        let mixer = mixitup(container, config);
         let state = mixer.getState();
+
+        after(() => mixer.destroy());
 
         it('should contain an id equal to the container id', () => {
             chai.assert.equal(state.container.id, id);

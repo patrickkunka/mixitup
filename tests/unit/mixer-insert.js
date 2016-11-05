@@ -10,54 +10,68 @@ chai.use(require('chai-shallow-deep-equal'));
 chai.use(require('chai-as-promised'));
 
 describe('mixitup.Mixer', () => {
+    let config = {
+        controls: {
+            enable: false
+        }
+    };
+
     describe('#insert()', () => {
         it('should accept an element as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget)
                 .then(state => {
                     chai.assert.equal(state.show[0].id, 7);
+
+                    mixer.destroy();
                 });
         });
 
         it('should accept an element and an index as arguments', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget, 3)
                 .then(state => {
                     chai.assert.equal(state.show[3].id, 7);
+
+                    mixer.destroy();
                 });
         });
 
         it('should accept an html string as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget.outerHTML)
                 .then(state => {
                     chai.assert.equal(state.show[0].id, 7);
+
+                    mixer.destroy();
                 });
         });
 
         it('should accept an html and an index as arguments', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget.outerHTML, 5)
                 .then(state => {
                     chai.assert.equal(state.show[5].id, 7);
+
+                    mixer.destroy();
                 });
         });
 
         it('should accept accept an element collection as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
 
@@ -67,12 +81,14 @@ describe('mixitup.Mixer', () => {
                 .then(state => {
                     chai.assert.equal(state.show[0].id, 7);
                     chai.assert.equal(state.show[1].id, 8);
+
+                    mixer.destroy();
                 });
         });
 
         it('should accept accept an element collection and an index as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
 
@@ -82,12 +98,14 @@ describe('mixitup.Mixer', () => {
                 .then(state => {
                     chai.assert.equal(state.show[4].id, 7);
                     chai.assert.equal(state.show[5].id, 8);
+
+                    mixer.destroy();
                 });
         });
 
         it('should throw an error if an element, index and sibling are passed simultaneously', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
             let sibling = container.children[4];
 
@@ -98,53 +116,61 @@ describe('mixitup.Mixer', () => {
 
         it('should accept an element and sibling reference to insert before', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
             let sibling = container.children[4];
 
             return mixer.insert(newTarget, sibling)
                 .then(state => {
                     chai.assert.equal(state.show[4].id, '7');
+
+                    mixer.destroy();
                 });
         });
 
         it('should accept an element, sibling reference and position string', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
             let sibling = container.children[4];
 
             return mixer.insert(newTarget, sibling, 'after')
                 .then(state => {
                     chai.assert.equal(state.show[5].id, '7');
+
+                    mixer.destroy();
                 });
         });
 
         it('should insert at end if the insertion index is above range', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget, 10)
                 .then(state => {
                     chai.assert.equal(state.show[6].id, '7');
+
+                    mixer.destroy();
                 });
         });
 
         it('should insert at start if the insertion index is below range', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
 
             return mixer.insert(newTarget, -2)
                 .then(state => {
                     chai.assert.equal(state.show[0].id, '7');
+
+                    mixer.destroy();
                 });
         });
 
         it('should throw an error if the element to insert already exists', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = container.children[1];
 
             chai.assert.throws(() => {
@@ -155,11 +181,13 @@ describe('mixitup.Mixer', () => {
         it('should allow no elements to be inserted with a warning', () => {
             let container = dom.getContainer();
             let totalTargets = container.children.length;
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
 
             return mixer.insert()
                 .then(state => {
                     chai.assert.equal(state.totalShow, totalTargets);
+
+                    mixer.destroy();
                 });
         });
     });
@@ -167,18 +195,20 @@ describe('mixitup.Mixer', () => {
     describe('#prepend()', () => {
         it('should insert an element at the start', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
 
             return mixer.prepend(newTarget)
                 .then(state => {
                     chai.assert.equal(state.show[0].id, 7);
+
+                    mixer.destroy();
                 });
         });
 
         it('should insert a collection of elements at the start', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
 
@@ -188,6 +218,8 @@ describe('mixitup.Mixer', () => {
                 .then(state => {
                     chai.assert.equal(state.show[0].id, 7);
                     chai.assert.equal(state.show[1].id, 8);
+
+                    mixer.destroy();
                 });
         });
     });
@@ -195,18 +227,20 @@ describe('mixitup.Mixer', () => {
     describe('#append()', () => {
         it('should insert an element at the end', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
 
             return mixer.append(newTarget)
                 .then(state => {
                     chai.assert.equal(state.show[6].id, 7);
+
+                    mixer.destroy();
                 });
         });
 
         it('should insert a collection of elements at the end', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
 
@@ -216,6 +250,8 @@ describe('mixitup.Mixer', () => {
                 .then(state => {
                     chai.assert.equal(state.show[6].id, 7);
                     chai.assert.equal(state.show[7].id, 8);
+
+                    mixer.destroy();
                 });
         });
     });
@@ -223,19 +259,21 @@ describe('mixitup.Mixer', () => {
     describe('#insertBefore()', () => {
         it('should insert an element before the referenced element', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
             let sibling = container.children[3];
 
             return mixer.insertBefore(newTarget, sibling)
                 .then(state => {
                     chai.assert.equal(state.show[3].id, 7);
+
+                    mixer.destroy();
                 });
         });
 
         it('should insert a collection of elements before the referenced element', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
             let sibling = container.children[3];
@@ -246,6 +284,8 @@ describe('mixitup.Mixer', () => {
                 .then(state => {
                     chai.assert.equal(state.show[3].id, 7);
                     chai.assert.equal(state.show[4].id, 8);
+
+                    mixer.destroy();
                 });
         });
     });
@@ -253,19 +293,21 @@ describe('mixitup.Mixer', () => {
     describe('#insertAfter()', () => {
         it('should insert an element after the referenced element', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget = dom.getTarget();
             let sibling = container.children[3];
 
             return mixer.insertAfter(newTarget, sibling)
                 .then(state => {
                     chai.assert.equal(state.show[4].id, 7);
+
+                    mixer.destroy();
                 });
         });
 
         it('should insert a collection of elements after the referenced element', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let newTarget1 = dom.getTarget();
             let newTarget2 = dom.getTarget();
             let sibling = container.children[3];
@@ -276,6 +318,8 @@ describe('mixitup.Mixer', () => {
                 .then(state => {
                     chai.assert.equal(state.show[4].id, 7);
                     chai.assert.equal(state.show[5].id, 8);
+
+                    mixer.destroy();
                 });
         });
     });

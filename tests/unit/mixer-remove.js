@@ -10,10 +10,16 @@ chai.use(require('chai-shallow-deep-equal'));
 chai.use(require('chai-as-promised'));
 
 describe('mixitup.Mixer', () => {
+    let config = {
+        controls: {
+            enable: false
+        }
+    };
+
     describe('#remove()', () => {
         it('should accept an element as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let toRemove = container.children[3];
 
             return mixer.remove(toRemove)
@@ -21,12 +27,14 @@ describe('mixitup.Mixer', () => {
                     chai.assert.notEqual(state.show[3].id, '4');
                     chai.assert.equal(state.show[3].id, '5');
                     chai.assert.equal(state.totalShow, '5');
+
+                    mixer.destroy();
                 });
         });
 
         it('should accept a collection of elements as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
             let toRemove = [container.children[3], container.children[0]];
 
             return mixer.remove(toRemove)
@@ -34,37 +42,45 @@ describe('mixitup.Mixer', () => {
                     chai.assert.equal(state.show[0].id, '2');
                     chai.assert.equal(state.show[3].id, '6');
                     chai.assert.equal(state.totalShow, '4');
+
+                    mixer.destroy();
                 });
         });
 
         it('should accept an index as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
 
             return mixer.remove(3)
                 .then(state => {
                     chai.assert.equal(state.show[3].id, '5');
                     chai.assert.equal(state.totalShow, '5');
+
+                    mixer.destroy();
                 });
         });
 
         it('should accept a selector as an argument', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
 
             return mixer.remove('.category-a')
                 .then(state => {
                     chai.assert.equal(state.totalShow, '3');
+
+                    mixer.destroy();
                 });
         });
 
         it('should allow no elements to be removed with a warning', () => {
             let container = dom.getContainer();
-            let mixer = mixitup(container);
+            let mixer = mixitup(container, config);
 
             return mixer.remove()
                 .then(state => {
                     chai.assert.equal(state.totalShow, '6');
+
+                    mixer.destroy();
                 });
         });
     });

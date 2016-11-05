@@ -27,9 +27,10 @@ describe('mixitup()', () => {
 
     it('should throw an error if UID not provided in dataset API mode', () => {
         let container = dom.getContainer();
+        let mixer;
 
         chai.assert.throws(() => {
-            mixitup(container, {
+            mixer = mixitup(container, {
                 load: {
                     dataset: dataset
                 }
@@ -58,6 +59,8 @@ describe('mixitup()', () => {
         chai.assert.deepEqual(state.targets, targets);
         chai.assert.deepEqual(state.show, targets);
         chai.assert.deepEqual(state.matching, []);
+
+        mixer.destroy();
     });
 });
 
@@ -81,6 +84,8 @@ describe('mixitup.Mixer', () => {
         let mixer = mixitup(container, config);
 
         let startTotalWhitespace = dom.getTotalWhitespace(container.outerHTML);
+
+        after(() => mixer.destroy());
 
         it('should throw an error if an item is added to the dataset, without a render function defined', () => {
             let newDataset = dataset.slice();

@@ -47,6 +47,10 @@ module.exports = {
         '</div>');
     },
 
+    getFilterControl() {
+        return renderElement('<div class="mixitup-control" data-filter=".category-d">Category D</div>');
+    },
+
     getTotalWhitespace(html) {
         let re = /[>? ]( )[<? ]/g;
         let totalWhitespace = 0;

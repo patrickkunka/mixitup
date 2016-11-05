@@ -11,8 +11,14 @@ chai.use(require('chai-as-promised'));
 
 describe('mixitup.Mixer', () => {
     describe('#filter()', () => {
+        let config = {
+            controls: {
+                enable: false
+            }
+        };
+
         let container = dom.getContainer();
-        let mixer = mixitup(container);
+        let mixer = mixitup(container, config);
 
         it('should accept a class selector', () => {
             let matching = Array.prototype.slice.call(container.querySelectorAll('.category-a'));
@@ -235,9 +241,15 @@ describe('mixitup.Mixer', () => {
 });
 
 describe('mixitup.Mixer', () => {
+    let config = {
+        controls: {
+            enable: false
+        }
+    };
+
     describe('#hide()', () => {
         let container = dom.getContainer();
-        let mixer = mixitup(container);
+        let mixer = mixitup(container, config);
 
         it('should hide all elements', () => {
             return mixer.hide()
@@ -251,9 +263,15 @@ describe('mixitup.Mixer', () => {
 });
 
 describe('mixitup.Mixer', () => {
+    let config = {
+        controls: {
+            enable: false
+        }
+    };
+
     describe('#show()', () => {
         let container = dom.getContainer();
-        let mixer = mixitup(container);
+        let mixer = mixitup(container, config);
 
         it('should show all elements', () => {
             return mixer.filter('.category-a')

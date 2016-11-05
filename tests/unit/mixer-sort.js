@@ -12,9 +12,15 @@ chai.use(require('chai-as-promised'));
 
 describe('mixitup.Mixer', () => {
     describe('#sort()', () => {
+        let config = {
+            controls: {
+                enable: false
+            }
+        };
+
         let container = dom.getContainer();
         let originalOrder = Array.prototype.slice.call(container.children);
-        let mixer = mixitup(container);
+        let mixer = mixitup(container, config);
 
         let idsByPublishedDate = dataset.slice().sort((a, b) => {
             let dateA = a.published;
@@ -60,6 +66,8 @@ describe('mixitup.Mixer', () => {
 
             sortByPublishedDate(a, b);
         }).map(item => item.id.toString());
+
+        after(() => mixer.destroy());
 
         it('accept `default` as a sort string, but should have no effect on the order', () => {
             var startOrder = mixer.getState().show;
