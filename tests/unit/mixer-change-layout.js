@@ -30,5 +30,25 @@ describe('Mixer', () => {
                     chai.assert.notOk(container.matches('.' + newClass));
                 });
         });
+
+        it('should accept a callback function which is invoked after filtering', () => {
+            let promise = new Promise(resolve => mixer.changeLayout(newClass, resolve));
+
+            chai.assert.isFulfilled(promise);
+
+            return promise
+                .then(state => {
+                    chai.assert.equal(state.activeContainerClassName, newClass);
+                    chai.assert.isOk(container.matches('.' + newClass));
+                });
+        });
+
+        it('should accept a boolean allowing toggling off of animation', () => {
+            return mixer.changeLayout('', false)
+                .then(state => {
+                    chai.assert.equal(state.activeContainerClassName, '');
+                    chai.assert.notOk(container.matches('.' + newClass));
+                });
+        });
     });
 });
