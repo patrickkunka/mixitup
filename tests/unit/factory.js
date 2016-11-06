@@ -4,6 +4,7 @@ require('jsdom-global')();
 
 const chai    = require('chai');
 const dom     = require('../mock/dom');
+const dataset = require('../mock/dataset');
 const mixitup = require('../../dist/mixitup.js');
 
 describe('mixitup()', () => {
@@ -194,5 +195,54 @@ describe('mixitup()', () => {
         chai.assert.notEqual(facade, mixer2);
 
         mixer1.destroy();
+    });
+
+    it('should respect a `load.filter` configuration option', () => {
+        let container = dom.getContainer();
+        let mixer = mixitup(container, {
+            load: {
+                filter: 'none'
+            }
+        });
+
+        let state = mixer.getState();
+
+        chai.assert.equal(state.activeFilter.selector, '');
+        chai.assert.equal(state.totalShow, 0);
+        chai.assert.equal(state.hide[0].style.display, 'none');
+
+        mixer.destroy();
+    });
+
+    it('should respect a `load.sort` configuration option', () => {
+        let idsByPublishedDate = dataset.slice().sort((a, b) => {
+            let dateA = a.published;
+            let dateB = b.published;
+
+            if (dateA < dateB) {
+                return -1;
+            }
+
+            if (dateA > dateB) {
+                return 1;
+            }
+
+            return 0;
+        }).map(item => item.id.toString());
+
+        let container = dom.getContainer();
+        let mixer = mixitup(container, {
+            load: {
+                sort: 'published'
+            }
+        });
+
+        let state = mixer.getState();
+        let targetIds = state.show.map(el => el.id);
+
+
+        chai.assert.deepEqual(targetIds, idsByPublishedDate);
+
+        mixer.destroy();
     });
 });
