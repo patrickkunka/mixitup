@@ -2951,7 +2951,7 @@ h.extend(mixitup.Mixer.prototype,
 
         if (instruction.callback) self.userCallback = instruction.callback;
 
-        animate = (animate ^ self.config.animation.enable) ? animate : self.config.animation.enable;
+        animate = (instruction.animate ^ self.config.animation.enable) ? instruction.animate : self.config.animation.enable;
 
         return self.goMix(animate, operation);
     },

@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build e04439d8-643f-4d3a-8f33-ef226bb117c5
+ * Build 78323628-60aa-426c-b609-d1de59b200ea
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -6614,7 +6614,7 @@
 
             if (instruction.callback) self.userCallback = instruction.callback;
 
-            animate = (animate ^ self.config.animation.enable) ? animate : self.config.animation.enable;
+            animate = (instruction.animate ^ self.config.animation.enable) ? instruction.animate : self.config.animation.enable;
 
             return self.goMix(animate, operation);
         },
