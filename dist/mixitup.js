@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 22291098-7881-4da2-af86-ecb18a1279a3
+ * Build 039278ef-9326-45c1-a644-a369817750f1
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2321,6 +2321,7 @@
 
         this.enable         = false;
         this.showWarnings   = true;
+        this.fauxAsync      = false;
 
         this.callActions('afterConstruct');
 
@@ -4953,17 +4954,23 @@
 
             deferred = self.userDeferred = h.defer(mixitup.libraries);
 
+            self.isBusy = true;
+
             if (!shouldAnimate || !mixitup.features.has.transitions) {
                 // Abort
 
-                self.cleanUp(operation);
+                if (self.config.debug.fauxAsync) {
+                    setTimeout(function() {
+                        self.cleanUp(operation);
+                    }, self.config.animation.duration);
+                } else {
+                    self.cleanUp(operation);
+                }
 
                 return self.callFilters('promiseGoMix', deferred.promise, arguments);
             }
 
             // If we should animate and the platform supports transitions, go for it
-
-            self.isBusy = true;
 
             if (window.pageYOffset !== operation.docState.scrollTop) {
                 window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);

@@ -16,6 +16,7 @@ mixitup.ConfigDebug = function() {
 
     this.enable         = false;
     this.showWarnings   = true;
+    this.fauxAsync      = false;
 
     this.callActions('afterConstruct');
 

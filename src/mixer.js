@@ -1285,17 +1285,23 @@ h.extend(mixitup.Mixer.prototype,
 
         deferred = self.userDeferred = h.defer(mixitup.libraries);
 
+        self.isBusy = true;
+
         if (!shouldAnimate || !mixitup.features.has.transitions) {
             // Abort
 
-            self.cleanUp(operation);
+            if (self.config.debug.fauxAsync) {
+                setTimeout(function() {
+                    self.cleanUp(operation);
+                }, self.config.animation.duration);
+            } else {
+                self.cleanUp(operation);
+            }
 
             return self.callFilters('promiseGoMix', deferred.promise, arguments);
         }
 
         // If we should animate and the platform supports transitions, go for it
-
-        self.isBusy = true;
 
         if (window.pageYOffset !== operation.docState.scrollTop) {
             window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);

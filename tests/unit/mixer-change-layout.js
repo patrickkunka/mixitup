@@ -9,7 +9,7 @@ const mixitup       = require('../../dist/mixitup.js');
 chai.use(require('chai-shallow-deep-equal'));
 chai.use(require('chai-as-promised'));
 
-describe('Mixer', () => {
+describe('mixitup.Mixer', () => {
     let container   = dom.getContainer();
     let newClass    = 'mixitup-container__display-rows';
     let mixer       = mixitup(container);
