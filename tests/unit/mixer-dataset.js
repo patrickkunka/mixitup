@@ -246,5 +246,37 @@ describe('mixitup.Mixer', () => {
         it('should not insert excessive whitespace after DOM manipulations', () => {
             chai.assert.equal(dom.getTotalWhitespace(container.outerHTML), startTotalWhitespace);
         });
+
+        it('should accept a callback function which is invoked after dataset change', () => {
+            workingDataset.reverse();
+
+            let ids = workingDataset.map((item) => item.id.toString());
+
+            let promise = new Promise(resolve => mixer.dataset(workingDataset, resolve));
+
+            chai.assert.isFulfilled(promise);
+
+            return promise
+                .then((state) => {
+                    let elIds = state.show.map((el) => el.id);
+
+                    chai.assert.equal(state.totalShow, 6);
+                    chai.assert.deepEqual(ids, elIds);
+                });
+        });
+
+        it('should accept a boolean allowing toggling off of animation', () => {
+            workingDataset.reverse();
+
+            let ids = workingDataset.map((item) => item.id.toString());
+
+            return mixer.dataset(workingDataset, false)
+                .then(state => {
+                    let elIds = state.show.map((el) => el.id);
+
+                    chai.assert.equal(state.totalShow, 6);
+                    chai.assert.deepEqual(ids, elIds);
+                });
+        });
     });
 });

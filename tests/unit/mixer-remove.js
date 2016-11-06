@@ -77,5 +77,35 @@ describe('mixitup.Mixer', () => {
                     mixer.destroy();
                 });
         });
+
+        it('should accept a callback function which is invoked after removal', () => {
+            let container = dom.getContainer();
+            let mixer = mixitup(container);
+            let toRemove = container.children[0];
+
+            let promise = new Promise(resolve => mixer.insert(mixer.remove(toRemove), resolve));
+
+            chai.assert.isFulfilled(promise);
+
+            return promise
+                .then(() => {
+                    chai.assert.notEqual(toRemove, container);
+
+                    mixer.destroy();
+                });
+        });
+
+        it('should accept a boolean allowing toggling off of animation', () => {
+            let container = dom.getContainer();
+            let mixer = mixitup(container);
+            let toRemove = container.children[0];
+
+            return mixer.remove(toRemove, false)
+                .then(() => {
+                    chai.assert.notEqual(toRemove, container);
+
+                    mixer.destroy();
+                });
+        });
     });
 });

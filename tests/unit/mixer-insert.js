@@ -184,6 +184,36 @@ describe('mixitup.Mixer', () => {
                     mixer.destroy();
                 });
         });
+
+        it('should accept a callback function which is invoked after insertion', () => {
+            let container = dom.getContainer();
+            let mixer = mixitup(container);
+            let newTarget = dom.getTarget();
+
+            let promise = new Promise(resolve => mixer.insert(newTarget, resolve));
+
+            chai.assert.isFulfilled(promise);
+
+            return promise
+                .then(() => {
+                    chai.assert.equal(newTarget.parentElement, container);
+
+                    mixer.destroy();
+                });
+        });
+
+        it('should accept a boolean allowing toggling off of animation', () => {
+            let container = dom.getContainer();
+            let mixer = mixitup(container);
+            let newTarget = dom.getTarget();
+
+            return mixer.insert(newTarget, false)
+                .then(() => {
+                    chai.assert.equal(newTarget.parentElement, container);
+
+                    mixer.destroy();
+                });
+        });
     });
 
     describe('#prepend()', () => {

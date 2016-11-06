@@ -2353,6 +2353,55 @@ h.extend(mixitup.Mixer.prototype,
      * @return  {mixitup.UserInstruction}
      */
 
+    parseDatasetArgs: function(args) {
+        var self        = this,
+            instruction = new mixitup.UserInstruction(),
+            arg         = null,
+            i           = -1;
+
+        instruction.animate = self.config.animation.enable;
+        instruction.command = new mixitup.CommandDataset();
+
+        for (i = 0; i < args.length; i++) {
+            arg = args[i];
+
+            if (arg === null) continue;
+
+            switch (typeof arg) {
+                case 'object':
+                    if (Array.isArray(arg) || typeof arg.length === 'number') {
+                        instruction.command.dataset = arg;
+                    } else {
+                        // Change layout command
+
+                        h.extend(instruction.command, arg);
+                    }
+
+                    break;
+                case 'boolean':
+                    instruction.animate = arg;
+
+                    break;
+                case 'function':
+                    instruction.callback = arg;
+
+                    break;
+            }
+        }
+
+        h.freeze(instruction);
+
+        return instruction;
+    },
+
+    /**
+     * @private
+     * @instance
+     * @since   3.0.0
+     * @param   {Array<*>}  args
+     * @return  {mixitup.UserInstruction}
+     */
+
     parseChangeLayoutArgs: function(args) {
         var self        = this,
             instruction = new mixitup.UserInstruction(),
@@ -2466,6 +2515,8 @@ h.extend(mixitup.Mixer.prototype,
             operation           = new mixitup.Operation(),
             startDataset        = null;
 
+        operation = self.callFilters('operationUnmappedGetDataOperation', operation, arguments);
+
         if (!(startDataset = self.state.activeDataset)) {
             throw new Error(mixitup.messages.errorDatasetNotSet());
         }
@@ -2504,6 +2555,8 @@ h.extend(mixitup.Mixer.prototype,
 
         Array.prototype.push.apply(self.targets, operation.toRemove);
 
+        operation = self.callFilters('operationMappedGetDataOperation', operation, arguments);
+
         return operation;
     },
 
@@ -2527,6 +2580,8 @@ h.extend(mixitup.Mixer.prototype,
             uids                = {},
             id                  = '',
             i                   = 0;
+
+        self.callActions('beforeDiffDatasets', arguments);
 
         for (i = 0; data = operation.newDataset[i]; i++) {
             if (typeof (id = data[self.config.data.uid]) === 'undefined' || id.toString().length < 1) {
@@ -2625,6 +2680,8 @@ h.extend(mixitup.Mixer.prototype,
         if (!h.isEqualArray(persistantStartIds, persistantNewIds)) {
             operation.willSort = true;
         }
+
+        self.callActions('afterDiffDatasets', arguments);
     },
 
     /**
@@ -2638,8 +2695,11 @@ h.extend(mixitup.Mixer.prototype,
     renderTarget: function(data) {
         var self    = this,
             render  = null,
+            el      = null,
             temp    = document.createElement('div'),
             html    = '';
+
+        self.callActions('beforeRenderTarget', arguments);
 
         if (typeof (render = self.config.render.target) !== 'function') {
             throw new TypeError(mixitup.messages.errorDatasetRendererNotSet());
@@ -2649,7 +2709,9 @@ h.extend(mixitup.Mixer.prototype,
 
         temp.innerHTML = html;
 
-        return temp.firstElementChild;
+        el = temp.firstElementChild;
+
+        return self.callFilters('elRenderTarget', el, arguments);
     },
 
     /**
@@ -2662,7 +2724,8 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     willSort: function(sortCommandA, sortCommandB) {
-        var self = this;
+        var self    = this,
+            result  = false;
 
         if (
             sortCommandA.order       === 'random' ||
@@ -2672,12 +2735,14 @@ h.extend(mixitup.Mixer.prototype,
             (sortCommandA.next === null && sortCommandB.next) ||
             (sortCommandA.next && sortCommandB.next === null)
         ) {
-            return true;
+            result = true;
         } else if (sortCommandA.next && sortCommandB.next) {
-            return self.willSort(sortCommandA.next, sortCommandB.next);
+            result = self.willSort(sortCommandA.next, sortCommandB.next);
         } else {
-            return false;
+            result = false;
         }
+
+        return self.callFilters('resultWillSort', result, arguments);
     },
 
     /**
@@ -2752,12 +2817,12 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     filter: function() {
-        var self = this,
-            args = self.parseFilterArgs(arguments);
+        var self        = this,
+            instruction = self.parseFilterArgs(arguments);
 
         return self.multimix({
-            filter: args.command
-        }, args.animate, args.callback);
+            filter: instruction.command
+        }, instruction.animate, instruction.callback);
     },
 
     /**
@@ -2778,8 +2843,8 @@ h.extend(mixitup.Mixer.prototype,
 
     toggleOn: function() {
         var self            = this,
-            args            = self.parseFilterArgs(arguments),
-            selector        = args.command.selector,
+            instruction     = self.parseFilterArgs(arguments),
+            selector        = instruction.command.selector,
             toggleSelector  = '';
 
         self.isToggling = true;
@@ -2792,7 +2857,7 @@ h.extend(mixitup.Mixer.prototype,
 
         return self.multimix({
             filter: toggleSelector
-        }, args.animate, args.callback);
+        }, instruction.animate, instruction.callback);
     },
 
     /**
@@ -2813,8 +2878,8 @@ h.extend(mixitup.Mixer.prototype,
 
     toggleOff: function() {
         var self            = this,
-            args            = self.parseFilterArgs(arguments),
-            selector        = args.command.selector,
+            instruction     = self.parseFilterArgs(arguments),
+            selector        = instruction.command.selector,
             toggleSelector  = '';
 
         self.isToggling = true;
@@ -2825,7 +2890,7 @@ h.extend(mixitup.Mixer.prototype,
 
         return self.multimix({
             filter: toggleSelector
-        }, args.animate, args.callback);
+        }, instruction.animate, instruction.callback);
     },
 
     /**
@@ -2845,12 +2910,12 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     sort: function() {
-        var self = this,
-            args = self.parseSortArgs(arguments);
+        var self        = this,
+            instruction = self.parseSortArgs(arguments);
 
         return self.multimix({
-            sort: args.command
-        }, args.animate, args.callback);
+            sort: instruction.command
+        }, instruction.animate, instruction.callback);
     },
 
     /**
@@ -2861,28 +2926,30 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     changeLayout: function() {
-        var self = this,
-            args = self.parseChangeLayoutArgs(arguments);
+        var self        = this,
+            instruction = self.parseChangeLayoutArgs(arguments);
 
         return self.multimix({
-            changeLayout: args.command
-        }, args.animate, args.callback);
+            changeLayout: instruction.command
+        }, instruction.animate, instruction.callback);
     },
 
     /**
      * @public
      * @instance
      * @since       3.0.0
-     * @param       {Array.<object>}    newDataset
-     * @param       {boolean}           [animate]
      * @return      {Promise.<mixitup.State>}
      */
 
-    dataset: function(newDataset, animate) {
-        var self      = this,
-            operation = self.getDataOperation(newDataset);
+    dataset: function() {
+        var self        = this,
+            instruction = self.parseDatasetArgs(arguments),
+            operation   = self.getDataOperation(instruction.command.dataset),
+            animate     = false;
 
-        animate = typeof animate === 'boolean' ? animate : true;
+        self.callActions('beforeDataset', arguments);
+
+        if (instruction.callback) self.userCallback = instruction.callback;
 
         animate = (animate ^ self.config.animation.enable) ? animate : self.config.animation.enable;
 
