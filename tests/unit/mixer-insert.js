@@ -80,6 +80,22 @@ describe('mixitup.Mixer', () => {
                 });
         });
 
+        it('should accept accept a document fragment as an argument', () => {
+            let container = dom.getContainer();
+            let mixer = mixitup(container);
+            let newTarget = dom.getTarget();
+            let frag = document.createDocumentFragment();
+
+            frag.appendChild(newTarget);
+
+            return mixer.insert(frag)
+                .then(state => {
+                    chai.assert.equal(state.show[0].id, 7);
+
+                    mixer.destroy();
+                });
+        });
+
         it('should accept accept an element collection and an index as an argument', () => {
             let container = dom.getContainer();
             let mixer = mixitup(container);
