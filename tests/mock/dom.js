@@ -54,6 +54,18 @@ module.exports = {
         return renderElement('<div class="mixitup-control" data-filter=".category-d">Category D</div>');
     },
 
+    getSortControls() {
+        return renderElement('<div class="mixitup-controls">' +
+            '<div class="mixitup-control" data-sort="default">Default</div> ' +
+            '<div class="mixitup-control" data-sort="default:asc">Default Ascending</div> ' +
+            '<div class="mixitup-control" data-sort="default:desc">Default Descending</div> ' +
+            '<div class="mixitup-control" data-sort="random">Random</div> ' +
+            '<div class="mixitup-control" data-sort="published">Published Date</div> ' +
+            '<div class="mixitup-control" data-sort="views">Views</div> ' +
+            '<div class="mixitup-control" data-sort="published:asc views:desc">Published (asc) Views (desc)</div> ' +
+        '</div>');
+    },
+
     getTotalWhitespace(html) {
         let re = /[>? ]( )[<? ]/g;
         let totalWhitespace = 0;

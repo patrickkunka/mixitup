@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 78323628-60aa-426c-b609-d1de59b200ea
+ * Build 22291098-7881-4da2-af86-ecb18a1279a3
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3243,6 +3243,7 @@
 
         parseStatusChange: function(button, command, actions, toggleArray) {
             var self    = this,
+                alias   = '',
                 toggle  = '',
                 i       = -1;
 
@@ -3266,7 +3267,11 @@
 
                     break;
                 case 'sort':
-                    if (command.sort === actions.sort) {
+                    if (command.sort.match(/:asc/g)) {
+                        alias = command.sort.replace(/:asc/g, '');
+                    }
+
+                    if (command.sort === actions.sort || alias === actions.sort) {
                         self.renderStatus(button, 'active');
                     } else {
                         self.renderStatus(button, 'inactive');
@@ -3780,7 +3785,7 @@
                 self.initControls();
 
                 self.updateControls({
-                    filter: self.state.activeFilterSelector,
+                    filter: self.state.activeFilter,
                     sort: self.state.activeSort
                 });
 
@@ -4567,7 +4572,7 @@
                 startOrder  = isResetting ? operation.newOrder : operation.startOrder,
                 newOrder    = isResetting ? operation.startOrder : operation.newOrder,
                 nextSibling = startOrder.length ? startOrder[startOrder.length - 1].dom.el.nextElementSibling : null,
-                frag        = self.dom.document.createDocumentFragment(),
+                frag        = window.document.createDocumentFragment(),
                 whitespace  = null,
                 target      = null,
                 el          = null,
@@ -4599,7 +4604,7 @@
                 el = target.dom.el;
 
                 if (frag.lastElementChild) {
-                    frag.appendChild(self.dom.document.createTextNode(' '));
+                    frag.appendChild(window.document.createTextNode(' '));
                 }
 
                 frag.appendChild(el);
@@ -4609,7 +4614,7 @@
             // before any other non-target elements
 
             if (nextSibling) {
-                frag.appendChild(self.dom.document.createTextNode(' '));
+                frag.appendChild(window.document.createTextNode(' '));
 
                 self.dom.parent.insertBefore(frag, nextSibling);
             } else {

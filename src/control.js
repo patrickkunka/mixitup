@@ -402,6 +402,7 @@ h.extend(mixitup.Control.prototype,
 
     parseStatusChange: function(button, command, actions, toggleArray) {
         var self    = this,
+            alias   = '',
             toggle  = '',
             i       = -1;
 
@@ -425,7 +426,11 @@ h.extend(mixitup.Control.prototype,
 
                 break;
             case 'sort':
-                if (command.sort === actions.sort) {
+                if (command.sort.match(/:asc/g)) {
+                    alias = command.sort.replace(/:asc/g, '');
+                }
+
+                if (command.sort === actions.sort || alias === actions.sort) {
                     self.renderStatus(button, 'active');
                 } else {
                     self.renderStatus(button, 'inactive');

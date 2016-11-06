@@ -8,3 +8,4 @@ require('./mixer-remove');
 require('./mixer-change-layout');
 require('./controls-filter');
 require('./controls-toggle');
+require('./controls-sort');

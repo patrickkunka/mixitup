@@ -117,7 +117,7 @@ h.extend(mixitup.Mixer.prototype,
             self.initControls();
 
             self.updateControls({
-                filter: self.state.activeFilterSelector,
+                filter: self.state.activeFilter,
                 sort: self.state.activeSort
             });
 
@@ -904,7 +904,7 @@ h.extend(mixitup.Mixer.prototype,
             startOrder  = isResetting ? operation.newOrder : operation.startOrder,
             newOrder    = isResetting ? operation.startOrder : operation.newOrder,
             nextSibling = startOrder.length ? startOrder[startOrder.length - 1].dom.el.nextElementSibling : null,
-            frag        = self.dom.document.createDocumentFragment(),
+            frag        = window.document.createDocumentFragment(),
             whitespace  = null,
             target      = null,
             el          = null,
@@ -936,7 +936,7 @@ h.extend(mixitup.Mixer.prototype,
             el = target.dom.el;
 
             if (frag.lastElementChild) {
-                frag.appendChild(self.dom.document.createTextNode(' '));
+                frag.appendChild(window.document.createTextNode(' '));
             }
 
             frag.appendChild(el);
@@ -946,7 +946,7 @@ h.extend(mixitup.Mixer.prototype,
         // before any other non-target elements
 
         if (nextSibling) {
-            frag.appendChild(self.dom.document.createTextNode(' '));
+            frag.appendChild(window.document.createTextNode(' '));
 
             self.dom.parent.insertBefore(frag, nextSibling);
         } else {
