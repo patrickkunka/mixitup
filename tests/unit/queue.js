@@ -30,6 +30,9 @@ describe('mixitup.Mixer', () => {
                 mixer.show()
             ]);
 
+            // TODO: queue limit is set to 5, but warns on 5th op? should be 6.
+            // Promise.all does not resolve regardless of duration. Needs looking into.
+
             chai.assert.isFulfilled(promise);
         });
     });
