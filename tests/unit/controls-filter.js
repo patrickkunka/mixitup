@@ -10,7 +10,7 @@ chai.use(require('chai-shallow-deep-equal'));
 chai.use(require('chai-as-promised'));
 
 describe('Controls', () => {
-    describe('Filter (static)', () => {
+    describe('Filter', () => {
         let frag        = document.createDocumentFragment();
         let container   = dom.getContainer();
         let controls    = dom.getFilterControls();
@@ -147,222 +147,30 @@ describe('Controls', () => {
             chai.assert.equal(state.totalShow, totalMatching);
             chai.assert.isOk(filter.matches('.mixitup-control-active'));
         });
-    });
 
-    describe('Filter (live)', () => {
-        let frag        = document.createDocumentFragment();
-        let container   = dom.getContainer();
-        let controls    = dom.getFilterControls();
+        it ('should allow a single set of controls to control multiple mixer instance simultanously', () => {
+            let frag = document.createDocumentFragment();
 
-        container.insertBefore(controls, container.children[0]);
+            let container1 = dom.getContainer();
+            let container2 = dom.getContainer();
+            let controls = dom.getFilterControls();
 
-        frag.appendChild(container);
+            frag.appendChild(controls);
+            frag.appendChild(container1);
+            frag.appendChild(container2);
 
-        let mixer = mixitup(container, {
-            controls: {
-                scope: 'local',
-                live: true
-            }
-        }, frag);
+            let mixer1 = mixitup(container1, {}, frag);
+            let mixer2 = mixitup(container2, {}, frag);
 
-        after(() => mixer.destroy());
+            after(() => {
+                mixer1.destroy();
+                mixer2.destroy();
+            });
 
-        it('should detect nested filter controls and set active states upon instantiation', () => {
-            let filter = controls.querySelector('[data-filter="all"]');
-
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-
-        it('should map filter controls with value "none" to the selector ""', () => {
-            let filter = controls.querySelector('[data-filter="none"]');
-
-            filter.click();
-
-            let state = mixer.getState();
-
-            chai.assert.equal(state.activeFilter.selector, '');
-            chai.assert.equal(state.totalShow, 0);
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-
-        it('should map filter controls with value "all" to the target selector', () => {
-            let filter = controls.querySelector('[data-filter="all"]');
-
-            filter.click();
-
-            let state = mixer.getState();
-
-            chai.assert.equal(state.activeFilter.selector, '.mix');
-            chai.assert.equal(state.totalHide, 0);
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-
-        it('should accept filter controls with a selector value', () => {
             let filter = controls.querySelector('[data-filter=".category-a"]');
-            let totalMatching = container.querySelectorAll('.category-a').length;
 
             filter.click();
 
-            let state = mixer.getState();
-
-            chai.assert.equal(state.activeFilter.selector, '.category-a');
-            chai.assert.equal(state.totalShow, totalMatching);
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-
-        it('should accept filter controls with a compound OR selector', () => {
-            let filter = controls.querySelector('[data-filter=".category-a, .category-b"]');
-            let totalMatching = container.querySelectorAll('.category-a, .category-b').length;
-
-            filter.click();
-
-            let state = mixer.getState();
-
-            chai.assert.equal(state.activeFilter.selector, '.category-a, .category-b');
-            chai.assert.equal(state.totalShow, totalMatching);
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-
-        it('should accept filter controls with a compound AND selector', () => {
-            let filter = controls.querySelector('[data-filter=".category-a.category-c"]');
-            let totalMatching = container.querySelectorAll('.category-a.category-c').length;
-
-            filter.click();
-
-            let state = mixer.getState();
-
-            chai.assert.equal(state.activeFilter.selector, '.category-a.category-c');
-            chai.assert.equal(state.totalShow, totalMatching);
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-
-        it('should accept filter controls with an attribute selector value', () => {
-            let filter = controls.querySelector('.mixitup_control__attr-a');
-            let totalMatching = container.querySelectorAll('[data-category="a"]').length;
-
-            filter.click();
-
-            let state = mixer.getState();
-
-            chai.assert.equal(state.activeFilter.selector, '[data-category="a"]');
-            chai.assert.equal(state.totalShow, totalMatching);
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-
-        it('should accept filter controls with an attribute selector value', () => {
-            let filter = controls.querySelector('.mixitup_control__attr-a');
-            let totalMatching = container.querySelectorAll('[data-category="a"]').length;
-
-            filter.click();
-
-            let state = mixer.getState();
-
-            chai.assert.equal(state.activeFilter.selector, '[data-category="a"]');
-            chai.assert.equal(state.totalShow, totalMatching);
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-
-        it('should accept filter controls with a compound OR attribute selector value', () => {
-            let filter = controls.querySelector('.mixitup_control__attr-a-or-b');
-            let totalMatching = container.querySelectorAll('[data-category="a"], [data-category="b"]').length;
-
-            filter.click();
-
-            let state = mixer.getState();
-
-            chai.assert.equal(state.activeFilter.selector, '[data-category="a"], [data-category="b"]');
-            chai.assert.equal(state.totalShow, totalMatching);
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-
-        it('should accept filter controls with a compound AND attribute selector value', () => {
-            let filter = controls.querySelector('.mixitup_control__attr-a-and-c');
-            let totalMatching = container.querySelectorAll('[data-category="a"][data-category="c"]').length;
-
-            filter.click();
-
-            let state = mixer.getState();
-
-            chai.assert.equal(state.activeFilter.selector, '[data-category="a"][data-category="c"]');
-            chai.assert.equal(state.totalShow, totalMatching);
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-
-        it('should allow new controls to be added', () => {
-            let filter = dom.getFilterControl();
-            let totalMatching = container.querySelectorAll('.category-d').length;
-
-            controls.appendChild(filter);
-
-            filter.click();
-
-            let state = mixer.getState();
-
-            chai.assert.equal(state.activeFilter.selector, '.category-d');
-            chai.assert.equal(state.totalShow, totalMatching);
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-    });
-
-    describe('Filter (multiple static)', () => {
-        let frag = document.createDocumentFragment();
-
-        let container1 = dom.getContainer();
-        let container2 = dom.getContainer();
-        let controls = dom.getFilterControls();
-
-        frag.appendChild(controls);
-        frag.appendChild(container1);
-        frag.appendChild(container2);
-
-        let mixer1 = mixitup(container1, {}, frag);
-        let mixer2 = mixitup(container2, {}, frag);
-
-        after(() => {
-            mixer1.destroy();
-            mixer2.destroy();
-        });
-
-        let filter = controls.querySelector('[data-filter=".category-a"]');
-
-        filter.click();
-
-        it ('should allow a single set of controls to control multiple mixer instance simultanously', () => {
-            chai.assert.equal(mixer1.getState().activeFilter.selector, '.category-a');
-            chai.assert.equal(mixer2.getState().activeFilter.selector, '.category-a');
-            chai.assert.isOk(filter.matches('.mixitup-control-active'));
-        });
-    });
-
-    describe('Filter (multiple live)', () => {
-        let frag = document.createDocumentFragment();
-
-        let container1 = dom.getContainer();
-        let container2 = dom.getContainer();
-        let controls = dom.getFilterControls();
-        let config = {
-            controls: {
-                live: true
-            }
-        };
-
-        frag.appendChild(controls);
-        frag.appendChild(container1);
-        frag.appendChild(container2);
-
-        let mixer1 = mixitup(container1, config, frag);
-        let mixer2 = mixitup(container2, config, frag);
-
-        after(() => {
-            mixer1.destroy();
-            mixer2.destroy();
-        });
-
-        let filter = controls.querySelector('[data-filter=".category-a"]');
-
-        filter.click();
-
-        it ('should allow a single set of controls to control multiple mixer instance simultanously', () => {
             chai.assert.equal(mixer1.getState().activeFilter.selector, '.category-a');
             chai.assert.equal(mixer2.getState().activeFilter.selector, '.category-a');
             chai.assert.isOk(filter.matches('.mixitup-control-active'));

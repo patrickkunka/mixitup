@@ -54,6 +54,14 @@ module.exports = {
         return renderElement('<div class="mixitup-control" data-filter=".category-d">Category D</div>');
     },
 
+    getToggleControl() {
+        return renderElement('<div class="mixitup-control" data-toggle=".category-b">Category B</div>');
+    },
+
+    getSortControl() {
+        return renderElement('<div class="mixitup-control" data-sort="views:desc published:asc">Views (desc) Published (asc)</div>');
+    },
+
     getSortControls() {
         return renderElement('<div class="mixitup-controls">' +
             '<div class="mixitup-control" data-sort="default">Default</div> ' +

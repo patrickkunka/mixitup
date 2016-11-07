@@ -11,4 +11,5 @@ require('./controls-filter');
 require('./controls-toggle');
 require('./controls-sort');
 require('./controls-multimix');
+require('./controls-live');
 require('./queue');

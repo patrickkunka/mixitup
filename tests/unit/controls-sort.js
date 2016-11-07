@@ -10,7 +10,7 @@ chai.use(require('chai-shallow-deep-equal'));
 chai.use(require('chai-as-promised'));
 
 describe('Controls', () => {
-    describe('Sort (static)', () => {
+    describe('Sort', () => {
         let frag        = document.createDocumentFragment();
         let container   = dom.getContainer();
         let controls    = dom.getSortControls();
