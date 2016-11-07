@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 039278ef-9326-45c1-a644-a369817750f1
+ * Build b0ca5259-0b64-4e82-ae33-58eaa8dd1800
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -842,7 +842,7 @@
          * Abstracts an ES6 promise into a q-like deferred interface for storage and deferred resolution.
          *
          * @private
-         * @param  {mixitup.ConfigLibraries} libraries
+         * @param  {object} libraries
          * @return {h.Deferred}
          */
 
@@ -1052,6 +1052,7 @@
             this.promise    = null;
             this.resolve    = null;
             this.reject     = null;
+            this.id         = h.randomHex();
         },
 
         /**
@@ -4952,7 +4953,15 @@
 
             h.removeClass(self.dom.container, h.getClassname(self.config.classNames, 'container', self.config.classNames.modifierFailed));
 
-            deferred = self.userDeferred = h.defer(mixitup.libraries);
+            if (!self.userDeferred) {
+                // Queue empty, no pending operations
+
+                deferred = self.userDeferred = h.defer(mixitup.libraries);
+            } else {
+                // Use existing deferred
+
+                deferred = self.userDeferred;
+            }
 
             self.isBusy = true;
 
@@ -5688,7 +5697,7 @@
             self.userDeferred  = null;
             self.lastClicked   = null;
             self.isToggling    = false;
-            self.isBusy      = false;
+            self.isBusy        = false;
 
             if (self.queue.length) {
                 self.callActions('beforeReadQueueCleanUp', arguments);
@@ -5697,11 +5706,15 @@
 
                 // Update non-public API properties stored in queue
 
-                self.userDeferred   = nextInQueue.promise;
+                self.userDeferred  = nextInQueue.deferred;
                 self.isToggling    = nextInQueue.isToggling;
                 self.lastClicked   = nextInQueue.trigger;
 
-                self.multimix.apply(self, nextInQueue.args);
+                if (nextInQueue.instruction.command instanceof mixitup.CommandMultimix) {
+                    self.multimix.apply(self, nextInQueue.args);
+                } else {
+                    self.dataset.apply(self, nextInQueue.args);
+                }
             }
 
             self.callActions('afterCleanUp', arguments);
@@ -6620,15 +6633,25 @@
             var self        = this,
                 instruction = self.parseDatasetArgs(arguments),
                 operation   = self.getDataOperation(instruction.command.dataset),
+                queueItem   = null,
                 animate     = false;
 
             self.callActions('beforeDataset', arguments);
 
-            if (instruction.callback) self.userCallback = instruction.callback;
+            if (!self.isBusy) {
+                if (instruction.callback) self.userCallback = instruction.callback;
 
-            animate = (instruction.animate ^ self.config.animation.enable) ? instruction.animate : self.config.animation.enable;
+                animate = (instruction.animate ^ self.config.animation.enable) ? instruction.animate : self.config.animation.enable;
 
-            return self.goMix(animate, operation);
+                return self.goMix(animate, operation);
+            } else {
+                queueItem = new mixitup.QueueItem();
+
+                queueItem.args          = arguments;
+                queueItem.instruction   = instruction;
+
+                return self.queueMix(queueItem);
+            }
         },
 
         /**
@@ -8278,7 +8301,7 @@
 
         this.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL =
             '[MixItUp] WARNING: An operation was requested but the MixItUp instance was busy. The operation was rejected because the ' +
-            ' queue is full or queuing is disabled.';
+            'queue is full or queuing is disabled.';
 
         this.WARNING_GET_OPERATION_INSTANCE_BUSY =
             '[MixItUp] WARNING: Operations can be be created while the MixItUp instance is busy.';

@@ -663,7 +663,7 @@ h = {
      * Abstracts an ES6 promise into a q-like deferred interface for storage and deferred resolution.
      *
      * @private
-     * @param  {mixitup.ConfigLibraries} libraries
+     * @param  {object} libraries
      * @return {h.Deferred}
      */
 
@@ -873,6 +873,7 @@ h = {
         this.promise    = null;
         this.resolve    = null;
         this.reject     = null;
+        this.id         = h.randomHex();
     },
 
     /**

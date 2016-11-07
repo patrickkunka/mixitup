@@ -17,23 +17,22 @@ describe('mixitup.Mixer', () => {
                 fauxAsync: true
             },
             animation: {
-                duration: 100
+                duration: 200
             }
         });
 
         it('should warn if too many operations are pushed into the queue', () => {
             let promise = Promise.all([
-                mixer.show(),
                 mixer.hide(),
                 mixer.show(),
                 mixer.hide(),
-                mixer.show()
+                mixer.show(),
+                mixer.hide()
             ]);
 
-            // TODO: queue limit is set to 5, but warns on 5th op? should be 6.
-            // Promise.all does not resolve regardless of duration. Needs looking into.
-
             chai.assert.isFulfilled(promise);
+
+            return promise;
         });
     });
 });

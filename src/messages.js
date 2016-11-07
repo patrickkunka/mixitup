@@ -75,7 +75,7 @@ mixitup.Messages = function() {
 
     this.WARNING_MULTIMIX_INSTANCE_QUEUE_FULL =
         '[MixItUp] WARNING: An operation was requested but the MixItUp instance was busy. The operation was rejected because the ' +
-        ' queue is full or queuing is disabled.';
+        'queue is full or queuing is disabled.';
 
     this.WARNING_GET_OPERATION_INSTANCE_BUSY =
         '[MixItUp] WARNING: Operations can be be created while the MixItUp instance is busy.';
