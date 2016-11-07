@@ -240,7 +240,6 @@ describe('mixitup()', () => {
         let state = mixer.getState();
         let targetIds = state.show.map(el => el.id);
 
-
         chai.assert.deepEqual(targetIds, idsByPublishedDate);
 
         mixer.destroy();

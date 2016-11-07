@@ -66,6 +66,13 @@ module.exports = {
         '</div>');
     },
 
+    getMultimixControls() {
+        return renderElement('<div class="mixitup-controls">' +
+            '<div class="mixitup-control" data-filter="all" data-sort="default:asc">All / Default</div> ' +
+            '<div class="mixitup-control" data-filter=".category-b" data-sort="published">Category B / Published</div> ' +
+        '</div>');
+    },
+
     getTotalWhitespace(html) {
         let re = /[>? ]( )[<? ]/g;
         let totalWhitespace = 0;
