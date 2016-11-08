@@ -7,6 +7,7 @@ require('./mixer-insert');
 require('./mixer-remove');
 require('./mixer-change-layout');
 require('./mixer-multimix');
+require('./mixer-get-config');
 require('./controls-filter');
 require('./controls-toggle');
 require('./controls-sort');
