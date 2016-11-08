@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build b0ca5259-0b64-4e82-ae33-58eaa8dd1800
+ * Build f375d6be-cfc9-4148-863d-fa6192288e6c
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -167,7 +167,11 @@
         if (typeof extension === 'function' && extension.TYPE === 'mixitup-extension') {
             // Mixitup extension
 
-            extension(mixitup);
+            if (typeof mixitup.extensions[extension.NAME] === 'undefined') {
+                extension(mixitup);
+
+                mixitup.extensions[extension.NAME] = extension;
+            }
         } else if (extension.fn && extension.fn.jquery) {
             // jQuery
 
@@ -175,9 +179,9 @@
         }
     };
 
-    mixitup.instances = {};
-
-    mixitup.libraries = {};
+    mixitup.instances   = {};
+    mixitup.extensions  = {};
+    mixitup.libraries   = {};
 
     /**
      * @private

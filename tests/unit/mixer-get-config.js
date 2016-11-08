@@ -31,5 +31,19 @@ describe('mixitup.Mixer', () => {
 
             chai.assert.equal(typeof config, 'string');
         });
+
+        it('should retrieve a the current configuration, reflective of any changes', () => {
+            let newEffects = 'fade translateZ(-100px)';
+
+            mixer.configure({
+                animation: {
+                    effects: newEffects
+                }
+            });
+
+            let newConfig = mixer.getConfig('animation.effects');
+
+            chai.assert.equal(newConfig, newEffects);
+        });
     });
 });

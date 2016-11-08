@@ -148,7 +148,11 @@ mixitup.use = function(extension) {
     if (typeof extension === 'function' && extension.TYPE === 'mixitup-extension') {
         // Mixitup extension
 
-        extension(mixitup);
+        if (typeof mixitup.extensions[extension.NAME] === 'undefined') {
+            extension(mixitup);
+
+            mixitup.extensions[extension.NAME] = extension;
+        }
     } else if (extension.fn && extension.fn.jquery) {
         // jQuery
 
@@ -156,6 +160,6 @@ mixitup.use = function(extension) {
     }
 };
 
-mixitup.instances = {};
-
-mixitup.libraries = {};
+mixitup.instances   = {};
+mixitup.extensions  = {};
+mixitup.libraries   = {};
