@@ -273,7 +273,7 @@ mixitup.ConfigClassNames = function() {
      * var mixer = mixitup(containerEl, {
      *     classNames: {
      *         delineatorElement: '__'
-     *         delineatorModifer: '--'
+     *         delineatorModifier: '--'
      *     }
      * });
      *
