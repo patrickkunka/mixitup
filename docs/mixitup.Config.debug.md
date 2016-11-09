@@ -27,6 +27,7 @@ in debugging, or the authoring of extensions.
 > Example: Enabling debug mode
 
 ```js
+
 var mixer = mixitup(containerEl, {
     debug: {
         enable: true

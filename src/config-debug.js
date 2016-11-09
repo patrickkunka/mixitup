@@ -25,6 +25,7 @@ mixitup.ConfigDebug = function() {
      * in debugging, or the authoring of extensions.
      *
      * @example <caption>Example: Enabling debug mode</caption>
+     *
      * var mixer = mixitup(containerEl, {
      *     debug: {
      *         enable: true

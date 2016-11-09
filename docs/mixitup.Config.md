@@ -108,7 +108,7 @@ A group of properties allowing the toggling of various debug features.
 
 
 
-
+A group of properties relating to the layout of your container.
 
 
 
