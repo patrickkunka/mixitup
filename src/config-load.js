@@ -19,7 +19,7 @@ mixitup.ConfigLoad = function() {
     /**
      * A string defining any filtering to be statically applied to the mixer on load.
      * As per the `.filter()` API, this can be any valid selector string, or the
-     * values `'all''` or `'none'`.
+     * values `'all'` or `'none'`.
      *
      * @example <caption>Example 1: Defining an initial filter selector to be applied on load</caption>
      *
@@ -78,8 +78,9 @@ mixitup.ConfigLoad = function() {
 
     /**
      * An array of objects representing the underlying data of any pre-rendered targets,
-     * if using the `.dataset()` API. If targets are pre-rendered when the mixer is
-     * instantiated, this must be set.
+     * when using the `.dataset()` API.
+     *
+     * NB: If targets are pre-rendered when the mixer is instantiated, this must be set.
      *
      * @example <caption>Example: Defining the initial underyling dataset</caption>
      *

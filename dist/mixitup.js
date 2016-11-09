@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build d288f235-696e-424e-8dbc-5eac403926a8
+ * Build 910a120d-1ad8-4d64-aac8-85171cd8b4b4
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2772,7 +2772,7 @@
         /**
          * A string defining any filtering to be statically applied to the mixer on load.
          * As per the `.filter()` API, this can be any valid selector string, or the
-         * values `'all''` or `'none'`.
+         * values `'all'` or `'none'`.
          *
          * @example <caption>Example 1: Defining an initial filter selector to be applied on load</caption>
          *
@@ -2831,8 +2831,9 @@
 
         /**
          * An array of objects representing the underlying data of any pre-rendered targets,
-         * if using the `.dataset()` API. If targets are pre-rendered when the mixer is
-         * instantiated, this must be set.
+         * when using the `.dataset()` API.
+         *
+         * NB: If targets are pre-rendered when the mixer is instantiated, this must be set.
          *
          * @example <caption>Example: Defining the initial underyling dataset</caption>
          *
@@ -2892,6 +2893,37 @@
         mixitup.Base.call(this);
 
         this.callActions('beforeConstruct');
+
+        /**
+         * A selector string used to query and index target elements within the container.
+         *
+         * By default, the class selector `'.mix'` is used, but this can be changed to an
+         * attribute or element selector to match the style of your project.
+         *
+         * @example <caption>Example 1: Changing the target selector</caption>
+         *
+         * var mixer = mixitup(containerEl, {
+         *     selectors: {
+         *         target: '.portfolio-item'
+         *     }
+         * });
+         *
+         * @example <caption>Example 2: Using an attribute selector as a target selector</caption>
+         *
+         * // The mixer will search for any children with the attribute `data-ref="mix"`
+         *
+         * var mixer = mixitup(containerEl, {
+         *     selectors: {
+         *         target: '[data-ref="mix"]'
+         *     }
+         * });
+         *
+         * @name        target
+         * @memberof    mixitup.Config.selectors
+         * @instance
+         * @type        {string}
+         * @default     '.mix'
+         */
 
         this.target = '.mix';
 
