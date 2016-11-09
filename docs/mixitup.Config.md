@@ -2,9 +2,9 @@
 
 ## Overview
 
-`mixitup.Config` is an interface implemented by MixItUp as a means of customising
-the functionality of an instance. It is organised into several semantically
-distinct sub-objects, each one pertaining to a particular aspect of MixItUp functionality.
+`mixitup.Config` is an interface used for customising the functionality of a
+mixer instance. It is organised into several semantically distinct sub-objects,
+each one pertaining to a particular aspect of MixItUp functionality.
 
 An object literal containing any or all of the available properies,
 known as the "configuration object", can be passed as the second parameter to

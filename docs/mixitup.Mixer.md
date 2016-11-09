@@ -160,8 +160,6 @@ Sorts the mixer according to the specified sort command.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`Array.<object>` | `newDataset` | 
-|Param   |`boolean` | `[animate]` | 
 |Returns |`Promise.<mixitup.State>` | 
 
 

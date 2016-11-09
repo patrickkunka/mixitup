@@ -96,7 +96,7 @@ mixitup.ConfigAnimation = function() {
      *
      * var mixer = mixitup(containerEl, {
      *     animation: {
-     *         effectsIn: 'fade translateY(-100%)'
+     *         effectsOut: 'fade translateY(-100%)'
      *     }
      * });
      *

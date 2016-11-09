@@ -14,6 +14,26 @@ mixitup.ConfigCallbacks = function() {
 
     this.callActions('beforeConstruct');
 
+    /**
+     * A callback function invoked at the start of all operations, before animation has ocurred.
+     * Both the current state and the "future state" are passed to the function as arguments.
+     *
+     * @example <caption>Example: Adding an `onMixStart` callback function</caption>
+     * var mixer = mixitup(containerEl, {
+     *     callbacks: {
+     *         onMixStart: function(state, futureState) {
+     *              console.log('starting operation...');
+     *         }
+     *     }
+     * });
+     *
+     * @name        enable
+     * @memberof    mixitup.Config.callbacks
+     * @instance
+     * @type        {function}
+     * @default     null
+     */
+
     this.onMixStart = null;
     this.onMixBusy  = null;
     this.onMixEnd   = null;

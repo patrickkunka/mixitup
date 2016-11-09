@@ -54,6 +54,19 @@ var mixer = mixitup(containerEl, {
 // example active control output: "control-active"
 ```
 
+### <a id="mixitup.Config.classNames#elementContainer">mixitup.Config.classNames.elementContainer</a>
+
+
+
+
+The "element" portion of the classname added to container.
+
+
+|Type | Default
+|---  | ---
+|`string`| `'container'`
+
+
 ### <a id="mixitup.Config.classNames#elementFilter">mixitup.Config.classNames.elementFilter</a>
 
 
@@ -234,6 +247,19 @@ The "modifier" portion of the classname added to disabled controls.
 |Type | Default
 |---  | ---
 |`string`| `'disabled'`
+
+
+### <a id="mixitup.Config.classNames#modifierFailed">mixitup.Config.classNames.modifierFailed</a>
+
+
+
+
+The "modifier" portion of the classname added to the container when in a "failed" state.
+
+
+|Type | Default
+|---  | ---
+|`string`| `'failed'`
 
 
 ### <a id="mixitup.Config.classNames#delineatorElement">mixitup.Config.classNames.delineatorElement</a>

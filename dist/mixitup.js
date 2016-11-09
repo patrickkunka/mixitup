@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build f375d6be-cfc9-4148-863d-fa6192288e6c
+ * Build eaa386fc-b23a-41db-8330-304e76bbafb0
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1392,7 +1392,7 @@
          *
          * var mixer = mixitup(containerEl, {
          *     animation: {
-         *         effectsIn: 'fade translateY(-100%)'
+         *         effectsOut: 'fade translateY(-100%)'
          *     }
          * });
          *
@@ -1747,6 +1747,26 @@
         mixitup.Base.call(this);
 
         this.callActions('beforeConstruct');
+
+        /**
+         * A callback function invoked at the start of all operations, before animation has ocurred.
+         * Both the current state and the "future state" are passed to the function as arguments.
+         *
+         * @example <caption>Example: Adding an `onMixStart` callback function</caption>
+         * var mixer = mixitup(containerEl, {
+         *     callbacks: {
+         *         onMixStart: function(state, futureState) {
+         *              console.log('starting operation...');
+         *         }
+         *     }
+         * });
+         *
+         * @name        enable
+         * @memberof    mixitup.Config.callbacks
+         * @instance
+         * @type        {function}
+         * @default     null
+         */
 
         this.onMixStart = null;
         this.onMixBusy  = null;
@@ -2473,9 +2493,9 @@
     mixitup.ConfigTemplates.prototype.constructor = mixitup.ConfigTemplates;
 
     /**
-     * `mixitup.Config` is an interface implemented by MixItUp as a means of customising
-     * the functionality of an instance. It is organised into several semantically
-     * distinct sub-objects, each one pertaining to a particular aspect of MixItUp functionality.
+     * `mixitup.Config` is an interface used for customising the functionality of a
+     * mixer instance. It is organised into several semantically distinct sub-objects,
+     * each one pertaining to a particular aspect of MixItUp functionality.
      *
      * An object literal containing any or all of the available properies,
      * known as the "configuration object", can be passed as the second parameter to
@@ -2486,7 +2506,7 @@
      * configuration values detailed below.
      *
      * @example <caption>Example 1: Creating and passing the configuration object</caption>
-     * // Firstly we create a configuration object with our desired values
+     * // Create a configuration object with desired values
      *
      * var config = {
      *     animation: {
@@ -2497,7 +2517,7 @@
      *     }
      * };
      *
-     * // The configuration object is then passed to the mixitup factory function
+     * // Pass the configuration object to the mixitup factory function
      *
      * var mixer = mixitup(containerEl, config);
      *
