@@ -308,7 +308,7 @@ If the element portion is ommited by setting it to an empty string, no delineato
 var mixer = mixitup(containerEl, {
     classNames: {
         delineatorElement: '__'
-        delineatorModifer: '--'
+        delineatorModifier: '--'
     }
 });
 

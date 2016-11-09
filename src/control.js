@@ -283,7 +283,7 @@ h.extend(mixitup.Control.prototype,
             }, mixer.dom.document);
 
             if (typeof mixer.config.callbacks.onMixClick === 'function') {
-                returnValue = mixer.config.callbacks.onMixClick.call(mixer.lastClicked, mixer.state, mixer, e);
+                returnValue = mixer.config.callbacks.onMixClick.call(mixer.lastClicked, mixer.state, e, mixer);
 
                 if (returnValue === false) {
                     // User has returned `false` from the callback, so do not handle click
