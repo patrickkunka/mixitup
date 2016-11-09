@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 4404ec2c-a444-44d8-adc2-66fedf7af08e
+ * Build bbdf90ca-5c92-45b9-b84a-c829c886289b
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2482,12 +2482,10 @@
          * Depending on the complexity of your data model, dirty checking can be expensive
          * and is therefore disabled by default.
          *
-         * NB: For changes to be detected, a new immutable instance of your model must be
+         * NB: For changes to be detected, a new immutable instance of the edited model must be
          * provided to mixitup, rather than manipulating properties on the existing instance.
-         * This is because mixitup caches each object in the dataset (by its UID) on each
-         * dataset call, and compares each object in the provided dataset to its predecessor.
-         * Therefore, any property manipulation will result in the the cached reference also
-         * being updated and no change will be detected.
+         * If your changes are a result of a DB write and read, you will most likely be calling
+         * `.dataset()` with a clean set of objects each time, so this will not be an issue.
          *
          * @example <caption>Example: Enabling dirty checking</caption>
          *
@@ -2504,7 +2502,8 @@
          *    }
          * ]
          *
-         * // Instantiate a mixer with a pre-loaded dataset, and a target renderer function defined
+         * // Instantiate a mixer with a pre-loaded dataset, and a target renderer
+         * // function defined
          *
          * var mixer = mixitup(containerEl, {
          *     data: {
@@ -2519,8 +2518,9 @@
          *     }
          * });
          *
-         * // For illustration, clone and edit the second object in the dataset
-         * // NB: this would typically be done server-side in response to a DB update
+         * // For illustration, we will clone and edit the second object in the dataset.
+         * // NB: this would typically be done server-side in response to a DB update,
+         * and then re-queried via an API.
          *
          * myDataset[1] = Object.assign({}, myDataset[1]);
          *
@@ -2552,6 +2552,8 @@
     mixitup.ConfigData.prototype.constructor = mixitup.ConfigData;
 
     /**
+     * A group of properties allowing the toggling of various debug features.
+     *
      * @constructor
      * @memberof    mixitup.Config
      * @name        debug
@@ -2565,9 +2567,82 @@
 
         this.callActions('beforeConstruct');
 
-        this.enable         = false;
-        this.showWarnings   = true;
-        this.fauxAsync      = false;
+        /**
+         * A boolean dictating whether or not the mixer instance returned by the
+         * `mixitup()` factory function should expose private properties and methods.
+         *
+         * By default, mixer instances only expose their public API, but enabling
+         * debug mode will give you access to various mixer internals which may aid
+         * in debugging, or the authoring of extensions.
+         *
+         * @example <caption>Example: Enabling debug mode</caption>
+         * var mixer = mixitup(containerEl, {
+         *     debug: {
+         *         enable: true
+         *     }
+         * });
+         *
+         * // Private properties and methods will now be visible on the mixer instance:
+         *
+         * console.log(mixer);
+         *
+         * @name        enable
+         * @memberof    mixitup.Config.debug
+         * @instance
+         * @type        {boolean}
+         * @default     false
+         */
+
+        this.enable = false;
+
+        /**
+         * A boolean dictating whether or not warnings should be shown when various
+         * common gotchas occur.
+         *
+         * Warnings are intended to provide insights during development when something
+         * occurs that is not a fatal, but may indicate an issue with your integration,
+         * and are therefore turned on by default. However, you may wish to disable
+         * them in production.
+         *
+         * @example <caption>Example 1: Disabling warnings</caption>
+         *
+         * var mixer = mixitup(containerEl, {
+         *     debug: {
+         *         showWarnings: false
+         *     }
+         * });
+         *
+         * @example <caption>Example 2: Disabling warnings based on environment</caption>
+         *
+         * var showWarnings = myAppConfig.environment === 'development' ? true : false;
+         *
+         * var mixer = mixitup(containerEl, {
+         *     debug: {
+         *         showWarnings: showWarnings
+         *     }
+         * });
+         *
+         * @name        showWarnings
+         * @memberof    mixitup.Config.debug
+         * @instance
+         * @type        {boolean}
+         * @default     true
+         */
+
+        this.showWarnings = true;
+
+        /**
+         * Used for server-side testing only.
+         *
+         * @private
+         * @name        fauxAsync
+         * @memberof    mixitup.Config.debug
+         * @instance
+         * @type        {boolean}
+         * @default     false
+         */
+
+        this.fauxAsync = false;
 
         this.callActions('afterConstruct');
 

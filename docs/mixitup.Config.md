@@ -97,7 +97,7 @@ A group of properties relating to MixItUp's dataset API.
 
 
 
-
+A group of properties allowing the toggling of various debug features.
 
 
 
