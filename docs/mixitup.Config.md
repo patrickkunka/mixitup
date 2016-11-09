@@ -34,14 +34,14 @@ A group of properties defining MixItUp's animation and effects settings.
 
 
 
-A group of optional mixer-level callback functions to be invoked at various
+A group of optional callback functions to be invoked at various
 points within the lifecycle of a mixer operation.
 
 Each function is analogous to an event of the same name triggered from the
 container element, and is invoked immediately after it.
 
 All callback functions receive the current `state` object as their first
-arguments, as well as other more specific arguments described below.
+argument, as well as other more specific arguments described below.
 
 
 
@@ -63,10 +63,10 @@ arguments, as well as other more specific arguments described below.
 
 
 
-A group of properties defining the output and structure of classNames programmatically
+A group of properties defining the output and structure of class names programmatically
 added to controls and containers to reflect the state of the mixer.
 
-Most commonly, classNames are added to control buttons by MixItUp to indicate that
+Most commonly, class names are added to controls by MixItUp to indicate that
 the control is active so that it can be styled accordingly - `'mixitup-control-active'` by default.
 
 Using a "BEM" like structure, each classname is broken into the three parts:
@@ -86,7 +86,7 @@ your proejct.
 
 
 
-
+A group of properties relating to MixItUp's dataset API.
 
 
 

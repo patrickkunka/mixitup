@@ -1,10 +1,10 @@
 /* global mixitup, h */
 
 /**
- * A group of properties defining the output and structure of classNames programmatically
+ * A group of properties defining the output and structure of class names programmatically
  * added to controls and containers to reflect the state of the mixer.
  *
- * Most commonly, classNames are added to control buttons by MixItUp to indicate that
+ * Most commonly, class names are added to controls by MixItUp to indicate that
  * the control is active so that it can be styled accordingly - `'mixitup-control-active'` by default.
  *
  * Using a "BEM" like structure, each classname is broken into the three parts:
@@ -29,7 +29,7 @@ mixitup.ConfigClassNames = function() {
     this.callActions('beforeConstruct');
 
     /**
-     * The "block" portion, or top-level namespace added to the start of any classNames created by MixItUp.
+     * The "block" portion, or top-level namespace added to the start of any class names created by MixItUp.
      *
      * @example <caption>Example 1: changing the `config.classNames.block` value</caption>
      * var mixer = mixitup(containerEl, {
@@ -59,7 +59,7 @@ mixitup.ConfigClassNames = function() {
     this.block = 'mixitup';
 
     /**
-     * The "element" portion of the classname added to container.
+     * The "element" portion of the class name added to container.
      *
      * @name        elementContainer
      * @memberof    mixitup.Config.classNames
@@ -71,7 +71,7 @@ mixitup.ConfigClassNames = function() {
     this.elementContainer = 'container';
 
     /**
-     * The "element" portion of the classname added to filter controls.
+     * The "element" portion of the class name added to filter controls.
      *
      * By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
      * each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -105,7 +105,7 @@ mixitup.ConfigClassNames = function() {
     this.elementFilter = 'control';
 
     /**
-     * The "element" portion of the classname added to sort controls.
+     * The "element" portion of the class name added to sort controls.
      *
      * By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
      * each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -139,7 +139,7 @@ mixitup.ConfigClassNames = function() {
     this.elementSort = 'control';
 
     /**
-     * The "element" portion of the classname added to multimix controls.
+     * The "element" portion of the class name added to multimix controls.
      *
      * By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
      * each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -173,7 +173,7 @@ mixitup.ConfigClassNames = function() {
     this.elementMultimix = 'control';
 
     /**
-     * The "element" portion of the classname added to toggle controls.
+     * The "element" portion of the class name added to toggle controls.
      *
      * By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
      * each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -207,7 +207,7 @@ mixitup.ConfigClassNames = function() {
     this.elementToggle = 'control';
 
     /**
-     * The "modifier" portion of the classname added to active controls.
+     * The "modifier" portion of the class name added to active controls.
      * @name        modifierActive
      * @memberof    mixitup.Config.classNames
      * @instance
@@ -218,7 +218,7 @@ mixitup.ConfigClassNames = function() {
     this.modifierActive = 'active';
 
     /**
-     * The "modifier" portion of the classname added to disabled controls.
+     * The "modifier" portion of the class name added to disabled controls.
      *
      * @name        modifierDisabled
      * @memberof    mixitup.Config.classNames
@@ -230,7 +230,7 @@ mixitup.ConfigClassNames = function() {
     this.modifierDisabled = 'disabled';
 
     /**
-     * The "modifier" portion of the classname added to the container when in a "failed" state.
+     * The "modifier" portion of the class name added to the container when in a "failed" state.
      *
      * @name        modifierFailed
      * @memberof    mixitup.Config.classNames
@@ -242,7 +242,7 @@ mixitup.ConfigClassNames = function() {
     this.modifierFailed = 'failed';
 
     /**
-     * The delineator used between the "block" and "element" portions of any classname added by MixItUp.
+     * The delineator used between the "block" and "element" portions of any class name added by MixItUp.
      *
      * If the block portion is ommited by setting it to an empty string, no delineator will be added.
      *
@@ -265,7 +265,7 @@ mixitup.ConfigClassNames = function() {
     this.delineatorElement = '-';
 
     /**
-     * The delineator used between the "element" and "modifier" portions of any classname added by MixItUp.
+     * The delineator used between the "element" and "modifier" portions of any class name added by MixItUp.
      *
      * If the element portion is ommited by setting it to an empty string, no delineator will be added.
      *

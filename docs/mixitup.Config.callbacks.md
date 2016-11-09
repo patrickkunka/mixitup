@@ -2,14 +2,14 @@
 
 ## Overview
 
-A group of optional mixer-level callback functions to be invoked at various
+A group of optional callback functions to be invoked at various
 points within the lifecycle of a mixer operation.
 
 Each function is analogous to an event of the same name triggered from the
 container element, and is invoked immediately after it.
 
 All callback functions receive the current `state` object as their first
-arguments, as well as other more specific arguments described below.
+argument, as well as other more specific arguments described below.
 
 
 ## Members

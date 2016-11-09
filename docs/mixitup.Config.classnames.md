@@ -2,10 +2,10 @@
 
 ## Overview
 
-A group of properties defining the output and structure of classNames programmatically
+A group of properties defining the output and structure of class names programmatically
 added to controls and containers to reflect the state of the mixer.
 
-Most commonly, classNames are added to control buttons by MixItUp to indicate that
+Most commonly, class names are added to controls by MixItUp to indicate that
 the control is active so that it can be styled accordingly - `'mixitup-control-active'` by default.
 
 Using a "BEM" like structure, each classname is broken into the three parts:
@@ -24,7 +24,7 @@ your proejct.
 
 
 
-The "block" portion, or top-level namespace added to the start of any classNames created by MixItUp.
+The "block" portion, or top-level namespace added to the start of any class names created by MixItUp.
 
 
 |Type | Default
@@ -59,7 +59,7 @@ var mixer = mixitup(containerEl, {
 
 
 
-The "element" portion of the classname added to container.
+The "element" portion of the class name added to container.
 
 
 |Type | Default
@@ -72,7 +72,7 @@ The "element" portion of the classname added to container.
 
 
 
-The "element" portion of the classname added to filter controls.
+The "element" portion of the class name added to filter controls.
 
 By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
 each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -111,7 +111,7 @@ var mixer = mixitup(containerEl, {
 
 
 
-The "element" portion of the classname added to sort controls.
+The "element" portion of the class name added to sort controls.
 
 By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
 each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -150,7 +150,7 @@ var mixer = mixitup(containerEl, {
 
 
 
-The "element" portion of the classname added to multimix controls.
+The "element" portion of the class name added to multimix controls.
 
 By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
 each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -189,7 +189,7 @@ var mixer = mixitup(containerEl, {
 
 
 
-The "element" portion of the classname added to toggle controls.
+The "element" portion of the class name added to toggle controls.
 
 By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
 each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -228,7 +228,7 @@ var mixer = mixitup(containerEl, {
 
 
 
-The "modifier" portion of the classname added to active controls.
+The "modifier" portion of the class name added to active controls.
 
 
 |Type | Default
@@ -241,7 +241,7 @@ The "modifier" portion of the classname added to active controls.
 
 
 
-The "modifier" portion of the classname added to disabled controls.
+The "modifier" portion of the class name added to disabled controls.
 
 
 |Type | Default
@@ -254,7 +254,7 @@ The "modifier" portion of the classname added to disabled controls.
 
 
 
-The "modifier" portion of the classname added to the container when in a "failed" state.
+The "modifier" portion of the class name added to the container when in a "failed" state.
 
 
 |Type | Default
@@ -267,7 +267,7 @@ The "modifier" portion of the classname added to the container when in a "failed
 
 
 
-The delineator used between the "block" and "element" portions of any classname added by MixItUp.
+The delineator used between the "block" and "element" portions of any class name added by MixItUp.
 
 If the block portion is ommited by setting it to an empty string, no delineator will be added.
 
@@ -293,7 +293,7 @@ var mixer = mixitup(containerEl, {
 
 
 
-The delineator used between the "element" and "modifier" portions of any classname added by MixItUp.
+The delineator used between the "element" and "modifier" portions of any class name added by MixItUp.
 
 If the element portion is ommited by setting it to an empty string, no delineator will be added.
 

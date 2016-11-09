@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 5e9d284a-7e37-4984-a0bc-e0033e446667
+ * Build 4404ec2c-a444-44d8-adc2-66fedf7af08e
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1735,14 +1735,14 @@
     mixitup.ConfigAnimation.prototype.constructor = mixitup.ConfigAnimation;
 
     /**
-     * A group of optional mixer-level callback functions to be invoked at various
+     * A group of optional callback functions to be invoked at various
      * points within the lifecycle of a mixer operation.
      *
      * Each function is analogous to an event of the same name triggered from the
      * container element, and is invoked immediately after it.
      *
      * All callback functions receive the current `state` object as their first
-     * arguments, as well as other more specific arguments described below.
+     * argument, as well as other more specific arguments described below.
      *
      * @constructor
      * @memberof    mixitup.Config
@@ -2136,10 +2136,10 @@
     mixitup.ConfigControls.prototype.constructor = mixitup.ConfigControls;
 
     /**
-     * A group of properties defining the output and structure of classNames programmatically
+     * A group of properties defining the output and structure of class names programmatically
      * added to controls and containers to reflect the state of the mixer.
      *
-     * Most commonly, classNames are added to control buttons by MixItUp to indicate that
+     * Most commonly, class names are added to controls by MixItUp to indicate that
      * the control is active so that it can be styled accordingly - `'mixitup-control-active'` by default.
      *
      * Using a "BEM" like structure, each classname is broken into the three parts:
@@ -2164,7 +2164,7 @@
         this.callActions('beforeConstruct');
 
         /**
-         * The "block" portion, or top-level namespace added to the start of any classNames created by MixItUp.
+         * The "block" portion, or top-level namespace added to the start of any class names created by MixItUp.
          *
          * @example <caption>Example 1: changing the `config.classNames.block` value</caption>
          * var mixer = mixitup(containerEl, {
@@ -2194,7 +2194,7 @@
         this.block = 'mixitup';
 
         /**
-         * The "element" portion of the classname added to container.
+         * The "element" portion of the class name added to container.
          *
          * @name        elementContainer
          * @memberof    mixitup.Config.classNames
@@ -2206,7 +2206,7 @@
         this.elementContainer = 'container';
 
         /**
-         * The "element" portion of the classname added to filter controls.
+         * The "element" portion of the class name added to filter controls.
          *
          * By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
          * each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -2240,7 +2240,7 @@
         this.elementFilter = 'control';
 
         /**
-         * The "element" portion of the classname added to sort controls.
+         * The "element" portion of the class name added to sort controls.
          *
          * By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
          * each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -2274,7 +2274,7 @@
         this.elementSort = 'control';
 
         /**
-         * The "element" portion of the classname added to multimix controls.
+         * The "element" portion of the class name added to multimix controls.
          *
          * By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
          * each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -2308,7 +2308,7 @@
         this.elementMultimix = 'control';
 
         /**
-         * The "element" portion of the classname added to toggle controls.
+         * The "element" portion of the class name added to toggle controls.
          *
          * By default, all filter, sort, multimix and toggle controls take the same element value of `'control'`, but
          * each type's element value can be individually overwritten to match the unique classNames of your controls as needed.
@@ -2342,7 +2342,7 @@
         this.elementToggle = 'control';
 
         /**
-         * The "modifier" portion of the classname added to active controls.
+         * The "modifier" portion of the class name added to active controls.
          * @name        modifierActive
          * @memberof    mixitup.Config.classNames
          * @instance
@@ -2353,7 +2353,7 @@
         this.modifierActive = 'active';
 
         /**
-         * The "modifier" portion of the classname added to disabled controls.
+         * The "modifier" portion of the class name added to disabled controls.
          *
          * @name        modifierDisabled
          * @memberof    mixitup.Config.classNames
@@ -2365,7 +2365,7 @@
         this.modifierDisabled = 'disabled';
 
         /**
-         * The "modifier" portion of the classname added to the container when in a "failed" state.
+         * The "modifier" portion of the class name added to the container when in a "failed" state.
          *
          * @name        modifierFailed
          * @memberof    mixitup.Config.classNames
@@ -2377,7 +2377,7 @@
         this.modifierFailed = 'failed';
 
         /**
-         * The delineator used between the "block" and "element" portions of any classname added by MixItUp.
+         * The delineator used between the "block" and "element" portions of any class name added by MixItUp.
          *
          * If the block portion is ommited by setting it to an empty string, no delineator will be added.
          *
@@ -2400,7 +2400,7 @@
         this.delineatorElement = '-';
 
         /**
-         * The delineator used between the "element" and "modifier" portions of any classname added by MixItUp.
+         * The delineator used between the "element" and "modifier" portions of any class name added by MixItUp.
          *
          * If the element portion is ommited by setting it to an empty string, no delineator will be added.
          *
@@ -2435,6 +2435,8 @@
     mixitup.ConfigClassNames.prototype.constructor = mixitup.ConfigClassNames;
 
     /**
+     * A group of properties relating to MixItUp's dataset API.
+     *
      * @constructor
      * @memberof    mixitup.Config
      * @name        data
@@ -2448,7 +2450,94 @@
 
         this.callActions('beforeConstruct');
 
-        this.uid        = '';
+        /**
+         * A string specifying the name of the key containing your data model's unique
+         * identifier (UID). To use the dataset API, a UID key must be specified and
+         * be present and unique on all objects in the dataset you provide to MixItUp.
+         *
+         * For example, if your dataset is made up of MongoDB documents, the UID
+         * key would be `'id'` or `_id`.
+         *
+         * @example <caption>Example: Setting the UID to `'id'`</caption>
+         * var mixer = mixitup(containerEl, {
+         *     data: {
+         *         uid: 'id'
+         *     }
+         * });
+         *
+         * @name        uid
+         * @memberof    mixitup.Config.data
+         * @instance
+         * @type        {string}
+         * @default     ''
+         */
+
+        this.uid = '';
+
+        /**
+         * A boolean dictating whether or not MixItUp should "dirty check" each object in
+         * your dataset for changes whenever `.dataset()` is called, and re-render any targets
+         * for which a change is found.
+         *
+         * Depending on the complexity of your data model, dirty checking can be expensive
+         * and is therefore disabled by default.
+         *
+         * NB: For changes to be detected, a new immutable instance of your model must be
+         * provided to mixitup, rather than manipulating properties on the existing instance.
+         * This is because mixitup caches each object in the dataset (by its UID) on each
+         * dataset call, and compares each object in the provided dataset to its predecessor.
+         * Therefore, any property manipulation will result in the the cached reference also
+         * being updated and no change will be detected.
+         *
+         * @example <caption>Example: Enabling dirty checking</caption>
+         *
+         * var myDataset = [
+         *    {
+         *       id: 0,
+         *       title: "Blog Post 1"
+         *       ...
+         *    },
+         *    {
+         *       id: 1,
+         *       title: "Blog Post 2"
+         *       ...
+         *    }
+         * ]
+         *
+         * // Instantiate a mixer with a pre-loaded dataset, and a target renderer function defined
+         *
+         * var mixer = mixitup(containerEl, {
+         *     data: {
+         *         uid: 'id',
+         *         dirtyCheck: true
+         *     },
+         *     load: {
+         *         dataset: myDataset
+         *     },
+         *     render: {
+         *         target: function() { ... }
+         *     }
+         * });
+         *
+         * // For illustration, clone and edit the second object in the dataset
+         * // NB: this would typically be done server-side in response to a DB update
+         *
+         * myDataset[1] = Object.assign({}, myDataset[1]);
+         *
+         * myDataset[1].title = 'Blog Post 22';
+         *
+         * mixer.dataset(myDataset)
+         *    .then(function() {
+         *        // the target with ID "1", will be re-rendered reflecting its new title
+         *    });
+         *
+         * @name        dirtyCheck
+         * @memberof    mixitup.Config.data
+         * @instance
+         * @type        {boolean}
+         * @default     false
+         */
+
         this.dirtyCheck = false;
 
         this.callActions('afterConstruct');
