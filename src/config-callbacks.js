@@ -27,7 +27,7 @@ mixitup.ConfigCallbacks = function() {
      *     }
      * });
      *
-     * @name        enable
+     * @name        onMixStart
      * @memberof    mixitup.Config.callbacks
      * @instance
      * @type        {function}
@@ -35,9 +35,45 @@ mixitup.ConfigCallbacks = function() {
      */
 
     this.onMixStart = null;
+
+    /**
+     * @name        onMixBusy
+     * @memberof    mixitup.Config.callbacks
+     * @instance
+     * @type        {function}
+     * @default     null
+     */
+
     this.onMixBusy  = null;
+
+    /**
+     * @name        onMixEnd
+     * @memberof    mixitup.Config.callbacks
+     * @instance
+     * @type        {function}
+     * @default     null
+     */
+
     this.onMixEnd   = null;
+
+    /**
+     * @name        onMixFail
+     * @memberof    mixitup.Config.callbacks
+     * @instance
+     * @type        {function}
+     * @default     null
+     */
+
     this.onMixFail  = null;
+
+    /**
+     * @name        onMixClick
+     * @memberof    mixitup.Config.callbacks
+     * @instance
+     * @type        {function}
+     * @default     null
+     */
+
     this.onMixClick = null;
 
     this.callActions('afterConstruct');

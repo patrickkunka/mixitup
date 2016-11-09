@@ -7,7 +7,7 @@
 
 ## Members
 
-### <a id="mixitup.Config.callbacks#enable">mixitup.Config.callbacks.enable</a>
+### <a id="mixitup.Config.callbacks#onMixStart">mixitup.Config.callbacks.onMixStart</a>
 
 
 
@@ -31,4 +31,56 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
+
+### <a id="mixitup.Config.callbacks#onMixBusy">mixitup.Config.callbacks.onMixBusy</a>
+
+
+
+
+
+
+
+|Type | Default
+|---  | ---
+|`function`| `null`
+
+
+### <a id="mixitup.Config.callbacks#onMixEnd">mixitup.Config.callbacks.onMixEnd</a>
+
+
+
+
+
+
+
+|Type | Default
+|---  | ---
+|`function`| `null`
+
+
+### <a id="mixitup.Config.callbacks#onMixFail">mixitup.Config.callbacks.onMixFail</a>
+
+
+
+
+
+
+
+|Type | Default
+|---  | ---
+|`function`| `null`
+
+
+### <a id="mixitup.Config.callbacks#onMixClick">mixitup.Config.callbacks.onMixClick</a>
+
+
+
+
+
+
+
+|Type | Default
+|---  | ---
+|`function`| `null`
+
 

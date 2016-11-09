@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build eaa386fc-b23a-41db-8330-304e76bbafb0
+ * Build 260479a4-ef79-41fd-8120-ef0e3c78adeb
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1761,7 +1761,7 @@
          *     }
          * });
          *
-         * @name        enable
+         * @name        onMixStart
          * @memberof    mixitup.Config.callbacks
          * @instance
          * @type        {function}
@@ -1769,9 +1769,45 @@
          */
 
         this.onMixStart = null;
+
+        /**
+         * @name        onMixBusy
+         * @memberof    mixitup.Config.callbacks
+         * @instance
+         * @type        {function}
+         * @default     null
+         */
+
         this.onMixBusy  = null;
+
+        /**
+         * @name        onMixEnd
+         * @memberof    mixitup.Config.callbacks
+         * @instance
+         * @type        {function}
+         * @default     null
+         */
+
         this.onMixEnd   = null;
+
+        /**
+         * @name        onMixFail
+         * @memberof    mixitup.Config.callbacks
+         * @instance
+         * @type        {function}
+         * @default     null
+         */
+
         this.onMixFail  = null;
+
+        /**
+         * @name        onMixClick
+         * @memberof    mixitup.Config.callbacks
+         * @instance
+         * @type        {function}
+         * @default     null
+         */
+
         this.onMixClick = null;
 
         this.callActions('afterConstruct');
