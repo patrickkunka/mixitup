@@ -1,6 +1,15 @@
 /* global mixitup, h */
 
 /**
+ * A group of optional mixer-level callback functions to be invoked at various
+ * points within the lifecycle of a mixer operation.
+ *
+ * Each function is analogous to an event of the same name triggered from the
+ * container element, and is invoked immediately after it.
+ *
+ * All callback functions receive the current `state` object as their first
+ * arguments, as well as other more specific arguments described below.
+ *
  * @constructor
  * @memberof    mixitup.Config
  * @name        callbacks
@@ -15,9 +24,11 @@ mixitup.ConfigCallbacks = function() {
     this.callActions('beforeConstruct');
 
     /**
-     * A callback function invoked at the start of all operations, before animation
-     * has ocurred. Both the current state and the "future state" are passed to the
-     * function as arguments.
+     * A callback function invoked immediately after any MixItUp operation is requested
+     * and before animations have begun.
+     *
+     * A second `futureState` argument is passed to the function which represents the final
+     * state of the mixer once the requested operation has completed.
      *
      * @example <caption>Example: Adding an `onMixStart` callback function</caption>
      * var mixer = mixitup(containerEl, {
@@ -38,8 +49,9 @@ mixitup.ConfigCallbacks = function() {
     this.onMixStart = null;
 
     /**
-     * A callback function invoked if an operation is requested while queueing is disabled
-     * or the queue is full.
+     * A callback function invoked when a MixItUp operation is requested while another
+     * operation is in progress, and the animation queue is full, or queueing
+     * is disabled.
      *
      * @example <caption>Example: Adding an `onMixBusy` callback function</caption>
      * var mixer = mixitup(containerEl, {
@@ -60,12 +72,13 @@ mixitup.ConfigCallbacks = function() {
     this.onMixBusy  = null;
 
     /**
-     * A callback function invoked whenever an operation completes.
+     * A callback function invoked after any MixItUp operation has completed, and the
+     * state has been updated.
      *
      * @example <caption>Example: Adding an `onMixEnd` callback function</caption>
      * var mixer = mixitup(containerEl, {
      *     callbacks: {
-     *         onMixBusy: function(state) {
+     *         onMixEnd: function(state) {
      *              console.log('Operation complete');
      *         }
      *     }
@@ -81,8 +94,8 @@ mixitup.ConfigCallbacks = function() {
     this.onMixEnd   = null;
 
     /**
-     * A callback function invoked whenever an operation "fails", meaning no targets
-     * were found matching the requested filter.
+     * A callback function invoked whenever an operation "fails", i.e. no targets
+     * could be found matching the requested filter.
      *
      * @example <caption>Example: Adding an `onMixFail` callback function</caption>
      * var mixer = mixitup(containerEl, {
@@ -103,10 +116,15 @@ mixitup.ConfigCallbacks = function() {
     this.onMixFail  = null;
 
     /**
-     * A callback function invoked whenever a control is clicked. The clicked element is
-     * assigned to the `this` keyword within the function. The original click event is
-     * passed to the function as the second argument, which can be useful if using `<a>`
-     * tags as controls where the default behavior needs to be prevented.
+     * A callback function invoked whenever a MixItUp control is clicked, and before its
+     * respective operation is requested.
+     *
+     * The clicked element is assigned to the `this` keyword within the function. The original
+     * click event is passed to the function as the second argument, which can be useful if
+     * using `<a>` tags as controls where the default behavior needs to be prevented.
+     *
+     * Returning `false` from the callback will prevent the control click from triggering
+     * an operation.
      *
      * @example <caption>Example 1: Adding an `onMixClick` callback function</caption>
      * var mixer = mixitup(containerEl, {
@@ -126,6 +144,21 @@ mixitup.ConfigCallbacks = function() {
      *
      *              // Prevent default behavior of clicked element:
      *              originalEvent.preventDefault();
+     *         }
+     *     }
+     * });
+     *
+     * @example <caption>Example 3: Using `onMixClick` to conditionally cancel operations</caption>
+     * var mixer = mixitup(containerEl, {
+     *     callbacks: {
+     *         onMixClick: function(state, originalEvent) {
+     *              // Perform some conditional check:
+     *
+     *              if (myApp.isLoading) {
+     *                  // By returning false, we can prevent the control click from triggering an operation.
+     *
+     *                  return false;
+     *              }
      *         }
      *     }
      * });

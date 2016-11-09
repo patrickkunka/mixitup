@@ -15,7 +15,9 @@ mixitup.EventDetail = function() {
 };
 
 /**
- * The `mixitup.Events` class contains all custom events dispatched by MixItUp.
+ * The `mixitup.Events` class contains all custom events dispatched by MixItUp at various
+ * points within the lifecycle of a mixer operation.
+ *
  * Each event is analogous to the callback function of the same name defined in
  * the `callbacks` configuration object, and is triggered immediately before it.
  *
@@ -81,7 +83,7 @@ mixitup.Events = function() {
 
     /**
      * A custom event triggered whenever a filter operation "fails", i.e. no targets
-     * could be found matching the filter.
+     * could be found matching the requested filter.
      *
      * @name        mixFail
      * @memberof    mixitup.Events
