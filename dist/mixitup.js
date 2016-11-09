@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 910a120d-1ad8-4d64-aac8-85171cd8b4b4
+ * Build fd338c0d-7f0d-4627-bab0-f3f9583863a9
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -4191,11 +4191,12 @@
     mixitup.QueueItem.prototype.constructor = mixitup.QueueItem;
 
     /**
-     * The `mixitup.Mixer` class is used to construct discreet user-configured
-     * instances of MixItUp around the provided container element(s). Other
-     * than the intial `mixitup()` factory function call, which returns an
-     * instance of a mixer, all other public API functionality is performed
-     * on mixer instances.
+     * The `mixitup.Mixer` class is used to hold discreet, user-configured
+     * instances of MixItUp on a provided container element.
+     *
+     * Mixer instances are returned whenever the `mixitup()` factory function is called,
+     * which expose a range of methods enabling API-based filtering, sorting,
+     * insertion, removal and more.
      *
      * @constructor
      * @namespace

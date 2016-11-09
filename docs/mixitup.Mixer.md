@@ -2,11 +2,12 @@
 
 ## Overview
 
-The `mixitup.Mixer` class is used to construct discreet user-configured
-instances of MixItUp around the provided container element(s). Other
-than the intial `mixitup()` factory function call, which returns an
-instance of a mixer, all other public API functionality is performed
-on mixer instances.
+The `mixitup.Mixer` class is used to hold discreet, user-configured
+instances of MixItUp on a provided container element.
+
+Mixer instances are returned whenever the `mixitup()` factory function is called,
+which expose a range of methods enabling API-based filtering, sorting,
+insertion, removal and more.
 
 
 ## Members
