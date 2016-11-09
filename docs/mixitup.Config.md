@@ -119,7 +119,7 @@ A group of properties relating to the layout of your container.
 
 
 
-
+A group of properties relating to the initial state of the mixer on load (instantiation).
 
 
 

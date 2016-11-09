@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 58b30514-2009-4c13-b90a-3a7c19cec1a9
+ * Build d288f235-696e-424e-8dbc-5eac403926a8
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2490,17 +2490,17 @@
          * @example <caption>Example: Enabling dirty checking</caption>
          *
          * var myDataset = [
-         *    {
-         *       id: 0,
-         *       title: "Blog Post 1"
-         *       ...
-         *    },
-         *    {
-         *       id: 1,
-         *       title: "Blog Post 2"
-         *       ...
-         *    }
-         * ]
+         *     {
+         *         id: 0,
+         *         title: "Blog Post Title 0"
+         *         ...
+         *     },
+         *     {
+         *         id: 1,
+         *         title: "Blog Post Title 1"
+         *         ...
+         *     }
+         * ];
          *
          * // Instantiate a mixer with a pre-loaded dataset, and a target renderer
          * // function defined
@@ -2524,7 +2524,7 @@
          *
          * myDataset[1] = Object.assign({}, myDataset[1]);
          *
-         * myDataset[1].title = 'Blog Post 22';
+         * myDataset[1].title = 'Blog Post Title 11';
          *
          * mixer.dataset(myDataset)
          *    .then(function() {
@@ -2754,6 +2754,8 @@
     mixitup.ConfigLayout.prototype.constructor = mixitup.ConfigLayout;
 
     /**
+     * A group of properties relating to the initial state of the mixer on load (instantiation).
+     *
      * @constructor
      * @memberof    mixitup.Config
      * @name        load
@@ -2767,9 +2769,103 @@
 
         this.callActions('beforeConstruct');
 
-        this.filter     = 'all';
-        this.sort       = 'default:asc';
-        this.dataset    = null;
+        /**
+         * A string defining any filtering to be statically applied to the mixer on load.
+         * As per the `.filter()` API, this can be any valid selector string, or the
+         * values `'all''` or `'none'`.
+         *
+         * @example <caption>Example 1: Defining an initial filter selector to be applied on load</caption>
+         *
+         * // The mixer will show only those targets matching '.category-a' on load.
+         *
+         * var mixer = mixitup(containerEl, {
+         *     load: {
+         *         filter: '.category-a'
+         *     }
+         * });
+         *
+         * @example <caption>Example 2: Hiding all targets on load</caption>
+         *
+         * // The mixer will show hide all targets on load.
+         *
+         * var mixer = mixitup(containerEl, {
+         *     load: {
+         *         filter: 'none'
+         *     }
+         * });
+         *
+         * @name        filter
+         * @memberof    mixitup.Config.load
+         * @instance
+         * @type        {string}
+         * @default     'all'
+         */
+
+        this.filter = 'all';
+
+        /**
+         * A string defining any sorting to be statically applied to the mixer on load.
+         * As per the `.sort()` API, this should be a valid "sort string" made up of
+         * an attribute to sort by (or `'default'`) followed by an optional sorting
+         * order, or the value `'random'`;
+         *
+         * @example <caption>Example: Defining sorting to be applied on load</caption>
+         *
+         * // The mixer will sort the container by the value of the `data-published-date`
+         * // attribute, in descending order.
+         *
+         * var mixer = mixitup(containerEl, {
+         *     load: {
+         *         sort: 'published-date:desc'
+         *     }
+         * });
+         *
+         * @name        sort
+         * @memberof    mixitup.Config.load
+         * @instance
+         * @type        {string}
+         * @default     'default:asc'
+         */
+
+        this.sort = 'default:asc';
+
+        /**
+         * An array of objects representing the underlying data of any pre-rendered targets,
+         * if using the `.dataset()` API. If targets are pre-rendered when the mixer is
+         * instantiated, this must be set.
+         *
+         * @example <caption>Example: Defining the initial underyling dataset</caption>
+         *
+         * var myDataset = [
+         *     {
+         *         id: 0,
+         *         title: "Blog Post Title 0",
+         *         ...
+         *     },
+         *     {
+         *         id: 1,
+         *         title: "Blog Post Title 1",
+         *         ...
+         *     }
+         * ];
+         *
+         * var mixer = mixitup(containerEl, {
+         *     data: {
+         *         uid: 'id'
+         *     },
+         *     load: {
+         *         dataset: myDataset
+         *     }
+         * });
+         *
+         * @name        dataset
+         * @memberof    mixitup.Config.load
+         * @instance
+         * @type        {Array.<object>}
+         * @default     null
+         */
+
+        this.dataset = null;
 
         this.callActions('afterConstruct');
 

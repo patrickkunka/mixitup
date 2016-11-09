@@ -56,17 +56,17 @@ mixitup.ConfigData = function() {
      * @example <caption>Example: Enabling dirty checking</caption>
      *
      * var myDataset = [
-     *    {
-     *       id: 0,
-     *       title: "Blog Post 1"
-     *       ...
-     *    },
-     *    {
-     *       id: 1,
-     *       title: "Blog Post 2"
-     *       ...
-     *    }
-     * ]
+     *     {
+     *         id: 0,
+     *         title: "Blog Post Title 0"
+     *         ...
+     *     },
+     *     {
+     *         id: 1,
+     *         title: "Blog Post Title 1"
+     *         ...
+     *     }
+     * ];
      *
      * // Instantiate a mixer with a pre-loaded dataset, and a target renderer
      * // function defined
@@ -90,7 +90,7 @@ mixitup.ConfigData = function() {
      *
      * myDataset[1] = Object.assign({}, myDataset[1]);
      *
-     * myDataset[1].title = 'Blog Post 22';
+     * myDataset[1].title = 'Blog Post Title 11';
      *
      * mixer.dataset(myDataset)
      *    .then(function() {
