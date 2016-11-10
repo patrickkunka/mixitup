@@ -1,8 +1,9 @@
 /* global mixitup, h */
 
 /**
+ * A group of properties defining the selectors used to query elements within a mixitup container.
+ *
  * @constructor
- * @memberof    mixitup
  * @memberof    mixitup.Config
  * @name        selectors
  * @namespace

@@ -2,7 +2,7 @@
 
 ## Overview
 
-
+A group of properties defining the selectors used to query elements within a mixitup container.
 
 
 ## Members

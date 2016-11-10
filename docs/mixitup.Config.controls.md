@@ -2,7 +2,7 @@
 
 ## Overview
 
-
+A group of properties relating to clickable control elements.
 
 
 ## Members
@@ -12,8 +12,7 @@
 
 
 
-A boolean dictating whether or not the default controls should be enabled for
-the mixer instance.
+A boolean dictating whether or not controls should be enabled for the mixer instance.
 
 If `true` (default behavior), MixItUp will search the DOM for any clickable elements with
 `data-filter`, `data-sort` or `data-toggle` attributes, and bind them for click events.
@@ -23,7 +22,7 @@ via the mixer's API methods.
 
 If you do not intend to use the default controls, setting this property to `false` will
 marginally improve the startup time of your mixer instance, and will also prevent any other active
-mixer instances in the DOM which are using the default controls from controlling the instance.
+mixer instances in the DOM which are bound to controls from controlling the instance.
 
 
 |Type | Default

@@ -2,7 +2,7 @@
 
 ## Overview
 
-A group of properties relating to the initial state of the mixer on load (instantiation).
+A group of properties defining the initial state of the mixer on load (instantiation).
 
 
 ## Members

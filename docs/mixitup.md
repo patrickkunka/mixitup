@@ -4,9 +4,10 @@
 mixitup(container [,config] [,foreignDoc])
 ```
 
-The `mixitup` "factory" function is used to create individual instances
-of MixItUp, or "mixers". All API methods can then be called using the
-mixer instance returned by the factory function.
+The `mixitup()` "factory" function creates individual instances of MixItUp
+("mixers"), which are returned with the function is called.
+
+Various API methods can then be called on the returned mixer instance.
 
 When loading MixItUp via a script tag, the factory function is accessed
 as the global variable `mixitup`. When using a module loader such as Browserify

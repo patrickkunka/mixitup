@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build fd338c0d-7f0d-4627-bab0-f3f9583863a9
+ * Build c464b9d7-e431-4541-b846-a4baa1d7746c
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -20,9 +20,10 @@
         h               = null;
 
     /**
-     * The `mixitup` "factory" function is used to create individual instances
-     * of MixItUp, or "mixers". All API methods can then be called using the
-     * mixer instance returned by the factory function.
+     * The `mixitup()` "factory" function creates individual instances of MixItUp
+     * ("mixers"), which are returned with the function is called.
+     *
+     * Various API methods can then be called on the returned mixer instance.
      *
      * When loading MixItUp via a script tag, the factory function is accessed
      * as the global variable `mixitup`. When using a module loader such as Browserify
@@ -42,7 +43,9 @@
      *
      * @example <caption>Example 3: Passing a configuration object</caption>
      * var mixer = mixitup(containerEl, {
-     *     animation: 'fade scale(.5)'
+     *     animation: {
+     *         effects: 'fade scale(0.5)'
+     *     }
      * });
      *
      * @example <caption>Example 4: Passing an iframe reference</caption>
@@ -1918,6 +1921,8 @@
     mixitup.ConfigCallbacks.prototype.constructor = mixitup.ConfigCallbacks;
 
     /**
+     * A group of properties relating to clickable control elements.
+     *
      * @constructor
      * @memberof    mixitup.Config
      * @name        controls
@@ -1932,8 +1937,7 @@
         this.callActions('beforeConstruct');
 
         /**
-         * A boolean dictating whether or not the default controls should be enabled for
-         * the mixer instance.
+         * A boolean dictating whether or not controls should be enabled for the mixer instance.
          *
          * If `true` (default behavior), MixItUp will search the DOM for any clickable elements with
          * `data-filter`, `data-sort` or `data-toggle` attributes, and bind them for click events.
@@ -1943,7 +1947,7 @@
          *
          * If you do not intend to use the default controls, setting this property to `false` will
          * marginally improve the startup time of your mixer instance, and will also prevent any other active
-         * mixer instances in the DOM which are using the default controls from controlling the instance.
+         * mixer instances in the DOM which are bound to controls from controlling the instance.
          *
          * @example <caption>Example: Disabling controls</caption>
          * var mixer = mixitup(containerEl, {
@@ -2657,7 +2661,7 @@
     mixitup.ConfigDebug.prototype.constructor = mixitup.ConfigDebug;
 
     /**
-     * A group of properties relating to the layout of your container.
+     * A group of properties relating to the layout of the container.
      *
      * @constructor
      * @memberof    mixitup.Config
@@ -2754,7 +2758,7 @@
     mixitup.ConfigLayout.prototype.constructor = mixitup.ConfigLayout;
 
     /**
-     * A group of properties relating to the initial state of the mixer on load (instantiation).
+     * A group of properties defining the initial state of the mixer on load (instantiation).
      *
      * @constructor
      * @memberof    mixitup.Config
@@ -2880,8 +2884,9 @@
     mixitup.ConfigLoad.prototype.constructor = mixitup.ConfigLoad;
 
     /**
+     * A group of properties defining the selectors used to query elements within a mixitup container.
+     *
      * @constructor
-     * @memberof    mixitup
      * @memberof    mixitup.Config
      * @name        selectors
      * @namespace
@@ -2939,9 +2944,13 @@
     mixitup.ConfigSelectors.prototype.constructor = mixitup.ConfigSelectors;
 
     /**
+     * A group of optional render functions for creating and updating elements.
+     *
      * @constructor
-     * @memberof    mixitup
-     * @private
+     * @memberof    mixitup.Config
+     * @name        render
+     * @namespace
+     * @public
      * @since       3.0.0
      */
 
@@ -3016,7 +3025,7 @@
      * var mixer = mixitup(containerEl, config);
      *
      * @example <caption>Example 2: Passing the configuration object inline</caption>
-     * // Typically, the configuration object is passed inline for terseness.
+     * // Typically, the configuration object is passed inline for brevity.
      *
      * var mixer = mixitup(containerEl, {
      *     controls: {
@@ -4279,8 +4288,10 @@
             self.id = id;
 
             if (config) {
-                h.extend(self.config, config, true);
+                h.extend(self.config, config, true, true);
             }
+
+            self.sanitizeConfig();
 
             self.cacheDom(container, document);
 
@@ -4318,6 +4329,18 @@
             self.parseEffects();
 
             self.callActions('afterAttach', arguments);
+        },
+
+        sanitizeConfig: function() {
+            var self = this;
+
+            // Sanitize strings
+
+            self.config.controls.scope          = self.config.controls.scope.toLowerCase().trim();
+            self.config.controls.toggleLogic    = self.config.controls.toggleLogic.toLowerCase().trim();
+            self.config.controls.toggleDefault  = self.config.controls.toggleDefault.toLowerCase().trim();
+
+            self.config.animation.effects       = self.config.animation.effects.trim();
         },
 
         /**

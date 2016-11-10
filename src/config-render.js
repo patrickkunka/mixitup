@@ -1,9 +1,13 @@
 /* global mixitup, h */
 
 /**
+ * A group of optional render functions for creating and updating elements.
+ *
  * @constructor
- * @memberof    mixitup
- * @private
+ * @memberof    mixitup.Config
+ * @name        render
+ * @namespace
+ * @public
  * @since       3.0.0
  */
 

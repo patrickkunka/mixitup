@@ -89,8 +89,10 @@ h.extend(mixitup.Mixer.prototype,
         self.id = id;
 
         if (config) {
-            h.extend(self.config, config, true);
+            h.extend(self.config, config, true, true);
         }
+
+        self.sanitizeConfig();
 
         self.cacheDom(container, document);
 
@@ -128,6 +130,18 @@ h.extend(mixitup.Mixer.prototype,
         self.parseEffects();
 
         self.callActions('afterAttach', arguments);
+    },
+
+    sanitizeConfig: function() {
+        var self = this;
+
+        // Sanitize strings
+
+        self.config.controls.scope          = self.config.controls.scope.toLowerCase().trim();
+        self.config.controls.toggleLogic    = self.config.controls.toggleLogic.toLowerCase().trim();
+        self.config.controls.toggleDefault  = self.config.controls.toggleDefault.toLowerCase().trim();
+
+        self.config.animation.effects       = self.config.animation.effects.trim();
     },
 
     /**

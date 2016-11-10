@@ -52,7 +52,7 @@ argument, as well as other more specific arguments described below.
 
 
 
-
+A group of properties relating to clickable control elements.
 
 
 
@@ -108,7 +108,7 @@ A group of properties allowing the toggling of various debug features.
 
 
 
-A group of properties relating to the layout of your container.
+A group of properties relating to the layout of the container.
 
 
 
@@ -119,7 +119,7 @@ A group of properties relating to the layout of your container.
 
 
 
-A group of properties relating to the initial state of the mixer on load (instantiation).
+A group of properties defining the initial state of the mixer on load (instantiation).
 
 
 
@@ -130,7 +130,18 @@ A group of properties relating to the initial state of the mixer on load (instan
 
 
 
+A group of properties defining the selectors used to query elements within a mixitup container.
 
+
+
+
+### <a id="mixitup.Config.render">mixitup.Config.render</a>
+
+**Version added: 3.0.0**
+
+
+
+A group of optional render functions for creating and updating elements.
 
 
 

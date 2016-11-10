@@ -1,7 +1,7 @@
 /* global mixitup, h */
 
 /**
- * A group of properties relating to the layout of your container.
+ * A group of properties relating to the layout of the container.
  *
  * @constructor
  * @memberof    mixitup.Config
