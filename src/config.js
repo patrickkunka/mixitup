@@ -30,7 +30,7 @@
  * var mixer = mixitup(containerEl, config);
  *
  * @example <caption>Example 2: Passing the configuration object inline</caption>
- * // Typically, the configuration object is passed inline for terseness.
+ * // Typically, the configuration object is passed inline for brevity.
  *
  * var mixer = mixitup(containerEl, {
  *     controls: {
