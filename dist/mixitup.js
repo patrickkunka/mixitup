@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 90b6e0df-8d0f-4cf2-b80a-8e270111a86d
+ * Build dbdea817-39e2-4a58-8278-197f0a3aba68
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -7271,10 +7271,10 @@
         },
 
         /**
-         * Change the layout of the container by adding, removing or updating a
-         * layout-specific class name on the container. If `animation.animateResizetargets`
-         * is enabled, MixItUp will attempt to gracefully animate the width, height,
-         * and position of targets between layouts.
+         * Changes the layout of the container by adding, removing or updating a
+         * layout-specific class name. If `animation.animateResizetargets` is
+         * enabled, MixItUp will attempt to gracefully animate the width, height,
+         * and position of targets between layout states.
          *
          * @example
          *
@@ -7317,12 +7317,14 @@
         },
 
         /**
-         * Updates the mixer to reflect the provided dataset, if the dataset API is in use.
-         * The dataset API is designed for use in API-driven JavaScript applications.
+         * Updates the contents and order of the container to reflect the provided dataset,
+         * if the dataset API is in use.
          *
-         * By using dataset, insertion, removal, sorting and pagination can be achieved
-         * purely by changes to your data model, without the uglyness of having to interact
-         * with or query the DOM directory.
+         * The dataset API is designed for use in API-driven JavaScript applications, and
+         * should be used instead of DOM-based methods such as `.filter()`, `.sort()`,
+         * `.insert()`, etc. When used, insertion, removal, sorting and pagination can be
+         * achieved purely via changes to your data model, without the uglyness of having
+         * to interact with or query the DOM directory.
          *
          * @example
          *
