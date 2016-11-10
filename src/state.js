@@ -56,9 +56,9 @@ mixitup.State = function() {
     this.activeSort = null;
 
     /**
-     * The currently active containerClass, if applied.
+     * The current layout-specific container class name, if applied.
      *
-     * @name        activeContainerClass
+     * @name        activeContainerClassName
      * @memberof    mixitup.State
      * @instance
      * @type        {string}

@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 095592ef-e021-4cfd-b259-4639f2e92834
+ * Build 90b6e0df-8d0f-4cf2-b80a-8e270111a86d
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -6988,7 +6988,7 @@
          *
          * mixer.show()
          *     .then(function(state) {
-         *         // console.log(state.totalShow + ' targets were shown');
+         *         console.log(state.totalShow + ' targets were shown');
          *     });
          *
          * @public
@@ -7014,7 +7014,7 @@
          *
          * mixer.hide()
          *     .then(function(state) {
-         *         // console.log(state.totalHide + ' targets were hidden');
+         *         console.log(state.totalHide + ' targets were hidden');
          *     });
          *
          * @public
@@ -7065,11 +7065,27 @@
          *
          * @example
          *
-         * .filter(selector [,animate] [,callback])
+         * .filter(selector [, animate] [, callback])
          *
-         * @example <caption>Example: Filtering targets</caption>
+         * @example <caption>Example 1: Filtering targets by a class selector</caption>
          *
          * mixer.filter('.category-a')
+         *     .then(function(state) {
+         *         console.log(state.totalShow + ' targets were found matching ' + state.activeFilter.selector);
+         *     });
+         *
+         * @example <caption>Example 2: Filtering targets by an attribute selector</caption>
+         *
+         * mixer.filter('[data-category~="a"]')
+         *     .then(function(state) {
+         *         console.log(state.totalShow + ' targets were found matching ' + state.activeFilter.selector);
+         *     });
+         *
+         * @example <caption>Example 3: Filtering targets by a compound selector</caption>
+         *
+         * // Show only those targets with the classes 'category-a' AND 'category-b'
+         *
+         * mixer.filter('.category-a.category-c')
          *     .then(function(state) {
          *         console.log(state.totalShow + ' targets were found matching ' + state.activeFilter.selector);
          *     });
@@ -7102,7 +7118,7 @@
          *
          * @example
          *
-         * .toggleOn(selector [,animate] [,callback])
+         * .toggleOn(selector [, animate] [, callback])
          *
          * @example <caption>Example: Toggling on a filter selector</caption>
          *
@@ -7150,7 +7166,7 @@
          *
          * @example
          *
-         * .toggleOff(selector [,animate] [,callback])
+         * .toggleOff(selector [, animate] [, callback])
          *
          * @example <caption>Example: Toggling off a filter selector</caption>
          *
@@ -7196,7 +7212,7 @@
          *
          * @example
          *
-         * .sort(sortString [,animate] [,callback])
+         * .sort(sortString [, animate] [, callback])
          *
          * @example <caption>Example 1: Sorting by the default DOM order</caption>
          *
@@ -7229,7 +7245,7 @@
          *
          * mixer.sort('random')
          *     .then(function(state) {
-         *         console.log('Targets shuffled);
+         *         console.log('Targets shuffled');
          *     });
          *
          * @public
@@ -7255,10 +7271,40 @@
         },
 
         /**
+         * Change the layout of the container by adding, removing or updating a
+         * layout-specific class name on the container. If `animation.animateResizetargets`
+         * is enabled, MixItUp will attempt to gracefully animate the width, height,
+         * and position of targets between layouts.
+         *
+         * @example
+         *
+         * .changeLayout(containerClassName [, animate] [, callback])
+         *
+         * @example <caption>Example 1: Adding a new class name to the container</caption>
+         *
+         * mixer.changeLayout('container-list')
+         *      .then(function(state) {
+         *          console.log('the class name + ' state.activeContainerClassName + ' was added to the container');
+         *      });
+         *
+         * @example <caption>Example 2: Removing a previously added class name from the container</caption>
+         *
+         * mixer.changeLayout('')
+         *      .then(function(state) {
+         *          console.log('Class name removed from container');
+         *      });
+         *
          * @public
          * @instance
          * @since       2.0.0
+         * @param       {string}    containerClassName
+         *      A layout-specific class name to add to the container.
+         * @param       {boolean}   [animate]
+         *      An optional boolean dictating whether or not the filter operation should animate.
+         * @param       {function}  [callback]
+         *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
+         *      A promise which resolves with a state object.
          */
 
         changeLayout: function() {
@@ -7271,10 +7317,65 @@
         },
 
         /**
+         * Updates the mixer to reflect the provided dataset, if the dataset API is in use.
+         * The dataset API is designed for use in API-driven JavaScript applications.
+         *
+         * By using dataset, insertion, removal, sorting and pagination can be achieved
+         * purely by changes to your data model, without the uglyness of having to interact
+         * with or query the DOM directory.
+         *
+         * @example
+         *
+         * .dataset(dataset [, animate] [, callback])
+         *
+         * @example <caption>Example 1: Rendering a dataset</caption>
+         *
+         * var myDataset = [
+         *     {id: 1, ...},
+         *     {id: 2, ...},
+         *     {id: 3, ...}
+         * ];
+         *
+         * mixer.dataset(myDataset)
+         *     .then(function(state) {
+         *         console.log(state.totalShow + ' target were rendered');
+         *     });
+         *
+         * @example <caption>Example 2: Sorting a dataset</caption>
+         *
+         * // Create a new dataset in reverse order
+         *
+         * var newDataset = myDataset.slice().reverse();
+         *
+         * mixer.dataset(newDataset)
+         *     .then(function(state) {
+         *         console.log('order of targets reversed');
+         *     });
+         *
+         * @example <caption>Example 3: Removing an item from the dataset</caption>
+         *
+         * console.log(myDataset.length); // 3
+         *
+         * // Create a new dataset with the last item removed.
+         *
+         * var newDataset = myDataset.slice().pop();
+         *
+         * mixer.dataset(newDataset)
+         *     .then(function(state) {
+         *         console.log(state.totalShow); // 2
+         *     });
+         *
          * @public
          * @instance
          * @since       3.0.0
+         * @param       {Array.<object>}    dataset
+         *      An array of objects, each one representing the underlying data model of a target to be rendered.
+         * @param       {boolean}           [animate]
+         *      An optional boolean dictating whether or not the filter operation should animate.
+         * @param       {function}          [callback]
+         *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
+         *      A promise which resolves with a state object.
          */
 
         dataset: function() {
@@ -8670,9 +8771,9 @@
         this.activeSort = null;
 
         /**
-         * The currently active containerClass, if applied.
+         * The current layout-specific container class name, if applied.
          *
-         * @name        activeContainerClass
+         * @name        activeContainerClassName
          * @memberof    mixitup.State
          * @instance
          * @type        {string}
