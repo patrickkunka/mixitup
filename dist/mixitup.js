@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build dbdea817-39e2-4a58-8278-197f0a3aba68
+ * Build 466aeb4c-20a3-45da-a1b8-8510f47e72b9
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -7095,9 +7095,9 @@
          * @since       2.0.0
          * @param       {string}    selector
          *      Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`.
-         * @param       {boolean}   [animate]
+         * @param       {boolean}   [animate=true]
          *      An optional boolean dictating whether or not the filter operation should animate.
-         * @param       {function}  [callback]
+         * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
          *      A promise which resolves with a state object.
@@ -7134,9 +7134,9 @@
          * @since       3.0.0
          * @param       {string}    selector
          *      Any valid CSS selector (i.e. `'.category-a'`)
-         * @param       {boolean}   [animate]
+         * @param       {boolean}   [animate=true]
          *      An optional boolean dictating whether or not the filter operation should animate.
-         * @param       {function}  [callback]
+         * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
          *      A promise which resolves with a state object.
@@ -7182,9 +7182,9 @@
          * @since       3.0.0
          * @param       {string}    selector
          *      Any valid CSS selector (i.e. `'.category-a'`)
-         * @param       {boolean}   [animate]
+         * @param       {boolean}   [animate=true]
          *      An optional boolean dictating whether or not the filter operation should animate.
-         * @param       {function}  [callback]
+         * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
          *      A promise which resolves with a state object.
@@ -7253,9 +7253,9 @@
          * @since       2.0.0
          * @param       {string}    sortString
          *      A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`).
-         * @param       {boolean}   [animate]
+         * @param       {boolean}   [animate=true]
          *      An optional boolean dictating whether or not the filter operation should animate.
-         * @param       {function}  [callback]
+         * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
          *      A promise which resolves with a state object.
@@ -7299,9 +7299,9 @@
          * @since       2.0.0
          * @param       {string}    containerClassName
          *      A layout-specific class name to add to the container.
-         * @param       {boolean}   [animate]
+         * @param       {boolean}   [animate=true]
          *      An optional boolean dictating whether or not the filter operation should animate.
-         * @param       {function}  [callback]
+         * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
          *      A promise which resolves with a state object.
@@ -7372,9 +7372,9 @@
          * @since       3.0.0
          * @param       {Array.<object>}    dataset
          *      An array of objects, each one representing the underlying data model of a target to be rendered.
-         * @param       {boolean}           [animate]
+         * @param       {boolean}           [animate=true]
          *      An optional boolean dictating whether or not the filter operation should animate.
-         * @param       {function}          [callback]
+         * @param       {function}          [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
          *      A promise which resolves with a state object.
@@ -7406,28 +7406,132 @@
         },
 
         /**
+         * Performs simultaneous `filter`, `sort`, `insert`, `remove` and `changeLayout`
+         * operations as requested.
+         *
+         * @example
+         *
+         * .multimix(multimixCommand [, animate] [, callback])
+         *
+         * @example <caption>Example 1: Performing simultaneous filtering and sorting</caption>
+         *
+         * mixer.multimix({
+         *     filter: '.category-b',
+         *     sort: 'published-date:desc'
+         * })
+         *     .then(function(state) {
+         *         console.log(state.activeFilter.selector); // '.category-b'
+         *         console.log(state.activeSort.attribute); // 'published-date'
+         *     });
+         *
+         * @example <caption>Example 2: Performing simultaneous sorting, insertion, and removal</caption>
+         *
+         * console.log(mixer.getState().totalShow); // 6
+         *
+         * // NB: When inserting via `multimix()`, an object should be provided as the value
+         * // for the `insert` portion of the command, allowing for a collection of elements
+         * // and an insertion index to be specified.
+         *
+         * mixer.multimix({
+         *     sort: 'published-date:desc', // Sort the container, including any new elements
+         *     insert: {
+         *         collection: [newElementReferenceA, newElementReferenceB], // Add 2 new elements at index 5
+         *         index: 5
+         *     },
+         *     remove: existingElementReference // Remove 1 existing element
+         * })
+         *     .then(function(state) {
+         *         console.log(state.activeSort.attribute); // 'published-date'
+         *         console.log(state.totalShow); // 7
+         *     });
+         *
          * @public
          * @instance
+         * @since       2.0.0
+         * @param       {object}    multimixCommand
+         *      An object containing one or more things to do
+         * @param       {boolean}   [animate=true]
+         *      An optional boolean dictating whether or not the filter operation should animate.
+         * @param       {function}  [callback=null]
+         *      An optional callback function to be invoked after the operation has completed.
+         * @return      {Promise.<mixitup.State>}
+         *      A promise which resolves with a state object.
+         */
+
+        multimix: function() {
+            var self        = this,
+                operation   = null,
+                animate     = false,
+                queueItem   = null,
+                instruction = self.parseMultimixArgs(arguments);
+
+            self.callActions('beforeMultimix', arguments);
+
+            if (!self.isBusy) {
+                operation = self.getOperation(instruction.command);
+
+                if (self.config.controls.enable) {
+                    // Update controls for API calls
+
+                    if (instruction.command.filter && !self.isToggling) {
+                        // As we are not toggling, reset the toggle array
+                        // so new filter overrides existing toggles
+
+                        self.toggleArray.length = 0;
+                        self.buildToggleArray(operation.command);
+                    }
+
+                    if (self.queue.length < 1) {
+                        self.updateControls(operation.command);
+                    }
+                }
+
+                if (instruction.callback) self.userCallback = instruction.callback;
+
+                // Always allow the instruction to override the instance setting
+
+                animate = (instruction.animate ^ self.config.animation.enable) ?
+                    instruction.animate :
+                    self.config.animation.enable;
+
+                self.callFilters('operationMultimix', operation, arguments);
+
+                return self.goMix(animate, operation);
+            } else {
+                queueItem = new mixitup.QueueItem();
+
+                queueItem.args          = arguments;
+                queueItem.instruction   = instruction;
+                queueItem.trigger       = self.lastClicked;
+                queueItem.isToggling    = self.isToggling;
+
+                return self.queueMix(queueItem);
+            }
+        },
+
+        /**
+         * @private
+         * @instance
          * @since   3.0.0
-         * @param   {object}            command
+         * @param   {object}            multimixCommand
          * @param   {boolean}           [isPreFetch]
          *      An optional boolean indicating that the operation is being pre-fetched for execution at a later time.
          * @return  {Operation|null}
          */
 
-        getOperation: function(command) {
+        getOperation: function(multimixCommand) {
             var self                = this,
-                sortCommand         = command.sort,
-                filterCommand       = command.filter,
-                changeLayoutCommand = command.changeLayout,
-                removeCommand       = command.remove,
-                insertCommand       = command.insert,
+                sortCommand         = multimixCommand.sort,
+                filterCommand       = multimixCommand.filter,
+                changeLayoutCommand = multimixCommand.changeLayout,
+                removeCommand       = multimixCommand.remove,
+                insertCommand       = multimixCommand.insert,
                 operation           = new mixitup.Operation();
 
             operation = self.callFilters('operationUnmappedGetOperation', operation, arguments);
 
             operation.id            = h.randomHex();
-            operation.command       = command;
+            operation.command       = multimixCommand;
             operation.startState    = self.state;
 
             if (self.isBusy) {
@@ -7509,81 +7613,13 @@
         },
 
         /**
-         * Performs simultaneous `filter`, `sort`, `insert`, `remove` and `changeLayout`
-         * operations as requested.
-         *
-         * @example
-         * .multimix(multimixCommand [,animate] [,callback])
-         *
-         * @public
-         * @instance
-         * @since       2.0.0
-         * @param       {object}    multimixCommand
-         *      An object containing one or more things to do
-         * @param       {boolean}   [animate=true]
-         * @param       {function}  [callback=null]
-         * @return      {Promise.<mixitup.State>}
-         */
-
-        multimix: function() {
-            var self        = this,
-                operation   = null,
-                animate     = false,
-                queueItem   = null,
-                instruction = self.parseMultimixArgs(arguments);
-
-            self.callActions('beforeMultimix', arguments);
-
-            if (!self.isBusy) {
-                operation = self.getOperation(instruction.command);
-
-                if (self.config.controls.enable) {
-                    // Update controls for API calls
-
-                    if (instruction.command.filter && !self.isToggling) {
-                        // As we are not toggling, reset the toggle array
-                        // so new filter overrides existing toggles
-
-                        self.toggleArray.length = 0;
-                        self.buildToggleArray(operation.command);
-                    }
-
-                    if (self.queue.length < 1) {
-                        self.updateControls(operation.command);
-                    }
-                }
-
-                if (instruction.callback) self.userCallback = instruction.callback;
-
-                // Always allow the instruction to override the instance setting
-
-                animate = (instruction.animate ^ self.config.animation.enable) ?
-                    instruction.animate :
-                    self.config.animation.enable;
-
-                self.callFilters('operationMultimix', operation, arguments);
-
-                return self.goMix(animate, operation);
-            } else {
-                queueItem = new mixitup.QueueItem();
-
-                queueItem.args          = arguments;
-                queueItem.instruction   = instruction;
-                queueItem.trigger       = self.lastClicked;
-                queueItem.isToggling    = self.isToggling;
-
-                return self.queueMix(queueItem);
-            }
-        },
-
-        /**
          * Renders a previously created operation at a specific point in its path, as
          * determined by a multiplier between 0 and 1.
          *
          * @example
          * .tween(operation, multiplier)
          *
-         * @public
+         * @private
          * @instance
          * @since   3.0.0
          * @param   {mixitup.Operation}     operation
