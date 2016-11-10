@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build c464b9d7-e431-4541-b846-a4baa1d7746c
+ * Build 095592ef-e021-4cfd-b259-4639f2e92834
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -6978,10 +6978,18 @@
         },
 
         /**
-         * A shorthand method for `.filter('all')`.
+         * A shorthand method for `.filter('all')`. Shows all targets in the container.
          *
          * @example
+         *
          * .show()
+         *
+         * @example <caption>Example: Showing all targets</caption>
+         *
+         * mixer.show()
+         *     .then(function(state) {
+         *         // console.log(state.totalShow + ' targets were shown');
+         *     });
          *
          * @public
          * @instance
@@ -6996,10 +7004,18 @@
         },
 
         /**
-         * A shorthand method for `.filter('none')`.
+         * A shorthand method for `.filter('none')`. Hides all targets in the container.
          *
          * @example
+         *
          * .hide()
+         *
+         * @example <caption>Example: Hiding all targets</caption>
+         *
+         * mixer.hide()
+         *     .then(function(state) {
+         *         // console.log(state.totalHide + ' targets were hidden');
+         *     });
          *
          * @public
          * @instance
@@ -7018,7 +7034,18 @@
          * currently in progress.
          *
          * @example
+         *
          * .isMixing()
+         *
+         * @example <caption>Example: Checking the status of a mixer</caption>
+         *
+         * var isMixing = mixer.isMixing();
+         *
+         * if (isMixing) {
+         *     console.log('An operation is in progress');
+         * } else {
+         *     console.log('The mixer is idle');
+         * }
          *
          * @public
          * @instance
@@ -7033,19 +7060,31 @@
         },
 
         /**
-         * Filters the mixer according to the specified filter command.
+         * Filters all targets in the container by a provided selector string, or the values `'all'`
+         * or `'none'`. Only targets matching the selector will be shown.
          *
          * @example
+         *
          * .filter(selector [,animate] [,callback])
+         *
+         * @example <caption>Example: Filtering targets</caption>
+         *
+         * mixer.filter('.category-a')
+         *     .then(function(state) {
+         *         console.log(state.totalShow + ' targets were found matching ' + state.activeFilter.selector);
+         *     });
          *
          * @public
          * @instance
          * @since       2.0.0
          * @param       {string}    selector
-         *      Any valid CSS selector (i.e. `'.category-2'`), or the strings `'all'` or `'none'`.
+         *      Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`.
          * @param       {boolean}   [animate]
+         *      An optional boolean dictating whether or not the filter operation should animate.
          * @param       {function}  [callback]
+         *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
+         *      A promise which resolves with a state object.
          */
 
         filter: function() {
@@ -7058,19 +7097,33 @@
         },
 
         /**
-         * Adds a selector to the currently active set of toggles and filters the mixer.
+         * Adds an additional selector to the currently active filter selector, concatenating
+         * as per the logic defined in `controls.toggleLogic`.
          *
          * @example
+         *
          * .toggleOn(selector [,animate] [,callback])
+         *
+         * @example <caption>Example: Toggling on a filter selector</caption>
+         *
+         * console.log(mixer.getState().activeFilter.selector); // '.category-a'
+         *
+         * mixer.toggleOn('.category-b')
+         *     .then(function(state) {
+         *         console.log(state.activeFilter.selector); // '.category-a, .category-b'
+         *     });
          *
          * @public
          * @instance
          * @since       3.0.0
          * @param       {string}    selector
-         *      Any valid CSS selector (i.e. `'.category-2'`)
+         *      Any valid CSS selector (i.e. `'.category-a'`)
          * @param       {boolean}   [animate]
+         *      An optional boolean dictating whether or not the filter operation should animate.
          * @param       {function}  [callback]
+         *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
+         *      A promise which resolves with a state object.
          */
 
         toggleOn: function() {
@@ -7093,19 +7146,32 @@
         },
 
         /**
-         * Removes a selector from the currently active set of toggles and filters the mixer.
+         * Removes a selector from the active filter selector.
          *
          * @example
-         * .toggleOn(selector [,animate] [,callback])
+         *
+         * .toggleOff(selector [,animate] [,callback])
+         *
+         * @example <caption>Example: Toggling off a filter selector</caption>
+         *
+         * console.log(mixer.getState().activeFilter.selector); // '.category-a, .category-b'
+         *
+         * mixer.toggleOff('.category-b')
+         *     .then(function(state) {
+         *         console.log(state.activeFilter.selector); // '.category-a'
+         *     });
          *
          * @public
          * @instance
          * @since       3.0.0
          * @param       {string}    selector
-         *      Any valid CSS selector (i.e. `'.category-2'`)
+         *      Any valid CSS selector (i.e. `'.category-a'`)
          * @param       {boolean}   [animate]
+         *      An optional boolean dictating whether or not the filter operation should animate.
          * @param       {function}  [callback]
+         *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
+         *      A promise which resolves with a state object.
          */
 
         toggleOff: function() {
@@ -7126,19 +7192,57 @@
         },
 
         /**
-         * Sorts the mixer according to the specified sort command.
+         * Sorts all targets in the container according to a provided sort string.
          *
          * @example
+         *
          * .sort(sortString [,animate] [,callback])
+         *
+         * @example <caption>Example 1: Sorting by the default DOM order</caption>
+         *
+         * // Reverse the default order of the targets
+         *
+         * mixer.sort('default:desc')
+         *     .then(function(state) {
+         *         console.log('Targets sorted by ' + state.activeSort.attribute + ' in ' + state.activeSort.order + ' order');
+         *     });
+         *
+         * @example <caption>Example 2: Sorting by a custom data-attribute</caption>
+         *
+         * // Sort the targets by the value of a `data-published-date` attribute
+         *
+         * mixer.sort('published-date:asc')
+         *     .then(function(state) {
+         *         console.log('Targets sorted by ' + state.activeSort.attribute + ' in ' + state.activeSort.order + ' order');
+         *     });
+         *
+         * @example <caption>Example 3: Sorting by multiple attributes</caption>
+         *
+         * // Sort the targets by the value of a `data-published-date` attribute, then by `data-title`
+         *
+         * mixer.sort('published-date:desc data-title:asc')
+         *     .then(function(state) {
+         *         console.log('Targets sorted by ' + state.activeSort.attribute + ' then by ' + state.activeSort.next.attribute);
+         *     });
+         *
+         * @example <caption>Example 4: Sorting by random</caption>
+         *
+         * mixer.sort('random')
+         *     .then(function(state) {
+         *         console.log('Targets shuffled);
+         *     });
          *
          * @public
          * @instance
          * @since       2.0.0
          * @param       {string}    sortString
-         *      A colon-seperated "sorting pair" (e.g. `'published:asc'`, or `'random'`.
+         *      A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`).
          * @param       {boolean}   [animate]
+         *      An optional boolean dictating whether or not the filter operation should animate.
          * @param       {function}  [callback]
+         *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
+         *      A promise which resolves with a state object.
          */
 
         sort: function() {
