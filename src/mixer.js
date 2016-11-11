@@ -2897,7 +2897,7 @@ h.extend(mixitup.Mixer.prototype,
      * @param       {string}    selector
      *      Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`.
      * @param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -2936,7 +2936,7 @@ h.extend(mixitup.Mixer.prototype,
      * @param       {string}    selector
      *      Any valid CSS selector (i.e. `'.category-a'`)
      * @param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -2984,7 +2984,7 @@ h.extend(mixitup.Mixer.prototype,
      * @param       {string}    selector
      *      Any valid CSS selector (i.e. `'.category-a'`)
      * @param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -3055,7 +3055,7 @@ h.extend(mixitup.Mixer.prototype,
      * @param       {string}    sortString
      *      A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`).
      * @param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -3101,7 +3101,7 @@ h.extend(mixitup.Mixer.prototype,
      * @param       {string}    containerClassName
      *      A layout-specific class name to add to the container.
      * @param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -3174,7 +3174,7 @@ h.extend(mixitup.Mixer.prototype,
      * @param       {Array.<object>}    dataset
      *      An array of objects, each one representing the underlying data model of a target to be rendered.
      * @param       {boolean}           [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}          [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -3252,7 +3252,7 @@ h.extend(mixitup.Mixer.prototype,
      * @param       {object}    multimixCommand
      *      An object containing one or more things to do
      * @param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -3548,7 +3548,7 @@ h.extend(mixitup.Mixer.prototype,
      * @param       {number}    index=0
      *      The index at which to insert the new element(s). `0` by default.
      * @param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -3602,7 +3602,7 @@ h.extend(mixitup.Mixer.prototype,
      * @param       {HTMLElement}    referenceElement
      *      A reference to an existing element in the container to insert new elements before.
      *@param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -3650,7 +3650,7 @@ h.extend(mixitup.Mixer.prototype,
      * @param       {HTMLElement}    referenceElement
      *      A reference to an existing element in the container to insert new elements after.
      * @param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -3692,7 +3692,7 @@ h.extend(mixitup.Mixer.prototype,
      *      A reference to a single element to insert, an array-like collection of elements,
      *      or an HTML string representing a single element.
      * @param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -3734,7 +3734,7 @@ h.extend(mixitup.Mixer.prototype,
      *      A reference to a single element to insert, an array-like collection of elements,
      *      or an HTML string representing a single element.
      * @param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -3802,7 +3802,7 @@ h.extend(mixitup.Mixer.prototype,
      *      A reference to a single element to remove, an array-like collection of elements,
      *      a selector string, or the index of an element to remove.
      * @param       {boolean}   [animate=true]
-     *      An optional boolean dictating whether or not the filter operation should animate.
+     *      An optional boolean dictating whether the operation, should animate or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
      *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
@@ -3841,7 +3841,7 @@ h.extend(mixitup.Mixer.prototype,
      * @public
      * @instance
      * @since       2.0.0
-     * @param       {string}    [stringKey]
+     * @param       {string}    [stringKey]    A "dot-notation" string key
      * @return      {*}
      */
 
