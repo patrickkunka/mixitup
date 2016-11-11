@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 466aeb4c-20a3-45da-a1b8-8510f47e72b9
+ * Build 06f07ade-6072-4e7a-8eee-5f25bde6fd59
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -7100,7 +7100,7 @@
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
-         *      A promise which resolves with a state object.
+         *      A promise resolving with the current state object.
          */
 
         filter: function() {
@@ -7139,7 +7139,7 @@
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
-         *      A promise which resolves with a state object.
+         *      A promise resolving with the current state object.
          */
 
         toggleOn: function() {
@@ -7187,7 +7187,7 @@
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
-         *      A promise which resolves with a state object.
+         *      A promise resolving with the current state object.
          */
 
         toggleOff: function() {
@@ -7258,7 +7258,7 @@
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
-         *      A promise which resolves with a state object.
+         *      A promise resolving with the current state object.
          */
 
         sort: function() {
@@ -7304,7 +7304,7 @@
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
-         *      A promise which resolves with a state object.
+         *      A promise resolving with the current state object.
          */
 
         changeLayout: function() {
@@ -7377,7 +7377,7 @@
          * @param       {function}          [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
-         *      A promise which resolves with a state object.
+         *      A promise resolving with the current state object.
          */
 
         dataset: function() {
@@ -7455,7 +7455,7 @@
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
-         *      A promise which resolves with a state object.
+         *      A promise resolving with the current state object.
          */
 
         multimix: function() {
@@ -7663,10 +7663,91 @@
         },
 
         /**
+         * Inserts one or more new target elements into the container at a specified
+         * index. To be indexed as targets, new elements must match the `selectors.target`
+         * selector (`'.mix'` by default).
+         *
+         * @example
+         *
+         * .insert(newElements [, index] [, animate], [, callback])
+         *
+         * @example <caption>Example 1: Inserting a single element via reference</caption>
+         *
+         * console.log(mixer.getState().totalShow); // 0
+         *
+         * // Create a new element
+         *
+         * var newElement = document.createElement('div');
+         * newElement.classList.add('mix');
+         *
+         * mixer.insert(newElement)
+         *     .then(function(state) {
+         *         console.log(state.totalShow); // 1
+         *     });
+         *
+         * @example <caption>Example 2: Inserting a single element via HTML string</caption>
+         *
+         * console.log(mixer.getState().totalShow); // 1
+         *
+         * // Create a new element via reference
+         *
+         * var newElementHtml = '<div class="mix"></div>';
+         *
+         * // Create and insert the new element at index 1
+         *
+         * mixer.insert(newElementHtml, 1)
+         *     .then(function(state) {
+         *         console.log(state.totalShow); // 2
+         *         console.log(state.show[1].outerHTML === newElementHtml); // true
+         *     });
+         *
+         * @example <caption>Example 3: Inserting multiple elements via reference</caption>
+         *
+         * console.log(mixer.getState().totalShow); // 2
+         *
+         * // Create an array of new elements to insert.
+         *
+         * var newElement1 = document.createElement('div');
+         * var newElement2 = document.createElement('div');
+         *
+         * newElement1.classList.add('mix');
+         * newElement2.classList.add('mix');
+         *
+         * var newElementsCollection = [newElement1, newElement2];
+         *
+         * // Insert the new elements starting at index 1
+         *
+         * mixer.insert(newElementsCollection, 1)
+         *     .then(function(state) {
+         *         console.log(state.totalShow); // 4
+         *         console.log(state.show[1] === newElement1); // true
+         *         console.log(state.show[2] === newElement2); // true
+         *     });
+         *
+         * @example <caption>Example 4: Inserting a jQuery collection object containing one or more elements</caption>
+         *
+         * console.log(mixer.getState().totalShow); // 4
+         *
+         * var $newElement = $('<div class="mix"></div>');
+         *
+         * // Insert the new elements starting at index 3
+         *
+         * mixer.insert(newElementsCollection, 3)
+         *     .then(function(state) {
+         *         console.log(state.totalShow); // 5
+         *         console.log(state.show[3] === $newElement[0]); // true
+         *     });
+         *
          * @public
          * @instance
          * @since       2.0.0
+         * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
+         *      A reference to a single element to insert, an array-like collection of elements,
+         *      or an HTML string representing a single element.
+         * @param       {number}    index=0
+         *      The index at which to insert the new element(s). 0 by default.
          * @return      {Promise.<mixitup.State>}
+         *      A promise resolving with the current state object.
          */
 
         insert: function() {
@@ -7679,10 +7760,44 @@
         },
 
         /**
+         * Inserts one or more new elements before a provided reference element.
+         *
+         * @example
+         *
+         * .insertBefore(newElements, referenceElement [, animate] [, callback])
+         *
+         * @example <caption>Example: Inserting a new element before a reference element</caption>
+         *
+         * // An existing reference element is chosen at index 2
+         *
+         * var referenceElement = mixer.getState().show[2];
+         *
+         * // Create a new element
+         *
+         * var newElement = document.createElement('div');
+         * newElement.classList.add('mix');
+         *
+         * mixer.insertBefore(newElement, referenceElement)
+         *     .then(function(state) {
+         *         // The new element is inserted into the container at index 2, before the reference element
+         *
+         *         console.log(state.show[2] === newElement); // true
+         *
+         *         // The reference element is now at index 3
+         *
+         *         console.log(state.show[3] === referenceElement); // true
+         *     });
+         *
          * @public
          * @instance
          * @since       3.0.0
+         * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
+         *      A reference to a single element to insert, an array-like collection of elements,
+         *      or an HTML string representing a single element.
+         * @param       {HTMLElement}    referenceElement
+         *      A reference to an existing target element to insert new elements before.
          * @return      {Promise.<mixitup.State>}
+         *      A promise resolving with the current state object.
          */
 
         insertBefore: function() {
@@ -7693,10 +7808,40 @@
         },
 
         /**
+         * Inserts one or more new elements after a provided reference element.
+         *
+         * @example
+         *
+         * .insertAfter(newElements, referenceElement [, animate] [, callback])
+         *
+         * @example <caption>Example: Inserting a new element after a reference element</caption>
+         *
+         * // An existing reference element is chosen at index 2
+         *
+         * var referenceElement = mixer.getState().show[2];
+         *
+         * // Create a new element
+         *
+         * var newElement = document.createElement('div');
+         * newElement.classList.add('mix');
+         *
+         * mixer.insertAfter(newElement, referenceElement)
+         *     .then(function(state) {
+         *         // The new element is inserted into the container at index 3, after the reference element
+         *
+         *         console.log(state.show[3] === newElement); // true
+         *     });
+         *
          * @public
          * @instance
          * @since       3.0.0
+         * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
+         *      A reference to a single element to insert, an array-like collection of elements,
+         *      or an HTML string representing a single element.
+         * @param       {HTMLElement}    referenceElement
+         *      A reference to an existing target element to insert new elements after.
          * @return      {Promise.<mixitup.State>}
+         *      A promise resolving with the current state object.
          */
 
         insertAfter: function() {
