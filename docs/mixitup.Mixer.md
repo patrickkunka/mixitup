@@ -319,10 +319,10 @@ Updates the contents and order of the container to reflect the provided dataset,
 if the dataset API is in use.
 
 The dataset API is designed for use in API-driven JavaScript applications, and
-should be used instead of DOM-based methods such as `.filter()`, `.sort()`,
+can be used instead of DOM-based methods such as `.filter()`, `.sort()`,
 `.insert()`, etc. When used, insertion, removal, sorting and pagination can be
 achieved purely via changes to your data model, without the uglyness of having
-to interact with or query the DOM directory.
+to interact with or query the DOM directly.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
@@ -448,8 +448,7 @@ selector (`'.mix'` by default).
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements,
-     or an HTML string representing a single element.
+|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
 |Param   |`number` | `index` | The index at which to insert the new element(s). `0` by default.
 |Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
@@ -589,8 +588,7 @@ Inserts one or more new elements after a provided reference element.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements,
-     or an HTML string representing a single element.
+|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
 |Param   |`HTMLElement` | `referenceElement` | A reference to an existing element in the container to insert new elements after.
 |Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
@@ -630,8 +628,7 @@ Inserts one or more new elements into the container before all existing targets.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements,
-     or an HTML string representing a single element.
+|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
 |Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
@@ -666,8 +663,7 @@ Inserts one or more new elements into the container after all existing targets.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements,
-     or an HTML string representing a single element.
+|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
 |Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
@@ -702,8 +698,7 @@ Removes one or more existing target elements from the container.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`HTMLElement, Array.<HTMLElement>, string, number` | `elements` | A reference to a single element to remove, an array-like collection of elements,
-     a selector string, or the index of an element to remove.
+|Param   |`HTMLElement, Array.<HTMLElement>, string, number` | `elements` | A reference to a single element to remove, an array-like collection of elements, a selector string, or the index of an element to remove.
 |Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
@@ -939,8 +934,7 @@ or React's `componentWillUnmount()`.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`boolean` | `[cleanUp]` | An optional boolean dictating whether or not to clean up any inline
-    `display: none;` styling applied to hidden targets.
+|Param   |`boolean` | `[cleanUp]` | An optional boolean dictating whether or not to clean up any inline `display: none;` styling applied to hidden targets.
 |Returns |`void` | 
 
 

@@ -21,7 +21,7 @@
     "safeContextKeyword": ["self"],
     "maximumLineLength": {
       "value": 140,
-      "allowComments": false,
+      "allowComments": true,
       "allowRegex": true
     },
     "requireSpaceBeforeBlockStatements": true,

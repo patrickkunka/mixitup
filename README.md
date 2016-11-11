@@ -138,7 +138,12 @@ With the `mixitup` factory function loaded, you may now instantiate a "mixer" on
 ```js
 var mixer = mixitup('.container');
 ```
-> Instantiating a mixer
+> Instantiating a mixer with a selector string
+
+```js
+var mixer = mixitup(containerEl);
+```
+> Instantiating a mixer with an element reference
 
 Your mixer is now ready for you to interact with, either via physical controls, or its API. Click a control or call an API method to check that everything is working correctly.
 
@@ -149,7 +154,7 @@ If you wish to customize the functionality of your mixer, an optional "configura
 See the [Configuration Object](/docs/mixitup.Config.md) documentation for the full set of configuration options and defaults.
 
 ```js
-var mixer = mixitup('.container', {
+var mixer = mixitup(containerEl, {
     selectors: {
         target: '.blog-item'
     },
@@ -165,8 +170,6 @@ var mixer = mixitup('.container', {
 If you wish to interact with your mixer via its API, the factory function creates and returns a reference to your mixer which can then be used to call API methods on.
 
 ```js
-var containerEl = document.querySelector('.container');
-
 var mixer = mixitup(containerEl);
 
 mixer.filter('.category-a');
@@ -175,6 +178,6 @@ mixer.filter('.category-a');
 
 ##### Building a modern JavaScript application?
 
-You may wish to use MixItUp 3's new "dataset" API. When using dataset, MixItUp will act as the "view" layer of your UI component — allowing you to interface purely via your data model, and avoiding interaction with the DOM entirely.
+You may wish to use MixItUp 3's new "dataset" API. Dataset is designed for use in API-driven JavaScript applications, and can be used instead of DOM-based methods such as .filter(), .sort(), .insert(), etc. When used, insertion, removal, sorting and pagination can be achieved purely via changes to your data model, without the uglyness of having to interact with or query the DOM directly.
 
 For more information check out our [--website pending--]() tutorial.

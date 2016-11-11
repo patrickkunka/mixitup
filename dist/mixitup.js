@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 0e35a2c0-ddeb-4556-b2f0-f0b74e8e38cb
+ * Build 26eb3fce-3e02-4042-a25b-b3808fd6eac1
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -7334,10 +7334,10 @@
          * if the dataset API is in use.
          *
          * The dataset API is designed for use in API-driven JavaScript applications, and
-         * should be used instead of DOM-based methods such as `.filter()`, `.sort()`,
+         * can be used instead of DOM-based methods such as `.filter()`, `.sort()`,
          * `.insert()`, etc. When used, insertion, removal, sorting and pagination can be
          * achieved purely via changes to your data model, without the uglyness of having
-         * to interact with or query the DOM directory.
+         * to interact with or query the DOM directly.
          *
          * @example
          *
@@ -7757,8 +7757,7 @@
          * @instance
          * @since       2.0.0
          * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
-         *      A reference to a single element to insert, an array-like collection of elements,
-         *      or an HTML string representing a single element.
+         *      A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
          * @param       {number}    index=0
          *      The index at which to insert the new element(s). `0` by default.
          * @param       {boolean}   [animate=true]
@@ -7859,8 +7858,7 @@
          * @instance
          * @since       3.0.0
          * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
-         *      A reference to a single element to insert, an array-like collection of elements,
-         *      or an HTML string representing a single element.
+         *      A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
          * @param       {HTMLElement}    referenceElement
          *      A reference to an existing element in the container to insert new elements after.
          * @param       {boolean}   [animate=true]
@@ -7903,8 +7901,7 @@
          * @instance
          * @since       3.0.0
          * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
-         *      A reference to a single element to insert, an array-like collection of elements,
-         *      or an HTML string representing a single element.
+         *      A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
          * @param       {boolean}   [animate=true]
          *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
@@ -7945,8 +7942,7 @@
          * @instance
          * @since       3.0.0
          * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
-         *      A reference to a single element to insert, an array-like collection of elements,
-         *      or an HTML string representing a single element.
+         *      A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
          * @param       {boolean}   [animate=true]
          *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
@@ -8013,8 +8009,7 @@
          * @instance
          * @since       3.0.0
          * @param       {(HTMLElement|Array.<HTMLElement>|string|number)}    elements
-         *      A reference to a single element to remove, an array-like collection of elements,
-         *      a selector string, or the index of an element to remove.
+         *      A reference to a single element to remove, an array-like collection of elements, a selector string, or the index of an element to remove.
          * @param       {boolean}   [animate=true]
          *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
@@ -8236,8 +8231,7 @@
          * @instance
          * @since   2.0.0
          * @param   {boolean}   [cleanUp=false]
-         *     An optional boolean dictating whether or not to clean up any inline
-         *     `display: none;` styling applied to hidden targets.
+         *     An optional boolean dictating whether or not to clean up any inline `display: none;` styling applied to hidden targets.
          * @return  {void}
          */
 
