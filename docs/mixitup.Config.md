@@ -28,9 +28,7 @@ configuration values detailed below.
 - [render](#render)
 
 
-## Members
-
-<h3 id="animation">animation</h3>
+<h2 id="animation">animation</h2>
 
 A group of properties defining MixItUp's animation and effects settings.
 
@@ -484,7 +482,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-<h3 id="callbacks">callbacks</h3>
+<h2 id="callbacks">callbacks</h2>
 
 A group of optional callback functions to be invoked at various
 points within the lifecycle of a mixer operation.
@@ -659,7 +657,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-<h3 id="controls">controls</h3>
+<h2 id="controls">controls</h2>
 
 A group of properties relating to clickable control elements.
 
@@ -868,7 +866,7 @@ mixer.toggleOn('.cat-2')
     });
 ```
 
-<h3 id="classNames">classNames</h3>
+<h2 id="classNames">classNames</h2>
 
 A group of properties defining the output and structure of class names programmatically
 added to controls and containers to reflect the state of the mixer.
@@ -1170,7 +1168,7 @@ var mixer = mixitup(containerEl, {
 // example active control output: "mixitup__control--active"
 ```
 
-<h3 id="data">data</h3>
+<h2 id="data">data</h2>
 
 A group of properties relating to MixItUp's dataset API.
 
@@ -1269,7 +1267,7 @@ mixer.dataset(myDataset)
    });
 ```
 
-<h3 id="debug">debug</h3>
+<h2 id="debug">debug</h2>
 
 A group of properties allowing the toggling of various debug features.
 
@@ -1345,7 +1343,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-<h3 id="layout">layout</h3>
+<h2 id="layout">layout</h2>
 
 A group of properties relating to the layout of the container.
 
@@ -1426,7 +1424,7 @@ mixer.changeLayout('list')
     });
 ```
 
-<h3 id="load">load</h3>
+<h2 id="load">load</h2>
 
 A group of properties defining the initial state of the mixer on load (instantiation).
 
@@ -1538,7 +1536,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-<h3 id="selectors">selectors</h3>
+<h2 id="selectors">selectors</h2>
 
 A group of properties defining the selectors used to query elements within a mixitup container.
 
@@ -1580,7 +1578,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-<h3 id="render">render</h3>
+<h2 id="render">render</h2>
 
 A group of optional render functions for creating and updating elements.
 

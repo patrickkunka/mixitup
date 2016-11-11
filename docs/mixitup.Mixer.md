@@ -34,8 +34,6 @@ insertion, removal and more.
 - [destroy()](#destroy)
 
 
-## Members
-
 <h3 id="show">show()</h3>
 
 *Version added: 3.0.0*

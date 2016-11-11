@@ -24,8 +24,6 @@ the `mixer` instance, and other event-specific properties described below.
 - [mixClick](#mixClick)
 
 
-## Members
-
 <h3 id="mixStart">mixStart</h3>
 
 
