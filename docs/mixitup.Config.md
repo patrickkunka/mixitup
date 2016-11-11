@@ -30,7 +30,7 @@ configuration values detailed below.
 
 ## Members
 
-### animation
+<h3 id="animation">animation</h3>
 
 *Version added: 2.0.0*
 
@@ -41,7 +41,7 @@ A group of properties defining MixItUp's animation and effects settings.
 
 
 
-### callbacks
+<h3 id="callbacks">callbacks</h3>
 
 *Version added: 2.0.0*
 
@@ -59,7 +59,7 @@ argument, as well as other more specific arguments described below.
 
 
 
-### controls
+<h3 id="controls">controls</h3>
 
 *Version added: 2.0.0*
 
@@ -70,7 +70,7 @@ A group of properties relating to clickable control elements.
 
 
 
-### classNames
+<h3 id="classNames">classNames</h3>
 
 *Version added: 3.0.0*
 
@@ -93,7 +93,7 @@ your proejct.
 
 
 
-### data
+<h3 id="data">data</h3>
 
 *Version added: 3.0.0*
 
@@ -104,7 +104,7 @@ A group of properties relating to MixItUp's dataset API.
 
 
 
-### debug
+<h3 id="debug">debug</h3>
 
 *Version added: 3.0.0*
 
@@ -115,7 +115,7 @@ A group of properties allowing the toggling of various debug features.
 
 
 
-### layout
+<h3 id="layout">layout</h3>
 
 *Version added: 3.0.0*
 
@@ -126,7 +126,7 @@ A group of properties relating to the layout of the container.
 
 
 
-### load
+<h3 id="load">load</h3>
 
 *Version added: 2.0.0*
 
@@ -137,7 +137,7 @@ A group of properties defining the initial state of the mixer on load (instantia
 
 
 
-### selectors
+<h3 id="selectors">selectors</h3>
 
 *Version added: 3.0.0*
 
@@ -148,7 +148,7 @@ A group of properties defining the selectors used to query elements within a mix
 
 
 
-### render
+<h3 id="render">render</h3>
 
 *Version added: 3.0.0*
 

@@ -36,7 +36,7 @@ insertion, removal and more.
 
 ## Members
 
-### show()
+<h3 id="show">show()</h3>
 
 *Version added: 3.0.0*
 
@@ -61,7 +61,7 @@ mixer.show()
     });
 ```
 
-### hide()
+<h3 id="hide">hide()</h3>
 
 *Version added: 3.0.0*
 
@@ -87,7 +87,7 @@ mixer.hide()
     });
 ```
 
-### isMixing()
+<h3 id="isMixing">isMixing()</h3>
 
 *Version added: 2.0.0*
 
@@ -114,7 +114,7 @@ mixer.sort('random', function() {
 console.log(mixer.isMixing()) // true
 ```
 
-### filter()
+<h3 id="filter">filter()</h3>
 
 *Version added: 2.0.0*
 
@@ -163,7 +163,7 @@ mixer.filter('.category-a.category-c')
     });
 ```
 
-### toggleOn()
+<h3 id="toggleOn">toggleOn()</h3>
 
 *Version added: 3.0.0*
 
@@ -194,7 +194,7 @@ mixer.toggleOn('.category-b')
     });
 ```
 
-### toggleOff()
+<h3 id="toggleOff">toggleOff()</h3>
 
 *Version added: 3.0.0*
 
@@ -224,7 +224,7 @@ mixer.toggleOff('.category-b')
     });
 ```
 
-### sort()
+<h3 id="sort">sort()</h3>
 
 *Version added: 2.0.0*
 
@@ -291,7 +291,7 @@ mixer.sort('random')
     });
 ```
 
-### changeLayout()
+<h3 id="changeLayout">changeLayout()</h3>
 
 *Version added: 2.0.0*
 
@@ -331,7 +331,7 @@ mixer.changeLayout('')
      });
 ```
 
-### dataset()
+<h3 id="dataset">dataset()</h3>
 
 *Version added: 3.0.0*
 
@@ -400,7 +400,7 @@ mixer.dataset(newDataset)
     });
 ```
 
-### multimix()
+<h3 id="multimix">multimix()</h3>
 
 *Version added: 2.0.0*
 
@@ -456,7 +456,7 @@ mixer.multimix({
     });
 ```
 
-### insert()
+<h3 id="insert">insert()</h3>
 
 *Version added: 2.0.0*
 
@@ -555,7 +555,7 @@ mixer.insert(newElementsCollection, 3)
     });
 ```
 
-### insertBefore()
+<h3 id="insertBefore">insertBefore()</h3>
 
 *Version added: 3.0.0*
 
@@ -599,7 +599,7 @@ mixer.insertBefore(newElement, referenceElement)
     });
 ```
 
-### insertAfter()
+<h3 id="insertAfter">insertAfter()</h3>
 
 *Version added: 3.0.0*
 
@@ -639,7 +639,7 @@ mixer.insertAfter(newElement, referenceElement)
     });
 ```
 
-### prepend()
+<h3 id="prepend">prepend()</h3>
 
 *Version added: 3.0.0*
 
@@ -674,7 +674,7 @@ mixer.prepend(newElement)
     });
 ```
 
-### append()
+<h3 id="append">append()</h3>
 
 *Version added: 3.0.0*
 
@@ -709,7 +709,7 @@ mixer.append(newElement)
     });
 ```
 
-### remove()
+<h3 id="remove">remove()</h3>
 
 *Version added: 3.0.0*
 
@@ -775,7 +775,7 @@ mixer.remove(3)
      });
 ```
 
-### getConfig()
+<h3 id="getConfig">getConfig()</h3>
 
 *Version added: 2.0.0*
 
@@ -811,7 +811,7 @@ var animation = mixer.getConfig('animation'); // ConfigAnimation { ... }
 var effects = mixer.getConfig('animation.effects'); // 'fade scale'
 ```
 
-### configure()
+<h3 id="configure">configure()</h3>
 
 *Version added: 3.0.0*
 
@@ -868,7 +868,7 @@ mixer = mixitup(containerEl, {
 });
 ```
 
-### getState()
+<h3 id="getState">getState()</h3>
 
 *Version added: 2.0.0*
 
@@ -896,7 +896,7 @@ var state = mixer.getState();
 console.log(state.totalShow + 'targets are currently shown');
 ```
 
-### forceRefresh()
+<h3 id="forceRefresh">forceRefresh()</h3>
 
 *Version added: 2.1.2*
 
@@ -939,7 +939,7 @@ mixer.forceRefresh();
 console.log(mixer.getState().totalShow); // 2
 ```
 
-### destroy()
+<h3 id="destroy">destroy()</h3>
 
 *Version added: 2.0.0*
 

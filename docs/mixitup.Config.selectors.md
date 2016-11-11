@@ -11,7 +11,7 @@ A group of properties defining the selectors used to query elements within a mix
 
 ## Members
 
-### target
+<h3 id="target">target</h3>
 
 
 

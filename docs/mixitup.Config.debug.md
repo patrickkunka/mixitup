@@ -12,7 +12,7 @@ A group of properties allowing the toggling of various debug features.
 
 ## Members
 
-### enable
+<h3 id="enable">enable</h3>
 
 
 
@@ -44,7 +44,7 @@ var mixer = mixitup(containerEl, {
 console.log(mixer);
 ```
 
-### showWarnings
+<h3 id="showWarnings">showWarnings</h3>
 
 
 

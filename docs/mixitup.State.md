@@ -29,7 +29,7 @@ for retrieval at any time via the API.
 
 ## Members
 
-### id
+<h3 id="id">id</h3>
 
 
 
@@ -42,7 +42,7 @@ The ID of the mixer instance.
 |`string`| `''`
 
 
-### activeFilter
+<h3 id="activeFilter">activeFilter</h3>
 
 
 
@@ -56,7 +56,7 @@ call.
 |`mixitup.CommandFilter`| `null`
 
 
-### activeSort
+<h3 id="activeSort">activeSort</h3>
 
 
 
@@ -69,7 +69,7 @@ The currently active sort command as set by a control click or API call.
 |`mixitup.CommandSort`| `null`
 
 
-### activeContainerClassName
+<h3 id="activeContainerClassName">activeContainerClassName</h3>
 
 
 
@@ -82,7 +82,7 @@ The current layout-specific container class name, if applied.
 |`string`| `''`
 
 
-### container
+<h3 id="container">container</h3>
 
 
 
@@ -95,7 +95,7 @@ A reference to the container element that the mixer is instantiated on.
 |`Element`| `null`
 
 
-### targets
+<h3 id="targets">targets</h3>
 
 
 
@@ -108,7 +108,7 @@ An array of all target elements indexed by the mixer.
 |`Array.<Element>`| `[]`
 
 
-### hide
+<h3 id="hide">hide</h3>
 
 
 
@@ -121,7 +121,7 @@ An array of all target elements not matching the current filter.
 |`Array.<Element>`| `[]`
 
 
-### show
+<h3 id="show">show</h3>
 
 
 
@@ -135,7 +135,7 @@ limits applied such as pagination.
 |`Array.<Element>`| `[]`
 
 
-### matching
+<h3 id="matching">matching</h3>
 
 
 
@@ -149,7 +149,7 @@ any additional limits applied such as pagination.
 |`Array.<Element>`| `[]`
 
 
-### totalTargets
+<h3 id="totalTargets">totalTargets</h3>
 
 
 
@@ -163,7 +163,7 @@ mixer. Equivalent to `state.targets.length`.
 |`number`| `-1`
 
 
-### totalShow
+<h3 id="totalShow">totalShow</h3>
 
 
 
@@ -178,7 +178,7 @@ Equivalent to `state.show.length`.
 |`number`| `-1`
 
 
-### totalHide
+<h3 id="totalHide">totalHide</h3>
 
 
 
@@ -192,7 +192,7 @@ the current filter. Equivalent to `state.hide.length`.
 |`number`| `-1`
 
 
-### totalMatching
+<h3 id="totalMatching">totalMatching</h3>
 
 
 
@@ -207,7 +207,7 @@ Equivalent to `state.matching.length`.
 |`number`| `-1`
 
 
-### hasFailed
+<h3 id="hasFailed">hasFailed</h3>
 
 
 
@@ -221,7 +221,7 @@ could be found matching the filter.
 |`boolean`| `false`
 
 
-### triggerElement
+<h3 id="triggerElement">triggerElement</h3>
 
 
 
@@ -235,7 +235,7 @@ clicking of a control and not an API call.
 |`Elementnull`| `null`
 
 
-### activeDataset
+<h3 id="activeDataset">activeDataset</h3>
 
 
 

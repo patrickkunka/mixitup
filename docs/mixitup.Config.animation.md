@@ -26,7 +26,7 @@ A group of properties defining MixItUp's animation and effects settings.
 
 ## Members
 
-### enable
+<h3 id="enable">enable</h3>
 
 
 
@@ -50,7 +50,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### effects
+<h3 id="effects">effects</h3>
 
 
 
@@ -83,7 +83,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### effectsIn
+<h3 id="effectsIn">effectsIn</h3>
 
 
 
@@ -107,7 +107,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### effectsOut
+<h3 id="effectsOut">effectsOut</h3>
 
 
 
@@ -131,7 +131,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### duration
+<h3 id="duration">duration</h3>
 
 
 
@@ -155,7 +155,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### easing
+<h3 id="easing">easing</h3>
 
 
 
@@ -188,7 +188,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### applyPerspective
+<h3 id="applyPerspective">applyPerspective</h3>
 
 
 
@@ -215,7 +215,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### perspectiveDistance
+<h3 id="perspectiveDistance">perspectiveDistance</h3>
 
 
 
@@ -239,7 +239,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### perspectiveOrigin
+<h3 id="perspectiveOrigin">perspectiveOrigin</h3>
 
 
 
@@ -263,7 +263,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### queue
+<h3 id="queue">queue</h3>
 
 
 
@@ -292,7 +292,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### queueLimit
+<h3 id="queueLimit">queueLimit</h3>
 
 
 
@@ -315,7 +315,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### animateResizeContainer
+<h3 id="animateResizeContainer">animateResizeContainer</h3>
 
 
 
@@ -351,7 +351,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### animateResizeTargets
+<h3 id="animateResizeTargets">animateResizeTargets</h3>
 
 
 
@@ -382,7 +382,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### staggerSequence
+<h3 id="staggerSequence">staggerSequence</h3>
 
 
 
@@ -427,7 +427,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### reverseOut
+<h3 id="reverseOut">reverseOut</h3>
 
 
 
@@ -462,7 +462,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### nudge
+<h3 id="nudge">nudge</h3>
 
 
 

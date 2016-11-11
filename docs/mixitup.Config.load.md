@@ -13,7 +13,7 @@ A group of properties defining the initial state of the mixer on load (instantia
 
 ## Members
 
-### filter
+<h3 id="filter">filter</h3>
 
 
 
@@ -52,7 +52,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### sort
+<h3 id="sort">sort</h3>
 
 
 
@@ -81,7 +81,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### dataset
+<h3 id="dataset">dataset</h3>
 
 
 

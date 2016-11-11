@@ -12,7 +12,7 @@ allowing simultaneous control of said instances similar to the MixItUp 2 API.
 
 ## Members
 
-### mixitup()
+<h3 id="mixitup">mixitup()</h3>
 
 *Version added: 3.0.0*
 

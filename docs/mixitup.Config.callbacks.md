@@ -22,7 +22,7 @@ argument, as well as other more specific arguments described below.
 
 ## Members
 
-### onMixStart
+<h3 id="onMixStart">onMixStart</h3>
 
 
 
@@ -50,7 +50,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### onMixBusy
+<h3 id="onMixBusy">onMixBusy</h3>
 
 
 
@@ -76,7 +76,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### onMixEnd
+<h3 id="onMixEnd">onMixEnd</h3>
 
 
 
@@ -101,7 +101,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### onMixFail
+<h3 id="onMixFail">onMixFail</h3>
 
 
 
@@ -126,7 +126,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### onMixClick
+<h3 id="onMixClick">onMixClick</h3>
 
 
 

@@ -12,7 +12,7 @@ A group of properties relating to the layout of the container.
 
 ## Members
 
-### allowNestedTargets
+<h3 id="allowNestedTargets">allowNestedTargets</h3>
 
 
 
@@ -46,7 +46,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### containerClassName
+<h3 id="containerClassName">containerClassName</h3>
 
 
 

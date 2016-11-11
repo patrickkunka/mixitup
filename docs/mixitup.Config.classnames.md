@@ -33,7 +33,7 @@ your proejct.
 
 ## Members
 
-### block
+<h3 id="block">block</h3>
 
 
 
@@ -68,7 +68,7 @@ var mixer = mixitup(containerEl, {
 // example active control output: "control-active"
 ```
 
-### elementContainer
+<h3 id="elementContainer">elementContainer</h3>
 
 
 
@@ -81,7 +81,7 @@ The "element" portion of the class name added to container.
 |`string`| `'container'`
 
 
-### elementFilter
+<h3 id="elementFilter">elementFilter</h3>
 
 
 
@@ -120,7 +120,7 @@ var mixer = mixitup(containerEl, {
 // example active filter output: "portfolio-filter-active"
 ```
 
-### elementSort
+<h3 id="elementSort">elementSort</h3>
 
 
 
@@ -159,7 +159,7 @@ var mixer = mixitup(containerEl, {
 // example active sort output: "portfolio-sort-active"
 ```
 
-### elementMultimix
+<h3 id="elementMultimix">elementMultimix</h3>
 
 
 
@@ -198,7 +198,7 @@ var mixer = mixitup(containerEl, {
 // example active multimix output: "portfolio-multimix-active"
 ```
 
-### elementToggle
+<h3 id="elementToggle">elementToggle</h3>
 
 
 
@@ -237,7 +237,7 @@ var mixer = mixitup(containerEl, {
 // example active toggle output: "portfolio-toggle-active"
 ```
 
-### modifierActive
+<h3 id="modifierActive">modifierActive</h3>
 
 
 
@@ -250,7 +250,7 @@ The "modifier" portion of the class name added to active controls.
 |`string`| `'active'`
 
 
-### modifierDisabled
+<h3 id="modifierDisabled">modifierDisabled</h3>
 
 
 
@@ -263,7 +263,7 @@ The "modifier" portion of the class name added to disabled controls.
 |`string`| `'disabled'`
 
 
-### modifierFailed
+<h3 id="modifierFailed">modifierFailed</h3>
 
 
 
@@ -276,7 +276,7 @@ The "modifier" portion of the class name added to the container when in a "faile
 |`string`| `'failed'`
 
 
-### delineatorElement
+<h3 id="delineatorElement">delineatorElement</h3>
 
 
 
@@ -302,7 +302,7 @@ var mixer = mixitup(containerEl, {
 // example active control output: "mixitup__control-active"
 ```
 
-### delineatorModifier
+<h3 id="delineatorModifier">delineatorModifier</h3>
 
 
 

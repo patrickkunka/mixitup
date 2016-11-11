@@ -12,7 +12,7 @@ A group of properties relating to MixItUp's dataset API.
 
 ## Members
 
-### uid
+<h3 id="uid">uid</h3>
 
 
 
@@ -39,7 +39,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### dirtyCheck
+<h3 id="dirtyCheck">dirtyCheck</h3>
 
 
 

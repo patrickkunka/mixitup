@@ -15,7 +15,7 @@ A group of properties relating to clickable control elements.
 
 ## Members
 
-### enable
+<h3 id="enable">enable</h3>
 
 
 
@@ -52,7 +52,7 @@ var mixer = mixitup(containerEl, {
 mixer.filter('.cat-1');
 ```
 
-### live
+<h3 id="live">live</h3>
 
 
 
@@ -91,7 +91,7 @@ var mixer = mixitup(containerEl, {
 // the mixer's UI
 ```
 
-### scope
+<h3 id="scope">scope</h3>
 
 
 
@@ -133,7 +133,7 @@ var mixerTwo = mixitup(containerTwo, {
 // isolated controls placed within their container elements.
 ```
 
-### toggleLogic
+<h3 id="toggleLogic">toggleLogic</h3>
 
 
 
@@ -165,7 +165,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### toggleDefault
+<h3 id="toggleDefault">toggleDefault</h3>
 
 
 
