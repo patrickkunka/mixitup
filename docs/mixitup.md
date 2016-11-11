@@ -2,7 +2,7 @@
 
 *Version added: 3.0.0*
 
-`mixitup(container [,config] [,foreignDoc])`
+`[object Object]`
 
 The `mixitup()` "factory" function creates individual instances of MixItUp
 ("mixers"), which are returned with the function is called.
@@ -21,23 +21,29 @@ when you require the MixItUp library.
 |Param   |`object` | `[foreignDoc]` | An optional reference to a `document`, which can be used to control a MixItUp instance in an iframe.
 |Returns |`mixitup.Mixer` | A "mixer" object representing the instance of MixItUp
 
-
+##### Example 1: Creating a mixer instance with an element reference
 
 ```js
+var containerEl = document.querySelector('.container');
 
+var mixer = mixitup(containerEl);
 ```
-
+##### Example 2: Creating a mixer instance with a selector string
 
 ```js
-
+var mixer = mixitup('.container');
 ```
-
+##### Example 3: Passing a configuration object
 
 ```js
-
+var mixer = mixitup(containerEl, {
+    animation: {
+        effects: 'fade scale(0.5)'
+    }
+});
 ```
-
+##### Example 4: Passing an iframe reference
 
 ```js
-
+var mixer = mixitup(containerEl, config, foreignDocument);
 ```
