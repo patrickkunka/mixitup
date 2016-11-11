@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 06f07ade-6072-4e7a-8eee-5f25bde6fd59
+ * Build db61b87b-499a-4820-a480-132b8cb3987e
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -7691,7 +7691,7 @@
          *
          * // Create a new element via reference
          *
-         * var newElementHtml = '<div class="mix"></div>';
+         * var newElementHtml = '&lt;div class="mix"&gt;&lt/div&gt;';
          *
          * // Create and insert the new element at index 1
          *
@@ -7728,7 +7728,7 @@
          *
          * console.log(mixer.getState().totalShow); // 4
          *
-         * var $newElement = $('<div class="mix"></div>');
+         * var $newElement = $('&lt;div class="mix"&gt;&lt/div&gt;');
          *
          * // Insert the new elements starting at index 3
          *

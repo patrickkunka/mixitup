@@ -50,12 +50,12 @@ The currently active sort command as set by a control click or API call.
 |`mixitup.CommandSort`| `null`
 
 
-### <a id="mixitup.State#activeContainerClass">mixitup.State.activeContainerClass</a>
+### <a id="mixitup.State#activeContainerClassName">mixitup.State.activeContainerClassName</a>
 
 
 
 
-The currently active containerClass, if applied.
+The current layout-specific container class name, if applied.
 
 
 |Type | Default

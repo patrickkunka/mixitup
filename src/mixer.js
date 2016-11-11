@@ -3492,7 +3492,7 @@ h.extend(mixitup.Mixer.prototype,
      *
      * // Create a new element via reference
      *
-     * var newElementHtml = '<div class="mix"></div>';
+     * var newElementHtml = '&lt;div class="mix"&gt;&lt/div&gt;';
      *
      * // Create and insert the new element at index 1
      *
@@ -3529,7 +3529,7 @@ h.extend(mixitup.Mixer.prototype,
      *
      * console.log(mixer.getState().totalShow); // 4
      *
-     * var $newElement = $('<div class="mix"></div>');
+     * var $newElement = $('&lt;div class="mix"&gt;&lt/div&gt;');
      *
      * // Insert the new elements starting at index 3
      *
@@ -3546,7 +3546,7 @@ h.extend(mixitup.Mixer.prototype,
      *      A reference to a single element to insert, an array-like collection of elements,
      *      or an HTML string representing a single element.
      * @param       {number}    index=0
-     *      The index at which to insert the new element(s). 0 by default.
+     *      The index at which to insert the new element(s). `0` by default.
      * @return      {Promise.<mixitup.State>}
      *      A promise resolving with the current state object.
      */
