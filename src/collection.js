@@ -10,7 +10,7 @@
  * @constructor
  * @namespace
  * @memberof    mixitup
- * @public
+ * @private
  * @since       3.0.0
  * @param       {mixitup.Mixer[]}   instances
  */
@@ -52,9 +52,11 @@ h.extend(mixitup.Collection.prototype,
      * @example
      * var collection = new Collection([mixer1, mixer2]);
      *
-     * return collection.mixer('filter', '.cat-1')
+     * return collection.mixitup('filter', '.category-a')
      *     .then(function(states) {
-     *         console.log('all instances filtered');
+     *         state.forEach(function(state) {
+     *             console.log(state.activeFilter.selector); // .category-a
+     *         });
      *     });
      *
      * @public

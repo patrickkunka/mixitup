@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 225a2b35-1273-40ff-8d3c-caaee4702e25
+ * Build 06c20473-cb3d-47ab-bde4-15dcf930d094
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1172,7 +1172,7 @@
      * @constructor
      * @namespace
      * @memberof    mixitup
-     * @public
+     * @private
      * @since       3.0.0
      */
 
@@ -1242,13 +1242,13 @@
 
     /**
      * The BaseStatic class holds a set of static methods which are then added to all other
-     * extinsible MixItUp classes as a means of integrating extensions via the addition of new
+     * extensible MixItUp classes as a means of integrating extensions via the addition of new
      * methods and/or actions and hooks.
      *
      * @constructor
      * @namespace
      * @memberof    mixitup
-     * @public
+     * @private
      * @since       3.0.0
      */
 
@@ -9012,7 +9012,7 @@
      * @constructor
      * @namespace
      * @memberof    mixitup
-     * @public
+     * @private
      * @since       3.0.0
      * @param       {mixitup.Mixer[]}   instances
      */
@@ -9054,9 +9054,11 @@
          * @example
          * var collection = new Collection([mixer1, mixer2]);
          *
-         * return collection.mixer('filter', '.cat-1')
+         * return collection.mixitup('filter', '.category-a')
          *     .then(function(states) {
-         *         console.log('all instances filtered');
+         *         state.forEach(function(state) {
+         *             console.log(state.activeFilter.selector); // .category-a
+         *         });
          *     });
          *
          * @public
@@ -9093,7 +9095,7 @@
      * @constructor
      * @namespace
      * @memberof    mixitup
-     * @public
+     * @private
      * @since       3.0.0
      */
 

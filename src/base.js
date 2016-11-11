@@ -7,7 +7,7 @@
  * @constructor
  * @namespace
  * @memberof    mixitup
- * @public
+ * @private
  * @since       3.0.0
  */
 
