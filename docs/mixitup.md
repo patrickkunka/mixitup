@@ -2,7 +2,7 @@
 
 *Version added: 3.0.0*
 
-`[object Object]`
+`mixitup(container [,config] [,foreignDoc])`
 
 The `mixitup()` "factory" function creates individual instances of MixItUp
 ("mixers"), which are returned with the function is called.
