@@ -4,10 +4,15 @@
 
 A group of properties allowing the toggling of various debug features.
 
+### Contents
+
+- [enable](#enable)
+- [showWarnings](#showWarnings)
+
 
 ## Members
 
-### <a id="mixitup.Config.debug#enable">enable</a>
+### enable
 
 
 
@@ -39,7 +44,7 @@ var mixer = mixitup(containerEl, {
 console.log(mixer);
 ```
 
-### <a id="mixitup.Config.debug#showWarnings">showWarnings</a>
+### showWarnings
 
 
 

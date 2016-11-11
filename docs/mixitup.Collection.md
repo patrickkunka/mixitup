@@ -5,14 +5,18 @@
 A jQuery-collection-like wrapper around one or more `mixitup.Mixer` instances
 allowing simultaneous control of said instances similar to the MixItUp 2 API.
 
+### Contents
+
+- [mixitup()](#mixitup)
+
 
 ## Members
 
-### <a id="mixitup.Collection#mixitup">mixitup()</a>
+### mixitup()
 
 *Version added: 3.0.0*
 
-`js
+`
 .mixitup(methodName[,arg1][,arg2..]);
 `
 

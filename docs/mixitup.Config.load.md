@@ -4,10 +4,16 @@
 
 A group of properties defining the initial state of the mixer on load (instantiation).
 
+### Contents
+
+- [filter](#filter)
+- [sort](#sort)
+- [dataset](#dataset)
+
 
 ## Members
 
-### <a id="mixitup.Config.load#filter">filter</a>
+### filter
 
 
 
@@ -46,7 +52,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.load#sort">sort</a>
+### sort
 
 
 
@@ -75,7 +81,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.load#dataset">dataset</a>
+### dataset
 
 
 

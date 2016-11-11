@@ -14,10 +14,23 @@ functionality as needed.
 If no configuration object is passed, the mixer instance will take on the default
 configuration values detailed below.
 
+### Contents
+
+- [animation](#animation)
+- [callbacks](#callbacks)
+- [controls](#controls)
+- [classNames](#classNames)
+- [data](#data)
+- [debug](#debug)
+- [layout](#layout)
+- [load](#load)
+- [selectors](#selectors)
+- [render](#render)
+
 
 ## Members
 
-### <a id="mixitup.Config.animation">animation</a>
+### animation
 
 *Version added: 2.0.0*
 
@@ -28,7 +41,7 @@ A group of properties defining MixItUp's animation and effects settings.
 
 
 
-### <a id="mixitup.Config.callbacks">callbacks</a>
+### callbacks
 
 *Version added: 2.0.0*
 
@@ -46,7 +59,7 @@ argument, as well as other more specific arguments described below.
 
 
 
-### <a id="mixitup.Config.controls">controls</a>
+### controls
 
 *Version added: 2.0.0*
 
@@ -57,7 +70,7 @@ A group of properties relating to clickable control elements.
 
 
 
-### <a id="mixitup.Config.classNames">classNames</a>
+### classNames
 
 *Version added: 3.0.0*
 
@@ -80,7 +93,7 @@ your proejct.
 
 
 
-### <a id="mixitup.Config.data">data</a>
+### data
 
 *Version added: 3.0.0*
 
@@ -91,7 +104,7 @@ A group of properties relating to MixItUp's dataset API.
 
 
 
-### <a id="mixitup.Config.debug">debug</a>
+### debug
 
 *Version added: 3.0.0*
 
@@ -102,7 +115,7 @@ A group of properties allowing the toggling of various debug features.
 
 
 
-### <a id="mixitup.Config.layout">layout</a>
+### layout
 
 *Version added: 3.0.0*
 
@@ -113,7 +126,7 @@ A group of properties relating to the layout of the container.
 
 
 
-### <a id="mixitup.Config.load">load</a>
+### load
 
 *Version added: 2.0.0*
 
@@ -124,7 +137,7 @@ A group of properties defining the initial state of the mixer on load (instantia
 
 
 
-### <a id="mixitup.Config.selectors">selectors</a>
+### selectors
 
 *Version added: 3.0.0*
 
@@ -135,7 +148,7 @@ A group of properties defining the selectors used to query elements within a mix
 
 
 
-### <a id="mixitup.Config.render">render</a>
+### render
 
 *Version added: 3.0.0*
 

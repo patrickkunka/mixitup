@@ -4,10 +4,15 @@
 
 A group of properties relating to MixItUp's dataset API.
 
+### Contents
+
+- [uid](#uid)
+- [dirtyCheck](#dirtyCheck)
+
 
 ## Members
 
-### <a id="mixitup.Config.data#uid">uid</a>
+### uid
 
 
 
@@ -34,7 +39,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.data#dirtyCheck">dirtyCheck</a>
+### dirtyCheck
 
 
 

@@ -7,10 +7,29 @@ a MixItUp instance. They are provided at the start and end of any operation via
 callbacks and events, with the most recent state stored between operations
 for retrieval at any time via the API.
 
+### Contents
+
+- [id](#id)
+- [activeFilter](#activeFilter)
+- [activeSort](#activeSort)
+- [activeContainerClassName](#activeContainerClassName)
+- [container](#container)
+- [targets](#targets)
+- [hide](#hide)
+- [show](#show)
+- [matching](#matching)
+- [totalTargets](#totalTargets)
+- [totalShow](#totalShow)
+- [totalHide](#totalHide)
+- [totalMatching](#totalMatching)
+- [hasFailed](#hasFailed)
+- [triggerElement](#triggerElement)
+- [activeDataset](#activeDataset)
+
 
 ## Members
 
-### <a id="mixitup.State#id">id</a>
+### id
 
 
 
@@ -23,7 +42,7 @@ The ID of the mixer instance.
 |`string`| `''`
 
 
-### <a id="mixitup.State#activeFilter">activeFilter</a>
+### activeFilter
 
 
 
@@ -37,7 +56,7 @@ call.
 |`mixitup.CommandFilter`| `null`
 
 
-### <a id="mixitup.State#activeSort">activeSort</a>
+### activeSort
 
 
 
@@ -50,7 +69,7 @@ The currently active sort command as set by a control click or API call.
 |`mixitup.CommandSort`| `null`
 
 
-### <a id="mixitup.State#activeContainerClassName">activeContainerClassName</a>
+### activeContainerClassName
 
 
 
@@ -63,7 +82,7 @@ The current layout-specific container class name, if applied.
 |`string`| `''`
 
 
-### <a id="mixitup.State#container">container</a>
+### container
 
 
 
@@ -76,7 +95,7 @@ A reference to the container element that the mixer is instantiated on.
 |`Element`| `null`
 
 
-### <a id="mixitup.State#targets">targets</a>
+### targets
 
 
 
@@ -89,7 +108,7 @@ An array of all target elements indexed by the mixer.
 |`Array.<Element>`| `[]`
 
 
-### <a id="mixitup.State#hide">hide</a>
+### hide
 
 
 
@@ -102,7 +121,7 @@ An array of all target elements not matching the current filter.
 |`Array.<Element>`| `[]`
 
 
-### <a id="mixitup.State#show">show</a>
+### show
 
 
 
@@ -116,7 +135,7 @@ limits applied such as pagination.
 |`Array.<Element>`| `[]`
 
 
-### <a id="mixitup.State#matching">matching</a>
+### matching
 
 
 
@@ -130,7 +149,7 @@ any additional limits applied such as pagination.
 |`Array.<Element>`| `[]`
 
 
-### <a id="mixitup.State#totalTargets">totalTargets</a>
+### totalTargets
 
 
 
@@ -144,7 +163,7 @@ mixer. Equivalent to `state.targets.length`.
 |`number`| `-1`
 
 
-### <a id="mixitup.State#totalShow">totalShow</a>
+### totalShow
 
 
 
@@ -159,7 +178,7 @@ Equivalent to `state.show.length`.
 |`number`| `-1`
 
 
-### <a id="mixitup.State#totalHide">totalHide</a>
+### totalHide
 
 
 
@@ -173,7 +192,7 @@ the current filter. Equivalent to `state.hide.length`.
 |`number`| `-1`
 
 
-### <a id="mixitup.State#totalMatching">totalMatching</a>
+### totalMatching
 
 
 
@@ -188,7 +207,7 @@ Equivalent to `state.matching.length`.
 |`number`| `-1`
 
 
-### <a id="mixitup.State#hasFailed">hasFailed</a>
+### hasFailed
 
 
 
@@ -202,7 +221,7 @@ could be found matching the filter.
 |`boolean`| `false`
 
 
-### <a id="mixitup.State#triggerElement">triggerElement</a>
+### triggerElement
 
 
 
@@ -216,7 +235,7 @@ clicking of a control and not an API call.
 |`Elementnull`| `null`
 
 
-### <a id="mixitup.State#activeDataset">activeDataset</a>
+### activeDataset
 
 
 

@@ -4,10 +4,15 @@
 
 A group of properties relating to the layout of the container.
 
+### Contents
+
+- [allowNestedTargets](#allowNestedTargets)
+- [containerClassName](#containerClassName)
+
 
 ## Members
 
-### <a id="mixitup.Config.layout#allowNestedTargets">allowNestedTargets</a>
+### allowNestedTargets
 
 
 
@@ -41,7 +46,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.layout#containerClassName">containerClassName</a>
+### containerClassName
 
 
 

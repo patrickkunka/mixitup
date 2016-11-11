@@ -4,10 +4,29 @@
 
 A group of properties defining MixItUp's animation and effects settings.
 
+### Contents
+
+- [enable](#enable)
+- [effects](#effects)
+- [effectsIn](#effectsIn)
+- [effectsOut](#effectsOut)
+- [duration](#duration)
+- [easing](#easing)
+- [applyPerspective](#applyPerspective)
+- [perspectiveDistance](#perspectiveDistance)
+- [perspectiveOrigin](#perspectiveOrigin)
+- [queue](#queue)
+- [queueLimit](#queueLimit)
+- [animateResizeContainer](#animateResizeContainer)
+- [animateResizeTargets](#animateResizeTargets)
+- [staggerSequence](#staggerSequence)
+- [reverseOut](#reverseOut)
+- [nudge](#nudge)
+
 
 ## Members
 
-### <a id="mixitup.Config.animation#enable">enable</a>
+### enable
 
 
 
@@ -31,7 +50,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#effects">effects</a>
+### effects
 
 
 
@@ -64,7 +83,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#effectsIn">effectsIn</a>
+### effectsIn
 
 
 
@@ -88,7 +107,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#effectsOut">effectsOut</a>
+### effectsOut
 
 
 
@@ -112,7 +131,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#duration">duration</a>
+### duration
 
 
 
@@ -136,7 +155,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#easing">easing</a>
+### easing
 
 
 
@@ -169,7 +188,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#applyPerspective">applyPerspective</a>
+### applyPerspective
 
 
 
@@ -196,7 +215,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#perspectiveDistance">perspectiveDistance</a>
+### perspectiveDistance
 
 
 
@@ -220,7 +239,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#perspectiveOrigin">perspectiveOrigin</a>
+### perspectiveOrigin
 
 
 
@@ -244,7 +263,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#queue">queue</a>
+### queue
 
 
 
@@ -273,7 +292,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#queueLimit">queueLimit</a>
+### queueLimit
 
 
 
@@ -296,7 +315,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#animateResizeContainer">animateResizeContainer</a>
+### animateResizeContainer
 
 
 
@@ -332,7 +351,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#animateResizeTargets">animateResizeTargets</a>
+### animateResizeTargets
 
 
 
@@ -363,7 +382,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#staggerSequence">staggerSequence</a>
+### staggerSequence
 
 
 
@@ -408,7 +427,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#reverseOut">reverseOut</a>
+### reverseOut
 
 
 
@@ -443,7 +462,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#nudge">nudge</a>
+### nudge
 
 
 

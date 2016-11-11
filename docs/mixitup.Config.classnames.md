@@ -16,10 +16,24 @@ By default, each part of the classname is concatenated together using single hyp
 delineators, but this can be easily customised to match the naming convention and style of
 your proejct.
 
+### Contents
+
+- [block](#block)
+- [elementContainer](#elementContainer)
+- [elementFilter](#elementFilter)
+- [elementSort](#elementSort)
+- [elementMultimix](#elementMultimix)
+- [elementToggle](#elementToggle)
+- [modifierActive](#modifierActive)
+- [modifierDisabled](#modifierDisabled)
+- [modifierFailed](#modifierFailed)
+- [delineatorElement](#delineatorElement)
+- [delineatorModifier](#delineatorModifier)
+
 
 ## Members
 
-### <a id="mixitup.Config.classNames#block">block</a>
+### block
 
 
 
@@ -54,7 +68,7 @@ var mixer = mixitup(containerEl, {
 // example active control output: "control-active"
 ```
 
-### <a id="mixitup.Config.classNames#elementContainer">elementContainer</a>
+### elementContainer
 
 
 
@@ -67,7 +81,7 @@ The "element" portion of the class name added to container.
 |`string`| `'container'`
 
 
-### <a id="mixitup.Config.classNames#elementFilter">elementFilter</a>
+### elementFilter
 
 
 
@@ -106,7 +120,7 @@ var mixer = mixitup(containerEl, {
 // example active filter output: "portfolio-filter-active"
 ```
 
-### <a id="mixitup.Config.classNames#elementSort">elementSort</a>
+### elementSort
 
 
 
@@ -145,7 +159,7 @@ var mixer = mixitup(containerEl, {
 // example active sort output: "portfolio-sort-active"
 ```
 
-### <a id="mixitup.Config.classNames#elementMultimix">elementMultimix</a>
+### elementMultimix
 
 
 
@@ -184,7 +198,7 @@ var mixer = mixitup(containerEl, {
 // example active multimix output: "portfolio-multimix-active"
 ```
 
-### <a id="mixitup.Config.classNames#elementToggle">elementToggle</a>
+### elementToggle
 
 
 
@@ -223,7 +237,7 @@ var mixer = mixitup(containerEl, {
 // example active toggle output: "portfolio-toggle-active"
 ```
 
-### <a id="mixitup.Config.classNames#modifierActive">modifierActive</a>
+### modifierActive
 
 
 
@@ -236,7 +250,7 @@ The "modifier" portion of the class name added to active controls.
 |`string`| `'active'`
 
 
-### <a id="mixitup.Config.classNames#modifierDisabled">modifierDisabled</a>
+### modifierDisabled
 
 
 
@@ -249,7 +263,7 @@ The "modifier" portion of the class name added to disabled controls.
 |`string`| `'disabled'`
 
 
-### <a id="mixitup.Config.classNames#modifierFailed">modifierFailed</a>
+### modifierFailed
 
 
 
@@ -262,7 +276,7 @@ The "modifier" portion of the class name added to the container when in a "faile
 |`string`| `'failed'`
 
 
-### <a id="mixitup.Config.classNames#delineatorElement">delineatorElement</a>
+### delineatorElement
 
 
 
@@ -288,7 +302,7 @@ var mixer = mixitup(containerEl, {
 // example active control output: "mixitup__control-active"
 ```
 
-### <a id="mixitup.Config.classNames#delineatorModifier">delineatorModifier</a>
+### delineatorModifier
 
 
 

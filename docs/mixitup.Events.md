@@ -15,10 +15,18 @@ As with any event, registered event handlers receive the event object as a param
 which includes a `detail` property containting references to the current `state`,
 the `mixer` instance, and other event-specific properties described below.
 
+### Contents
+
+- [mixStart](#mixStart)
+- [mixBusy](#mixBusy)
+- [mixEnd](#mixEnd)
+- [mixFail](#mixFail)
+- [mixClick](#mixClick)
+
 
 ## Members
 
-### <a id="mixitup.Events.mixStart">mixStart</a>
+### mixStart
 
 
 
@@ -36,7 +44,7 @@ the requested operation has completed.
 |`CustomEvent`
 
 
-### <a id="mixitup.Events.mixBusy">mixBusy</a>
+### mixBusy
 
 
 
@@ -51,7 +59,7 @@ is disabled.
 |`CustomEvent`
 
 
-### <a id="mixitup.Events.mixEnd">mixEnd</a>
+### mixEnd
 
 
 
@@ -65,7 +73,7 @@ state has been updated.
 |`CustomEvent`
 
 
-### <a id="mixitup.Events.mixFail">mixFail</a>
+### mixFail
 
 
 
@@ -79,7 +87,7 @@ could be found matching the requested filter.
 |`CustomEvent`
 
 
-### <a id="mixitup.Events.mixClick">mixClick</a>
+### mixClick
 
 
 

@@ -9,14 +9,38 @@ Mixer instances are returned whenever the `mixitup()` factory function is called
 which expose a range of methods enabling API-based filtering, sorting,
 insertion, removal and more.
 
+### Contents
+
+- [show()](#show)
+- [hide()](#hide)
+- [isMixing()](#isMixing)
+- [filter()](#filter)
+- [toggleOn()](#toggleOn)
+- [toggleOff()](#toggleOff)
+- [sort()](#sort)
+- [changeLayout()](#changeLayout)
+- [dataset()](#dataset)
+- [multimix()](#multimix)
+- [insert()](#insert)
+- [insertBefore()](#insertBefore)
+- [insertAfter()](#insertAfter)
+- [prepend()](#prepend)
+- [append()](#append)
+- [remove()](#remove)
+- [getConfig()](#getConfig)
+- [configure()](#configure)
+- [getState()](#getState)
+- [forceRefresh()](#forceRefresh)
+- [destroy()](#destroy)
+
 
 ## Members
 
-### <a id="mixitup.Mixer#show">show()</a>
+### show()
 
 *Version added: 3.0.0*
 
-`js
+`
 .show()
 `
 
@@ -37,11 +61,11 @@ mixer.show()
     });
 ```
 
-### <a id="mixitup.Mixer#hide">hide()</a>
+### hide()
 
 *Version added: 3.0.0*
 
-`js
+`
 .hide()
 `
 
@@ -63,11 +87,11 @@ mixer.hide()
     });
 ```
 
-### <a id="mixitup.Mixer#isMixing">isMixing()</a>
+### isMixing()
 
 *Version added: 2.0.0*
 
-`js
+`
 .isMixing()
 `
 
@@ -90,11 +114,11 @@ mixer.sort('random', function() {
 console.log(mixer.isMixing()) // true
 ```
 
-### <a id="mixitup.Mixer#filter">filter()</a>
+### filter()
 
 *Version added: 2.0.0*
 
-`js
+`
 .filter(selector [, animate] [, callback])
 `
 
@@ -139,11 +163,11 @@ mixer.filter('.category-a.category-c')
     });
 ```
 
-### <a id="mixitup.Mixer#toggleOn">toggleOn()</a>
+### toggleOn()
 
 *Version added: 3.0.0*
 
-`js
+`
 .toggleOn(selector [, animate] [, callback])
 `
 
@@ -170,11 +194,11 @@ mixer.toggleOn('.category-b')
     });
 ```
 
-### <a id="mixitup.Mixer#toggleOff">toggleOff()</a>
+### toggleOff()
 
 *Version added: 3.0.0*
 
-`js
+`
 .toggleOff(selector [, animate] [, callback])
 `
 
@@ -200,11 +224,11 @@ mixer.toggleOff('.category-b')
     });
 ```
 
-### <a id="mixitup.Mixer#sort">sort()</a>
+### sort()
 
 *Version added: 2.0.0*
 
-`js
+`
 .sort(sortString [, animate] [, callback])
 `
 
@@ -267,11 +291,11 @@ mixer.sort('random')
     });
 ```
 
-### <a id="mixitup.Mixer#changeLayout">changeLayout()</a>
+### changeLayout()
 
 *Version added: 2.0.0*
 
-`js
+`
 .changeLayout(containerClassName [, animate] [, callback])
 `
 
@@ -307,11 +331,11 @@ mixer.changeLayout('')
      });
 ```
 
-### <a id="mixitup.Mixer#dataset">dataset()</a>
+### dataset()
 
 *Version added: 3.0.0*
 
-`js
+`
 .dataset(dataset [, animate] [, callback])
 `
 
@@ -376,11 +400,11 @@ mixer.dataset(newDataset)
     });
 ```
 
-### <a id="mixitup.Mixer#multimix">multimix()</a>
+### multimix()
 
 *Version added: 2.0.0*
 
-`js
+`
 .multimix(multimixCommand [, animate] [, callback])
 `
 
@@ -432,11 +456,11 @@ mixer.multimix({
     });
 ```
 
-### <a id="mixitup.Mixer#insert">insert()</a>
+### insert()
 
 *Version added: 2.0.0*
 
-`js
+`
 .insert(newElements [, index] [, animate], [, callback])
 `
 
@@ -531,11 +555,11 @@ mixer.insert(newElementsCollection, 3)
     });
 ```
 
-### <a id="mixitup.Mixer#insertBefore">insertBefore()</a>
+### insertBefore()
 
 *Version added: 3.0.0*
 
-`js
+`
 .insertBefore(newElements, referenceElement [, animate] [, callback])
 `
 
@@ -575,11 +599,11 @@ mixer.insertBefore(newElement, referenceElement)
     });
 ```
 
-### <a id="mixitup.Mixer#insertAfter">insertAfter()</a>
+### insertAfter()
 
 *Version added: 3.0.0*
 
-`js
+`
 .insertAfter(newElements, referenceElement [, animate] [, callback])
 `
 
@@ -615,11 +639,11 @@ mixer.insertAfter(newElement, referenceElement)
     });
 ```
 
-### <a id="mixitup.Mixer#prepend">prepend()</a>
+### prepend()
 
 *Version added: 3.0.0*
 
-`js
+`
 .prepend(newElements [,animate] [,callback])
 `
 
@@ -650,11 +674,11 @@ mixer.prepend(newElement)
     });
 ```
 
-### <a id="mixitup.Mixer#append">append()</a>
+### append()
 
 *Version added: 3.0.0*
 
-`js
+`
 .append(newElements [,animate] [,callback])
 `
 
@@ -685,11 +709,11 @@ mixer.append(newElement)
     });
 ```
 
-### <a id="mixitup.Mixer#remove">remove()</a>
+### remove()
 
 *Version added: 3.0.0*
 
-`js
+`
 .remove(elements [, animate] [, callback])
 `
 
@@ -751,11 +775,11 @@ mixer.remove(3)
      });
 ```
 
-### <a id="mixitup.Mixer#getConfig">getConfig()</a>
+### getConfig()
 
 *Version added: 2.0.0*
 
-`js
+`
 .getConfig([stringKey])
 `
 
@@ -787,11 +811,11 @@ var animation = mixer.getConfig('animation'); // ConfigAnimation { ... }
 var effects = mixer.getConfig('animation.effects'); // 'fade scale'
 ```
 
-### <a id="mixitup.Mixer#configure">configure()</a>
+### configure()
 
 *Version added: 3.0.0*
 
-`js
+`
 .configure(config)
 `
 
@@ -844,11 +868,11 @@ mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Mixer#getState">getState()</a>
+### getState()
 
 *Version added: 2.0.0*
 
-`js
+`
 .getState();
 `
 
@@ -872,11 +896,11 @@ var state = mixer.getState();
 console.log(state.totalShow + 'targets are currently shown');
 ```
 
-### <a id="mixitup.Mixer#forceRefresh">forceRefresh()</a>
+### forceRefresh()
 
 *Version added: 2.1.2*
 
-`js
+`
 .forceRefresh()
 `
 
@@ -915,11 +939,11 @@ mixer.forceRefresh();
 console.log(mixer.getState().totalShow); // 2
 ```
 
-### <a id="mixitup.Mixer#destroy">destroy()</a>
+### destroy()
 
 *Version added: 2.0.0*
 
-`js
+`
 .destroy([cleanUp])
 `
 

@@ -11,10 +11,18 @@ container element, and is invoked immediately after it.
 All callback functions receive the current `state` object as their first
 argument, as well as other more specific arguments described below.
 
+### Contents
+
+- [onMixStart](#onMixStart)
+- [onMixBusy](#onMixBusy)
+- [onMixEnd](#onMixEnd)
+- [onMixFail](#onMixFail)
+- [onMixClick](#onMixClick)
+
 
 ## Members
 
-### <a id="mixitup.Config.callbacks#onMixStart">onMixStart</a>
+### onMixStart
 
 
 
@@ -42,7 +50,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.callbacks#onMixBusy">onMixBusy</a>
+### onMixBusy
 
 
 
@@ -68,7 +76,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.callbacks#onMixEnd">onMixEnd</a>
+### onMixEnd
 
 
 
@@ -93,7 +101,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.callbacks#onMixFail">onMixFail</a>
+### onMixFail
 
 
 
@@ -118,7 +126,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.callbacks#onMixClick">onMixClick</a>
+### onMixClick
 
 
 

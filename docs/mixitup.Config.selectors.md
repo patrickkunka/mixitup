@@ -4,10 +4,14 @@
 
 A group of properties defining the selectors used to query elements within a mixitup container.
 
+### Contents
+
+- [target](#target)
+
 
 ## Members
 
-### <a id="mixitup.Config.selectors#target">target</a>
+### target
 
 
 

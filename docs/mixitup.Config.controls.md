@@ -4,10 +4,18 @@
 
 A group of properties relating to clickable control elements.
 
+### Contents
+
+- [enable](#enable)
+- [live](#live)
+- [scope](#scope)
+- [toggleLogic](#toggleLogic)
+- [toggleDefault](#toggleDefault)
+
 
 ## Members
 
-### <a id="mixitup.Config.controls#enable">enable</a>
+### enable
 
 
 
@@ -44,7 +52,7 @@ var mixer = mixitup(containerEl, {
 mixer.filter('.cat-1');
 ```
 
-### <a id="mixitup.Config.controls#live">live</a>
+### live
 
 
 
@@ -83,7 +91,7 @@ var mixer = mixitup(containerEl, {
 // the mixer's UI
 ```
 
-### <a id="mixitup.Config.controls#scope">scope</a>
+### scope
 
 
 
@@ -125,7 +133,7 @@ var mixerTwo = mixitup(containerTwo, {
 // isolated controls placed within their container elements.
 ```
 
-### <a id="mixitup.Config.controls#toggleLogic">toggleLogic</a>
+### toggleLogic
 
 
 
@@ -157,7 +165,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.controls#toggleDefault">toggleDefault</a>
+### toggleDefault
 
 
 
