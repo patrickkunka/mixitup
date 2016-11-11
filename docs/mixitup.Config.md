@@ -30,13 +30,11 @@ configuration values detailed below.
 
 ## Members
 
-<h2 id="animation">animation</h2>
-
-#### Overview
+<h3 id="animation">animation</h3>
 
 A group of properties defining MixItUp's animation and effects settings.
 
-<h4 id="enable">enable</h4>
+### enable
 
 
 
@@ -59,7 +57,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="effects">effects</h4>
+### effects
 
 
 
@@ -91,7 +89,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="effectsIn">effectsIn</h4>
+### effectsIn
 
 
 
@@ -114,7 +112,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="effectsOut">effectsOut</h4>
+### effectsOut
 
 
 
@@ -137,7 +135,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="duration">duration</h4>
+### duration
 
 
 
@@ -160,7 +158,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="easing">easing</h4>
+### easing
 
 
 
@@ -192,7 +190,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="applyPerspective">applyPerspective</h4>
+### applyPerspective
 
 
 
@@ -218,7 +216,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="perspectiveDistance">perspectiveDistance</h4>
+### perspectiveDistance
 
 
 
@@ -241,7 +239,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="perspectiveOrigin">perspectiveOrigin</h4>
+### perspectiveOrigin
 
 
 
@@ -264,7 +262,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="queue">queue</h4>
+### queue
 
 
 
@@ -292,7 +290,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="queueLimit">queueLimit</h4>
+### queueLimit
 
 
 
@@ -314,7 +312,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="animateResizeContainer">animateResizeContainer</h4>
+### animateResizeContainer
 
 
 
@@ -349,7 +347,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="animateResizeTargets">animateResizeTargets</h4>
+### animateResizeTargets
 
 
 
@@ -379,7 +377,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="staggerSequence">staggerSequence</h4>
+### staggerSequence
 
 
 
@@ -423,7 +421,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="reverseOut">reverseOut</h4>
+### reverseOut
 
 
 
@@ -457,7 +455,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="nudge">nudge</h4>
+### nudge
 
 
 
@@ -486,9 +484,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-<h2 id="callbacks">callbacks</h2>
-
-#### Overview
+<h3 id="callbacks">callbacks</h3>
 
 A group of optional callback functions to be invoked at various
 points within the lifecycle of a mixer operation.
@@ -499,7 +495,7 @@ container element, and is invoked immediately after it.
 All callback functions receive the current `state` object as their first
 argument, as well as other more specific arguments described below.
 
-<h4 id="onMixStart">onMixStart</h4>
+### onMixStart
 
 
 
@@ -526,7 +522,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="onMixBusy">onMixBusy</h4>
+### onMixBusy
 
 
 
@@ -551,7 +547,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="onMixEnd">onMixEnd</h4>
+### onMixEnd
 
 
 
@@ -575,7 +571,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="onMixFail">onMixFail</h4>
+### onMixFail
 
 
 
@@ -599,7 +595,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="onMixClick">onMixClick</h4>
+### onMixClick
 
 
 
@@ -663,13 +659,11 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-<h2 id="controls">controls</h2>
-
-#### Overview
+<h3 id="controls">controls</h3>
 
 A group of properties relating to clickable control elements.
 
-<h4 id="enable">enable</h4>
+### enable
 
 
 
@@ -705,7 +699,7 @@ var mixer = mixitup(containerEl, {
 
 mixer.filter('.cat-1');
 ```
-<h4 id="live">live</h4>
+### live
 
 
 
@@ -743,7 +737,7 @@ var mixer = mixitup(containerEl, {
 // Control buttons can now be added, remove and changed without breaking
 // the mixer's UI
 ```
-<h4 id="scope">scope</h4>
+### scope
 
 
 
@@ -784,7 +778,7 @@ var mixerTwo = mixitup(containerTwo, {
 // Both mixers can now exist within the same document with
 // isolated controls placed within their container elements.
 ```
-<h4 id="toggleLogic">toggleLogic</h4>
+### toggleLogic
 
 
 
@@ -815,7 +809,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="toggleDefault">toggleDefault</h4>
+### toggleDefault
 
 
 
@@ -874,9 +868,7 @@ mixer.toggleOn('.cat-2')
     });
 ```
 
-<h2 id="classNames">classNames</h2>
-
-#### Overview
+<h3 id="classNames">classNames</h3>
 
 A group of properties defining the output and structure of class names programmatically
 added to controls and containers to reflect the state of the mixer.
@@ -892,7 +884,7 @@ By default, each part of the classname is concatenated together using single hyp
 delineators, but this can be easily customised to match the naming convention and style of
 your proejct.
 
-<h4 id="block">block</h4>
+### block
 
 
 
@@ -926,7 +918,7 @@ var mixer = mixitup(containerEl, {
 
 // example active control output: "control-active"
 ```
-<h4 id="elementContainer">elementContainer</h4>
+### elementContainer
 
 
 
@@ -938,7 +930,7 @@ The "element" portion of the class name added to container.
 |---  | ---
 |`string`| `'container'`
 
-<h4 id="elementFilter">elementFilter</h4>
+### elementFilter
 
 
 
@@ -976,7 +968,7 @@ var mixer = mixitup(containerEl, {
 
 // example active filter output: "portfolio-filter-active"
 ```
-<h4 id="elementSort">elementSort</h4>
+### elementSort
 
 
 
@@ -1014,7 +1006,7 @@ var mixer = mixitup(containerEl, {
 
 // example active sort output: "portfolio-sort-active"
 ```
-<h4 id="elementMultimix">elementMultimix</h4>
+### elementMultimix
 
 
 
@@ -1052,7 +1044,7 @@ var mixer = mixitup(containerEl, {
 
 // example active multimix output: "portfolio-multimix-active"
 ```
-<h4 id="elementToggle">elementToggle</h4>
+### elementToggle
 
 
 
@@ -1090,7 +1082,7 @@ var mixer = mixitup(containerEl, {
 
 // example active toggle output: "portfolio-toggle-active"
 ```
-<h4 id="modifierActive">modifierActive</h4>
+### modifierActive
 
 
 
@@ -1102,7 +1094,7 @@ The "modifier" portion of the class name added to active controls.
 |---  | ---
 |`string`| `'active'`
 
-<h4 id="modifierDisabled">modifierDisabled</h4>
+### modifierDisabled
 
 
 
@@ -1114,7 +1106,7 @@ The "modifier" portion of the class name added to disabled controls.
 |---  | ---
 |`string`| `'disabled'`
 
-<h4 id="modifierFailed">modifierFailed</h4>
+### modifierFailed
 
 
 
@@ -1126,7 +1118,7 @@ The "modifier" portion of the class name added to the container when in a "faile
 |---  | ---
 |`string`| `'failed'`
 
-<h4 id="delineatorElement">delineatorElement</h4>
+### delineatorElement
 
 
 
@@ -1151,7 +1143,7 @@ var mixer = mixitup(containerEl, {
 
 // example active control output: "mixitup__control-active"
 ```
-<h4 id="delineatorModifier">delineatorModifier</h4>
+### delineatorModifier
 
 
 
@@ -1178,13 +1170,11 @@ var mixer = mixitup(containerEl, {
 // example active control output: "mixitup__control--active"
 ```
 
-<h2 id="data">data</h2>
-
-#### Overview
+<h3 id="data">data</h3>
 
 A group of properties relating to MixItUp's dataset API.
 
-<h4 id="uid">uid</h4>
+### uid
 
 
 
@@ -1210,7 +1200,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="dirtyCheck">dirtyCheck</h4>
+### dirtyCheck
 
 
 
@@ -1279,13 +1269,11 @@ mixer.dataset(myDataset)
    });
 ```
 
-<h2 id="debug">debug</h2>
-
-#### Overview
+<h3 id="debug">debug</h3>
 
 A group of properties allowing the toggling of various debug features.
 
-<h4 id="enable">enable</h4>
+### enable
 
 
 
@@ -1316,7 +1304,7 @@ var mixer = mixitup(containerEl, {
 
 console.log(mixer);
 ```
-<h4 id="showWarnings">showWarnings</h4>
+### showWarnings
 
 
 
@@ -1357,13 +1345,11 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-<h2 id="layout">layout</h2>
-
-#### Overview
+<h3 id="layout">layout</h3>
 
 A group of properties relating to the layout of the container.
 
-<h4 id="allowNestedTargets">allowNestedTargets</h4>
+### allowNestedTargets
 
 
 
@@ -1396,7 +1382,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="containerClassName">containerClassName</h4>
+### containerClassName
 
 
 
@@ -1440,13 +1426,11 @@ mixer.changeLayout('list')
     });
 ```
 
-<h2 id="load">load</h2>
-
-#### Overview
+<h3 id="load">load</h3>
 
 A group of properties defining the initial state of the mixer on load (instantiation).
 
-<h4 id="filter">filter</h4>
+### filter
 
 
 
@@ -1484,7 +1468,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="sort">sort</h4>
+### sort
 
 
 
@@ -1512,7 +1496,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-<h4 id="dataset">dataset</h4>
+### dataset
 
 
 
@@ -1554,13 +1538,11 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-<h2 id="selectors">selectors</h2>
-
-#### Overview
+<h3 id="selectors">selectors</h3>
 
 A group of properties defining the selectors used to query elements within a mixitup container.
 
-<h4 id="target">target</h4>
+### target
 
 
 
@@ -1598,9 +1580,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-<h2 id="render">render</h2>
-
-#### Overview
+<h3 id="render">render</h3>
 
 A group of optional render functions for creating and updating elements.
 
