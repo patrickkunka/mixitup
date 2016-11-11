@@ -50,14 +50,18 @@ h = {
      * @private
      * @param   {object}    destination
      * @param   {object}    source
-     * @param   {boolean}   [deep]
+     * @param   {boolean}   [deep=false]
+     * @param   {boolean}   [handleErrors=false]
      * @return  {void}
      */
 
-    extend: function(destination, source, deep) {
+    extend: function(destination, source, deep, handleErrors) {
         var sourceKeys  = [],
             key         = '',
             i           = -1;
+
+        deep = deep || false;
+        handleErrors = handleErrors || false;
 
         try {
             if (Array.isArray(source)) {
@@ -94,7 +98,11 @@ h = {
                 }
             }
         } catch(err) {
-            this.handleExtendError(err, destination);
+            if (handleErrors) {
+                this.handleExtendError(err, destination);
+            } else {
+                throw err;
+            }
         }
 
         return destination;

@@ -3866,10 +3866,53 @@ h.extend(mixitup.Mixer.prototype,
     },
 
     /**
+     * Updates the configuration of the mixer, after it has been instantiated.
+     *
+     * See the Configuration Object documentation for a full list of avilable
+     * configuration options.
+     *
+     * @example
+     *
+     * .configure(config)
+     *
+     * @example <caption>Example 1: Updating animation options</caption>
+     *
+     * mixer.configure({
+     *     animation: {
+     *         effects: 'fade translateX(-100%)',
+     *         duration: 300
+     *     }
+     * });
+     *
+     * @example <caption>Example 2: Removing a callback after it has been set</caption>
+     *
+     * var mixer;
+     *
+     * function handleMixEnd() {
+     *     // Do something ..
+     *
+     *     // Then nullify the callback
+     *
+     *     mixer.configure({
+     *         callbacks: {
+     *             onMixEnd: null
+     *         }
+     *     });
+     * };
+     *
+     * // Instantiate a mixer with a callback defined
+     *
+     * mixer = mixitup(containerEl, {
+     *     callbacks: {
+     *         onMixEnd: handleMixEnd
+     *     }
+     * });
+     *
      * @public
      * @instance
-     * @since       2.0.0
+     * @since       3.0.0
      * @param       {object}    config
+     *      An object containing one of more configuration options.
      * @return      {void}
      */
 
@@ -3878,7 +3921,7 @@ h.extend(mixitup.Mixer.prototype,
 
         self.callActions('beforeConfigure', arguments);
 
-        h.extend(self.config, config, true);
+        h.extend(self.config, config, true, true);
 
         self.callActions('afterConfigure', arguments);
     },

@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build f0f4f9e1-33ef-49e9-aed5-55f08d803825
+ * Build 48bc0cf1-8f56-4378-8d4d-b3cd1103172a
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -236,14 +236,18 @@
          * @private
          * @param   {object}    destination
          * @param   {object}    source
-         * @param   {boolean}   [deep]
+         * @param   {boolean}   [deep=false]
+         * @param   {boolean}   [handleErrors=false]
          * @return  {void}
          */
 
-        extend: function(destination, source, deep) {
+        extend: function(destination, source, deep, handleErrors) {
             var sourceKeys  = [],
                 key         = '',
                 i           = -1;
+
+            deep = deep || false;
+            handleErrors = handleErrors || false;
 
             try {
                 if (Array.isArray(source)) {
@@ -280,7 +284,11 @@
                     }
                 }
             } catch(err) {
-                this.handleExtendError(err, destination);
+                if (handleErrors) {
+                    this.handleExtendError(err, destination);
+                } else {
+                    throw err;
+                }
             }
 
             return destination;
@@ -8065,10 +8073,53 @@
         },
 
         /**
+         * Updates the configuration of the mixer, after it has been instantiated.
+         *
+         * See the Configuration Object documentation for a full list of avilable
+         * configuration options.
+         *
+         * @example
+         *
+         * .configure(config)
+         *
+         * @example <caption>Example 1: Updating animation options</caption>
+         *
+         * mixer.configure({
+         *     animation: {
+         *         effects: 'fade translateX(-100%)',
+         *         duration: 300
+         *     }
+         * });
+         *
+         * @example <caption>Example 2: Removing a callback after it has been set</caption>
+         *
+         * var mixer;
+         *
+         * function handleMixEnd() {
+         *     // Do something ..
+         *
+         *     // Then nullify the callback
+         *
+         *     mixer.configure({
+         *         callbacks: {
+         *             onMixEnd: null
+         *         }
+         *     });
+         * };
+         *
+         * // Instantiate a mixer with a callback defined
+         *
+         * mixer = mixitup(containerEl, {
+         *     callbacks: {
+         *         onMixEnd: handleMixEnd
+         *     }
+         * });
+         *
          * @public
          * @instance
-         * @since       2.0.0
+         * @since       3.0.0
          * @param       {object}    config
+         *      An object containing one of more configuration options.
          * @return      {void}
          */
 
@@ -8077,7 +8128,7 @@
 
             self.callActions('beforeConfigure', arguments);
 
-            h.extend(self.config, config, true);
+            h.extend(self.config, config, true, true);
 
             self.callActions('afterConfigure', arguments);
         },
