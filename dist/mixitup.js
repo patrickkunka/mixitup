@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 7767b5bc-58d5-4342-820b-b90ac207dc7b
+ * Build f0f4f9e1-33ef-49e9-aed5-55f08d803825
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -6988,7 +6988,7 @@
          *
          * mixer.show()
          *     .then(function(state) {
-         *         console.log(state.totalShow + ' targets were shown');
+         *         console.log(state.totalShow === state.totalTargets); // true
          *     });
          *
          * @public
@@ -7014,7 +7014,8 @@
          *
          * mixer.hide()
          *     .then(function(state) {
-         *         console.log(state.totalHide + ' targets were hidden');
+         *         console.log(state.totalShow === 0); // true
+         *         console.log(state.totalHide === state.totalTargets); // true
          *     });
          *
          * @public
@@ -7039,13 +7040,11 @@
          *
          * @example <caption>Example: Checking the status of a mixer</caption>
          *
-         * var isMixing = mixer.isMixing();
+         * mixer.sort('random', function() {
+         *     console.log(mixer.isMixing()) // false
+         * });
          *
-         * if (isMixing) {
-         *     console.log('An operation is in progress');
-         * } else {
-         *     console.log('The mixer is idle');
-         * }
+         * console.log(mixer.isMixing()) // true
          *
          * @public
          * @instance
@@ -7071,14 +7070,14 @@
          *
          * mixer.filter('.category-a')
          *     .then(function(state) {
-         *         console.log(state.totalShow + ' targets were found matching ' + state.activeFilter.selector);
+         *         console.log(state.totalShow === containerEl.querySelectorAll('.category-a').length); // true
          *     });
          *
          * @example <caption>Example 2: Filtering targets by an attribute selector</caption>
          *
          * mixer.filter('[data-category~="a"]')
          *     .then(function(state) {
-         *         console.log(state.totalShow + ' targets were found matching ' + state.activeFilter.selector);
+         *         console.log(state.totalShow === containerEl.querySelectorAll('[data-category~="a"]').length); // true
          *     });
          *
          * @example <caption>Example 3: Filtering targets by a compound selector</caption>
@@ -7087,7 +7086,7 @@
          *
          * mixer.filter('.category-a.category-c')
          *     .then(function(state) {
-         *         console.log(state.totalShow + ' targets were found matching ' + state.activeFilter.selector);
+         *         console.log(state.totalShow === containerEl.querySelectorAll('.category-a.category-c').length); // true
          *     });
          *
          * @public
@@ -7220,7 +7219,8 @@
          *
          * mixer.sort('default:desc')
          *     .then(function(state) {
-         *         console.log('Targets sorted by ' + state.activeSort.attribute + ' in ' + state.activeSort.order + ' order');
+         *         console.log(state.activeSort.attribute === 'default'); // true
+         *         console.log(state.activeSort.order === 'desc'); // true
          *     });
          *
          * @example <caption>Example 2: Sorting by a custom data-attribute</caption>
@@ -7229,7 +7229,8 @@
          *
          * mixer.sort('published-date:asc')
          *     .then(function(state) {
-         *         console.log('Targets sorted by ' + state.activeSort.attribute + ' in ' + state.activeSort.order + ' order');
+         *         console.log(state.activeSort.attribute === 'published-date'); // true
+         *         console.log(state.activeSort.order === 'asc'); // true
          *     });
          *
          * @example <caption>Example 3: Sorting by multiple attributes</caption>
@@ -7238,14 +7239,18 @@
          *
          * mixer.sort('published-date:desc data-title:asc')
          *     .then(function(state) {
-         *         console.log('Targets sorted by ' + state.activeSort.attribute + ' then by ' + state.activeSort.next.attribute);
+         *         console.log(state.activeSort.attribute === 'published-date'); // true
+         *         console.log(state.activeSort.order === 'desc'); // true
+         *
+         *         console.log(state.activeSort.next.attribute === 'title'); // true
+         *         console.log(state.activeSort.next.order === 'asc'); // true
          *     });
          *
          * @example <caption>Example 4: Sorting by random</caption>
          *
          * mixer.sort('random')
          *     .then(function(state) {
-         *         console.log('Targets shuffled');
+         *         console.log(state.activeSort.order === 'random') // true
          *     });
          *
          * @public
@@ -7284,14 +7289,14 @@
          *
          * mixer.changeLayout('container-list')
          *      .then(function(state) {
-         *          console.log('the class name + ' state.activeContainerClassName + ' was added to the container');
+         *          console.log(state.activeContainerClass === 'container-list'); // true
          *      });
          *
          * @example <caption>Example 2: Removing a previously added class name from the container</caption>
          *
          * mixer.changeLayout('')
          *      .then(function(state) {
-         *          console.log('Class name removed from container');
+         *          console.log(state.activeContainerClass === ''); // true
          *      });
          *
          * @public
@@ -7340,7 +7345,7 @@
          *
          * mixer.dataset(myDataset)
          *     .then(function(state) {
-         *         console.log(state.totalShow + ' target were rendered');
+         *         console.log(state.totalShow === 3); // true
          *     });
          *
          * @example <caption>Example 2: Sorting a dataset</caption>
@@ -7351,7 +7356,7 @@
          *
          * mixer.dataset(newDataset)
          *     .then(function(state) {
-         *         console.log('order of targets reversed');
+         *         console.log(state.activeDataset[0] === myDataset[2]); // true
          *     });
          *
          * @example <caption>Example 3: Removing an item from the dataset</caption>
@@ -7364,7 +7369,7 @@
          *
          * mixer.dataset(newDataset)
          *     .then(function(state) {
-         *         console.log(state.totalShow); // 2
+         *         console.log(state.totalShow === 2); // true
          *     });
          *
          * @public
@@ -7420,8 +7425,8 @@
          *     sort: 'published-date:desc'
          * })
          *     .then(function(state) {
-         *         console.log(state.activeFilter.selector); // '.category-b'
-         *         console.log(state.activeSort.attribute); // 'published-date'
+         *         console.log(state.activeFilter.selector === '.category-b'); // true
+         *         console.log(state.activeSort.attribute === 'published-date'); // true
          *     });
          *
          * @example <caption>Example 2: Performing simultaneous sorting, insertion, and removal</caption>
@@ -7441,8 +7446,8 @@
          *     remove: existingElementReference // Remove 1 existing element
          * })
          *     .then(function(state) {
-         *         console.log(state.activeSort.attribute); // 'published-date'
-         *         console.log(state.totalShow); // 7
+         *         console.log(state.activeSort.attribute === 'published-date'); // true
+         *         console.log(state.totalShow === 7); // true
          *     });
          *
          * @public
@@ -7664,7 +7669,9 @@
 
         /**
          * Inserts one or more new target elements into the container at a specified
-         * index. To be indexed as targets, new elements must match the `selectors.target`
+         * index.
+         *
+         * To be indexed as targets, new elements must match the `selectors.target`
          * selector (`'.mix'` by default).
          *
          * @example
@@ -7682,7 +7689,7 @@
          *
          * mixer.insert(newElement)
          *     .then(function(state) {
-         *         console.log(state.totalShow); // 1
+         *         console.log(state.totalShow === 1); // true
          *     });
          *
          * @example <caption>Example 2: Inserting a single element via HTML string</caption>
@@ -7697,7 +7704,7 @@
          *
          * mixer.insert(newElementHtml, 1)
          *     .then(function(state) {
-         *         console.log(state.totalShow); // 2
+         *         console.log(state.totalShow === 2); // true
          *         console.log(state.show[1].outerHTML === newElementHtml); // true
          *     });
          *
@@ -7719,7 +7726,7 @@
          *
          * mixer.insert(newElementsCollection, 1)
          *     .then(function(state) {
-         *         console.log(state.totalShow); // 4
+         *         console.log(state.totalShow === 4); // true
          *         console.log(state.show[1] === newElement1); // true
          *         console.log(state.show[2] === newElement2); // true
          *     });
@@ -7734,7 +7741,7 @@
          *
          * mixer.insert(newElementsCollection, 3)
          *     .then(function(state) {
-         *         console.log(state.totalShow); // 5
+         *         console.log(state.totalShow === 5); // true
          *         console.log(state.show[3] === $newElement[0]); // true
          *     });
          *
@@ -7948,7 +7955,7 @@
         },
 
         /**
-         * Remove one or more existing target elements from the container.
+         * Removes one or more existing target elements from the container.
          *
          * @example
          *
@@ -8018,7 +8025,7 @@
         },
 
         /**
-         * Retrieve the the value of any property or sub-object within the current
+         * Retrieves the the value of any property or sub-object within the current
          * mixitup configuration, or the whole object.
          *
          * @example
