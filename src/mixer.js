@@ -3547,6 +3547,10 @@ h.extend(mixitup.Mixer.prototype,
      *      or an HTML string representing a single element.
      * @param       {number}    index=0
      *      The index at which to insert the new element(s). `0` by default.
+     * @param       {boolean}   [animate=true]
+     *      An optional boolean dictating whether or not the filter operation should animate.
+     * @param       {function}  [callback=null]
+     *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
      *      A promise resolving with the current state object.
      */
@@ -3596,7 +3600,11 @@ h.extend(mixitup.Mixer.prototype,
      *      A reference to a single element to insert, an array-like collection of elements,
      *      or an HTML string representing a single element.
      * @param       {HTMLElement}    referenceElement
-     *      A reference to an existing target element to insert new elements before.
+     *      A reference to an existing element in the container to insert new elements before.
+     *@param       {boolean}   [animate=true]
+     *      An optional boolean dictating whether or not the filter operation should animate.
+     * @param       {function}  [callback=null]
+     *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
      *      A promise resolving with the current state object.
      */
@@ -3640,7 +3648,11 @@ h.extend(mixitup.Mixer.prototype,
      *      A reference to a single element to insert, an array-like collection of elements,
      *      or an HTML string representing a single element.
      * @param       {HTMLElement}    referenceElement
-     *      A reference to an existing target element to insert new elements after.
+     *      A reference to an existing element in the container to insert new elements after.
+     * @param       {boolean}   [animate=true]
+     *      An optional boolean dictating whether or not the filter operation should animate.
+     * @param       {function}  [callback=null]
+     *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
      *      A promise resolving with the current state object.
      */
@@ -3653,10 +3665,38 @@ h.extend(mixitup.Mixer.prototype,
     },
 
     /**
+     * Inserts one or more new elements into the container before all existing targets.
+     *
+     * @example
+     *
+     * .prepend(newElements [,animate] [,callback])
+     *
+     * @example <caption>Example: Prepending a new element</caption>
+     *
+     * // Create a new element
+     *
+     * var newElement = document.createElement('div');
+     * newElement.classList.add('mix');
+     *
+     * // Insert the element into the container
+     *
+     * mixer.prepend(newElement)
+     *     .then(function(state) {
+     *         console.log(state.show[0] === newElement); // true
+     *     });
+     *
      * @public
      * @instance
-     * @since       2.0.0
+     * @since       3.0.0
+     * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
+     *      A reference to a single element to insert, an array-like collection of elements,
+     *      or an HTML string representing a single element.
+     * @param       {boolean}   [animate=true]
+     *      An optional boolean dictating whether or not the filter operation should animate.
+     * @param       {function}  [callback=null]
+     *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
+     *      A promise resolving with the current state object.
      */
 
     prepend: function() {
@@ -3667,10 +3707,38 @@ h.extend(mixitup.Mixer.prototype,
     },
 
     /**
+     * Inserts one or more new elements into the container after all existing targets.
+     *
+     * @example
+     *
+     * .append(newElements [,animate] [,callback])
+     *
+     * @example <caption>Example: Appending a new element</caption>
+     *
+     * // Create a new element
+     *
+     * var newElement = document.createElement('div');
+     * newElement.classList.add('mix');
+     *
+     * // Insert the element into the container
+     *
+     * mixer.append(newElement)
+     *     .then(function(state) {
+     *         console.log(state.show[state.show.length - 1] === newElement); // true
+     *     });
+     *
      * @public
      * @instance
-     * @since       2.0.0
+     * @since       3.0.0
+     * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
+     *      A reference to a single element to insert, an array-like collection of elements,
+     *      or an HTML string representing a single element.
+     * @param       {boolean}   [animate=true]
+     *      An optional boolean dictating whether or not the filter operation should animate.
+     * @param       {function}  [callback=null]
+     *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
+     *      A promise resolving with the current state object.
      */
 
     append: function() {
@@ -3681,10 +3749,64 @@ h.extend(mixitup.Mixer.prototype,
     },
 
     /**
+     * Remove one or more existing target elements from the container.
+     *
+     * @example
+     *
+     * .remove(elements [, animate] [, callback])
+     *
+     * @example <caption>Example 1: Removing an element by reference</caption>
+     *
+     * var elementToRemove = containerEl.firstElementChild;
+     *
+     * mixer.remove(elementToRemove)
+     *      .then(function(state) {
+     *          console.log(state.targets.indexOf(elementToRemove) === -1); // true
+     *      });
+     *
+     * @example <caption>Example 2: Removing a collection of elements by reference</caption>
+     *
+     * var elementsToRemove = containerEl.querySelectorAll('.category-a');
+     *
+     * console.log(elementsToRemove.length) // 3
+     *
+     * mixer.remove(elementsToRemove)
+     *      .then(function() {
+     *          console.log(containerEl.querySelectorAll('.category-a').length); // 0
+     *      });
+     *
+     * @example <caption>Example 3: Removing one or more elements by selector</caption>
+     *
+     * mixer.remove('.category-a')
+     *      .then(function() {
+     *          console.log(containerEl.querySelectorAll('.category-a').length); // 0
+     *      });
+     *
+     * @example <caption>Example 4: Removing an element by index</caption>
+     *
+     * console.log(mixer.getState.totalShow); // 4
+     *
+     * // Remove the element at index 3
+     *
+     * mixer.remove(3)
+     *      .then(function(state) {
+     *          console.log(state.totalShow); // 3
+     *          console.log(state.show[3]); // undefined
+     *      });
+     *
+     *
      * @public
      * @instance
      * @since       3.0.0
+     * @param       {(HTMLElement|Array.<HTMLElement>|string|number)}    elements
+     *      A reference to a single element to remove, an array-like collection of elements,
+     *      a selector string, or the index of an element to remove.
+     * @param       {boolean}   [animate=true]
+     *      An optional boolean dictating whether or not the filter operation should animate.
+     * @param       {function}  [callback=null]
+     *      An optional callback function to be invoked after the operation has completed.
      * @return      {Promise.<mixitup.State>}
+     *      A promise resolving with the current state object.
      */
 
     remove: function() {
@@ -3697,6 +3819,25 @@ h.extend(mixitup.Mixer.prototype,
     },
 
     /**
+     * Retrieve the the value of any property or sub-object within the current
+     * mixitup configuration, or the whole object.
+     *
+     * @example
+     *
+     * .getConfig([stringKey])
+     *
+     * @example <caption>Example 1: retrieve the entire configuration object</caption>
+     *
+     * var config = mixer.getConfig(); // Config { ... }
+     *
+     * @example <caption>Example 2: retrieve a named sub-object of configuration object</caption>
+     *
+     * var animation = mixer.getConfig('animation'); // ConfigAnimation { ... }
+     *
+     * @example <caption>Example 3: retrieve a value of configuration object via a dot-notation string key</caption>
+     *
+     * var effects = mixer.getConfig('animation.effects'); // 'fade scale'
+     *
      * @public
      * @instance
      * @since       2.0.0
