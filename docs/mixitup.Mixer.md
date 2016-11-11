@@ -33,7 +33,7 @@ A shorthand method for `.filter('all')`. Shows all targets in the container.
 
 mixer.show()
     .then(function(state) {
-        console.log(state.totalShow + ' targets were shown');
+        console.log(state.totalShow === state.totalTargets); // true
     });
 ```
 
@@ -58,7 +58,8 @@ A shorthand method for `.filter('none')`. Hides all targets in the container.
 
 mixer.hide()
     .then(function(state) {
-        console.log(state.totalHide + ' targets were hidden');
+        console.log(state.totalShow === 0); // true
+        console.log(state.totalHide === state.totalTargets); // true
     });
 ```
 
@@ -82,13 +83,11 @@ currently in progress.
 
 ```js
 
-var isMixing = mixer.isMixing();
+mixer.sort('random', function() {
+    console.log(mixer.isMixing()) // false
+});
 
-if (isMixing) {
-    console.log('An operation is in progress');
-} else {
-    console.log('The mixer is idle');
-}
+console.log(mixer.isMixing()) // true
 ```
 
 ### <a id="mixitup.Mixer#filter">mixitup.Mixer.filter</a>
@@ -105,7 +104,7 @@ or `'none'`. Only targets matching the selector will be shown.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`string` | `selector` | Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether or not the filter operation should animate.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -116,7 +115,7 @@ or `'none'`. Only targets matching the selector will be shown.
 
 mixer.filter('.category-a')
     .then(function(state) {
-        console.log(state.totalShow + ' targets were found matching ' + state.activeFilter.selector);
+        console.log(state.totalShow === containerEl.querySelectorAll('.category-a').length); // true
     });
 ```
 > Example 2: Filtering targets by an attribute selector
@@ -125,7 +124,7 @@ mixer.filter('.category-a')
 
 mixer.filter('[data-category~="a"]')
     .then(function(state) {
-        console.log(state.totalShow + ' targets were found matching ' + state.activeFilter.selector);
+        console.log(state.totalShow === containerEl.querySelectorAll('[data-category~="a"]').length); // true
     });
 ```
 > Example 3: Filtering targets by a compound selector
@@ -136,7 +135,7 @@ mixer.filter('[data-category~="a"]')
 
 mixer.filter('.category-a.category-c')
     .then(function(state) {
-        console.log(state.totalShow + ' targets were found matching ' + state.activeFilter.selector);
+        console.log(state.totalShow === containerEl.querySelectorAll('.category-a.category-c').length); // true
     });
 ```
 
@@ -154,7 +153,7 @@ as per the logic defined in `controls.toggleLogic`.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`string` | `selector` | Any valid CSS selector (i.e. `'.category-a'`)
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether or not the filter operation should animate.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -184,7 +183,7 @@ Removes a selector from the active filter selector.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`string` | `selector` | Any valid CSS selector (i.e. `'.category-a'`)
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether or not the filter operation should animate.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -214,7 +213,7 @@ Sorts all targets in the container according to a provided sort string.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`string` | `sortString` | A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`).
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether or not the filter operation should animate.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -227,7 +226,8 @@ Sorts all targets in the container according to a provided sort string.
 
 mixer.sort('default:desc')
     .then(function(state) {
-        console.log('Targets sorted by ' + state.activeSort.attribute + ' in ' + state.activeSort.order + ' order');
+        console.log(state.activeSort.attribute === 'default'); // true
+        console.log(state.activeSort.order === 'desc'); // true
     });
 ```
 > Example 2: Sorting by a custom data-attribute
@@ -238,7 +238,8 @@ mixer.sort('default:desc')
 
 mixer.sort('published-date:asc')
     .then(function(state) {
-        console.log('Targets sorted by ' + state.activeSort.attribute + ' in ' + state.activeSort.order + ' order');
+        console.log(state.activeSort.attribute === 'published-date'); // true
+        console.log(state.activeSort.order === 'asc'); // true
     });
 ```
 > Example 3: Sorting by multiple attributes
@@ -249,7 +250,11 @@ mixer.sort('published-date:asc')
 
 mixer.sort('published-date:desc data-title:asc')
     .then(function(state) {
-        console.log('Targets sorted by ' + state.activeSort.attribute + ' then by ' + state.activeSort.next.attribute);
+        console.log(state.activeSort.attribute === 'published-date'); // true
+        console.log(state.activeSort.order === 'desc'); // true
+
+        console.log(state.activeSort.next.attribute === 'title'); // true
+        console.log(state.activeSort.next.order === 'asc'); // true
     });
 ```
 > Example 4: Sorting by random
@@ -258,7 +263,7 @@ mixer.sort('published-date:desc data-title:asc')
 
 mixer.sort('random')
     .then(function(state) {
-        console.log('Targets shuffled');
+        console.log(state.activeSort.order === 'random') // true
     });
 ```
 
@@ -278,7 +283,7 @@ and position of targets between layout states.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`string` | `containerClassName` | A layout-specific class name to add to the container.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether or not the filter operation should animate.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -289,7 +294,7 @@ and position of targets between layout states.
 
 mixer.changeLayout('container-list')
      .then(function(state) {
-         console.log('the class name + ' state.activeContainerClassName + ' was added to the container');
+         console.log(state.activeContainerClass === 'container-list'); // true
      });
 ```
 > Example 2: Removing a previously added class name from the container
@@ -298,7 +303,7 @@ mixer.changeLayout('container-list')
 
 mixer.changeLayout('')
      .then(function(state) {
-         console.log('Class name removed from container');
+         console.log(state.activeContainerClass === ''); // true
      });
 ```
 
@@ -322,7 +327,7 @@ to interact with or query the DOM directory.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`Array.<object>` | `dataset` | An array of objects, each one representing the underlying data model of a target to be rendered.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether or not the filter operation should animate.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -339,7 +344,7 @@ var myDataset = [
 
 mixer.dataset(myDataset)
     .then(function(state) {
-        console.log(state.totalShow + ' target were rendered');
+        console.log(state.totalShow === 3); // true
     });
 ```
 > Example 2: Sorting a dataset
@@ -352,7 +357,7 @@ var newDataset = myDataset.slice().reverse();
 
 mixer.dataset(newDataset)
     .then(function(state) {
-        console.log('order of targets reversed');
+        console.log(state.activeDataset[0] === myDataset[2]); // true
     });
 ```
 > Example 3: Removing an item from the dataset
@@ -367,7 +372,7 @@ var newDataset = myDataset.slice().pop();
 
 mixer.dataset(newDataset)
     .then(function(state) {
-        console.log(state.totalShow); // 2
+        console.log(state.totalShow === 2); // true
     });
 ```
 
@@ -385,7 +390,7 @@ operations as requested.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`object` | `multimixCommand` | An object containing one or more things to do
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether or not the filter operation should animate.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -399,8 +404,8 @@ mixer.multimix({
     sort: 'published-date:desc'
 })
     .then(function(state) {
-        console.log(state.activeFilter.selector); // '.category-b'
-        console.log(state.activeSort.attribute); // 'published-date'
+        console.log(state.activeFilter.selector === '.category-b'); // true
+        console.log(state.activeSort.attribute === 'published-date'); // true
     });
 ```
 > Example 2: Performing simultaneous sorting, insertion, and removal
@@ -422,8 +427,8 @@ mixer.multimix({
     remove: existingElementReference // Remove 1 existing element
 })
     .then(function(state) {
-        console.log(state.activeSort.attribute); // 'published-date'
-        console.log(state.totalShow); // 7
+        console.log(state.activeSort.attribute === 'published-date'); // true
+        console.log(state.totalShow === 7); // true
     });
 ```
 
@@ -436,14 +441,18 @@ mixer.multimix({
 ```
 
 Inserts one or more new target elements into the container at a specified
-index. To be indexed as targets, new elements must match the `selectors.target`
+index.
+
+To be indexed as targets, new elements must match the `selectors.target`
 selector (`'.mix'` by default).
 
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements,
      or an HTML string representing a single element.
-|Param   |`number` | `index` | The index at which to insert the new element(s). 0 by default.
+|Param   |`number` | `index` | The index at which to insert the new element(s). `0` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
@@ -460,7 +469,7 @@ newElement.classList.add('mix');
 
 mixer.insert(newElement)
     .then(function(state) {
-        console.log(state.totalShow); // 1
+        console.log(state.totalShow === 1); // true
     });
 ```
 > Example 2: Inserting a single element via HTML string
@@ -477,7 +486,7 @@ var newElementHtml = '&lt;div class="mix"&gt;&lt/div&gt;';
 
 mixer.insert(newElementHtml, 1)
     .then(function(state) {
-        console.log(state.totalShow); // 2
+        console.log(state.totalShow === 2); // true
         console.log(state.show[1].outerHTML === newElementHtml); // true
     });
 ```
@@ -501,7 +510,7 @@ var newElementsCollection = [newElement1, newElement2];
 
 mixer.insert(newElementsCollection, 1)
     .then(function(state) {
-        console.log(state.totalShow); // 4
+        console.log(state.totalShow === 4); // true
         console.log(state.show[1] === newElement1); // true
         console.log(state.show[2] === newElement2); // true
     });
@@ -518,7 +527,7 @@ var $newElement = $('&lt;div class="mix"&gt;&lt/div&gt;');
 
 mixer.insert(newElementsCollection, 3)
     .then(function(state) {
-        console.log(state.totalShow); // 5
+        console.log(state.totalShow === 5); // true
         console.log(state.show[3] === $newElement[0]); // true
     });
 ```
@@ -537,7 +546,9 @@ Inserts one or more new elements before a provided reference element.
 |---|--- | --- | ---
 |Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements,
      or an HTML string representing a single element.
-|Param   |`HTMLElement` | `referenceElement` | A reference to an existing target element to insert new elements before.
+|Param   |`HTMLElement` | `referenceElement` | A reference to an existing element in the container to insert new elements before.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
@@ -580,7 +591,9 @@ Inserts one or more new elements after a provided reference element.
 |---|--- | --- | ---
 |Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements,
      or an HTML string representing a single element.
-|Param   |`HTMLElement` | `referenceElement` | A reference to an existing target element to insert new elements after.
+|Param   |`HTMLElement` | `referenceElement` | A reference to an existing element in the container to insert new elements after.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
@@ -607,116 +620,336 @@ mixer.insertAfter(newElement, referenceElement)
 
 ### <a id="mixitup.Mixer#prepend">mixitup.Mixer.prepend</a>
 
-**Version added: 2.0.0**
+**Version added: 3.0.0**
 
+```js
+.prepend(newElements [,animate] [,callback])
+```
 
-
-
+Inserts one or more new elements into the container before all existing targets.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Returns |`Promise.<mixitup.State>` | 
+|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements,
+     or an HTML string representing a single element.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
+|Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
+> Example: Prepending a new element
+
+```js
+
+// Create a new element
+
+var newElement = document.createElement('div');
+newElement.classList.add('mix');
+
+// Insert the element into the container
+
+mixer.prepend(newElement)
+    .then(function(state) {
+        console.log(state.show[0] === newElement); // true
+    });
+```
 
 ### <a id="mixitup.Mixer#append">mixitup.Mixer.append</a>
 
-**Version added: 2.0.0**
+**Version added: 3.0.0**
 
+```js
+.append(newElements [,animate] [,callback])
+```
 
-
-
+Inserts one or more new elements into the container after all existing targets.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Returns |`Promise.<mixitup.State>` | 
+|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements,
+     or an HTML string representing a single element.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
+|Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
+> Example: Appending a new element
+
+```js
+
+// Create a new element
+
+var newElement = document.createElement('div');
+newElement.classList.add('mix');
+
+// Insert the element into the container
+
+mixer.append(newElement)
+    .then(function(state) {
+        console.log(state.show[state.show.length - 1] === newElement); // true
+    });
+```
 
 ### <a id="mixitup.Mixer#remove">mixitup.Mixer.remove</a>
 
 **Version added: 3.0.0**
 
+```js
+.remove(elements [, animate] [, callback])
+```
 
-
-
+Removes one or more existing target elements from the container.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Returns |`Promise.<mixitup.State>` | 
+|Param   |`HTMLElement, Array.<HTMLElement>, string, number` | `elements` | A reference to a single element to remove, an array-like collection of elements,
+     a selector string, or the index of an element to remove.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
+|Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
+> Example 1: Removing an element by reference
+
+```js
+
+var elementToRemove = containerEl.firstElementChild;
+
+mixer.remove(elementToRemove)
+     .then(function(state) {
+         console.log(state.targets.indexOf(elementToRemove) === -1); // true
+     });
+```
+> Example 2: Removing a collection of elements by reference
+
+```js
+
+var elementsToRemove = containerEl.querySelectorAll('.category-a');
+
+console.log(elementsToRemove.length) // 3
+
+mixer.remove(elementsToRemove)
+     .then(function() {
+         console.log(containerEl.querySelectorAll('.category-a').length); // 0
+     });
+```
+> Example 3: Removing one or more elements by selector
+
+```js
+
+mixer.remove('.category-a')
+     .then(function() {
+         console.log(containerEl.querySelectorAll('.category-a').length); // 0
+     });
+```
+> Example 4: Removing an element by index
+
+```js
+
+console.log(mixer.getState.totalShow); // 4
+
+// Remove the element at index 3
+
+mixer.remove(3)
+     .then(function(state) {
+         console.log(state.totalShow); // 3
+         console.log(state.show[3]); // undefined
+     });
+```
 
 ### <a id="mixitup.Mixer#getConfig">mixitup.Mixer.getConfig</a>
 
 **Version added: 2.0.0**
 
+```js
+.getConfig([stringKey])
+```
 
-
-
+Retrieves the the value of any property or sub-object within the current
+mixitup configuration, or the whole configuration object.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`string` | `[stringKey]` | 
+|Param   |`string` | `[stringKey]` | A "dot-notation" string key
 |Returns |`*` | 
 
 
+> Example 1: retrieve the entire configuration object
+
+```js
+
+var config = mixer.getConfig(); // Config { ... }
+```
+> Example 2: retrieve a named sub-object of configuration object
+
+```js
+
+var animation = mixer.getConfig('animation'); // ConfigAnimation { ... }
+```
+> Example 3: retrieve a value of configuration object via a dot-notation string key
+
+```js
+
+var effects = mixer.getConfig('animation.effects'); // 'fade scale'
+```
 
 ### <a id="mixitup.Mixer#configure">mixitup.Mixer.configure</a>
 
-**Version added: 2.0.0**
+**Version added: 3.0.0**
 
+```js
+.configure(config)
+```
 
+Updates the configuration of the mixer, after it has been instantiated.
 
-
+See the Configuration Object documentation for a full list of avilable
+configuration options.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`object` | `config` | 
+|Param   |`object` | `config` | An object containing one of more configuration options.
 |Returns |`void` | 
 
 
+> Example 1: Updating animation options
+
+```js
+
+mixer.configure({
+    animation: {
+        effects: 'fade translateX(-100%)',
+        duration: 300
+    }
+});
+```
+> Example 2: Removing a callback after it has been set
+
+```js
+
+var mixer;
+
+function handleMixEndOnce() {
+    // Do something ..
+
+    // Then nullify the callback
+
+    mixer.configure({
+        callbacks: {
+            onMixEnd: null
+        }
+    });
+};
+
+// Instantiate a mixer with a callback defined
+
+mixer = mixitup(containerEl, {
+    callbacks: {
+        onMixEnd: handleMixEndOnce
+    }
+});
+```
 
 ### <a id="mixitup.Mixer#getState">mixitup.Mixer.getState</a>
 
 **Version added: 2.0.0**
 
+```js
+.getState();
+```
 
+Returns an object containing information about the current state of the
+mixer. See the State Object documentation for more information.
 
-
+NB: State objects are immutable and should therefore be regenerated
+after any operation.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Returns |`mixitup.State` | 
+|Returns |`mixitup.State` | An object reflecting the current state of the mixer.
 
 
+> Example: Retrieving a state object
+
+```js
+
+var state = mixer.getState();
+
+console.log(state.totalShow + 'targets are currently shown');
+```
 
 ### <a id="mixitup.Mixer#forceRefresh">mixitup.Mixer.forceRefresh</a>
 
 **Version added: 2.1.2**
 
+```js
+.forceRefresh()
+```
 
+Forces the re-indexing all targets within the container.
 
+This should only be used if some other piece of code in your application
+has manipulated the contents of your container, which should be avoided.
 
+If you need to add or remove target elements from the container, use
+the built-in `.insert()` or `.remove()` methods, and MixItUp will keep
+itself up to date.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Returns |`void` | 
 
 
+> Example: Force refreshing the mixer after external DOM manipulation
+
+```js
+
+console.log(mixer.getState().totalShow); // 3
+
+// An element is removed from the container via some external DOM manipulation code:
+
+containerEl.removeChild(containerEl.firstElementChild);
+
+// The mixer does not know that the number of targets has changed:
+
+console.log(mixer.getState().totalShow); // 3
+
+mixer.forceRefresh();
+
+// After forceRefresh, the mixer is in sync again:
+
+console.log(mixer.getState().totalShow); // 2
+```
 
 ### <a id="mixitup.Mixer#destroy">mixitup.Mixer.destroy</a>
 
 **Version added: 2.0.0**
 
+```js
+.destroy([cleanUp])
+```
 
+Removes mixitup functionality from the container, unbinds all control
+event handlers, and deletes the mixer instance from MixItUp's internal
+cache.
 
-
+This should be performed whenever a mixer's container is removed from
+the DOM, such as during a page change in a single page application,
+or React's `componentWillUnmount()`.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`boolean` | `hideAll` | 
+|Param   |`boolean` | `[cleanUp]` | An optional boolean dictating whether or not to clean up any inline
+    `display: none;` styling applied to hidden targets.
 |Returns |`void` | 
 
 
+> Example: Destroying the mixer before removing its container element
+
+```js
+
+mixer.destroy();
+
+containerEl.parentElement.removeChild(containerEl);
+```
 

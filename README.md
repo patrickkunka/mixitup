@@ -37,6 +37,8 @@ To get started, follow these few simple steps:
 
 #### 1. Build Your Container
 
+By default, MixItUp will query the container for targets matching the selector `'.mix'`.
+
 ```html
 <div class="container">
     <div class="mix category-a" data-order="1"></div>
@@ -45,8 +47,6 @@ To get started, follow these few simple steps:
     <div class="mix category-a category-d" data-order="4"></div>
 </div>
 ```
-
-By default, MixItUp will query the container for targets matching the selector `'.mix'`, although any valid selector can be used via the `selectors.target` configuration option.
 
 Targets can be filtered using any valid selector e.g. `'.category-a'`, and are sorted via optional custom data attributes e.g. `'data-order'`.
 
@@ -83,12 +83,6 @@ The values `'default'` and `'random'` are also valid, with `'default'` referring
 
 For more information on MixItUp's full sorting functionality, see our [--website pending--]() tutorial.
 
-##### Control Scoping
-
-Controls can be placed anywhere in the document ("global" scoping) by default.
-
-If you intend to have multiple instances of MixItUp in the same document however, controls should be placed within each mixer's respective container ("local" scoping) to prevent accidental interaction with other active instances in the DOM. Simply change each mixer's `controls.scope` configuration option from `'global'` to `'local'` as needed.
-
 ### CSS
 
 While MixItUp can be added on top of any existing CSS layout, we strongly recommend inline-block or flexbox-based styling over floats and legacy grid frameworks when dealing with grid-based designs for a number of reasons.
@@ -101,7 +95,21 @@ Find out more about MixItUp-compatible grid layouts [--website pending--]().
 
 Firstly, load the MixItUp JavaScript library using the preferred method for your project.
 
-##### Module Loader
+##### Script Tag
+
+The most simple way to load MixItUp in your project is to include it via a `<script>` tag before the closing `</body>` tag on your page.
+
+```html
+        ...
+
+        <script src="/path/to/mixitup.min.js"></script>
+    </body>
+</html>
+```
+
+With this technique, the MixItUp factory function will be made available via the global variable `mixitup`.
+
+##### Module Import
 
 If you are building a modular JavaScript project with Webpack, Browserify, or RequireJS, MixItUp can be installed using your package manager of choice (e.g. npm, jspm, yarn) and then imported into any of your project's modules.
 
@@ -123,26 +131,12 @@ require(['mixitup'], function(mixitup) {
 });
 ```
 
-##### Script Tag
-
-The most simple way to load MixItUp in your project is to include it via a `<script>` tag before the closing `</body>` tag on your page.
-
-```html
-        ...
-
-        <script src="/path/to/mixitup.min.js"></script>
-    </body>
-</html>
-```
-
-With this technique, the MixItUp factory function will be made available via the global variable `mixitup`.
-
 #### 5. Create a Mixer
 
 With the `mixitup` factory function loaded, you may now instantiate a "mixer" on your container to enable MixItUp functionality. Call the function passing a selector string or a reference to your container element as the first parameter.
 
 ```js
-mixitup('.container');
+var mixer = mixitup('.container');
 ```
 > Instantiating a mixer
 
@@ -155,7 +149,7 @@ If you wish to customize the functionality of your mixer, an optional "configura
 See the [Configuration Object](/docs/mixitup.Config.md) documentation for the full set of configuration options and defaults.
 
 ```js
-mixitup('.container', {
+var mixer = mixitup('.container', {
     selectors: {
         target: '.blog-item'
     },
@@ -184,9 +178,3 @@ mixer.filter('.category-a');
 You may wish to use MixItUp 3's new "dataset" API. When using dataset, MixItUp will act as the "view" layer of your UI component — allowing you to interface purely via your data model, and avoiding interaction with the DOM entirely.
 
 For more information check out our [--website pending--]() tutorial.
-
-##### Loading Animations
-
-Starting from MixItUp 3, all targets start from their shown state and no loading animation occurs which is ideal for quickly progressively enhancing pre-rendered UI.
-
-However, you may wish to have your targets start from hidden and feature a loading animation. Please see our [--website pending--]() tutorial for more information on different ways to initialise your mixer.

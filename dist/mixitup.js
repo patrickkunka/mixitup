@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 48bc0cf1-8f56-4378-8d4d-b3cd1103172a
+ * Build 0e35a2c0-ddeb-4556-b2f0-f0b74e8e38cb
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -8034,7 +8034,7 @@
 
         /**
          * Retrieves the the value of any property or sub-object within the current
-         * mixitup configuration, or the whole object.
+         * mixitup configuration, or the whole configuration object.
          *
          * @example
          *
@@ -8095,7 +8095,7 @@
          *
          * var mixer;
          *
-         * function handleMixEnd() {
+         * function handleMixEndOnce() {
          *     // Do something ..
          *
          *     // Then nullify the callback
@@ -8111,7 +8111,7 @@
          *
          * mixer = mixitup(containerEl, {
          *     callbacks: {
-         *         onMixEnd: handleMixEnd
+         *         onMixEnd: handleMixEndOnce
          *     }
          * });
          *
@@ -8134,28 +8134,73 @@
         },
 
         /**
+         * Returns an object containing information about the current state of the
+         * mixer. See the State Object documentation for more information.
+         *
+         * NB: State objects are immutable and should therefore be regenerated
+         * after any operation.
+         *
+         * @example
+         *
+         * .getState();
+         *
+         * @example <caption>Example: Retrieving a state object</caption>
+         *
+         * var state = mixer.getState();
+         *
+         * console.log(state.totalShow + 'targets are currently shown');
+         *
          * @public
          * @instance
          * @since       2.0.0
-         * @return      {mixitup.State}
+         * @return      {mixitup.State} An object reflecting the current state of the mixer.
          */
 
         getState: function() {
             var self    = this,
                 state   = null;
 
-            if (typeof Object.assign === 'function') {
-                state = new mixitup.State();
+            state = new mixitup.State();
 
-                Object.assign(state, self.state);
-            } else {
-                state = self.state;
-            }
+            h.extend(state, self.state);
+
+            h.freeze(state);
 
             return self.callFilters('stateGetState', state, arguments);
         },
 
         /**
+         * Forces the re-indexing all targets within the container.
+         *
+         * This should only be used if some other piece of code in your application
+         * has manipulated the contents of your container, which should be avoided.
+         *
+         * If you need to add or remove target elements from the container, use
+         * the built-in `.insert()` or `.remove()` methods, and MixItUp will keep
+         * itself up to date.
+         *
+         * @example
+         *
+         * .forceRefresh()
+         *
+         * @example <caption>Example: Force refreshing the mixer after external DOM manipulation</caption>
+         *
+         * console.log(mixer.getState().totalShow); // 3
+         *
+         * // An element is removed from the container via some external DOM manipulation code:
+         *
+         * containerEl.removeChild(containerEl.firstElementChild);
+         *
+         * // The mixer does not know that the number of targets has changed:
+         *
+         * console.log(mixer.getState().totalShow); // 3
+         *
+         * mixer.forceRefresh();
+         *
+         * // After forceRefresh, the mixer is in sync again:
+         *
+         * console.log(mixer.getState().totalShow); // 2
+         *
          * @public
          * @instance
          * @since 2.1.2
@@ -8169,14 +8214,34 @@
         },
 
         /**
+         * Removes mixitup functionality from the container, unbinds all control
+         * event handlers, and deletes the mixer instance from MixItUp's internal
+         * cache.
+         *
+         * This should be performed whenever a mixer's container is removed from
+         * the DOM, such as during a page change in a single page application,
+         * or React's `componentWillUnmount()`.
+         *
+         * @example
+         *
+         * .destroy([cleanUp])
+         *
+         * @example <caption>Example: Destroying the mixer before removing its container element</caption>
+         *
+         * mixer.destroy();
+         *
+         * containerEl.parentElement.removeChild(containerEl);
+         *
          * @public
          * @instance
          * @since   2.0.0
-         * @param   {boolean}   hideAll
+         * @param   {boolean}   [cleanUp=false]
+         *     An optional boolean dictating whether or not to clean up any inline
+         *     `display: none;` styling applied to hidden targets.
          * @return  {void}
          */
 
-        destroy: function(hideAll) {
+        destroy: function(cleanUp) {
             var self    = this,
                 control = null,
                 target  = null,
@@ -8189,12 +8254,14 @@
             }
 
             for (i = 0; target = self.targets[i]; i++) {
-                hideAll && target.hide();
+                if (cleanUp) {
+                    target.show();
+                }
 
                 target.unbindEvents();
             }
 
-            if (self.dom.container.id.indexOf('MixItUp') === 0) {
+            if (self.dom.container.id.match(/^MixItUp/)) {
                 self.dom.container.removeAttribute('id');
             }
 
