@@ -14,7 +14,7 @@ argument, as well as other more specific arguments described below.
 
 ## Members
 
-### <a id="mixitup.Config.callbacks#onMixStart">mixitup.Config.callbacks.onMixStart</a>
+### <a id="mixitup.Config.callbacks#onMixStart">onMixStart</a>
 
 
 
@@ -30,7 +30,7 @@ state of the mixer once the requested operation has completed.
 |---  | ---
 |`function`| `null`
 
-> Example: Adding an `onMixStart` callback function
+##### Example: Adding an `onMixStart` callback function
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -42,7 +42,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.callbacks#onMixBusy">mixitup.Config.callbacks.onMixBusy</a>
+### <a id="mixitup.Config.callbacks#onMixBusy">onMixBusy</a>
 
 
 
@@ -56,7 +56,7 @@ is disabled.
 |---  | ---
 |`function`| `null`
 
-> Example: Adding an `onMixBusy` callback function
+##### Example: Adding an `onMixBusy` callback function
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -68,7 +68,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.callbacks#onMixEnd">mixitup.Config.callbacks.onMixEnd</a>
+### <a id="mixitup.Config.callbacks#onMixEnd">onMixEnd</a>
 
 
 
@@ -81,7 +81,7 @@ state has been updated.
 |---  | ---
 |`function`| `null`
 
-> Example: Adding an `onMixEnd` callback function
+##### Example: Adding an `onMixEnd` callback function
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -93,7 +93,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.callbacks#onMixFail">mixitup.Config.callbacks.onMixFail</a>
+### <a id="mixitup.Config.callbacks#onMixFail">onMixFail</a>
 
 
 
@@ -106,7 +106,7 @@ could be found matching the requested filter.
 |---  | ---
 |`function`| `null`
 
-> Example: Adding an `onMixFail` callback function
+##### Example: Adding an `onMixFail` callback function
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -118,7 +118,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.callbacks#onMixClick">mixitup.Config.callbacks.onMixClick</a>
+### <a id="mixitup.Config.callbacks#onMixClick">onMixClick</a>
 
 
 
@@ -138,7 +138,7 @@ an operation.
 |---  | ---
 |`function`| `null`
 
-> Example 1: Adding an `onMixClick` callback function
+##### Example 1: Adding an `onMixClick` callback function
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -149,7 +149,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-> Example 2: Using `onMixClick` to manipulate the original click event
+##### Example 2: Using `onMixClick` to manipulate the original click event
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -164,7 +164,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-> Example 3: Using `onMixClick` to conditionally cancel operations
+##### Example 3: Using `onMixClick` to conditionally cancel operations
 
 ```js
 var mixer = mixitup(containerEl, {

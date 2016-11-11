@@ -7,7 +7,7 @@ A group of properties defining the selectors used to query elements within a mix
 
 ## Members
 
-### <a id="mixitup.Config.selectors#target">mixitup.Config.selectors.target</a>
+### <a id="mixitup.Config.selectors#target">target</a>
 
 
 
@@ -22,7 +22,7 @@ attribute or element selector to match the style of your project.
 |---  | ---
 |`string`| `'.mix'`
 
-> Example 1: Changing the target selector
+##### Example 1: Changing the target selector
 
 ```js
 
@@ -32,7 +32,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-> Example 2: Using an attribute selector as a target selector
+##### Example 2: Using an attribute selector as a target selector
 
 ```js
 

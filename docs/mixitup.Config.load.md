@@ -7,7 +7,7 @@ A group of properties defining the initial state of the mixer on load (instantia
 
 ## Members
 
-### <a id="mixitup.Config.load#filter">mixitup.Config.load.filter</a>
+### <a id="mixitup.Config.load#filter">filter</a>
 
 
 
@@ -21,7 +21,7 @@ values `'all'` or `'none'`.
 |---  | ---
 |`string`| `'all'`
 
-> Example 1: Defining an initial filter selector to be applied on load
+##### Example 1: Defining an initial filter selector to be applied on load
 
 ```js
 
@@ -33,7 +33,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-> Example 2: Hiding all targets on load
+##### Example 2: Hiding all targets on load
 
 ```js
 
@@ -46,7 +46,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.load#sort">mixitup.Config.load.sort</a>
+### <a id="mixitup.Config.load#sort">sort</a>
 
 
 
@@ -61,7 +61,7 @@ order, or the value `'random'`;
 |---  | ---
 |`string`| `'default:asc'`
 
-> Example: Defining sorting to be applied on load
+##### Example: Defining sorting to be applied on load
 
 ```js
 
@@ -75,7 +75,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.load#dataset">mixitup.Config.load.dataset</a>
+### <a id="mixitup.Config.load#dataset">dataset</a>
 
 
 
@@ -90,7 +90,7 @@ NB: If targets are pre-rendered when the mixer is instantiated, this must be set
 |---  | ---
 |`Array.<object>`| `null`
 
-> Example: Defining the initial underyling dataset
+##### Example: Defining the initial underyling dataset
 
 ```js
 

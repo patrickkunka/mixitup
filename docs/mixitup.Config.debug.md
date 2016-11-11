@@ -7,7 +7,7 @@ A group of properties allowing the toggling of various debug features.
 
 ## Members
 
-### <a id="mixitup.Config.debug#enable">mixitup.Config.debug.enable</a>
+### <a id="mixitup.Config.debug#enable">enable</a>
 
 
 
@@ -24,7 +24,7 @@ in debugging, or the authoring of extensions.
 |---  | ---
 |`boolean`| `false`
 
-> Example: Enabling debug mode
+##### Example: Enabling debug mode
 
 ```js
 
@@ -39,7 +39,7 @@ var mixer = mixitup(containerEl, {
 console.log(mixer);
 ```
 
-### <a id="mixitup.Config.debug#showWarnings">mixitup.Config.debug.showWarnings</a>
+### <a id="mixitup.Config.debug#showWarnings">showWarnings</a>
 
 
 
@@ -57,7 +57,7 @@ them in production.
 |---  | ---
 |`boolean`| `true`
 
-> Example 1: Disabling warnings
+##### Example 1: Disabling warnings
 
 ```js
 
@@ -67,7 +67,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-> Example 2: Disabling warnings based on environment
+##### Example 2: Disabling warnings based on environment
 
 ```js
 

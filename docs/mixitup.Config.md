@@ -17,9 +17,9 @@ configuration values detailed below.
 
 ## Members
 
-### <a id="mixitup.Config.animation">mixitup.Config.animation</a>
+### <a id="mixitup.Config.animation">animation</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
 
 
@@ -28,9 +28,9 @@ A group of properties defining MixItUp's animation and effects settings.
 
 
 
-### <a id="mixitup.Config.callbacks">mixitup.Config.callbacks</a>
+### <a id="mixitup.Config.callbacks">callbacks</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
 
 
@@ -46,9 +46,9 @@ argument, as well as other more specific arguments described below.
 
 
 
-### <a id="mixitup.Config.controls">mixitup.Config.controls</a>
+### <a id="mixitup.Config.controls">controls</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
 
 
@@ -57,9 +57,9 @@ A group of properties relating to clickable control elements.
 
 
 
-### <a id="mixitup.Config.classNames">mixitup.Config.classNames</a>
+### <a id="mixitup.Config.classNames">classNames</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
 
 
@@ -80,9 +80,9 @@ your proejct.
 
 
 
-### <a id="mixitup.Config.data">mixitup.Config.data</a>
+### <a id="mixitup.Config.data">data</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
 
 
@@ -91,9 +91,9 @@ A group of properties relating to MixItUp's dataset API.
 
 
 
-### <a id="mixitup.Config.debug">mixitup.Config.debug</a>
+### <a id="mixitup.Config.debug">debug</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
 
 
@@ -102,9 +102,9 @@ A group of properties allowing the toggling of various debug features.
 
 
 
-### <a id="mixitup.Config.layout">mixitup.Config.layout</a>
+### <a id="mixitup.Config.layout">layout</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
 
 
@@ -113,9 +113,9 @@ A group of properties relating to the layout of the container.
 
 
 
-### <a id="mixitup.Config.load">mixitup.Config.load</a>
+### <a id="mixitup.Config.load">load</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
 
 
@@ -124,9 +124,9 @@ A group of properties defining the initial state of the mixer on load (instantia
 
 
 
-### <a id="mixitup.Config.selectors">mixitup.Config.selectors</a>
+### <a id="mixitup.Config.selectors">selectors</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
 
 
@@ -135,9 +135,9 @@ A group of properties defining the selectors used to query elements within a mix
 
 
 
-### <a id="mixitup.Config.render">mixitup.Config.render</a>
+### <a id="mixitup.Config.render">render</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
 
 

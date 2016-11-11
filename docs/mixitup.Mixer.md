@@ -12,13 +12,13 @@ insertion, removal and more.
 
 ## Members
 
-### <a id="mixitup.Mixer#show">mixitup.Mixer.show</a>
+### <a id="mixitup.Mixer#show">show()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .show()
-```
+`
 
 A shorthand method for `.filter('all')`. Shows all targets in the container.
 
@@ -27,7 +27,7 @@ A shorthand method for `.filter('all')`. Shows all targets in the container.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-> Example: Showing all targets
+##### Example: Showing all targets
 
 ```js
 
@@ -37,13 +37,13 @@ mixer.show()
     });
 ```
 
-### <a id="mixitup.Mixer#hide">mixitup.Mixer.hide</a>
+### <a id="mixitup.Mixer#hide">hide()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .hide()
-```
+`
 
 A shorthand method for `.filter('none')`. Hides all targets in the container.
 
@@ -52,7 +52,7 @@ A shorthand method for `.filter('none')`. Hides all targets in the container.
 |Returns |`Promise.<mixitup.State>` | 
 
 
-> Example: Hiding all targets
+##### Example: Hiding all targets
 
 ```js
 
@@ -63,13 +63,13 @@ mixer.hide()
     });
 ```
 
-### <a id="mixitup.Mixer#isMixing">mixitup.Mixer.isMixing</a>
+### <a id="mixitup.Mixer#isMixing">isMixing()</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
-```js
+`js
 .isMixing()
-```
+`
 
 Returns a boolean indicating whether or not a MixItUp operation is
 currently in progress.
@@ -79,7 +79,7 @@ currently in progress.
 |Returns |`boolean` | 
 
 
-> Example: Checking the status of a mixer
+##### Example: Checking the status of a mixer
 
 ```js
 
@@ -90,13 +90,13 @@ mixer.sort('random', function() {
 console.log(mixer.isMixing()) // true
 ```
 
-### <a id="mixitup.Mixer#filter">mixitup.Mixer.filter</a>
+### <a id="mixitup.Mixer#filter">filter()</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
-```js
+`js
 .filter(selector [, animate] [, callback])
-```
+`
 
 Filters all targets in the container by a provided selector string, or the values `'all'`
 or `'none'`. Only targets matching the selector will be shown.
@@ -109,7 +109,7 @@ or `'none'`. Only targets matching the selector will be shown.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example 1: Filtering targets by a class selector
+##### Example 1: Filtering targets by a class selector
 
 ```js
 
@@ -118,7 +118,7 @@ mixer.filter('.category-a')
         console.log(state.totalShow === containerEl.querySelectorAll('.category-a').length); // true
     });
 ```
-> Example 2: Filtering targets by an attribute selector
+##### Example 2: Filtering targets by an attribute selector
 
 ```js
 
@@ -127,7 +127,7 @@ mixer.filter('[data-category~="a"]')
         console.log(state.totalShow === containerEl.querySelectorAll('[data-category~="a"]').length); // true
     });
 ```
-> Example 3: Filtering targets by a compound selector
+##### Example 3: Filtering targets by a compound selector
 
 ```js
 
@@ -139,13 +139,13 @@ mixer.filter('.category-a.category-c')
     });
 ```
 
-### <a id="mixitup.Mixer#toggleOn">mixitup.Mixer.toggleOn</a>
+### <a id="mixitup.Mixer#toggleOn">toggleOn()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .toggleOn(selector [, animate] [, callback])
-```
+`
 
 Adds an additional selector to the currently active filter selector, concatenating
 as per the logic defined in `controls.toggleLogic`.
@@ -158,7 +158,7 @@ as per the logic defined in `controls.toggleLogic`.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example: Toggling on a filter selector
+##### Example: Toggling on a filter selector
 
 ```js
 
@@ -170,13 +170,13 @@ mixer.toggleOn('.category-b')
     });
 ```
 
-### <a id="mixitup.Mixer#toggleOff">mixitup.Mixer.toggleOff</a>
+### <a id="mixitup.Mixer#toggleOff">toggleOff()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .toggleOff(selector [, animate] [, callback])
-```
+`
 
 Removes a selector from the active filter selector.
 
@@ -188,7 +188,7 @@ Removes a selector from the active filter selector.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example: Toggling off a filter selector
+##### Example: Toggling off a filter selector
 
 ```js
 
@@ -200,13 +200,13 @@ mixer.toggleOff('.category-b')
     });
 ```
 
-### <a id="mixitup.Mixer#sort">mixitup.Mixer.sort</a>
+### <a id="mixitup.Mixer#sort">sort()</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
-```js
+`js
 .sort(sortString [, animate] [, callback])
-```
+`
 
 Sorts all targets in the container according to a provided sort string.
 
@@ -218,7 +218,7 @@ Sorts all targets in the container according to a provided sort string.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example 1: Sorting by the default DOM order
+##### Example 1: Sorting by the default DOM order
 
 ```js
 
@@ -230,7 +230,7 @@ mixer.sort('default:desc')
         console.log(state.activeSort.order === 'desc'); // true
     });
 ```
-> Example 2: Sorting by a custom data-attribute
+##### Example 2: Sorting by a custom data-attribute
 
 ```js
 
@@ -242,7 +242,7 @@ mixer.sort('published-date:asc')
         console.log(state.activeSort.order === 'asc'); // true
     });
 ```
-> Example 3: Sorting by multiple attributes
+##### Example 3: Sorting by multiple attributes
 
 ```js
 
@@ -257,7 +257,7 @@ mixer.sort('published-date:desc data-title:asc')
         console.log(state.activeSort.next.order === 'asc'); // true
     });
 ```
-> Example 4: Sorting by random
+##### Example 4: Sorting by random
 
 ```js
 
@@ -267,13 +267,13 @@ mixer.sort('random')
     });
 ```
 
-### <a id="mixitup.Mixer#changeLayout">mixitup.Mixer.changeLayout</a>
+### <a id="mixitup.Mixer#changeLayout">changeLayout()</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
-```js
+`js
 .changeLayout(containerClassName [, animate] [, callback])
-```
+`
 
 Changes the layout of the container by adding, removing or updating a
 layout-specific class name. If `animation.animateResizetargets` is
@@ -288,7 +288,7 @@ and position of targets between layout states.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example 1: Adding a new class name to the container
+##### Example 1: Adding a new class name to the container
 
 ```js
 
@@ -297,7 +297,7 @@ mixer.changeLayout('container-list')
          console.log(state.activeContainerClass === 'container-list'); // true
      });
 ```
-> Example 2: Removing a previously added class name from the container
+##### Example 2: Removing a previously added class name from the container
 
 ```js
 
@@ -307,13 +307,13 @@ mixer.changeLayout('')
      });
 ```
 
-### <a id="mixitup.Mixer#dataset">mixitup.Mixer.dataset</a>
+### <a id="mixitup.Mixer#dataset">dataset()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .dataset(dataset [, animate] [, callback])
-```
+`
 
 Updates the contents and order of the container to reflect the provided dataset,
 if the dataset API is in use.
@@ -332,7 +332,7 @@ to interact with or query the DOM directly.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example 1: Rendering a dataset
+##### Example 1: Rendering a dataset
 
 ```js
 
@@ -347,7 +347,7 @@ mixer.dataset(myDataset)
         console.log(state.totalShow === 3); // true
     });
 ```
-> Example 2: Sorting a dataset
+##### Example 2: Sorting a dataset
 
 ```js
 
@@ -360,7 +360,7 @@ mixer.dataset(newDataset)
         console.log(state.activeDataset[0] === myDataset[2]); // true
     });
 ```
-> Example 3: Removing an item from the dataset
+##### Example 3: Removing an item from the dataset
 
 ```js
 
@@ -376,13 +376,13 @@ mixer.dataset(newDataset)
     });
 ```
 
-### <a id="mixitup.Mixer#multimix">mixitup.Mixer.multimix</a>
+### <a id="mixitup.Mixer#multimix">multimix()</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
-```js
+`js
 .multimix(multimixCommand [, animate] [, callback])
-```
+`
 
 Performs simultaneous `filter`, `sort`, `insert`, `remove` and `changeLayout`
 operations as requested.
@@ -395,7 +395,7 @@ operations as requested.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example 1: Performing simultaneous filtering and sorting
+##### Example 1: Performing simultaneous filtering and sorting
 
 ```js
 
@@ -408,7 +408,7 @@ mixer.multimix({
         console.log(state.activeSort.attribute === 'published-date'); // true
     });
 ```
-> Example 2: Performing simultaneous sorting, insertion, and removal
+##### Example 2: Performing simultaneous sorting, insertion, and removal
 
 ```js
 
@@ -432,13 +432,13 @@ mixer.multimix({
     });
 ```
 
-### <a id="mixitup.Mixer#insert">mixitup.Mixer.insert</a>
+### <a id="mixitup.Mixer#insert">insert()</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
-```js
+`js
 .insert(newElements [, index] [, animate], [, callback])
-```
+`
 
 Inserts one or more new target elements into the container at a specified
 index.
@@ -455,7 +455,7 @@ selector (`'.mix'` by default).
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example 1: Inserting a single element via reference
+##### Example 1: Inserting a single element via reference
 
 ```js
 
@@ -471,7 +471,7 @@ mixer.insert(newElement)
         console.log(state.totalShow === 1); // true
     });
 ```
-> Example 2: Inserting a single element via HTML string
+##### Example 2: Inserting a single element via HTML string
 
 ```js
 
@@ -489,7 +489,7 @@ mixer.insert(newElementHtml, 1)
         console.log(state.show[1].outerHTML === newElementHtml); // true
     });
 ```
-> Example 3: Inserting multiple elements via reference
+##### Example 3: Inserting multiple elements via reference
 
 ```js
 
@@ -514,7 +514,7 @@ mixer.insert(newElementsCollection, 1)
         console.log(state.show[2] === newElement2); // true
     });
 ```
-> Example 4: Inserting a jQuery collection object containing one or more elements
+##### Example 4: Inserting a jQuery collection object containing one or more elements
 
 ```js
 
@@ -531,27 +531,26 @@ mixer.insert(newElementsCollection, 3)
     });
 ```
 
-### <a id="mixitup.Mixer#insertBefore">mixitup.Mixer.insertBefore</a>
+### <a id="mixitup.Mixer#insertBefore">insertBefore()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .insertBefore(newElements, referenceElement [, animate] [, callback])
-```
+`
 
 Inserts one or more new elements before a provided reference element.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements,
-     or an HTML string representing a single element.
+|Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
 |Param   |`HTMLElement` | `referenceElement` | A reference to an existing element in the container to insert new elements before.
 |Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example: Inserting a new element before a reference element
+##### Example: Inserting a new element before a reference element
 
 ```js
 
@@ -576,13 +575,13 @@ mixer.insertBefore(newElement, referenceElement)
     });
 ```
 
-### <a id="mixitup.Mixer#insertAfter">mixitup.Mixer.insertAfter</a>
+### <a id="mixitup.Mixer#insertAfter">insertAfter()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .insertAfter(newElements, referenceElement [, animate] [, callback])
-```
+`
 
 Inserts one or more new elements after a provided reference element.
 
@@ -595,7 +594,7 @@ Inserts one or more new elements after a provided reference element.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example: Inserting a new element after a reference element
+##### Example: Inserting a new element after a reference element
 
 ```js
 
@@ -616,13 +615,13 @@ mixer.insertAfter(newElement, referenceElement)
     });
 ```
 
-### <a id="mixitup.Mixer#prepend">mixitup.Mixer.prepend</a>
+### <a id="mixitup.Mixer#prepend">prepend()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .prepend(newElements [,animate] [,callback])
-```
+`
 
 Inserts one or more new elements into the container before all existing targets.
 
@@ -634,7 +633,7 @@ Inserts one or more new elements into the container before all existing targets.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example: Prepending a new element
+##### Example: Prepending a new element
 
 ```js
 
@@ -651,13 +650,13 @@ mixer.prepend(newElement)
     });
 ```
 
-### <a id="mixitup.Mixer#append">mixitup.Mixer.append</a>
+### <a id="mixitup.Mixer#append">append()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .append(newElements [,animate] [,callback])
-```
+`
 
 Inserts one or more new elements into the container after all existing targets.
 
@@ -669,7 +668,7 @@ Inserts one or more new elements into the container after all existing targets.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example: Appending a new element
+##### Example: Appending a new element
 
 ```js
 
@@ -686,13 +685,13 @@ mixer.append(newElement)
     });
 ```
 
-### <a id="mixitup.Mixer#remove">mixitup.Mixer.remove</a>
+### <a id="mixitup.Mixer#remove">remove()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .remove(elements [, animate] [, callback])
-```
+`
 
 Removes one or more existing target elements from the container.
 
@@ -704,7 +703,7 @@ Removes one or more existing target elements from the container.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
 
-> Example 1: Removing an element by reference
+##### Example 1: Removing an element by reference
 
 ```js
 
@@ -715,7 +714,7 @@ mixer.remove(elementToRemove)
          console.log(state.targets.indexOf(elementToRemove) === -1); // true
      });
 ```
-> Example 2: Removing a collection of elements by reference
+##### Example 2: Removing a collection of elements by reference
 
 ```js
 
@@ -728,7 +727,7 @@ mixer.remove(elementsToRemove)
          console.log(containerEl.querySelectorAll('.category-a').length); // 0
      });
 ```
-> Example 3: Removing one or more elements by selector
+##### Example 3: Removing one or more elements by selector
 
 ```js
 
@@ -737,7 +736,7 @@ mixer.remove('.category-a')
          console.log(containerEl.querySelectorAll('.category-a').length); // 0
      });
 ```
-> Example 4: Removing an element by index
+##### Example 4: Removing an element by index
 
 ```js
 
@@ -752,13 +751,13 @@ mixer.remove(3)
      });
 ```
 
-### <a id="mixitup.Mixer#getConfig">mixitup.Mixer.getConfig</a>
+### <a id="mixitup.Mixer#getConfig">getConfig()</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
-```js
+`js
 .getConfig([stringKey])
-```
+`
 
 Retrieves the the value of any property or sub-object within the current
 mixitup configuration, or the whole configuration object.
@@ -769,32 +768,32 @@ mixitup configuration, or the whole configuration object.
 |Returns |`*` | 
 
 
-> Example 1: retrieve the entire configuration object
+##### Example 1: retrieve the entire configuration object
 
 ```js
 
 var config = mixer.getConfig(); // Config { ... }
 ```
-> Example 2: retrieve a named sub-object of configuration object
+##### Example 2: retrieve a named sub-object of configuration object
 
 ```js
 
 var animation = mixer.getConfig('animation'); // ConfigAnimation { ... }
 ```
-> Example 3: retrieve a value of configuration object via a dot-notation string key
+##### Example 3: retrieve a value of configuration object via a dot-notation string key
 
 ```js
 
 var effects = mixer.getConfig('animation.effects'); // 'fade scale'
 ```
 
-### <a id="mixitup.Mixer#configure">mixitup.Mixer.configure</a>
+### <a id="mixitup.Mixer#configure">configure()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .configure(config)
-```
+`
 
 Updates the configuration of the mixer, after it has been instantiated.
 
@@ -807,7 +806,7 @@ configuration options.
 |Returns |`void` | 
 
 
-> Example 1: Updating animation options
+##### Example 1: Updating animation options
 
 ```js
 
@@ -818,7 +817,7 @@ mixer.configure({
     }
 });
 ```
-> Example 2: Removing a callback after it has been set
+##### Example 2: Removing a callback after it has been set
 
 ```js
 
@@ -845,13 +844,13 @@ mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Mixer#getState">mixitup.Mixer.getState</a>
+### <a id="mixitup.Mixer#getState">getState()</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
-```js
+`js
 .getState();
-```
+`
 
 Returns an object containing information about the current state of the
 mixer. See the State Object documentation for more information.
@@ -864,7 +863,7 @@ after any operation.
 |Returns |`mixitup.State` | An object reflecting the current state of the mixer.
 
 
-> Example: Retrieving a state object
+##### Example: Retrieving a state object
 
 ```js
 
@@ -873,13 +872,13 @@ var state = mixer.getState();
 console.log(state.totalShow + 'targets are currently shown');
 ```
 
-### <a id="mixitup.Mixer#forceRefresh">mixitup.Mixer.forceRefresh</a>
+### <a id="mixitup.Mixer#forceRefresh">forceRefresh()</a>
 
-**Version added: 2.1.2**
+*Version added: 2.1.2*
 
-```js
+`js
 .forceRefresh()
-```
+`
 
 Forces the re-indexing all targets within the container.
 
@@ -895,7 +894,7 @@ itself up to date.
 |Returns |`void` | 
 
 
-> Example: Force refreshing the mixer after external DOM manipulation
+##### Example: Force refreshing the mixer after external DOM manipulation
 
 ```js
 
@@ -916,13 +915,13 @@ mixer.forceRefresh();
 console.log(mixer.getState().totalShow); // 2
 ```
 
-### <a id="mixitup.Mixer#destroy">mixitup.Mixer.destroy</a>
+### <a id="mixitup.Mixer#destroy">destroy()</a>
 
-**Version added: 2.0.0**
+*Version added: 2.0.0*
 
-```js
+`js
 .destroy([cleanUp])
-```
+`
 
 Removes mixitup functionality from the container, unbinds all control
 event handlers, and deletes the mixer instance from MixItUp's internal
@@ -938,7 +937,7 @@ or React's `componentWillUnmount()`.
 |Returns |`void` | 
 
 
-> Example: Destroying the mixer before removing its container element
+##### Example: Destroying the mixer before removing its container element
 
 ```js
 

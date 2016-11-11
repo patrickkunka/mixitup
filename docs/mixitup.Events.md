@@ -18,7 +18,7 @@ the `mixer` instance, and other event-specific properties described below.
 
 ## Members
 
-### <a id="mixitup.Events.mixStart">mixitup.Events.mixStart</a>
+### <a id="mixitup.Events.mixStart">mixStart</a>
 
 
 
@@ -36,7 +36,7 @@ the requested operation has completed.
 |`CustomEvent`
 
 
-### <a id="mixitup.Events.mixBusy">mixitup.Events.mixBusy</a>
+### <a id="mixitup.Events.mixBusy">mixBusy</a>
 
 
 
@@ -51,7 +51,7 @@ is disabled.
 |`CustomEvent`
 
 
-### <a id="mixitup.Events.mixEnd">mixitup.Events.mixEnd</a>
+### <a id="mixitup.Events.mixEnd">mixEnd</a>
 
 
 
@@ -65,7 +65,7 @@ state has been updated.
 |`CustomEvent`
 
 
-### <a id="mixitup.Events.mixFail">mixitup.Events.mixFail</a>
+### <a id="mixitup.Events.mixFail">mixFail</a>
 
 
 
@@ -79,7 +79,7 @@ could be found matching the requested filter.
 |`CustomEvent`
 
 
-### <a id="mixitup.Events.mixClick">mixitup.Events.mixClick</a>
+### <a id="mixitup.Events.mixClick">mixClick</a>
 
 
 

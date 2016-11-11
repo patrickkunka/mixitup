@@ -19,7 +19,7 @@ your proejct.
 
 ## Members
 
-### <a id="mixitup.Config.classNames#block">mixitup.Config.classNames.block</a>
+### <a id="mixitup.Config.classNames#block">block</a>
 
 
 
@@ -31,7 +31,7 @@ The "block" portion, or top-level namespace added to the start of any class name
 |---  | ---
 |`string`| `'mixitup'`
 
-> Example 1: changing the `config.classNames.block` value
+##### Example 1: changing the `config.classNames.block` value
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -42,7 +42,7 @@ var mixer = mixitup(containerEl, {
 
 // example active control output: "portfolio-control-active"
 ```
-> Example 2: Removing `config.classNames.block`
+##### Example 2: Removing `config.classNames.block`
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -54,7 +54,7 @@ var mixer = mixitup(containerEl, {
 // example active control output: "control-active"
 ```
 
-### <a id="mixitup.Config.classNames#elementContainer">mixitup.Config.classNames.elementContainer</a>
+### <a id="mixitup.Config.classNames#elementContainer">elementContainer</a>
 
 
 
@@ -67,7 +67,7 @@ The "element" portion of the class name added to container.
 |`string`| `'container'`
 
 
-### <a id="mixitup.Config.classNames#elementFilter">mixitup.Config.classNames.elementFilter</a>
+### <a id="mixitup.Config.classNames#elementFilter">elementFilter</a>
 
 
 
@@ -82,7 +82,7 @@ each type's element value can be individually overwritten to match the unique cl
 |---  | ---
 |`string`| `'control'`
 
-> Example 1: changing the `config.classNames.elementFilter` value
+##### Example 1: changing the `config.classNames.elementFilter` value
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -93,7 +93,7 @@ var mixer = mixitup(containerEl, {
 
 // example active filter output: "mixitup-filter-active"
 ```
-> Example 2: changing the `config.classNames.block` and `config.classNames.elementFilter` values
+##### Example 2: changing the `config.classNames.block` and `config.classNames.elementFilter` values
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -106,7 +106,7 @@ var mixer = mixitup(containerEl, {
 // example active filter output: "portfolio-filter-active"
 ```
 
-### <a id="mixitup.Config.classNames#elementSort">mixitup.Config.classNames.elementSort</a>
+### <a id="mixitup.Config.classNames#elementSort">elementSort</a>
 
 
 
@@ -121,7 +121,7 @@ each type's element value can be individually overwritten to match the unique cl
 |---  | ---
 |`string`| `'control'`
 
-> Example 1: changing the `config.classNames.elementSort` value
+##### Example 1: changing the `config.classNames.elementSort` value
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -132,7 +132,7 @@ var mixer = mixitup(containerEl, {
 
 // example active sort output: "mixitup-sort-active"
 ```
-> Example 2: changing the `config.classNames.block` and `config.classNames.elementSort` values
+##### Example 2: changing the `config.classNames.block` and `config.classNames.elementSort` values
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -145,7 +145,7 @@ var mixer = mixitup(containerEl, {
 // example active sort output: "portfolio-sort-active"
 ```
 
-### <a id="mixitup.Config.classNames#elementMultimix">mixitup.Config.classNames.elementMultimix</a>
+### <a id="mixitup.Config.classNames#elementMultimix">elementMultimix</a>
 
 
 
@@ -160,7 +160,7 @@ each type's element value can be individually overwritten to match the unique cl
 |---  | ---
 |`string`| `'control'`
 
-> Example 1: changing the `config.classNames.elementMultimix` value
+##### Example 1: changing the `config.classNames.elementMultimix` value
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -171,7 +171,7 @@ var mixer = mixitup(containerEl, {
 
 // example active multimix output: "mixitup-multimix-active"
 ```
-> Example 2: changing the `config.classNames.block` and `config.classNames.elementMultimix` values
+##### Example 2: changing the `config.classNames.block` and `config.classNames.elementMultimix` values
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -184,7 +184,7 @@ var mixer = mixitup(containerEl, {
 // example active multimix output: "portfolio-multimix-active"
 ```
 
-### <a id="mixitup.Config.classNames#elementToggle">mixitup.Config.classNames.elementToggle</a>
+### <a id="mixitup.Config.classNames#elementToggle">elementToggle</a>
 
 
 
@@ -199,7 +199,7 @@ each type's element value can be individually overwritten to match the unique cl
 |---  | ---
 |`string`| `'control'`
 
-> Example 1: changing the `config.classNames.elementToggle` value
+##### Example 1: changing the `config.classNames.elementToggle` value
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -210,7 +210,7 @@ var mixer = mixitup(containerEl, {
 
 // example active toggle output: "mixitup-toggle-active"
 ```
-> Example 2: changing the `config.classNames.block` and `config.classNames.elementToggle` values
+##### Example 2: changing the `config.classNames.block` and `config.classNames.elementToggle` values
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -223,7 +223,7 @@ var mixer = mixitup(containerEl, {
 // example active toggle output: "portfolio-toggle-active"
 ```
 
-### <a id="mixitup.Config.classNames#modifierActive">mixitup.Config.classNames.modifierActive</a>
+### <a id="mixitup.Config.classNames#modifierActive">modifierActive</a>
 
 
 
@@ -236,7 +236,7 @@ The "modifier" portion of the class name added to active controls.
 |`string`| `'active'`
 
 
-### <a id="mixitup.Config.classNames#modifierDisabled">mixitup.Config.classNames.modifierDisabled</a>
+### <a id="mixitup.Config.classNames#modifierDisabled">modifierDisabled</a>
 
 
 
@@ -249,7 +249,7 @@ The "modifier" portion of the class name added to disabled controls.
 |`string`| `'disabled'`
 
 
-### <a id="mixitup.Config.classNames#modifierFailed">mixitup.Config.classNames.modifierFailed</a>
+### <a id="mixitup.Config.classNames#modifierFailed">modifierFailed</a>
 
 
 
@@ -262,7 +262,7 @@ The "modifier" portion of the class name added to the container when in a "faile
 |`string`| `'failed'`
 
 
-### <a id="mixitup.Config.classNames#delineatorElement">mixitup.Config.classNames.delineatorElement</a>
+### <a id="mixitup.Config.classNames#delineatorElement">delineatorElement</a>
 
 
 
@@ -276,7 +276,7 @@ If the block portion is ommited by setting it to an empty string, no delineator 
 |---  | ---
 |`string`| `'-'`
 
-> Example: changing the delineator to match BEM convention
+##### Example: changing the delineator to match BEM convention
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -288,7 +288,7 @@ var mixer = mixitup(containerEl, {
 // example active control output: "mixitup__control-active"
 ```
 
-### <a id="mixitup.Config.classNames#delineatorModifier">mixitup.Config.classNames.delineatorModifier</a>
+### <a id="mixitup.Config.classNames#delineatorModifier">delineatorModifier</a>
 
 
 
@@ -302,7 +302,7 @@ If the element portion is ommited by setting it to an empty string, no delineato
 |---  | ---
 |`string`| `'-'`
 
-> Example: changing both delineators to match BEM convention
+##### Example: changing both delineators to match BEM convention
 
 ```js
 var mixer = mixitup(containerEl, {

@@ -7,7 +7,7 @@ A group of properties defining MixItUp's animation and effects settings.
 
 ## Members
 
-### <a id="mixitup.Config.animation#enable">mixitup.Config.animation.enable</a>
+### <a id="mixitup.Config.animation#enable">enable</a>
 
 
 
@@ -21,7 +21,7 @@ functions and any returned promises will still be fulfilled.
 |---  | ---
 |`boolean`| `true`
 
-> Example: Create a mixer with all animations disabled
+##### Example: Create a mixer with all animations disabled
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -31,7 +31,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#effects">mixitup.Config.animation.effects</a>
+### <a id="mixitup.Config.animation#effects">effects</a>
 
 
 
@@ -50,7 +50,7 @@ MixItUp's animation options, or experiment with our sandbox demo.
 |---  | ---
 |`string`| `'fade scale'`
 
-> Example: Apply "fade" and "translateZ" effects to all animations
+##### Example: Apply "fade" and "translateZ" effects to all animations
 
 ```js
 // As targets are filtered in and out, they will fade between
@@ -64,7 +64,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#effectsIn">mixitup.Config.animation.effectsIn</a>
+### <a id="mixitup.Config.animation#effectsIn">effectsIn</a>
 
 
 
@@ -77,7 +77,7 @@ animations, overriding `config.animation.effects` if set.
 |---  | ---
 |`string`| `''`
 
-> Example: Apply downwards vertical translate to targets being filtered in
+##### Example: Apply downwards vertical translate to targets being filtered in
 
 ```js
 
@@ -88,7 +88,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#effectsOut">mixitup.Config.animation.effectsOut</a>
+### <a id="mixitup.Config.animation#effectsOut">effectsOut</a>
 
 
 
@@ -101,7 +101,7 @@ animations, overriding `config.animation.effects` if set.
 |---  | ---
 |`string`| `''`
 
-> Example: Apply upwards vertical translate to targets being filtered out
+##### Example: Apply upwards vertical translate to targets being filtered out
 
 ```js
 
@@ -112,7 +112,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#duration">mixitup.Config.animation.duration</a>
+### <a id="mixitup.Config.animation#duration">duration</a>
 
 
 
@@ -125,7 +125,7 @@ including any additional delay apllied via the `'stagger'` effect.
 |---  | ---
 |`number`| `600`
 
-> Example: Apply an animation duration of 200ms to all mixitup animations
+##### Example: Apply an animation duration of 200ms to all mixitup animations
 
 ```js
 
@@ -136,7 +136,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#easing">mixitup.Config.animation.easing</a>
+### <a id="mixitup.Config.animation#easing">easing</a>
 
 
 
@@ -149,7 +149,7 @@ values, visit <a href="http://easings.net" target="_blank">easings.net</a>.
 |---  | ---
 |`string`| `'ease'`
 
-> Example 1: Apply "ease-in-out" easing to all animations
+##### Example 1: Apply "ease-in-out" easing to all animations
 
 ```js
 
@@ -159,7 +159,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-> Example 2: Apply a custom "cubic-bezier" easing function to all animations
+##### Example 2: Apply a custom "cubic-bezier" easing function to all animations
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -169,7 +169,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#applyPerspective">mixitup.Config.animation.applyPerspective</a>
+### <a id="mixitup.Config.animation#applyPerspective">applyPerspective</a>
 
 
 
@@ -186,7 +186,7 @@ You may wish to disable this and define your own perspective settings via CSS.
 |---  | ---
 |`bolean`| `true`
 
-> Example: Prevent perspective from being applied to any 3D transforms
+##### Example: Prevent perspective from being applied to any 3D transforms
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -196,7 +196,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#perspectiveDistance">mixitup.Config.animation.perspectiveDistance</a>
+### <a id="mixitup.Config.animation#perspectiveDistance">perspectiveDistance</a>
 
 
 
@@ -209,7 +209,7 @@ affecting any 3D-transform-based effects.
 |---  | ---
 |`string`| `'3000px'`
 
-> Example: Set a perspective distance of 2000px
+##### Example: Set a perspective distance of 2000px
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -220,7 +220,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#perspectiveOrigin">mixitup.Config.animation.perspectiveOrigin</a>
+### <a id="mixitup.Config.animation#perspectiveOrigin">perspectiveOrigin</a>
 
 
 
@@ -233,7 +233,7 @@ affecting any 3D-transform-based effects.
 |---  | ---
 |`string`| `'50% 50%'`
 
-> Example: Set a perspective origin in the top-right of the container
+##### Example: Set a perspective origin in the top-right of the container
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -244,7 +244,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#queue">mixitup.Config.animation.queue</a>
+### <a id="mixitup.Config.animation#queue">queue</a>
 
 
 
@@ -263,7 +263,7 @@ event will be fired. If `debug.showWarnings` is enabled, a console warning will 
 |---  | ---
 |`boolean`| `true`
 
-> Example: Disable queuing
+##### Example: Disable queuing
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -273,7 +273,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#queueLimit">mixitup.Config.animation.queueLimit</a>
+### <a id="mixitup.Config.animation#queueLimit">queueLimit</a>
 
 
 
@@ -286,7 +286,7 @@ any time, when queuing is enabled.
 |---  | ---
 |`number`| `3`
 
-> Example: Allow a maximum of 5 operations in the queue at any time
+##### Example: Allow a maximum of 5 operations in the queue at any time
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -296,7 +296,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#animateResizeContainer">mixitup.Config.animation.animateResizeContainer</a>
+### <a id="mixitup.Config.animation#animateResizeContainer">animateResizeContainer</a>
 
 
 
@@ -313,7 +313,7 @@ It may be desirable to disable this on mobile devices as the CSS `height` and
 |---  | ---
 |`boolean`| `true`
 
-> Example 1: Disable the transitioning of the container height and/or width
+##### Example 1: Disable the transitioning of the container height and/or width
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -322,7 +322,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-> Example 2: Disable the transitioning of the container height and/or width for mobile devices only
+##### Example 2: Disable the transitioning of the container height and/or width for mobile devices only
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -332,7 +332,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#animateResizeTargets">mixitup.Config.animation.animateResizeTargets</a>
+### <a id="mixitup.Config.animation#animateResizeTargets">animateResizeTargets</a>
 
 
 
@@ -353,7 +353,7 @@ disabled by default.
 |---  | ---
 |`boolean`| `false`
 
-> Example: Enable the transitioning of target widths and heights
+##### Example: Enable the transitioning of target widths and heights
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -363,7 +363,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#staggerSequence">mixitup.Config.animation.staggerSequence</a>
+### <a id="mixitup.Config.animation#staggerSequence">staggerSequence</a>
 
 
 
@@ -383,7 +383,7 @@ return an integer which serves as the multiplier for the stagger delay.
 |---  | ---
 |`function`| `null`
 
-> Example 1: Stagger target elements by column in a 3-column grid
+##### Example 1: Stagger target elements by column in a 3-column grid
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -395,7 +395,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-> Example 2: Using an algorithm to produce a more complex sequence
+##### Example 2: Using an algorithm to produce a more complex sequence
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -408,7 +408,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#reverseOut">mixitup.Config.animation.reverseOut</a>
+### <a id="mixitup.Config.animation#reverseOut">reverseOut</a>
 
 
 
@@ -428,7 +428,7 @@ strings for `config.animation.effectsIn` and `config.animation.effectsOut`.
 |---  | ---
 |`boolean`| `false`
 
-> Example: Reverse the desired direction on any translate/rotate effect for targets being filtered out
+##### Example: Reverse the desired direction on any translate/rotate effect for targets being filtered out
 
 ```js
 // Elements being filtered in will be translated from '100%' to '0' while
@@ -443,7 +443,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.animation#nudge">mixitup.Config.animation.nudge</a>
+### <a id="mixitup.Config.animation#nudge">nudge</a>
 
 
 
@@ -461,7 +461,7 @@ to create a carousel-like effect, or a generally more subtle animation.
 |---  | ---
 |`boolean`| `true`
 
-> Example: Disable the "nudging" of targets being filtered in and out simulatenously
+##### Example: Disable the "nudging" of targets being filtered in and out simulatenously
 
 ```js
 

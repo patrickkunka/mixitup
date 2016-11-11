@@ -7,7 +7,7 @@ A group of properties relating to clickable control elements.
 
 ## Members
 
-### <a id="mixitup.Config.controls#enable">mixitup.Config.controls.enable</a>
+### <a id="mixitup.Config.controls#enable">enable</a>
 
 
 
@@ -29,7 +29,7 @@ mixer instances in the DOM which are bound to controls from controlling the inst
 |---  | ---
 |`boolean`| `true`
 
-> Example: Disabling controls
+##### Example: Disabling controls
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -44,7 +44,7 @@ var mixer = mixitup(containerEl, {
 mixer.filter('.cat-1');
 ```
 
-### <a id="mixitup.Config.controls#live">mixitup.Config.controls.live</a>
+### <a id="mixitup.Config.controls#live">live</a>
 
 
 
@@ -70,7 +70,7 @@ from the DOM in real time once the click event has propagated.
 |---  | ---
 |`boolean`| `true`
 
-> Example: Setting live controls
+##### Example: Setting live controls
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -83,7 +83,7 @@ var mixer = mixitup(containerEl, {
 // the mixer's UI
 ```
 
-### <a id="mixitup.Config.controls#scope">mixitup.Config.controls.scope</a>
+### <a id="mixitup.Config.controls#scope">scope</a>
 
 
 
@@ -106,7 +106,7 @@ set of controls and keep the controls scope of each mixer set to `global`.
 |---  | ---
 |`string`| `'global'`
 
-> Example: Setting 'local' scoped controls
+##### Example: Setting 'local' scoped controls
 
 ```js
 var mixerOne = mixitup(containerOne, {
@@ -125,7 +125,7 @@ var mixerTwo = mixitup(containerTwo, {
 // isolated controls placed within their container elements.
 ```
 
-### <a id="mixitup.Config.controls#toggleLogic">mixitup.Config.controls.toggleLogic</a>
+### <a id="mixitup.Config.controls#toggleLogic">toggleLogic</a>
 
 
 
@@ -147,7 +147,7 @@ If set to `'and'`, selectors will be directly concatenated together. For example
 |---  | ---
 |`string`| `'or'`
 
-> Example: Setting "and" toggle logic
+##### Example: Setting "and" toggle logic
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -157,7 +157,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.controls#toggleDefault">mixitup.Config.controls.toggleDefault</a>
+### <a id="mixitup.Config.controls#toggleDefault">toggleDefault</a>
 
 
 
@@ -175,7 +175,7 @@ active, or at the moment all active toggles are toggled off.
 |---  | ---
 |`string`| `'all'`
 
-> Example 1: Setting the default toggle behavior to `'all'`
+##### Example 1: Setting the default toggle behavior to `'all'`
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -195,7 +195,7 @@ mixer.toggleOn('.cat-2')
          console.log(state.totalShow); // 12
     });
 ```
-> Example 2: Setting the default toggle behavior to `'none'`
+##### Example 2: Setting the default toggle behavior to `'none'`
 
 ```js
 var mixer = mixitup(containerEl, {

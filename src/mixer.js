@@ -3603,8 +3603,7 @@ h.extend(mixitup.Mixer.prototype,
      * @instance
      * @since       3.0.0
      * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
-     *      A reference to a single element to insert, an array-like collection of elements,
-     *      or an HTML string representing a single element.
+     *      A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
      * @param       {HTMLElement}    referenceElement
      *      A reference to an existing element in the container to insert new elements before.
      *@param       {boolean}   [animate=true]

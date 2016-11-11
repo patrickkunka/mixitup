@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 26eb3fce-3e02-4042-a25b-b3808fd6eac1
+ * Build 711b5cf8-fddf-44e1-a1cf-604169b3ed31
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -7810,8 +7810,7 @@
          * @instance
          * @since       3.0.0
          * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
-         *      A reference to a single element to insert, an array-like collection of elements,
-         *      or an HTML string representing a single element.
+         *      A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
          * @param       {HTMLElement}    referenceElement
          *      A reference to an existing element in the container to insert new elements before.
          *@param       {boolean}   [animate=true]

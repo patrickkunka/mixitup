@@ -8,13 +8,13 @@ allowing simultaneous control of said instances similar to the MixItUp 2 API.
 
 ## Members
 
-### <a id="mixitup.Collection#mixitup">mixitup.Collection.mixitup</a>
+### <a id="mixitup.Collection#mixitup">mixitup()</a>
 
-**Version added: 3.0.0**
+*Version added: 3.0.0*
 
-```js
+`js
 .mixitup(methodName[,arg1][,arg2..]);
-```
+`
 
 Calls a method on all instances in the collection by passing the method
 name as a string followed by any applicable parameters to be curried into
@@ -26,7 +26,7 @@ to the method.
 |Returns |`Promise.<Array.<mixitup.State>>` | 
 
 
-> 
+
 
 ```js
 var collection = new Collection([mixer1, mixer2]);

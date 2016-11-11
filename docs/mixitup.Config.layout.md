@@ -7,7 +7,7 @@ A group of properties relating to the layout of the container.
 
 ## Members
 
-### <a id="mixitup.Config.layout#allowNestedTargets">mixitup.Config.layout.allowNestedTargets</a>
+### <a id="mixitup.Config.layout#allowNestedTargets">allowNestedTargets</a>
 
 
 
@@ -30,7 +30,7 @@ immediate children of the container by setting this property to `false`.
 |---  | ---
 |`boolean`| `true`
 
-> Example: Restricting targets to immediate children
+##### Example: Restricting targets to immediate children
 
 ```js
 
@@ -41,7 +41,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.layout#containerClassName">mixitup.Config.layout.containerClassName</a>
+### <a id="mixitup.Config.layout#containerClassName">containerClassName</a>
 
 
 
@@ -59,7 +59,7 @@ between states.
 |---  | ---
 |`string`| `''`
 
-> Example 1: Specifying a container class name
+##### Example 1: Specifying a container class name
 
 ```js
 
@@ -69,7 +69,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-> Example 2: Changing the default class name with `.changeLayout()`
+##### Example 2: Changing the default class name with `.changeLayout()`
 
 ```js
 

@@ -7,7 +7,7 @@ A group of properties relating to MixItUp's dataset API.
 
 ## Members
 
-### <a id="mixitup.Config.data#uid">mixitup.Config.data.uid</a>
+### <a id="mixitup.Config.data#uid">uid</a>
 
 
 
@@ -24,7 +24,7 @@ key would be `'id'` or `_id`.
 |---  | ---
 |`string`| `''`
 
-> Example: Setting the UID to `'id'`
+##### Example: Setting the UID to `'id'`
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -34,7 +34,7 @@ var mixer = mixitup(containerEl, {
 });
 ```
 
-### <a id="mixitup.Config.data#dirtyCheck">mixitup.Config.data.dirtyCheck</a>
+### <a id="mixitup.Config.data#dirtyCheck">dirtyCheck</a>
 
 
 
@@ -56,7 +56,7 @@ If your changes are a result of a DB write and read, you will most likely be cal
 |---  | ---
 |`boolean`| `false`
 
-> Example: Enabling dirty checking
+##### Example: Enabling dirty checking
 
 ```js
 
