@@ -1,8 +1,8 @@
-#mixitup
+#mixitup()
 
-```js
-mixitup(container [,config] [,foreignDoc])
-```
+*Version added: 3.0.0*
+
+`mixitup(container [,config] [,foreignDoc])`
 
 The `mixitup()` "factory" function creates individual instances of MixItUp
 ("mixers"), which are returned with the function is called.
@@ -21,4 +21,23 @@ when you require the MixItUp library.
 |Param   |`object` | `[foreignDoc]` | An optional reference to a `document`, which can be used to control a MixItUp instance in an iframe.
 |Returns |`mixitup.Mixer` | A "mixer" object representing the instance of MixItUp
 
-**Version added: 3.0.0**
+
+
+```js
+
+```
+
+
+```js
+
+```
+
+
+```js
+
+```
+
+
+```js
+
+```

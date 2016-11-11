@@ -40,9 +40,7 @@ insertion, removal and more.
 
 *Version added: 3.0.0*
 
-`
-.show()
-`
+`.show()`
 
 A shorthand method for `.filter('all')`. Shows all targets in the container.
 
@@ -65,9 +63,7 @@ mixer.show()
 
 *Version added: 3.0.0*
 
-`
-.hide()
-`
+`.hide()`
 
 A shorthand method for `.filter('none')`. Hides all targets in the container.
 
@@ -91,9 +87,7 @@ mixer.hide()
 
 *Version added: 2.0.0*
 
-`
-.isMixing()
-`
+`.isMixing()`
 
 Returns a boolean indicating whether or not a MixItUp operation is
 currently in progress.
@@ -118,9 +112,7 @@ console.log(mixer.isMixing()) // true
 
 *Version added: 2.0.0*
 
-`
-.filter(selector [, animate] [, callback])
-`
+`.filter(selector [, animate] [, callback])`
 
 Filters all targets in the container by a provided selector string, or the values `'all'`
 or `'none'`. Only targets matching the selector will be shown.
@@ -167,9 +159,7 @@ mixer.filter('.category-a.category-c')
 
 *Version added: 3.0.0*
 
-`
-.toggleOn(selector [, animate] [, callback])
-`
+`.toggleOn(selector [, animate] [, callback])`
 
 Adds an additional selector to the currently active filter selector, concatenating
 as per the logic defined in `controls.toggleLogic`.
@@ -198,9 +188,7 @@ mixer.toggleOn('.category-b')
 
 *Version added: 3.0.0*
 
-`
-.toggleOff(selector [, animate] [, callback])
-`
+`.toggleOff(selector [, animate] [, callback])`
 
 Removes a selector from the active filter selector.
 
@@ -228,9 +216,7 @@ mixer.toggleOff('.category-b')
 
 *Version added: 2.0.0*
 
-`
-.sort(sortString [, animate] [, callback])
-`
+`.sort(sortString [, animate] [, callback])`
 
 Sorts all targets in the container according to a provided sort string.
 
@@ -295,9 +281,7 @@ mixer.sort('random')
 
 *Version added: 2.0.0*
 
-`
-.changeLayout(containerClassName [, animate] [, callback])
-`
+`.changeLayout(containerClassName [, animate] [, callback])`
 
 Changes the layout of the container by adding, removing or updating a
 layout-specific class name. If `animation.animateResizetargets` is
@@ -335,9 +319,7 @@ mixer.changeLayout('')
 
 *Version added: 3.0.0*
 
-`
-.dataset(dataset [, animate] [, callback])
-`
+`.dataset(dataset [, animate] [, callback])`
 
 Updates the contents and order of the container to reflect the provided dataset,
 if the dataset API is in use.
@@ -404,9 +386,7 @@ mixer.dataset(newDataset)
 
 *Version added: 2.0.0*
 
-`
-.multimix(multimixCommand [, animate] [, callback])
-`
+`.multimix(multimixCommand [, animate] [, callback])`
 
 Performs simultaneous `filter`, `sort`, `insert`, `remove` and `changeLayout`
 operations as requested.
@@ -460,9 +440,7 @@ mixer.multimix({
 
 *Version added: 2.0.0*
 
-`
-.insert(newElements [, index] [, animate], [, callback])
-`
+`.insert(newElements [, index] [, animate], [, callback])`
 
 Inserts one or more new target elements into the container at a specified
 index.
@@ -559,9 +537,7 @@ mixer.insert(newElementsCollection, 3)
 
 *Version added: 3.0.0*
 
-`
-.insertBefore(newElements, referenceElement [, animate] [, callback])
-`
+`.insertBefore(newElements, referenceElement [, animate] [, callback])`
 
 Inserts one or more new elements before a provided reference element.
 
@@ -603,9 +579,7 @@ mixer.insertBefore(newElement, referenceElement)
 
 *Version added: 3.0.0*
 
-`
-.insertAfter(newElements, referenceElement [, animate] [, callback])
-`
+`.insertAfter(newElements, referenceElement [, animate] [, callback])`
 
 Inserts one or more new elements after a provided reference element.
 
@@ -643,9 +617,7 @@ mixer.insertAfter(newElement, referenceElement)
 
 *Version added: 3.0.0*
 
-`
-.prepend(newElements [,animate] [,callback])
-`
+`.prepend(newElements [,animate] [,callback])`
 
 Inserts one or more new elements into the container before all existing targets.
 
@@ -678,9 +650,7 @@ mixer.prepend(newElement)
 
 *Version added: 3.0.0*
 
-`
-.append(newElements [,animate] [,callback])
-`
+`.append(newElements [,animate] [,callback])`
 
 Inserts one or more new elements into the container after all existing targets.
 
@@ -713,9 +683,7 @@ mixer.append(newElement)
 
 *Version added: 3.0.0*
 
-`
-.remove(elements [, animate] [, callback])
-`
+`.remove(elements [, animate] [, callback])`
 
 Removes one or more existing target elements from the container.
 
@@ -779,9 +747,7 @@ mixer.remove(3)
 
 *Version added: 2.0.0*
 
-`
-.getConfig([stringKey])
-`
+`.getConfig([stringKey])`
 
 Retrieves the the value of any property or sub-object within the current
 mixitup configuration, or the whole configuration object.
@@ -815,9 +781,7 @@ var effects = mixer.getConfig('animation.effects'); // 'fade scale'
 
 *Version added: 3.0.0*
 
-`
-.configure(config)
-`
+`.configure(config)`
 
 Updates the configuration of the mixer, after it has been instantiated.
 
@@ -872,9 +836,7 @@ mixer = mixitup(containerEl, {
 
 *Version added: 2.0.0*
 
-`
-.getState();
-`
+`.getState();`
 
 Returns an object containing information about the current state of the
 mixer. See the State Object documentation for more information.
@@ -900,9 +862,7 @@ console.log(state.totalShow + 'targets are currently shown');
 
 *Version added: 2.1.2*
 
-`
-.forceRefresh()
-`
+`.forceRefresh()`
 
 Forces the re-indexing all targets within the container.
 
@@ -943,9 +903,7 @@ console.log(mixer.getState().totalShow); // 2
 
 *Version added: 2.0.0*
 
-`
-.destroy([cleanUp])
-`
+`.destroy([cleanUp])`
 
 Removes mixitup functionality from the container, unbinds all control
 event handlers, and deletes the mixer instance from MixItUp's internal
