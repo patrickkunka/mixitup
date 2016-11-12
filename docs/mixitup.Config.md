@@ -1582,4 +1582,63 @@ var mixer = mixitup(containerEl, {
 
 A group of optional render functions for creating and updating elements.
 
+All render functions receive a data object, and should return a valid HTML string.
+
+### target
+
+
+
+
+A function returning an HTML string representing a target element.
+
+The function is invoked as part of the `.dataset()` API, whenever a new item is added
+to the dataset, or an item in the dataset changes (if `dataset.dirtyCheck` is enabled).
+
+The function receives the relevant dataset item as its first parameter.
+
+
+|Type | Default
+|---  | ---
+|`function`| `'null'`
+
+###### Example 1: Using string concatenation
+
+```js
+
+var mixer = mixitup(containerEl, {
+    render: {
+        target: function(item) {
+            return '<div class="mix">' +
+                '<h2>' + item.title + '</h2>' +
+            '</div>';
+        }
+    }
+});
+```
+###### Example 2: Using an ES2015 template literal
+
+```js
+
+var mixer = mixitup(containerEl, {
+    render: {
+        target: function(item) {
+            return `<div class="mix">
+                <h2>${item.title}</h2>
+            </div>`;
+        }
+    }
+});
+```
+###### Example 3: Using a Handlebars template
+
+```js
+
+var targetTemplate = Handlebars.compile('<div class="mix"><h2>MixItUp</h2></div>');
+
+var mixer = mixitup(containerEl, {
+    render: {
+        target: targetTemplate
+    }
+});
+```
 

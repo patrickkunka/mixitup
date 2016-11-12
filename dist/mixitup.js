@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 2511e665-5b3d-4a57-b147-f7d77dd8ffbe
+ * Build 6a58ff4e-b763-452e-8af2-2c0a14b1bf44
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2954,6 +2954,8 @@
     /**
      * A group of optional render functions for creating and updating elements.
      *
+     * All render functions receive a data object, and should return a valid HTML string.
+     *
      * @constructor
      * @memberof    mixitup.Config
      * @name        render
@@ -2966,6 +2968,55 @@
         mixitup.Base.call(this);
 
         this.callActions('beforeConstruct');
+
+        /**
+         * A function returning an HTML string representing a target element.
+         *
+         * The function is invoked as part of the `.dataset()` API, whenever a new item is added
+         * to the dataset, or an item in the dataset changes (if `dataset.dirtyCheck` is enabled).
+         *
+         * The function receives the relevant dataset item as its first parameter.
+         *
+         * @example <caption>Example 1: Using string concatenation</caption>
+         *
+         * var mixer = mixitup(containerEl, {
+         *     render: {
+         *         target: function(item) {
+         *             return '<div class="mix">' +
+         *                 '<h2>' + item.title + '</h2>' +
+         *             '</div>';
+         *         }
+         *     }
+         * });
+         *
+         * @example <caption>Example 2: Using an ES2015 template literal</caption>
+         *
+         * var mixer = mixitup(containerEl, {
+         *     render: {
+         *         target: function(item) {
+         *             return `<div class="mix">
+         *                 <h2>${item.title}</h2>
+         *             </div>`;
+         *         }
+         *     }
+         * });
+         *
+         * @example <caption>Example 3: Using a Handlebars template</caption>
+         *
+         * var targetTemplate = Handlebars.compile('<div class="mix"><h2>MixItUp</h2></div>');
+         *
+         * var mixer = mixitup(containerEl, {
+         *     render: {
+         *         target: targetTemplate
+         *     }
+         * });
+         *
+         * @name        target
+         * @memberof    mixitup.Config.render
+         * @instance
+         * @type        {function}
+         * @default     'null'
+         */
 
         this.target = null;
 
