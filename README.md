@@ -18,8 +18,8 @@ MixItUp is open source and free to use for non-commercial, educational and non-p
 - [Factory Function](./docs/mixitup.md)
 - [Configuration Object](./docs/mixitup.Config.md)
 - [Mixer API Methods](./docs/mixitup.Mixer.md)
-- [Mixer Events](./docs/mixitup.Events.md)
 - [State Object](./docs/mixitup.State.md)
+- [Mixer Events](./docs/mixitup.Events.md)
 
 ## Getting Started
 
@@ -135,17 +135,21 @@ require(['mixitup'], function(mixitup) {
 
 ### Creating a Mixer
 
-With the `mixitup()` factory function available, you may now instantiate a "mixer" on your container to enable MixItUp functionality. Call the factory function passing a selector string or a reference to your container element as the first parameter, and a reference to the newly instantiated mixer will be returned.
+With the `mixitup()` factory function available, you may now instantiate a "mixer" on your container to enable MixItUp functionality.
+
+Call the factory function passing a selector string or a reference to your container element as the first parameter, and a the newly instantiated mixer will be returned.
+
+##### Example: Instantiating a mixer with a selector string
 
 ```js
 var mixer = mixitup('.container');
 ```
-> Instantiating a mixer with a selector string
+
+##### Example: Instantiating a mixer with an element reference
 
 ```js
 var mixer = mixitup(containerEl);
 ```
-> Instantiating a mixer with an element reference
 
 Your mixer is now ready for you to interact with, either via its controls (see above), or its API (see [Mixer API Methods](./docs/mixitup.Mixer.md)). Click a control or call an API method to check that everything is working correctly.
 
@@ -153,9 +157,9 @@ Your mixer is now ready for you to interact with, either via its controls (see a
 
 If you wish to customize the functionality of your mixer, an optional "configuration object" can be passed as the second parameter to the `mixitup` function. If no configuration object is passed, the default settings will be used.
 
-See the [Configuration Object](/docs/mixitup.Config.md) documentation for the full set of configuration options and defaults.
+Further reading: [Configuration Object](/docs/mixitup.Config.md)
 
-##### Passing a configuration object
+##### Example: Passing a configuration object
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -172,7 +176,7 @@ var mixer = mixitup(containerEl, {
 
 If you wish to interact with your mixer via its API, the mixer reference returned by the factory function can be used to call API methods.
 
-##### Calling an API method
+##### Example: Calling an API method
 
 ```js
 var mixer = mixitup(containerEl);
@@ -180,8 +184,10 @@ var mixer = mixitup(containerEl);
 mixer.filter('.category-a');
 ```
 
+Further reading: [Mixer API Methods](./docs/mixitup.Mixer.md)
+
 #### Building a modern JavaScript application?
 
-You may wish to use MixItUp 3's new "dataset" API. Dataset is designed for use in API-driven JavaScript applications, and can be used instead of DOM-based methods such as .filter(), .sort(), .insert(), etc. When used, insertion, removal, sorting and pagination can be achieved purely via changes to your data model, without the uglyness of having to interact with or query the DOM directly.
+You may wish to use MixItUp 3's new "dataset" API. Dataset is designed for use in API-driven JavaScript applications, and can be used instead of DOM-based methods such as `.filter()`, `.sort()`, `.insert()`, etc. When used, insertion, removal, sorting and pagination can be achieved purely via changes to your data model, without the uglyness of having to interact with or query the DOM directly.
 
 Further reading: [Introducing the Dataset API](#)
