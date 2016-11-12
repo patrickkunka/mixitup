@@ -30,6 +30,7 @@ MixItUp is open source and free to use for non-commercial, educational and non-p
 - [Styling the Container](#styling-the-container)
 - [Loading MixItUp](#loading-mixitup)
 - [Creating a Mixer](#creating-a-mixer)
+- [Configuration](#configuration)
 
 Most commonly, MixItUp is applied to a **"container"** of **"target"** elements, which could be a portfolio of projects, a list of blog posts, a selection of products, or any kind of UI where filtering and/or sorting would be advantageous.
 
@@ -139,13 +140,13 @@ With the `mixitup()` factory function available, you may now instantiate a "mixe
 
 Call the factory function passing a selector string or a reference to your container element as the first parameter, and a the newly instantiated mixer will be returned.
 
-##### Example: Instantiating a mixer with a selector string
+###### Example: Instantiating a mixer with a selector string
 
 ```js
 var mixer = mixitup('.container');
 ```
 
-##### Example: Instantiating a mixer with an element reference
+###### Example: Instantiating a mixer with an element reference
 
 ```js
 var mixer = mixitup(containerEl);
@@ -153,13 +154,13 @@ var mixer = mixitup(containerEl);
 
 Your mixer is now ready for you to interact with, either via its controls (see above), or its API (see [Mixer API Methods](./docs/mixitup.Mixer.md)). Click a control or call an API method to check that everything is working correctly.
 
-#### Configuration
+### Configuration
 
 If you wish to customize the functionality of your mixer, an optional "configuration object" can be passed as the second parameter to the `mixitup` function. If no configuration object is passed, the default settings will be used.
 
 Further reading: [Configuration Object](/docs/mixitup.Config.md)
 
-##### Example: Passing a configuration object
+###### Example: Passing a configuration object
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -176,7 +177,7 @@ var mixer = mixitup(containerEl, {
 
 If you wish to interact with your mixer via its API, the mixer reference returned by the factory function can be used to call API methods.
 
-##### Example: Calling an API method
+###### Example: Calling an API method
 
 ```js
 var mixer = mixitup(containerEl);
