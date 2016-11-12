@@ -5,15 +5,15 @@
 
 MixItUp is a high-performance, dependency-free library for animated DOM manipulation, giving you the power to filter, sort, add and remove DOM elements with beautiful animations.
 
-MixItUp plays nice with your existing HTML and CSS, making it a great choice for responsive layouts. Want to use percentages, media queries, inline-block, or even flexbox? No problem!
+MixItUp plays nice with your existing HTML and CSS, making it a great choice for responsive layouts and compatible with inline-flow, percentages, media queries, flexbox and more.
 
-For our live sandbox demo, full documentation, tutorials and more, please visit [--website pending--](pending).
+For a live sandbox, full documentation, tutorials and more, please visit [Website Pending](#).
 
 #### Licensing
 
-MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [--website pending--](pending).
+MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [Website Pending](#).
 
-#### Full Documentation
+#### Documentation
 
 - [Factory Function](./docs/mixitup.md)
 - [Configuration Object](./docs/mixitup.Config.md)
@@ -25,17 +25,17 @@ MixItUp is open source and free to use for non-commercial, educational and non-p
 
 #### Contents
 
-- [HTML](#html)
-- [CSS](#css)
-- [JavaScript](#javascript)
+- [Building the Container](#building-the-container)
+- [Building Controls](#building-controls)
+- [Styling the Container](#styling-the-container)
+- [Loading MixItUp](#loading-mixitup)
+- [Creating a Mixer](#creating-a-mixer)
 
 Most commonly, MixItUp is applied to a **"container"** of **"target"** elements, which could be a portfolio of projects, a list of blog posts, a selection of products, or any kind of UI where filtering and/or sorting would be advantageous.
 
-To get started, follow these few simple steps:
+To get started, follow these simple steps:
 
-### HTML
-
-#### 1. Build Your Container
+### Building the Container
 
 By default, MixItUp will query the container for targets matching the selector `'.mix'`.
 
@@ -50,13 +50,13 @@ By default, MixItUp will query the container for targets matching the selector `
 
 Targets can be filtered using any valid selector e.g. `'.category-a'`, and are sorted via optional custom data attributes e.g. `'data-order'`.
 
-*NB: Other non-target elements may be included inside your container, but all targets must be adjacent siblings.*
+Further reading: [Marking-up MixItUp Containers](#)
 
-#### 2. Build Your Controls
+### Building Controls
 
 One way that filtering and sorting happens is when controls are clicked. You may use any clickable element as a control, but `<button type="button">` is recommended for accessibility.
 
-##### Filter Controls
+#### Filter Controls
 
 Filter controls are queried based on the presence of a `data-filter` attribute, whose value must be `'all'`, `'none'`, or a valid selector string e.g. `'.category-a'`.
 
@@ -67,9 +67,9 @@ Filter controls are queried based on the presence of a `data-filter` attribute, 
 <button type="button" data-filter=".category-c">Category C</button>
 ```
 
-For more information on MixItUp's full filtering functionality, see our [--website pending--]() tutorial.
+Further reading: [Advanced Filtering](#)
 
-##### Sort Controls
+#### Sort Controls
 
 Sort controls are queried based on the presence of a `data-sort` attribute, whose value takes the form of a "sort string" made up of the name of the attribute to sort by, followed by an optional colon-separated sorting order e.g. `'order'`, `'order:asc'`, `'order:desc'`.
 
@@ -81,21 +81,19 @@ Sort controls are queried based on the presence of a `data-sort` attribute, whos
 
 The values `'default'` and `'random'` are also valid, with `'default'` referring to the original order of target elements in the DOM at the time of mixer instantiation.
 
-For more information on MixItUp's full sorting functionality, see our [--website pending--]() tutorial.
+Further reading: [Advanced Sorting](#)
 
-### CSS
+### Styling the Container
 
 While MixItUp can be added on top of any existing CSS layout, we strongly recommend inline-block or flexbox-based styling over floats and legacy grid frameworks when dealing with grid-based designs for a number of reasons.
 
-Find out more about MixItUp-compatible grid layouts [--website pending--]().
+Further reading: [MixItUp Grid Layouts](#)
 
-### JavaScript
-
-#### 4. Load MixItUp
+### Loading MixItUp
 
 Firstly, load the MixItUp JavaScript library using the preferred method for your project.
 
-##### Script Tag
+#### Script Tag
 
 The most simple way to load MixItUp in your project is to include it via a `<script>` tag before the closing `</body>` tag on your page.
 
@@ -109,7 +107,7 @@ The most simple way to load MixItUp in your project is to include it via a `<scr
 
 With this technique, the MixItUp factory function will be made available via the global variable `mixitup`.
 
-##### Module Import
+#### Module Import
 
 If you are building a modular JavaScript project with Webpack, Browserify, or RequireJS, MixItUp can be installed using your package manager of choice (e.g. npm, jspm, yarn) and then imported into any of your project's modules.
 
@@ -119,11 +117,15 @@ If you are building a modular JavaScript project with Webpack, Browserify, or Re
 // ES2015
 
 import mixitup from 'mixitup';
+```
 
+```js
 // CommonJS
 
 var mixitup = require('mixitup');
+```
 
+```js
 // AMD
 
 require(['mixitup'], function(mixitup) {
@@ -131,9 +133,9 @@ require(['mixitup'], function(mixitup) {
 });
 ```
 
-#### 5. Create a Mixer
+### Creating a Mixer
 
-With the `mixitup` factory function loaded, you may now instantiate a "mixer" on your container to enable MixItUp functionality. Call the function passing a selector string or a reference to your container element as the first parameter.
+With the `mixitup()` factory function available, you may now instantiate a "mixer" on your container to enable MixItUp functionality. Call the factory function passing a selector string or a reference to your container element as the first parameter, and a reference to the newly instantiated mixer will be returned.
 
 ```js
 var mixer = mixitup('.container');
@@ -145,13 +147,15 @@ var mixer = mixitup(containerEl);
 ```
 > Instantiating a mixer with an element reference
 
-Your mixer is now ready for you to interact with, either via physical controls, or its API. Click a control or call an API method to check that everything is working correctly.
+Your mixer is now ready for you to interact with, either via its controls (see above), or its API (see [Mixer API Methods](./docs/mixitup.Mixer.md)). Click a control or call an API method to check that everything is working correctly.
 
-##### Custom Configuration
+#### Configuration
 
 If you wish to customize the functionality of your mixer, an optional "configuration object" can be passed as the second parameter to the `mixitup` function. If no configuration object is passed, the default settings will be used.
 
 See the [Configuration Object](/docs/mixitup.Config.md) documentation for the full set of configuration options and defaults.
+
+##### Passing a configuration object
 
 ```js
 var mixer = mixitup(containerEl, {
@@ -163,21 +167,21 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
-> Passing a configuration object as the second parameter
 
-##### Using the API
+#### Using the API
 
-If you wish to interact with your mixer via its API, the factory function creates and returns a reference to your mixer which can then be used to call API methods on.
+If you wish to interact with your mixer via its API, the mixer reference returned by the factory function can be used to call API methods.
+
+##### Calling an API method
 
 ```js
 var mixer = mixitup(containerEl);
 
 mixer.filter('.category-a');
 ```
-> Calling a mixer API method
 
-##### Building a modern JavaScript application?
+#### Building a modern JavaScript application?
 
 You may wish to use MixItUp 3's new "dataset" API. Dataset is designed for use in API-driven JavaScript applications, and can be used instead of DOM-based methods such as .filter(), .sort(), .insert(), etc. When used, insertion, removal, sorting and pagination can be achieved purely via changes to your data model, without the uglyness of having to interact with or query the DOM directly.
 
-For more information check out our [--website pending--]() tutorial.
+Further reading: [Introducing the Dataset API](#)
