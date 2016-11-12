@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 6a58ff4e-b763-452e-8af2-2c0a14b1bf44
+ * Build 2ae95cf2-3e1e-4780-bcd3-559d44f15738
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3003,7 +3003,7 @@
          *
          * @example <caption>Example 3: Using a Handlebars template</caption>
          *
-         * var targetTemplate = Handlebars.compile('<div class="mix"><h2>MixItUp</h2></div>');
+         * var targetTemplate = Handlebars.compile('<div class="mix"><h2>&#123;&#123;title&#125;&#125;</h2></div>');
          *
          * var mixer = mixitup(containerEl, {
          *     render: {
