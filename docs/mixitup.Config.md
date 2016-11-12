@@ -1633,7 +1633,9 @@ var mixer = mixitup(containerEl, {
 
 ```js
 
-var targetTemplate = Handlebars.compile('<div class="mix"><h2>&#123;&#123;title&#125;&#125;</h2></div>');
+
+var targetTemplate = Handlebars.compile('<div class="mix"><h2>{{title}}</h2></div>');
+
 
 var mixer = mixitup(containerEl, {
     render: {
