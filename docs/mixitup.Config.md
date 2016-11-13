@@ -30,7 +30,7 @@ configuration values detailed below.
 
 <h2 id="animation">animation</h2>
 
-A group of properties defining MixItUp's animation and effects settings.
+A group of properties defining the mixer's animation and effects settings.
 
 ### enable
 
@@ -880,7 +880,7 @@ name (e.g. `'active'`) reflecting the state of the element.
 
 By default, each part of the classname is concatenated together using single hyphens as
 delineators, but this can be easily customised to match the naming convention and style of
-your proejct.
+your project.
 
 ### block
 
@@ -903,7 +903,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active control output: "portfolio-control-active"
+// Active control output: "portfolio-control-active"
 ```
 ###### Example 2: Removing `config.classNames.block`
 
@@ -914,7 +914,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active control output: "control-active"
+// Active control output: "control-active"
 ```
 ### elementContainer
 
@@ -952,7 +952,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active filter output: "mixitup-filter-active"
+// Active filter output: "mixitup-filter-active"
 ```
 ###### Example 2: changing the `config.classNames.block` and `config.classNames.elementFilter` values
 
@@ -964,7 +964,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active filter output: "portfolio-filter-active"
+// Active filter output: "portfolio-filter-active"
 ```
 ### elementSort
 
@@ -990,7 +990,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active sort output: "mixitup-sort-active"
+// Active sort output: "mixitup-sort-active"
 ```
 ###### Example 2: changing the `config.classNames.block` and `config.classNames.elementSort` values
 
@@ -1002,7 +1002,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active sort output: "portfolio-sort-active"
+// Active sort output: "portfolio-sort-active"
 ```
 ### elementMultimix
 
@@ -1028,7 +1028,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active multimix output: "mixitup-multimix-active"
+// Active multimix output: "mixitup-multimix-active"
 ```
 ###### Example 2: changing the `config.classNames.block` and `config.classNames.elementMultimix` values
 
@@ -1040,7 +1040,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active multimix output: "portfolio-multimix-active"
+// Active multimix output: "portfolio-multimix-active"
 ```
 ### elementToggle
 
@@ -1066,7 +1066,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active toggle output: "mixitup-toggle-active"
+// Active toggle output: "mixitup-toggle-active"
 ```
 ###### Example 2: changing the `config.classNames.block` and `config.classNames.elementToggle` values
 
@@ -1078,7 +1078,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active toggle output: "portfolio-toggle-active"
+// Active toggle output: "portfolio-toggle-active"
 ```
 ### modifierActive
 
@@ -1165,7 +1165,7 @@ var mixer = mixitup(containerEl, {
     }
 });
 
-// example active control output: "mixitup__control--active"
+// Active control output: "mixitup__control--active"
 ```
 
 <h2 id="data">data</h2>
@@ -1632,7 +1632,6 @@ var mixer = mixitup(containerEl, {
 ###### Example 3: Using a Handlebars template
 
 ```js
-
 
 var targetTemplate = Handlebars.compile('<div class="mix"><h2>{{title}}</h2></div>');
 

@@ -45,8 +45,7 @@ The ID of the mixer instance.
 
 
 
-The currently active filter command as set by a control click or API call
-call.
+The currently active filter command as set by a control click or API call.
 
 
 |Type | Default

@@ -51,7 +51,6 @@ mixitup.ConfigRender = function() {
      * });
      *
      * @example <caption>Example 3: Using a Handlebars template</caption>
-     *
      * {{{{raw}}}}
      * var targetTemplate = Handlebars.compile('<div class="mix"><h2>{{title}}</h2></div>');
      * {{{{/raw}}}}

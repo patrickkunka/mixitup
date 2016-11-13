@@ -1,7 +1,7 @@
 /* global mixitup, h */
 
 /**
- * A group of properties defining MixItUp's animation and effects settings.
+ * A group of properties defining the mixer's animation and effects settings.
  *
  * @constructor
  * @memberof    mixitup.Config

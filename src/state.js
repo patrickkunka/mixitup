@@ -31,8 +31,7 @@ mixitup.State = function() {
     this.id = '';
 
     /**
-     * The currently active filter command as set by a control click or API call
-     * call.
+     * The currently active filter command as set by a control click or API call.
      *
      * @name        activeFilter
      * @memberof    mixitup.State

@@ -13,7 +13,7 @@
  *
  * By default, each part of the classname is concatenated together using single hyphens as
  * delineators, but this can be easily customised to match the naming convention and style of
- * your proejct.
+ * your project.
  *
  * @constructor
  * @memberof    mixitup.Config
@@ -38,7 +38,7 @@ mixitup.ConfigClassNames = function() {
      *     }
      * });
      *
-     * // example active control output: "portfolio-control-active"
+     * // Active control output: "portfolio-control-active"
      *
      * @example <caption>Example 2: Removing `config.classNames.block`</caption>
      * var mixer = mixitup(containerEl, {
@@ -47,7 +47,7 @@ mixitup.ConfigClassNames = function() {
      *     }
      * });
      *
-     * // example active control output: "control-active"
+     * // Active control output: "control-active"
      *
      * @name        block
      * @memberof    mixitup.Config.classNames
@@ -83,7 +83,7 @@ mixitup.ConfigClassNames = function() {
      *     }
      * });
      *
-     * // example active filter output: "mixitup-filter-active"
+     * // Active filter output: "mixitup-filter-active"
      *
      * @example <caption>Example 2: changing the `config.classNames.block` and `config.classNames.elementFilter` values</caption>
      * var mixer = mixitup(containerEl, {
@@ -93,7 +93,7 @@ mixitup.ConfigClassNames = function() {
      *     }
      * });
      *
-     * // example active filter output: "portfolio-filter-active"
+     * // Active filter output: "portfolio-filter-active"
      *
      * @name        elementFilter
      * @memberof    mixitup.Config.classNames
@@ -117,7 +117,7 @@ mixitup.ConfigClassNames = function() {
      *     }
      * });
      *
-     * // example active sort output: "mixitup-sort-active"
+     * // Active sort output: "mixitup-sort-active"
      *
      * @example <caption>Example 2: changing the `config.classNames.block` and `config.classNames.elementSort` values</caption>
      * var mixer = mixitup(containerEl, {
@@ -127,7 +127,7 @@ mixitup.ConfigClassNames = function() {
      *     }
      * });
      *
-     * // example active sort output: "portfolio-sort-active"
+     * // Active sort output: "portfolio-sort-active"
      *
      * @name        elementSort
      * @memberof    mixitup.Config.classNames
@@ -151,7 +151,7 @@ mixitup.ConfigClassNames = function() {
      *     }
      * });
      *
-     * // example active multimix output: "mixitup-multimix-active"
+     * // Active multimix output: "mixitup-multimix-active"
      *
      * @example <caption>Example 2: changing the `config.classNames.block` and `config.classNames.elementMultimix` values</caption>
      * var mixer = mixitup(containerEl, {
@@ -161,7 +161,7 @@ mixitup.ConfigClassNames = function() {
      *     }
      * });
      *
-     * // example active multimix output: "portfolio-multimix-active"
+     * // Active multimix output: "portfolio-multimix-active"
      *
      * @name        elementMultimix
      * @memberof    mixitup.Config.classNames
@@ -185,7 +185,7 @@ mixitup.ConfigClassNames = function() {
      *     }
      * });
      *
-     * // example active toggle output: "mixitup-toggle-active"
+     * // Active toggle output: "mixitup-toggle-active"
      *
      * @example <caption>Example 2: changing the `config.classNames.block` and `config.classNames.elementToggle` values</caption>
      * var mixer = mixitup(containerEl, {
@@ -195,7 +195,7 @@ mixitup.ConfigClassNames = function() {
      *     }
      * });
      *
-     * // example active toggle output: "portfolio-toggle-active"
+     * // Active toggle output: "portfolio-toggle-active"
      *
      * @name        elementToggle
      * @memberof    mixitup.Config.classNames
@@ -277,7 +277,7 @@ mixitup.ConfigClassNames = function() {
      *     }
      * });
      *
-     * // example active control output: "mixitup__control--active"
+     * // Active control output: "mixitup__control--active"
      *
      * @name        delineatorModifier
      * @memberof    mixitup.Config.classNames
