@@ -138,6 +138,7 @@ mixitup = function(container, config, foreignDoc) {
  * @public
  * @name     use
  * @memberof mixitup
+ * @kind     function
  * @static
  * @since    3.0.0
  * @param    {*}  extension   A reference to the extension or library to be used.

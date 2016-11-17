@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 68b0edef-4aff-461c-a792-39d87e5a1175
+ * Build 4038231c-f0ae-4355-9aee-7edbc7607834
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -157,6 +157,7 @@
      * @public
      * @name     use
      * @memberof mixitup
+     * @kind     function
      * @static
      * @since    3.0.0
      * @param    {*}  extension   A reference to the extension or library to be used.
