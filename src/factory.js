@@ -136,10 +136,12 @@ mixitup = function(container, config, foreignDoc) {
  * mixitup.use(extension)
  *
  * @public
+ * @name     use
+ * @memberof mixitup
  * @static
- * @since   3.0.0
- * @param   {*}  extension   A reference to the extension or library to be used.
- * @return  {void}
+ * @since    3.0.0
+ * @param    {*}  extension   A reference to the extension or library to be used.
+ * @return   {void}
  */
 
 mixitup.use = function(extension) {
