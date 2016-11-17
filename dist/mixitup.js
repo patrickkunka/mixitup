@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 4038231c-f0ae-4355-9aee-7edbc7607834
+ * Build 4b650ca3-f183-4420-a929-0d3120ef6374
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -148,11 +148,37 @@
     };
 
     /**
-     * The `.use()` static method is used to extend the functionalityof mixitup with compatible
-     * extensions and libraries.
+     * The `.use()` static method is used to extend the functionality of mixitup with compatible
+     * extensions and libraries in an environment with modular scoping e.g. ES2015, CommonJS, or RequireJS.
+     *
+     * You need only call the `.use()` function once per project, per extension, as module loaders
+     * will cache a single reference to MixItUp inclusive of all changes made.
      *
      * @example
      * mixitup.use(extension)
+     *
+     * @example <caption>Example 1: Extending MixItUp with the Pagination Extension</caption>
+     *
+     * import mixitup from 'mixitup';
+     * import mixitupPagination from 'mixitup-pagination';
+     *
+     * mixitup.use(mixitupPagination);
+     *
+     * // All mixers created by the factory function in all modules will now
+     * // have pagination functionality
+     *
+     * var mixer = mixitup('.container');
+     *
+     * @example <caption>Example 2: Activating the legacy jQuery API</caption>
+     *
+     * import mixitup from 'mixitup';
+     * import $ from 'jquery;
+     *
+     * mixitup.use($);
+     *
+     * // MixItUp can now be used as a jQuery plugin, as per the v2 API
+     *
+     * $('.container').mixitup();
      *
      * @public
      * @name     use
