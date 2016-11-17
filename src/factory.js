@@ -153,7 +153,7 @@ mixitup = function(container, config, foreignDoc) {
  * @example <caption>Example 2: Activating the legacy jQuery API</caption>
  *
  * import mixitup from 'mixitup';
- * import $ from 'jquery;
+ * import $ from 'jquery';
  *
  * mixitup.use($);
  *
