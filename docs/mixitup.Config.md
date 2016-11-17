@@ -1182,7 +1182,7 @@ identifier (UID). To use the dataset API, a UID key must be specified and
 be present and unique on all objects in the dataset you provide to MixItUp.
 
 For example, if your dataset is made up of MongoDB documents, the UID
-key would be `'id'` or `_id`.
+key would be `'id'` or `'_id'`.
 
 
 |Type | Default

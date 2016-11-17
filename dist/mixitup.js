@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 2c3dcb56-65f2-4b83-aa71-faa4987f31c4
+ * Build 202cfdd5-183f-4247-a1c9-fbd6a1ebb571
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2468,7 +2468,7 @@
          * be present and unique on all objects in the dataset you provide to MixItUp.
          *
          * For example, if your dataset is made up of MongoDB documents, the UID
-         * key would be `'id'` or `_id`.
+         * key would be `'id'` or `'_id'`.
          *
          * @example <caption>Example: Setting the UID to `'id'`</caption>
          * var mixer = mixitup(containerEl, {

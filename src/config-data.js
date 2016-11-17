@@ -22,7 +22,7 @@ mixitup.ConfigData = function() {
      * be present and unique on all objects in the dataset you provide to MixItUp.
      *
      * For example, if your dataset is made up of MongoDB documents, the UID
-     * key would be `'id'` or `_id`.
+     * key would be `'id'` or `'_id'`.
      *
      * @example <caption>Example: Setting the UID to `'id'`</caption>
      * var mixer = mixitup(containerEl, {
