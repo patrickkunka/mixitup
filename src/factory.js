@@ -60,7 +60,7 @@ mixitup = function(container, config, foreignDoc) {
     doc = foreignDoc || window.document;
 
     if (returnCollection = arguments[3]) {
-        // A non-documented 4th paramater set only if the V2 API is in-use via a jQuery shim
+        // A non-documented 4th paramater enabling control of multiple instances
 
         returnCollection = typeof returnCollection === 'boolean';
     }
@@ -71,8 +71,7 @@ mixitup = function(container, config, foreignDoc) {
         elements = [container];
     } else if (container && typeof container === 'object' && container.length) {
         // Although not documented, the container may also be an array-like list of
-        // elements such as a NodeList or jQuery collection. In the case if using the
-        // V2 API via a jQuery shim, the container will typically be passed in this form.
+        // elements such as a NodeList or jQuery collection, is returnCollection is true
 
         elements = container;
     } else {
@@ -187,7 +186,52 @@ mixitup.use = function(extension) {
         // jQuery
 
         mixitup.libraries.$ = extension;
+
+        // Register MixItUp as a jQuery plugin to allow v2 API
+
+        mixitup.registerJqPlugin(extension);
     }
+};
+
+/**
+ * @private
+ * @static
+ * @since   3.0.0
+ * @param   {jQuery} $
+ * @return  {void}
+ */
+
+mixitup.registerJqPlugin = function($) {
+    $.fn.mixItUp = function() {
+        var method  = arguments[0],
+            config  = arguments[1],
+            args    = Array.prototype.slice.call(arguments, 1),
+            outputs = [],
+            chain   = [];
+
+        chain = this.each(function() {
+            var instance = null,
+                output   = null;
+
+            if (method && typeof method === 'string') {
+                // jQuery-UI method syntax
+
+                instance = mixitup.instances[this.id];
+
+                output = instance[method].apply(instance, args);
+
+                if (typeof output !== 'undefined' && output !== null && typeof output.then !== 'function') outputs.push(output);
+            } else {
+                mixitup(this, config);
+            }
+        });
+
+        if (outputs.length) {
+            return outputs.length > 1 ? outputs : outputs[0];
+        } else {
+            return chain;
+        }
+    };
 };
 
 mixitup.instances   = {};

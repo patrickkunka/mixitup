@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 0cf77d94-a97a-4832-bc22-50e60a4f84a5
+ * Build d3c9e939-b39d-472e-8d1b-1f4324dd584c
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -17,7 +17,8 @@
     'use strict';
 
     var mixitup         = null,
-        h               = null;
+        h               = null,
+        jq              = null;
 
     /**
      * The `mixitup()` "factory" function creates and returns individual instances
@@ -79,7 +80,7 @@
         doc = foreignDoc || window.document;
 
         if (returnCollection = arguments[3]) {
-            // A non-documented 4th paramater set only if the V2 API is in-use via a jQuery shim
+            // A non-documented 4th paramater enabling control of multiple instances
 
             returnCollection = typeof returnCollection === 'boolean';
         }
@@ -90,8 +91,7 @@
             elements = [container];
         } else if (container && typeof container === 'object' && container.length) {
             // Although not documented, the container may also be an array-like list of
-            // elements such as a NodeList or jQuery collection. In the case if using the
-            // V2 API via a jQuery shim, the container will typically be passed in this form.
+            // elements such as a NodeList or jQuery collection, is returnCollection is true
 
             elements = container;
         } else {
@@ -206,7 +206,52 @@
             // jQuery
 
             mixitup.libraries.$ = extension;
+
+            // Register MixItUp as a jQuery plugin to allow v2 API
+
+            mixitup.registerJqPlugin(extension);
         }
+    };
+
+    /**
+     * @private
+     * @static
+     * @since   3.0.0
+     * @param   {jQuery} $
+     * @return  {void}
+     */
+
+    mixitup.registerJqPlugin = function($) {
+        $.fn.mixItUp = function() {
+            var method  = arguments[0],
+                config  = arguments[1],
+                args    = Array.prototype.slice.call(arguments, 1),
+                outputs = [],
+                chain   = [];
+
+            chain = this.each(function() {
+                var instance = null,
+                    output   = null;
+
+                if (method && typeof method === 'string') {
+                    // jQuery-UI method syntax
+
+                    instance = mixitup.instances[this.id];
+
+                    output = instance[method].apply(instance, args);
+
+                    if (typeof output !== 'undefined' && output !== null && typeof output.then !== 'function') outputs.push(output);
+                } else {
+                    mixitup(this, config);
+                }
+            });
+
+            if (outputs.length) {
+                return outputs.length > 1 ? outputs : outputs[0];
+            } else {
+                return chain;
+            }
+        };
     };
 
     mixitup.instances   = {};
@@ -9951,6 +9996,10 @@
         });
     } else if (typeof window.mixitup === 'undefined' || typeof window.mixitup !== 'function') {
         window.mixitup = window.mixItUp = mixitup;
+    }
+
+    if ((jq = window.$ || window.jQuery) && jq.fn.jquery) {
+        mixitup.registerJqPlugin(jq);
     }
     mixitup.NAME = 'mixitup';
     mixitup.CORE_VERSION = '3.0.0-beta';

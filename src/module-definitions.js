@@ -1,4 +1,4 @@
-/* global module, mixitup, define */
+/* global module, mixitup, define, jq:true */
 
 if (typeof exports === 'object' && typeof module === 'object') {
     module.exports = mixitup;
@@ -8,4 +8,8 @@ if (typeof exports === 'object' && typeof module === 'object') {
     });
 } else if (typeof window.mixitup === 'undefined' || typeof window.mixitup !== 'function') {
     window.mixitup = window.mixItUp = mixitup;
+}
+
+if ((jq = window.$ || window.jQuery) && jq.fn.jquery) {
+    mixitup.registerJqPlugin(jq);
 }
