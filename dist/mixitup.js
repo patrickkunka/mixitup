@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 202cfdd5-183f-4247-a1c9-fbd6a1ebb571
+ * Build 5d3d8ad0-eca1-4626-8f5c-1bcb5e770e6e
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -20,15 +20,13 @@
         h               = null;
 
     /**
-     * The `mixitup()` "factory" function creates individual instances of MixItUp
-     * ("mixers"), which are returned with the function is called.
-     *
-     * Various API methods can then be called on the returned mixer instance.
+     * The `mixitup()` "factory" function creates and returns individual instances
+     * of MixItUp, known as "mixers", on which API methods can be called.
      *
      * When loading MixItUp via a script tag, the factory function is accessed
-     * as the global variable `mixitup`. When using a module loader such as Browserify
-     * or RequireJS however, the factory function is exported directly into your module
-     * when you require the MixItUp library.
+     * via the global variable `mixitup`. When using a module loading
+     * system (e.g. ES2015, CommonJS, RequireJS), the factory function is
+     * exported into your module when you require the MixItUp library.
      *
      * @example
      * mixitup(container [,config] [,foreignDoc])
