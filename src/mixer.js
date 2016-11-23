@@ -1427,6 +1427,11 @@ h.extend(mixitup.Mixer.prototype,
 
         self.callActions('beforeSetInter', arguments);
 
+        // Prevent scrollbar flicker on non-inertial scroll platforms by clamping height
+
+        self.dom.parent.style.height    = operation.startHeight;
+        self.dom.parent.style.overflow  = 'hidden';
+
         for (i = 0; target = operation.toShow[i]; i++) {
             target.show();
         }
@@ -1479,6 +1484,11 @@ h.extend(mixitup.Mixer.prototype,
             i       = -1;
 
         self.callActions('beforeSetFinal', arguments);
+
+        // Remove clamping
+
+        self.dom.parent.style.height    =
+        self.dom.parent.style.overflow  = '';
 
         operation.willSort && self.printSort(false, operation);
 

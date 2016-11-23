@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build d3c9e939-b39d-472e-8d1b-1f4324dd584c
+ * Build c8b9203d-ed4d-491c-a7da-365049c6e852
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -5758,6 +5758,11 @@
 
             self.callActions('beforeSetInter', arguments);
 
+            // Prevent scrollbar flicker on non-inertial scroll platforms by clamping height
+
+            self.dom.parent.style.height    = operation.startHeight;
+            self.dom.parent.style.overflow  = 'hidden';
+
             for (i = 0; target = operation.toShow[i]; i++) {
                 target.show();
             }
@@ -5810,6 +5815,11 @@
                 i       = -1;
 
             self.callActions('beforeSetFinal', arguments);
+
+            // Remove clamping
+
+            self.dom.parent.style.height    =
+            self.dom.parent.style.overflow  = '';
 
             operation.willSort && self.printSort(false, operation);
 
