@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build c8b9203d-ed4d-491c-a7da-365049c6e852
+ * Build 5d524ef0-2ead-4f35-bf3f-b9b7320324f7
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1805,6 +1805,32 @@
          */
 
         this.nudge = true;
+
+        /**
+         * A boolean dictating whether or not to clamp the height of the container while MixItUp's
+         * geometry tests are carried out before an operation.
+         *
+         * To prevent scroll-bar flicker, clamping is turned on by default. But in the case where the
+         * height of the container might affect its vertical positioning in the viewport
+         * (e.g. a vertically-centered container), this should be turned off to ensure accurate
+         * test results and a smooth animation.
+         *
+         * @example <caption>Example: Disable container height-clamping</caption>
+         *
+         * var mixer = mixitup(containerEl, {
+         *     animation: {
+         *         clampHeight: false
+         *     }
+         * });
+         *
+         * @name        clampHeight
+         * @memberof    mixitup.Config.animation
+         * @instance
+         * @type        {boolean}
+         * @default     true
+         */
+
+        this.clampHeight = true;
 
         this.callActions('afterConstruct');
 
@@ -5760,8 +5786,10 @@
 
             // Prevent scrollbar flicker on non-inertial scroll platforms by clamping height
 
-            self.dom.parent.style.height    = operation.startHeight;
-            self.dom.parent.style.overflow  = 'hidden';
+            if (self.config.animation.clampHeight) {
+                self.dom.parent.style.height    = operation.startHeight;
+                self.dom.parent.style.overflow  = 'hidden';
+            }
 
             for (i = 0; target = operation.toShow[i]; i++) {
                 target.show();
@@ -5818,8 +5846,10 @@
 
             // Remove clamping
 
-            self.dom.parent.style.height    =
-            self.dom.parent.style.overflow  = '';
+            if (self.config.animation.clampHeight) {
+                self.dom.parent.style.height    =
+                self.dom.parent.style.overflow  = '';
+            }
 
             operation.willSort && self.printSort(false, operation);
 

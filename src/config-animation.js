@@ -427,6 +427,32 @@ mixitup.ConfigAnimation = function() {
 
     this.nudge = true;
 
+    /**
+     * A boolean dictating whether or not to clamp the height of the container while MixItUp's
+     * geometry tests are carried out before an operation.
+     *
+     * To prevent scroll-bar flicker, clamping is turned on by default. But in the case where the
+     * height of the container might affect its vertical positioning in the viewport
+     * (e.g. a vertically-centered container), this should be turned off to ensure accurate
+     * test results and a smooth animation.
+     *
+     * @example <caption>Example: Disable container height-clamping</caption>
+     *
+     * var mixer = mixitup(containerEl, {
+     *     animation: {
+     *         clampHeight: false
+     *     }
+     * });
+     *
+     * @name        clampHeight
+     * @memberof    mixitup.Config.animation
+     * @instance
+     * @type        {boolean}
+     * @default     true
+     */
+
+    this.clampHeight = true;
+
     this.callActions('afterConstruct');
 
     h.seal(this);
