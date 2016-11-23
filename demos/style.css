@@ -155,7 +155,6 @@ body {
     position: relative;
     color: transparent;
     font-family: 'helvetica-neue', arial, sans-serif;
-    padding: 1rem;
 }
 
 .mix:before {
@@ -205,6 +204,7 @@ body {
 }
 
 .mix p {
+    padding: 1rem;
     display: inline-block;
     font-size: calc(1vw + .5rem);
     color: #333;
