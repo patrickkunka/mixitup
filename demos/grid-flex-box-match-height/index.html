@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="../style.css" rel="stylesheet"/>
+
+        <title>MixItUp Demo - Flex-box Grid with Height-matching</title>
+    </head>
+    <body>
+        <div class="controls">
+            <button type="button" class="control" data-sort="random">Random</button>
+        </div>
+
+        <div class="container-flex">
+            <div class="mix green">
+                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore. Quis autem vel eum iure reprehenderit qui in ea voluptate velit similique sunt in culpa qui officia deserunt mollitia animi.</p>
+            </div>
+
+            <div class="mix green">
+                <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum.</p>
+            </div>
+
+            <div class="mix blue">
+                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias.<p>
+            </div>
+
+            <div class="mix pink">
+                <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum.</p>
+            </div>
+
+            <div class="mix green">
+                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias.<p>
+            </div>
+
+            <div class="mix blue">
+                <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum.</p>
+            </div>
+
+            <div class="mix pink">
+                <p>Magni dolores eos qui ratione voluptatem sequi nesciun.</p>
+            </div>
+
+            <div class="mix blue">
+                <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum.</p>
+            </div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../../dist/mixitup.min.js"></script>
+
+        <script>
+            var containerEl = document.querySelector('.container-flex');
+
+            var mixer = mixitup(containerEl, {
+                animation: {
+                    animateResizeTargets: true
+                }
+            });
+        </script>
+    </body>
+</html>
