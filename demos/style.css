@@ -44,8 +44,8 @@ body {
     position: absolute;
     width: 10px;
     height: 10px;
-    top: calc(50% - 7px);
-    left: calc(50% - 7px);
+    top: calc(50% - 6px);
+    left: calc(50% - 6px);
     border: 2px solid currentColor;
     border-radius: 2px;
     background: currentColor;
@@ -144,7 +144,6 @@ body {
 .gap {
     display: inline-block;
     vertical-align: top;
-    width: calc(50% - 0.5rem);
 }
 
 .mix {
@@ -212,20 +211,40 @@ body {
     font-weight: 300;
 }
 
-/* Breakpoints
+/* Grid Breakpoints
 ---------------------------------------------------------------------- */
+
+/* 2 Columns */
+
+.mix,
+.gap {
+    width: calc(100%/2 - (((2 - 1) * 1rem) / 2));
+}
+
+/* 3 Columns */
 
 @media screen and (min-width: 541px) {
     .mix,
     .gap {
-        width: calc(33.33% - (2rem/3));
+        width: calc(100%/3 - (((3 - 1) * 1rem) / 3));
     }
 }
+
+/* 4 Columns */
 
 @media screen and (min-width: 961px) {
     .mix,
     .gap {
-        width: calc(25% - (3rem/4));
+        width: calc(100%/4 - (((4 - 1) * 1rem) / 4));
+    }
+}
+
+/* 5 Columns */
+
+@media screen and (min-width: 1281px) {
+    .mix,
+    .gap {
+        width: calc(100%/5 - (((5 - 1) * 1rem) / 5));
     }
 }
 
