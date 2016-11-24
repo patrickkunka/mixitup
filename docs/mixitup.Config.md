@@ -1200,7 +1200,7 @@ var mixer = mixitup(containerEl, {
 
 A group of properties relating to MixItUp's dataset API.
 
-### uid
+### uidKey
 
 
 
@@ -1222,7 +1222,7 @@ key would be `'id'` or `'_id'`.
 ```js
 var mixer = mixitup(containerEl, {
     data: {
-        uid: 'id'
+        uidKey: 'id'
     }
 });
 ```
@@ -1270,7 +1270,7 @@ var myDataset = [
 
 var mixer = mixitup(containerEl, {
     data: {
-        uid: 'id',
+        uidKey: 'id',
         dirtyCheck: true
     },
     load: {
@@ -1556,7 +1556,7 @@ var myDataset = [
 
 var mixer = mixitup(containerEl, {
     data: {
-        uid: 'id'
+        uidKey: 'id'
     },
     load: {
         dataset: myDataset

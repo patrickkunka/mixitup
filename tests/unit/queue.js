@@ -48,7 +48,7 @@ describe('mixitup.Mixer', () => {
                     duration: 200
                 },
                 data: {
-                    uid: 'id'
+                    uidKey: 'id'
                 },
                 load: {
                     dataset: dataset

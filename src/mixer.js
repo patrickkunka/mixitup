@@ -163,8 +163,8 @@ h.extend(mixitup.Mixer.prototype,
         if (self.config.load.dataset) {
             // Dataset API
 
-            if (!self.config.data.uid || typeof self.config.data.uid !== 'string') {
-                throw new TypeError(mixitup.messages.errorConfigDataUidNotSet());
+            if (!self.config.data.uidKey || typeof self.config.data.uidKey !== 'string') {
+                throw new TypeError(mixitup.messages.errorConfigDataUidKeyNotSet());
             }
 
             operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset.slice();
@@ -2631,9 +2631,9 @@ h.extend(mixitup.Mixer.prototype,
         self.callActions('beforeDiffDatasets', arguments);
 
         for (i = 0; data = operation.newDataset[i]; i++) {
-            if (typeof (id = data[self.config.data.uid]) === 'undefined' || id.toString().length < 1) {
-                throw new TypeError(mixitup.messages.errorDatasetInvalidUid({
-                    uid: self.config.data.uid
+            if (typeof (id = data[self.config.data.uidKey]) === 'undefined' || id.toString().length < 1) {
+                throw new TypeError(mixitup.messages.errorDatasetInvalidUidKey({
+                    uidKey: self.config.data.uidKey
                 }));
             }
 
@@ -2709,7 +2709,7 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         for (i = 0; data = operation.startDataset[i]; i++) {
-            id = data[self.config.data.uid];
+            id = data[self.config.data.uidKey];
 
             target = self.cache[id];
 

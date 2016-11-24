@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 5d524ef0-2ead-4f35-bf3f-b9b7320324f7
+ * Build 0dc5a158-4549-4b36-8912-f134042af8a5
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -344,7 +344,7 @@
                             destination[key] = [];
                         }
 
-                        this.extend(destination[key], source[key]);
+                        this.extend(destination[key], source[key], deep, handleErrors);
                     } else {
                         // Objects
 
@@ -352,7 +352,7 @@
                             destination[key] = {};
                         }
 
-                        this.extend(destination[key], source[key]);
+                        this.extend(destination[key], source[key], deep, handleErrors);
                     }
                 }
             } catch(err) {
@@ -2571,18 +2571,18 @@
          * @example <caption>Example: Setting the UID to `'id'`</caption>
          * var mixer = mixitup(containerEl, {
          *     data: {
-         *         uid: 'id'
+         *         uidKey: 'id'
          *     }
          * });
          *
-         * @name        uid
+         * @name        uidKey
          * @memberof    mixitup.Config.data
          * @instance
          * @type        {string}
          * @default     ''
          */
 
-        this.uid = '';
+        this.uidKey = '';
 
         /**
          * A boolean dictating whether or not MixItUp should "dirty check" each object in
@@ -2617,7 +2617,7 @@
          *
          * var mixer = mixitup(containerEl, {
          *     data: {
-         *         uid: 'id',
+         *         uidKey: 'id',
          *         dirtyCheck: true
          *     },
          *     load: {
@@ -2962,7 +2962,7 @@
          *
          * var mixer = mixitup(containerEl, {
          *     data: {
-         *         uid: 'id'
+         *         uidKey: 'id'
          *     },
          *     load: {
          *         dataset: myDataset
@@ -4520,8 +4520,8 @@
             if (self.config.load.dataset) {
                 // Dataset API
 
-                if (!self.config.data.uid || typeof self.config.data.uid !== 'string') {
-                    throw new TypeError(mixitup.messages.errorConfigDataUidNotSet());
+                if (!self.config.data.uidKey || typeof self.config.data.uidKey !== 'string') {
+                    throw new TypeError(mixitup.messages.errorConfigDataUidKeyNotSet());
                 }
 
                 operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset.slice();
@@ -6988,9 +6988,9 @@
             self.callActions('beforeDiffDatasets', arguments);
 
             for (i = 0; data = operation.newDataset[i]; i++) {
-                if (typeof (id = data[self.config.data.uid]) === 'undefined' || id.toString().length < 1) {
-                    throw new TypeError(mixitup.messages.errorDatasetInvalidUid({
-                        uid: self.config.data.uid
+                if (typeof (id = data[self.config.data.uidKey]) === 'undefined' || id.toString().length < 1) {
+                    throw new TypeError(mixitup.messages.errorDatasetInvalidUidKey({
+                        uidKey: self.config.data.uidKey
                     }));
                 }
 
@@ -7066,7 +7066,7 @@
             }
 
             for (i = 0; data = operation.startDataset[i]; i++) {
-                id = data[self.config.data.uid];
+                id = data[self.config.data.uidKey];
 
                 target = self.cache[id];
 
@@ -8550,9 +8550,11 @@
                 self.isShown = true;
             }
 
-            if (data && mixer.config.data.uid) {
-                if (typeof (id = data[mixer.config.data.uid]) === 'undefined' || id.toString().length < 1) {
-                    throw new TypeError(mixitup.messages.errorDatasetInvalidUid());
+            if (data && mixer.config.data.uidKey) {
+                if (typeof (id = data[mixer.config.data.uidKey]) === 'undefined' || id.toString().length < 1) {
+                    throw new TypeError(mixitup.messages.errorDatasetInvalidUidKey({
+                        uidKey: mixer.config.data.uidKey
+                    }));
                 }
 
                 self.id     = id;
@@ -9615,11 +9617,11 @@
         this.ERROR_CONFIG_INVALID_PROPERTY_SUGGESTION =
             '. Did you mean "${probableMatch}"?';
 
-        this.ERROR_CONFIG_DATA_UID_NOT_SET =
-            '[MixItUp] To use the dataset API, a UID key must be specified using `config.data.uid`';
+        this.ERROR_CONFIG_DATA_UID_KEY_NOT_SET =
+            '[MixItUp] To use the dataset API, a UID key must be specified using `config.data.uidKey`';
 
-        this.ERROR_DATASET_INVALID_UID =
-            '[MixItUp] The specified UID key "${uid}" is not present on one or more dataset items';
+        this.ERROR_DATASET_INVALID_UID_KEY =
+            '[MixItUp] The specified UID key "${uidKey}" is not present on one or more dataset items';
 
         this.ERROR_DATASET_DUPLICATE_UID =
             '[MixItUp] The UID "${uid}" was found on two or more dataset items. UIDs must be unique.';

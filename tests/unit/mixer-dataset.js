@@ -35,7 +35,7 @@ describe('mixitup()', () => {
                     dataset: dataset
                 }
             });
-        }, mixitup.messages.errorConfigDataUidNotSet());
+        }, mixitup.messages.errorConfigDataUidKeyNotSet());
     });
 
     it('should instantiate in dataset API mode when provided with `load.dataset` and a matching container', () => {
@@ -44,7 +44,7 @@ describe('mixitup()', () => {
 
         let mixer = mixitup(container, {
             data: {
-                uid: 'id'
+                uidKey: 'id'
             },
             load: {
                 dataset: dataset
@@ -70,7 +70,7 @@ describe('mixitup.Mixer', () => {
         let workingDataset = dataset.slice();
         let config = {
             data: {
-                uid: 'id',
+                uidKey: 'id',
                 dirtyCheck: true
             },
             render: {
@@ -92,7 +92,7 @@ describe('mixitup.Mixer', () => {
             let container = dom.getContainer();
             let erMixer = mixitup(container, {
                 data: {
-                    uid: 'id'
+                    uidKey: 'id'
                 },
                 load: {
                     dataset: dataset
@@ -121,8 +121,8 @@ describe('mixitup.Mixer', () => {
 
             chai.assert.throws(() => {
                 erMixer.dataset(newDataset);
-            }, mixitup.messages.errorDatasetInvalidUid({
-                uid: 'id'
+            }, mixitup.messages.errorDatasetInvalidUidKey({
+                uidKey: 'id'
             }));
         });
 

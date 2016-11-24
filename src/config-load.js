@@ -99,7 +99,7 @@ mixitup.ConfigLoad = function() {
      *
      * var mixer = mixitup(containerEl, {
      *     data: {
-     *         uid: 'id'
+     *         uidKey: 'id'
      *     },
      *     load: {
      *         dataset: myDataset

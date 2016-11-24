@@ -86,7 +86,7 @@ h = {
                         destination[key] = [];
                     }
 
-                    this.extend(destination[key], source[key]);
+                    this.extend(destination[key], source[key], deep, handleErrors);
                 } else {
                     // Objects
 
@@ -94,7 +94,7 @@ h = {
                         destination[key] = {};
                     }
 
-                    this.extend(destination[key], source[key]);
+                    this.extend(destination[key], source[key], deep, handleErrors);
                 }
             }
         } catch(err) {

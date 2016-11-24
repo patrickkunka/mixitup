@@ -27,18 +27,18 @@ mixitup.ConfigData = function() {
      * @example <caption>Example: Setting the UID to `'id'`</caption>
      * var mixer = mixitup(containerEl, {
      *     data: {
-     *         uid: 'id'
+     *         uidKey: 'id'
      *     }
      * });
      *
-     * @name        uid
+     * @name        uidKey
      * @memberof    mixitup.Config.data
      * @instance
      * @type        {string}
      * @default     ''
      */
 
-    this.uid = '';
+    this.uidKey = '';
 
     /**
      * A boolean dictating whether or not MixItUp should "dirty check" each object in
@@ -73,7 +73,7 @@ mixitup.ConfigData = function() {
      *
      * var mixer = mixitup(containerEl, {
      *     data: {
-     *         uid: 'id',
+     *         uidKey: 'id',
      *         dirtyCheck: true
      *     },
      *     load: {
