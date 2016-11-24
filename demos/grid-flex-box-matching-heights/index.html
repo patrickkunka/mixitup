@@ -2,7 +2,7 @@
 <html>
     <head>
         <link href="../reset.css" rel="stylesheet"/>
-        <link href="../style.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
 
         <title>MixItUp Demo - Flex-box Grid with Matching Heights</title>
     </head>
@@ -11,7 +11,7 @@
             <button type="button" class="control" data-sort="random">Random</button>
         </div>
 
-        <div class="container-flex">
+        <div class="container">
             <div class="mix green">
                 <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore. Quis autem vel eum iure reprehenderit qui in ea voluptate velit similique sunt in culpa qui officia deserunt mollitia animi.</p>
             </div>
@@ -52,7 +52,7 @@
         <script src="../../dist/mixitup.min.js"></script>
 
         <script>
-            var containerEl = document.querySelector('.container-flex');
+            var containerEl = document.querySelector('.container');
 
             var mixer = mixitup(containerEl, {
                 animation: {

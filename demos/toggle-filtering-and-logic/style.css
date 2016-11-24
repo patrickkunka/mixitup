@@ -2,9 +2,6 @@ html,
 body {
     height: 100%;
     background: #f2f2f2;
-
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: antialiased;
 }
 
 *,
@@ -52,42 +49,21 @@ body {
     transition: background-color 150ms, border-color 150ms;
 }
 
-.control[data-sort]:after {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-top: 2px solid;
-    border-left: 2px solid;
-    top: calc(50% - 6px);
-    left: calc(50% - 6px);
-    transform:  translateY(1px) rotate(45deg);
-}
-
-.control[data-sort*=":desc"]:after {
-    transform:  translateY(-4px) rotate(-135deg);
-}
-
 .mixitup-control-active {
     background: #393939;
+    pointer-events: none;
 }
 
-.mixitup-control-active[data-filter]:after {
+.mixitup-control-active[data-toggle]:after {
     background: transparent;
 }
 
-.control:first-of-type,
-.control[data-filter] + .control[data-sort]  {
+.control:first-of-type {
     border-radius: 3px 0 0 3px;
 }
 
-.control:last-of-type,
-.control[data-filter="none"] {
+.control:last-of-type {
     border-radius: 0 3px 3px 0;
-}
-
-.control[data-filter] + .control[data-sort] {
-    margin-left: .75rem;
 }
 
 .control[data-filter=".green"],
@@ -105,11 +81,6 @@ body {
     color: #d595aa;
 }
 
-.control[data-filter="none"],
-.control[data-toggle="none"] {
-    color: #2f2f2f;
-}
-
 /* Container
 ---------------------------------------------------------------------- */
 
@@ -123,18 +94,6 @@ body {
     content: '';
     display: inline-block;
     width: 100%;
-}
-
-.container-flex {
-    padding: 1rem;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.container-flex .mix {
-    display: inline-flex;
 }
 
 /* Target Elements
@@ -152,8 +111,6 @@ body {
     border-radius: 2px;
     margin-bottom: 1rem;
     position: relative;
-    color: transparent;
-    font-family: 'helvetica-neue', arial, sans-serif;
 }
 
 .mix:before {
@@ -188,27 +145,6 @@ body {
 .mix.blue.pink:before {
     width: 100%;
     border-top-color: #d595aa;
-}
-
-.mix[data-published-date]:after {
-    position: absolute;
-    content: attr(data-published-date);
-    font-size: 1rem;
-    font-weight: bold;
-    color: #aaa;
-    padding: 1rem;
-    width: 100%;
-    top: 0;
-    left: 0;
-}
-
-.mix p {
-    padding: 1rem;
-    display: inline-block;
-    font-size: calc(1vw + .5rem);
-    color: #333;
-    line-height: 1.4;
-    font-weight: 300;
 }
 
 /* Grid Breakpoints

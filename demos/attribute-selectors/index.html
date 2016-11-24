@@ -4,7 +4,7 @@
         <link href="../reset.css" rel="stylesheet"/>
         <link href="./style.css" rel="stylesheet"/>
 
-        <title>MixItUp Demo - Basic</title>
+        <title>MixItUp Demo - Querying via Attribute Selectors</title>
     </head>
     <body>
         <div class="controls">
@@ -18,15 +18,15 @@
             <button type="button" class="control" data-sort="default:desc">Desc</button>
         </div>
 
-        <div class="container">
-            <div class="mix green"></div>
-            <div class="mix green"></div>
-            <div class="mix blue"></div>
-            <div class="mix pink"></div>
-            <div class="mix green"></div>
-            <div class="mix blue"></div>
-            <div class="mix pink"></div>
-            <div class="mix blue"></div>
+        <div class="container" data-ref="mixitup-container">
+            <div class="item green" data-ref="mixitup-target"></div>
+            <div class="item green" data-ref="mixitup-target"></div>
+            <div class="item blue" data-ref="mixitup-target"></div>
+            <div class="item pink" data-ref="mixitup-target"></div>
+            <div class="item green" data-ref="mixitup-target"></div>
+            <div class="item blue" data-ref="mixitup-target"></div>
+            <div class="item pink" data-ref="mixitup-target"></div>
+            <div class="item blue" data-ref="mixitup-target"></div>
 
             <div class="gap"></div>
             <div class="gap"></div>
@@ -36,9 +36,13 @@
         <script src="../../dist/mixitup.min.js"></script>
 
         <script>
-            var containerEl = document.querySelector('.container');
+            var containerEl = document.querySelector('[data-ref~="mixitup-container"]');
 
-            var mixer = mixitup(containerEl);
+            var mixer = mixitup(containerEl, {
+                selectors: {
+                    target: '[data-ref~="mixitup-target"]'
+                }
+            });
         </script>
     </body>
 </html>
