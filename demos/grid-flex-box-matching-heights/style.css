@@ -56,7 +56,6 @@ body {
 
 .mixitup-control-active {
     background: #393939;
-    pointer-events: none;
 }
 
 .control:first-of-type {

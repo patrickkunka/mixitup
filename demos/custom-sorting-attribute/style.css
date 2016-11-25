@@ -53,7 +53,6 @@ body {
 
 .mixitup-control-active {
     background: #393939;
-    pointer-events: none;
 }
 
 .mixitup-control-active[data-filter]:after {
