@@ -1233,7 +1233,7 @@ h.extend(mixitup.Mixer.prototype,
         state.totalShow                 = operation.show.length;
         state.totalHide                 = operation.hide.length;
         state.totalMatching             = operation.matching.length;
-        state.triggerElement            = self.lastClicked;
+        state.triggerElement            = operation.triggerElement;
 
         return self.callFilters('stateBuildState', state, arguments);
     },
@@ -2071,7 +2071,7 @@ h.extend(mixitup.Mixer.prototype,
 
             self.userDeferred  = nextInQueue.deferred;
             self.isToggling    = nextInQueue.isToggling;
-            self.lastClicked   = nextInQueue.trigger;
+            self.lastClicked   = nextInQueue.triggerElement;
 
             if (nextInQueue.instruction.command instanceof mixitup.CommandMultimix) {
                 self.multimix.apply(self, nextInQueue.args);
@@ -3324,10 +3324,10 @@ h.extend(mixitup.Mixer.prototype,
         } else {
             queueItem = new mixitup.QueueItem();
 
-            queueItem.args          = arguments;
-            queueItem.instruction   = instruction;
-            queueItem.trigger       = self.lastClicked;
-            queueItem.isToggling    = self.isToggling;
+            queueItem.args           = arguments;
+            queueItem.instruction    = instruction;
+            queueItem.triggerElement = self.lastClicked;
+            queueItem.isToggling     = self.isToggling;
 
             return self.queueMix(queueItem);
         }
@@ -3354,9 +3354,10 @@ h.extend(mixitup.Mixer.prototype,
 
         operation = self.callFilters('operationUnmappedGetOperation', operation, arguments);
 
-        operation.id            = h.randomHex();
-        operation.command       = multimixCommand;
-        operation.startState    = self.state;
+        operation.id                = h.randomHex();
+        operation.command           = multimixCommand;
+        operation.startState        = self.state;
+        operation.triggerElement    = self.lastClicked;
 
         if (self.isBusy) {
             if (self.config.debug.showWarnings) {

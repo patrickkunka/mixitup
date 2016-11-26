@@ -14,7 +14,7 @@ mixitup.QueueItem = function() {
 
     this.args           = [];
     this.instruction    = null;
-    this.trigger        = null;
+    this.triggerElement = null;
     this.deferred       = null;
     this.isToggling     = false;
 

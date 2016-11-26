@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 4a7ac653-6c4e-49b0-8430-12f7f63182b5
+ * Build b91c09af-b4c8-4a88-8155-25c4820f5b34
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3803,6 +3803,10 @@
                     continue;
                 }
 
+                if (!mixer.lastClicked) {
+                    mixer.lastClicked = button;
+                }
+
                 mixitup.events.fire('mixClick', mixer.dom.container, {
                     state: mixer.state,
                     instance: mixer,
@@ -3818,10 +3822,6 @@
 
                         continue;
                     }
-                }
-
-                if (mixer.lastClicked) {
-                    mixer.lastClicked = button;
                 }
 
                 if (self.type === 'toggle') {
@@ -4342,7 +4342,7 @@
 
         this.args           = [];
         this.instruction    = null;
-        this.trigger        = null;
+        this.triggerElement = null;
         this.deferred       = null;
         this.isToggling     = false;
 
@@ -5590,7 +5590,7 @@
             state.totalShow                 = operation.show.length;
             state.totalHide                 = operation.hide.length;
             state.totalMatching             = operation.matching.length;
-            state.triggerElement            = self.lastClicked;
+            state.triggerElement            = operation.triggerElement;
 
             return self.callFilters('stateBuildState', state, arguments);
         },
@@ -6428,7 +6428,7 @@
 
                 self.userDeferred  = nextInQueue.deferred;
                 self.isToggling    = nextInQueue.isToggling;
-                self.lastClicked   = nextInQueue.trigger;
+                self.lastClicked   = nextInQueue.triggerElement;
 
                 if (nextInQueue.instruction.command instanceof mixitup.CommandMultimix) {
                     self.multimix.apply(self, nextInQueue.args);
@@ -7681,10 +7681,10 @@
             } else {
                 queueItem = new mixitup.QueueItem();
 
-                queueItem.args          = arguments;
-                queueItem.instruction   = instruction;
-                queueItem.trigger       = self.lastClicked;
-                queueItem.isToggling    = self.isToggling;
+                queueItem.args           = arguments;
+                queueItem.instruction    = instruction;
+                queueItem.triggerElement = self.lastClicked;
+                queueItem.isToggling     = self.isToggling;
 
                 return self.queueMix(queueItem);
             }
@@ -7711,9 +7711,10 @@
 
             operation = self.callFilters('operationUnmappedGetOperation', operation, arguments);
 
-            operation.id            = h.randomHex();
-            operation.command       = multimixCommand;
-            operation.startState    = self.state;
+            operation.id                = h.randomHex();
+            operation.command           = multimixCommand;
+            operation.startState        = self.state;
+            operation.triggerElement    = self.lastClicked;
 
             if (self.isBusy) {
                 if (self.config.debug.showWarnings) {
@@ -9290,6 +9291,8 @@
         this.hasEffect               = false;
         this.hasFailed               = false;
 
+        this.triggerElement          = null;
+
         this.show                    = [];
         this.hide                    = [];
         this.matching                = [];
@@ -9525,7 +9528,7 @@
         this.hasFailed = false;
 
         /**
-         * The DOM element that was clicked if the last oepration was triggered by the
+         * The DOM element that was clicked if the last operation was triggered by the
          * clicking of a control and not an API call.
          *
          * @name        triggerElement

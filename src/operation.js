@@ -33,6 +33,8 @@ mixitup.Operation = function() {
     this.hasEffect               = false;
     this.hasFailed               = false;
 
+    this.triggerElement          = null;
+
     this.show                    = [];
     this.hide                    = [];
     this.matching                = [];

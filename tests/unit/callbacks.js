@@ -97,4 +97,79 @@ describe('mixitup()', () => {
                 chai.assert.equal(wasCalled, true);
             });
     });
+
+    it('should accept an `onMixClick` callback invoked when a control is clicked', () => {
+        let frag        = document.createDocumentFragment();
+        let container   = dom.getContainer();
+        let controls    = dom.getFilterControls();
+        let wasCalled   = false;
+        let filter      = controls.querySelector('[data-filter="none"]');
+
+        container.insertBefore(controls, container.children[0]);
+
+        frag.appendChild(container);
+
+        let mixer = mixitup(container, {
+            controls: {
+                scope: 'local'
+            },
+            callbacks: {
+                onMixClick: function(state, originalEvent) {
+                    var self = this;
+
+                    chai.assert.instanceOf(state, mixitup.State);
+                    chai.assert.instanceOf(originalEvent, window.MouseEvent);
+                    chai.assert.equal(self, filter);
+
+                    wasCalled = true;
+                }
+            }
+        }, frag);
+
+        filter.click();
+
+        return Promise.resolve()
+            .then(() => {
+                chai.assert.equal(wasCalled, true);
+
+                mixer.destroy();
+            });
+    });
+
+    it('should accept an `onMixClick` callback which can be cancelled by returning false', () => {
+        let frag        = document.createDocumentFragment();
+        let container   = dom.getContainer();
+        let controls    = dom.getFilterControls();
+        let wasCalled   = false;
+        let filter      = controls.querySelector('[data-filter="none"]');
+
+        container.insertBefore(controls, container.children[0]);
+
+        frag.appendChild(container);
+
+        let mixer = mixitup(container, {
+            controls: {
+                scope: 'local'
+            },
+            callbacks: {
+                onMixClick: () => {
+                    return false;
+                },
+                onMixEnd: () => {
+                    // Will not be called
+
+                    wasCalled = true;
+                }
+            }
+        }, frag);
+
+        filter.click();
+
+        return Promise.resolve()
+            .then(() => {
+                chai.assert.equal(wasCalled, false);
+
+                mixer.destroy();
+            });
+    });
 });

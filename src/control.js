@@ -275,6 +275,10 @@ h.extend(mixitup.Control.prototype,
                 continue;
             }
 
+            if (!mixer.lastClicked) {
+                mixer.lastClicked = button;
+            }
+
             mixitup.events.fire('mixClick', mixer.dom.container, {
                 state: mixer.state,
                 instance: mixer,
@@ -290,10 +294,6 @@ h.extend(mixitup.Control.prototype,
 
                     continue;
                 }
-            }
-
-            if (mixer.lastClicked) {
-                mixer.lastClicked = button;
             }
 
             if (self.type === 'toggle') {
