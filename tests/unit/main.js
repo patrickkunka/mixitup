@@ -15,3 +15,4 @@ require('./controls-multimix');
 require('./controls-live');
 require('./queue');
 require('./extension');
+require('./callbacks');
