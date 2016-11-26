@@ -223,7 +223,7 @@ could be found matching the filter.
 
 
 
-The DOM element that was clicked if the last oepration was triggered by the
+The DOM element that was clicked if the last operation was triggered by the
 clicking of a control and not an API call.
 
 
