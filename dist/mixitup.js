@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 68883759-df7f-41e0-8a29-e976649eb5b6
+ * Build 4a7ac653-6c4e-49b0-8430-12f7f63182b5
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -5316,6 +5316,10 @@
 
             // Insert the document fragment into the container
             // before any other non-target elements
+
+            if (self.dom.parent.firstChild && self.dom.parent.firstChild !== nextSibling) {
+                frag.insertBefore(window.document.createTextNode(' '), frag.children[0]);
+            }
 
             if (nextSibling) {
                 frag.appendChild(window.document.createTextNode(' '));

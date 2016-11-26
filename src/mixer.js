@@ -960,6 +960,10 @@ h.extend(mixitup.Mixer.prototype,
         // Insert the document fragment into the container
         // before any other non-target elements
 
+        if (self.dom.parent.firstChild && self.dom.parent.firstChild !== nextSibling) {
+            frag.insertBefore(window.document.createTextNode(' '), frag.children[0]);
+        }
+
         if (nextSibling) {
             frag.appendChild(window.document.createTextNode(' '));
 

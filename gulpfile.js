@@ -47,7 +47,7 @@ gulp.task('uglify', ['build'], () => {
         .pipe(rename('mixitup.min.js'))
         .on('error', e => console.error('[uglify] ' + e.message))
         .pipe(gulp.dest('./dist/'))
-        .pipe(gulp.dest('./demos/scripts/'));
+        .pipe(gulp.dest('./demos/'));
 });
 
 gulp.task('build', ['build-dist'], done => {
