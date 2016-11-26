@@ -25,33 +25,17 @@ body {
 .control {
     position: relative;
     display: inline-block;
-    width: 2.7rem;
-    height: 2.7rem;
+    padding: .5rem;
     background: #444;
     cursor: pointer;
-    font-size: 0.1px;
+    font-size: .9rem;
+    font-weight: 800;
     color: white;
     transition: background 150ms;
 }
 
 .control:hover {
     background: #3f3f3f;
-}
-
-.control[data-sort]:after {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-top: 2px solid;
-    border-left: 2px solid;
-    top: calc(50% - 6px);
-    left: calc(50% - 6px);
-    transform:  translateY(1px) rotate(45deg);
-}
-
-.control[data-sort*=":desc"]:after {
-    transform:  translateY(-4px) rotate(-135deg);
 }
 
 .mixitup-control-active {
@@ -74,6 +58,7 @@ body {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    align-content: flex-start;
     justify-content: space-between;
 }
 
