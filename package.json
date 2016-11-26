@@ -25,6 +25,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "~1.5.1",
     "istanbul": "^0.4.5",
+    "jquery": "^3.1.1",
     "jsdom": "9.4.2",
     "jsdom-global": "2.0.0",
     "jshint-stylish": "~1.0.0",

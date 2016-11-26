@@ -16,3 +16,4 @@ require('./controls-live');
 require('./queue');
 require('./extension');
 require('./callbacks');
+require('./jquery');
