@@ -200,7 +200,9 @@ h = {
     on: function(el, type, fn, useCapture) {
         if (!el) return;
 
-        if (el.attachEvent) {
+        if (el.addEventListener) {
+            el.addEventListener(type, fn, useCapture);
+        } else if (el.attachEvent) {
             el['e' + type + fn] = fn;
 
             el[type + fn] = function() {
@@ -208,8 +210,6 @@ h = {
             };
 
             el.attachEvent('on' + type, el[type + fn]);
-        } else {
-            el.addEventListener(type, fn, useCapture);
         }
     },
 
@@ -224,11 +224,11 @@ h = {
     off: function(el, type, fn) {
         if (!el) return;
 
-        if (el.detachEvent) {
+        if (el.removeEventListener) {
+            el.removeEventListener(type, fn, false);
+        } else if (el.detachEvent) {
             el.detachEvent('on' + type, el[type + fn]);
             el[type + fn] = null;
-        } else {
-            el.removeEventListener(type, fn, false);
         }
     },
 
@@ -725,7 +725,7 @@ h = {
             promiseWrapper.promise = deferred.promise();
             promiseWrapper.resolve = deferred.resolve;
             promiseWrapper.reject  = deferred.reject;
-        } else if (typeof window.console === 'function') {
+        } else if (window.console) {
             // No implementation
 
             console.warn(mixitup.messages.warningNoPromiseImplementation());
@@ -757,7 +757,7 @@ h = {
 
         // No implementation
 
-        if (typeof window.console === 'function') {
+        if (window.console) {
             console.warn(mixitup.messages.warningNoPromiseImplementation());
         }
 
@@ -798,12 +798,12 @@ h = {
 
     /**
      * @private
-     * @param   {HTMLHtmlElement}  [doc]
+     * @param   {HTMLDocument}  [doc]
      * @return  {object}
      */
 
     getDocumentState: function(doc) {
-        doc = doc instanceof window.HTMLDocument ? doc : window.document;
+        doc = typeof doc.body === 'object' ? doc : window.document;
 
         return {
             scrollTop: window.pageYOffset,

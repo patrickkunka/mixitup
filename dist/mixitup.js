@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build d04043a4-5c76-45d7-bdd6-7c380faf77de
+ * Build 72cbe0f6-1ce5-4ee8-a6f4-8dc8da1880ba
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -21,7 +21,7 @@
         jq              = null;
 
     (function() {
-        var VENDORS = ['Webkit', 'moz', 'O', 'ms'],
+        var VENDORS = ['webkit', 'moz', 'o', 'ms'],
             canary  = window.document.createElement('div'),
             i       = -1;
 
@@ -696,7 +696,9 @@
         on: function(el, type, fn, useCapture) {
             if (!el) return;
 
-            if (el.attachEvent) {
+            if (el.addEventListener) {
+                el.addEventListener(type, fn, useCapture);
+            } else if (el.attachEvent) {
                 el['e' + type + fn] = fn;
 
                 el[type + fn] = function() {
@@ -704,8 +706,6 @@
                 };
 
                 el.attachEvent('on' + type, el[type + fn]);
-            } else {
-                el.addEventListener(type, fn, useCapture);
             }
         },
 
@@ -720,11 +720,11 @@
         off: function(el, type, fn) {
             if (!el) return;
 
-            if (el.detachEvent) {
+            if (el.removeEventListener) {
+                el.removeEventListener(type, fn, false);
+            } else if (el.detachEvent) {
                 el.detachEvent('on' + type, el[type + fn]);
                 el[type + fn] = null;
-            } else {
-                el.removeEventListener(type, fn, false);
             }
         },
 
@@ -1221,7 +1221,7 @@
                 promiseWrapper.promise = deferred.promise();
                 promiseWrapper.resolve = deferred.resolve;
                 promiseWrapper.reject  = deferred.reject;
-            } else if (typeof window.console === 'function') {
+            } else if (window.console) {
                 // No implementation
 
                 console.warn(mixitup.messages.warningNoPromiseImplementation());
@@ -1253,7 +1253,7 @@
 
             // No implementation
 
-            if (typeof window.console === 'function') {
+            if (window.console) {
                 console.warn(mixitup.messages.warningNoPromiseImplementation());
             }
 
@@ -1294,12 +1294,12 @@
 
         /**
          * @private
-         * @param   {HTMLHtmlElement}  [doc]
+         * @param   {HTMLDocument}  [doc]
          * @return  {object}
          */
 
         getDocumentState: function(doc) {
-            doc = doc instanceof window.HTMLDocument ? doc : window.document;
+            doc = typeof doc.body === 'object' ? doc : window.document;
 
             return {
                 scrollTop: window.pageYOffset,
@@ -5734,7 +5734,7 @@
 
                 el = target.dom.el;
 
-                if (frag.lastElementChild) {
+                if (h.isElement(frag.lastChild)) {
                     frag.appendChild(window.document.createTextNode(' '));
                 }
 
@@ -6543,7 +6543,7 @@
                 willTransition  = false,
                 staggerIndex    = -1,
                 i               = -1,
-                checkProgress   = h.bind(self, self.checkProgress);
+                checkProgress   = self.checkProgress.bind(self);
 
             self.callActions('beforeMoveTargets', arguments);
 

@@ -1,5 +1,5 @@
 (function() {
-    var VENDORS = ['Webkit', 'moz', 'O', 'ms'],
+    var VENDORS = ['webkit', 'moz', 'o', 'ms'],
         canary  = window.document.createElement('div'),
         i       = -1;
 

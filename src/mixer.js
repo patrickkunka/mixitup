@@ -954,7 +954,7 @@ h.extend(mixitup.Mixer.prototype,
 
             el = target.dom.el;
 
-            if (frag.lastElementChild) {
+            if (h.isElement(frag.lastChild)) {
                 frag.appendChild(window.document.createTextNode(' '));
             }
 
@@ -1763,7 +1763,7 @@ h.extend(mixitup.Mixer.prototype,
             willTransition  = false,
             staggerIndex    = -1,
             i               = -1,
-            checkProgress   = h.bind(self, self.checkProgress);
+            checkProgress   = self.checkProgress.bind(self);
 
         self.callActions('beforeMoveTargets', arguments);
 
