@@ -64,7 +64,7 @@ mixitup.Base.prototype = {
         args = args || [];
 
         for (extensionName in hooks) {
-            args = Array.prototype.slice.call(args);
+            args = h.arrayFromList(args);
 
             args.unshift(output);
 

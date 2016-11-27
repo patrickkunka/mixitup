@@ -74,8 +74,8 @@ h.extend(mixitup.Features.prototype,
 
         self.canary = document.createElement('div');
 
-        self.runTests();
         self.setPrefixes();
+        self.runTests();
 
         self.callActions('beforeInit', arguments);
     },

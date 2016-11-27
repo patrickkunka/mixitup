@@ -104,6 +104,10 @@ h.extend(mixitup.Mixer.prototype,
             self.config.animation.enable = false;
         }
 
+        if (typeof window.console === 'undefined') {
+            self.config.debug.showWarnings = false;
+        }
+
         if (self.config.load.dataset) {
             self.config.controls.enable = false;
         }
@@ -268,7 +272,7 @@ h.extend(mixitup.Mixer.prototype,
             self.dom.container.querySelectorAll(self.config.selectors.target) :
             h.children(self.dom.container, self.config.selectors.target, self.dom.document);
 
-        self.dom.targets = Array.prototype.slice.call(self.dom.targets);
+        self.dom.targets = h.arrayFromList(self.dom.targets);
 
         self.targets = [];
 
@@ -287,7 +291,7 @@ h.extend(mixitup.Mixer.prototype,
                 self.targets.push(target);
             }
 
-            self.dom.parent = self.dom.targets[0].parentElement.isEqualNode(self.dom.container) ?
+            self.dom.parent = self.dom.targets[0].parentElement === self.dom.container ?
                 self.dom.container :
                 self.dom.targets[0].parentElement;
         }
@@ -961,7 +965,7 @@ h.extend(mixitup.Mixer.prototype,
         // before any other non-target elements
 
         if (self.dom.parent.firstChild && self.dom.parent.firstChild !== nextSibling) {
-            frag.insertBefore(window.document.createTextNode(' '), frag.children[0]);
+            frag.insertBefore(window.document.createTextNode(' '), frag.childNodes[0]);
         }
 
         if (nextSibling) {
@@ -2054,7 +2058,9 @@ h.extend(mixitup.Mixer.prototype,
             self.userCallback.call(self.dom.container, self.state, self);
         }
 
-        self.userDeferred.resolve(self.state);
+        if (typeof self.userDeferred.resolve === 'function') {
+            self.userDeferred.resolve(self.state);
+        }
 
         self.userCallback  = null;
         self.userDeferred  = null;
@@ -2168,7 +2174,7 @@ h.extend(mixitup.Mixer.prototype,
             } else if (typeof arg === 'object' && typeof arg.length !== 'undefined') {
                 // Multiple elements in array, NodeList or jQuery collection
 
-                instruction.command.collection = Array.prototype.slice.call(arg);
+                instruction.command.collection = h.arrayFromList(arg);
             } else if (typeof arg === 'object') {
                 // Filter command
 
@@ -2217,7 +2223,7 @@ h.extend(mixitup.Mixer.prototype,
                     // Array of element references
 
                     if (arg.length) {
-                        instruction.command.collection = Array.prototype.slice.call(arg);
+                        instruction.command.collection = h.arrayFromList(arg);
                     }
 
                     break;
@@ -2277,7 +2283,7 @@ h.extend(mixitup.Mixer.prototype,
                 // Markup
 
                 instruction.command.collection =
-                    Array.prototype.slice.call(h.createElement(arg).children);
+                    h.arrayFromList(h.createElement(arg).childNodes);
             } else if (typeof arg === 'object' && h.isElement(arg, self.dom.document)) {
                 // Single element
 
@@ -2294,7 +2300,7 @@ h.extend(mixitup.Mixer.prototype,
                 // Document fragment
 
                 !instruction.command.collection.length ?
-                    instruction.command.collection = Array.prototype.slice.call(arg.childNodes) :
+                    instruction.command.collection = h.arrayFromList(arg.childNodes) :
                     instruction.command.sibling = arg.childNodes[0];
             } else if (typeof arg === 'object') {
                 // Insert command
@@ -2353,7 +2359,7 @@ h.extend(mixitup.Mixer.prototype,
 
                     break;
                 case 'string':
-                    instruction.command.collection = Array.prototype.slice.call(self.dom.parent.querySelectorAll(arg));
+                    instruction.command.collection = h.arrayFromList(self.dom.parent.querySelectorAll(arg));
 
                     break;
                 case 'object':
@@ -2582,20 +2588,22 @@ h.extend(mixitup.Mixer.prototype,
 
         operation.newOrder = operation.show;
 
-        self.getStartMixData(operation);
-        self.setInter(operation);
+        if (self.config.animation.enable) {
+            self.getStartMixData(operation);
+            self.setInter(operation);
 
-        operation.docState = h.getDocumentState(self.dom.document);
+            operation.docState = h.getDocumentState(self.dom.document);
 
-        self.getInterMixData(operation);
-        self.setFinal(operation);
-        self.getFinalMixData(operation);
+            self.getInterMixData(operation);
+            self.setFinal(operation);
+            self.getFinalMixData(operation);
 
-        self.parseEffects();
+            self.parseEffects();
 
-        operation.hasEffect = self.hasEffect();
+            operation.hasEffect = self.hasEffect();
 
-        self.getTweenData(operation);
+            self.getTweenData(operation);
+        }
 
         self.targets = operation.show.slice();
 
@@ -3415,22 +3423,24 @@ h.extend(mixitup.Mixer.prototype,
             }
         }
 
-        // Populate the operation's position data
+        if (self.config.animation.enable) {
+            // Populate the operation's position data
 
-        self.getStartMixData(operation);
-        self.setInter(operation);
+            self.getStartMixData(operation);
+            self.setInter(operation);
 
-        operation.docState = h.getDocumentState(self.dom.document);
+            operation.docState = h.getDocumentState(self.dom.document);
 
-        self.getInterMixData(operation);
-        self.setFinal(operation);
-        self.getFinalMixData(operation);
+            self.getInterMixData(operation);
+            self.setFinal(operation);
+            self.getFinalMixData(operation);
 
-        self.parseEffects();
+            self.parseEffects();
 
-        operation.hasEffect = self.hasEffect();
+            operation.hasEffect = self.hasEffect();
 
-        self.getTweenData(operation);
+            self.getTweenData(operation);
+        }
 
         operation.newState = self.buildState(operation);
 

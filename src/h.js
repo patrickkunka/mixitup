@@ -251,9 +251,16 @@ h = {
                 bubbles: true,
                 cancelable: true
             });
-        } else {
+        } else if (typeof doc.createEvent === 'function') {
             event = doc.createEvent('CustomEvent');
             event.initCustomEvent(eventType, true, true, detail);
+        } else {
+            event = doc.createEventObject(),
+            event.type = eventType;
+
+            event.returnValue = false;
+            event.cancelBubble = false;
+            event.detail = detail;
         }
 
         return event;
@@ -359,7 +366,7 @@ h = {
             return (
                 el !== null &&
                 el.nodeType === 1 &&
-                el.nodeName === 'string'
+                typeof el.nodeName === 'string'
             );
         }
     },
@@ -471,6 +478,27 @@ h = {
         }
 
         return newArray;
+    },
+
+    /**
+     * @private
+     * @param   {object}    list
+     */
+
+    arrayFromList: function(list) {
+        var output, i;
+
+        try {
+            return Array.prototype.slice.call(list);
+        } catch(err) {
+            output = [];
+
+            for (i = 0; i < list.length; i++) {
+                output.push(list[i]);
+            }
+
+            return output;
+        }
     },
 
     /**
@@ -697,7 +725,7 @@ h = {
             promiseWrapper.promise = deferred.promise();
             promiseWrapper.resolve = deferred.resolve;
             promiseWrapper.reject  = deferred.reject;
-        } else {
+        } else if (typeof window.console === 'function') {
             // No implementation
 
             console.warn(mixitup.messages.warningNoPromiseImplementation());
@@ -729,7 +757,9 @@ h = {
 
         // No implementation
 
-        console.warn(mixitup.messages.warningNoPromiseImplementation());
+        if (typeof window.console === 'function') {
+            console.warn(mixitup.messages.warningNoPromiseImplementation());
+        }
 
         return [];
     },

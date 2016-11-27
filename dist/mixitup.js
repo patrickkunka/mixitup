@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 156fafe5-1d2d-40ab-bcb8-109bd5e739c4
+ * Build d04043a4-5c76-45d7-bdd6-7c380faf77de
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -62,12 +62,7 @@
                 ElementPrototype.oMatchesSelector ||
                 ElementPrototype.webkitMatchesSelector ||
                 function (selector) {
-                    var nodes = (this.parentNode || this.doc).querySelectorAll(selector),
-                        i = -1;
-
-                    while (nodes[++i] && nodes[i] != this) {
-                        return !!nodes[i];
-                    }
+                    return Array.prototype.indexOf.call(this.parentElement.querySelectorAll(selector), this) > -1;
                 };
         })(window.Element.prototype);
 
@@ -166,6 +161,100 @@
                     return result;
                 };
             })();
+        }
+
+        // String.prototyoe.trim
+
+        if (!String.prototype.trim) {
+            String.prototype.trim = function() {
+                return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+            };
+        }
+
+        // Array.prototype.indexOf
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+
+        if (!Array.prototype.indexOf) {
+            Array.prototype.indexOf = function(searchElement) {
+                var n, k, t, len;
+
+                if (this === null) {
+                    throw new TypeError();
+                }
+
+                t = Object(this);
+
+                len = t.length >>> 0;
+
+                if (len === 0) {
+                    return -1;
+                }
+
+                n = 0;
+
+                if (arguments.length > 1) {
+                    n = Number(arguments[1]);
+
+                    if (n !== n) {
+                        n = 0;
+                    } else if (n !== 0 && n !== Infinity && n !== -Infinity) {
+                        n = (n > 0 || -1) * Math.floor(Math.abs(n));
+                    }
+                }
+
+                if (n >= len) {
+                    return -1;
+                }
+
+                for (k = n >= 0 ? n : Math.max(len - Math.abs(n), 0); k < len; k++) {
+                    if (k in t && t[k] === searchElement) {
+                        return k;
+                    }
+                }
+
+                return -1;
+            };
+        }
+
+        // Function.prototype.bind
+        // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_objects/Function/bind
+
+        if (!Function.prototype.bind) {
+            Function.prototype.bind = function(oThis) {
+                var aArgs, self, FNOP, fBound;
+
+                if (typeof this !== 'function') {
+                    throw new TypeError();
+                }
+
+                aArgs = Array.prototype.slice.call(arguments, 1);
+
+                self = this;
+
+                FNOP = function() {};
+
+                fBound = function() {
+                    return self.apply(this instanceof FNOP ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
+                };
+
+                if (this.prototype) {
+                    FNOP.prototype = this.prototype;
+                }
+
+                fBound.prototype = new FNOP();
+
+                return fBound;
+            };
+        }
+
+        // Element.prototype.dispatchEvent
+
+        if (!window.Element.prototype.dispatchEvent) {
+            window.Element.prototype.dispatchEvent = function(event) {
+                try {
+                    return this.fireEvent('on' + event.type, event);
+                } catch (err) {}
+            };
         }
     })();
 
@@ -658,9 +747,16 @@
                     bubbles: true,
                     cancelable: true
                 });
-            } else {
+            } else if (typeof doc.createEvent === 'function') {
                 event = doc.createEvent('CustomEvent');
                 event.initCustomEvent(eventType, true, true, detail);
+            } else {
+                event = doc.createEventObject(),
+                event.type = eventType;
+
+                event.returnValue = false;
+                event.cancelBubble = false;
+                event.detail = detail;
             }
 
             return event;
@@ -766,7 +862,7 @@
                 return (
                     el !== null &&
                     el.nodeType === 1 &&
-                    el.nodeName === 'string'
+                    typeof el.nodeName === 'string'
                 );
             }
         },
@@ -878,6 +974,27 @@
             }
 
             return newArray;
+        },
+
+        /**
+         * @private
+         * @param   {object}    list
+         */
+
+        arrayFromList: function(list) {
+            var output, i;
+
+            try {
+                return Array.prototype.slice.call(list);
+            } catch(err) {
+                output = [];
+
+                for (i = 0; i < list.length; i++) {
+                    output.push(list[i]);
+                }
+
+                return output;
+            }
         },
 
         /**
@@ -1104,7 +1221,7 @@
                 promiseWrapper.promise = deferred.promise();
                 promiseWrapper.resolve = deferred.resolve;
                 promiseWrapper.reject  = deferred.reject;
-            } else {
+            } else if (typeof window.console === 'function') {
                 // No implementation
 
                 console.warn(mixitup.messages.warningNoPromiseImplementation());
@@ -1136,7 +1253,9 @@
 
             // No implementation
 
-            console.warn(mixitup.messages.warningNoPromiseImplementation());
+            if (typeof window.console === 'function') {
+                console.warn(mixitup.messages.warningNoPromiseImplementation());
+            }
 
             return [];
         },
@@ -1450,7 +1569,7 @@
             args = args || [];
 
             for (extensionName in hooks) {
-                args = Array.prototype.slice.call(args);
+                args = h.arrayFromList(args);
 
                 args.unshift(output);
 
@@ -1602,8 +1721,8 @@
 
             self.canary = document.createElement('div');
 
-            self.runTests();
             self.setPrefixes();
+            self.runTests();
 
             self.callActions('beforeInit', arguments);
         },
@@ -4765,6 +4884,10 @@
                 self.config.animation.enable = false;
             }
 
+            if (typeof window.console === 'undefined') {
+                self.config.debug.showWarnings = false;
+            }
+
             if (self.config.load.dataset) {
                 self.config.controls.enable = false;
             }
@@ -4929,7 +5052,7 @@
                 self.dom.container.querySelectorAll(self.config.selectors.target) :
                 h.children(self.dom.container, self.config.selectors.target, self.dom.document);
 
-            self.dom.targets = Array.prototype.slice.call(self.dom.targets);
+            self.dom.targets = h.arrayFromList(self.dom.targets);
 
             self.targets = [];
 
@@ -4948,7 +5071,7 @@
                     self.targets.push(target);
                 }
 
-                self.dom.parent = self.dom.targets[0].parentElement.isEqualNode(self.dom.container) ?
+                self.dom.parent = self.dom.targets[0].parentElement === self.dom.container ?
                     self.dom.container :
                     self.dom.targets[0].parentElement;
             }
@@ -5622,7 +5745,7 @@
             // before any other non-target elements
 
             if (self.dom.parent.firstChild && self.dom.parent.firstChild !== nextSibling) {
-                frag.insertBefore(window.document.createTextNode(' '), frag.children[0]);
+                frag.insertBefore(window.document.createTextNode(' '), frag.childNodes[0]);
             }
 
             if (nextSibling) {
@@ -6715,7 +6838,9 @@
                 self.userCallback.call(self.dom.container, self.state, self);
             }
 
-            self.userDeferred.resolve(self.state);
+            if (typeof self.userDeferred.resolve === 'function') {
+                self.userDeferred.resolve(self.state);
+            }
 
             self.userCallback  = null;
             self.userDeferred  = null;
@@ -6829,7 +6954,7 @@
                 } else if (typeof arg === 'object' && typeof arg.length !== 'undefined') {
                     // Multiple elements in array, NodeList or jQuery collection
 
-                    instruction.command.collection = Array.prototype.slice.call(arg);
+                    instruction.command.collection = h.arrayFromList(arg);
                 } else if (typeof arg === 'object') {
                     // Filter command
 
@@ -6878,7 +7003,7 @@
                         // Array of element references
 
                         if (arg.length) {
-                            instruction.command.collection = Array.prototype.slice.call(arg);
+                            instruction.command.collection = h.arrayFromList(arg);
                         }
 
                         break;
@@ -6938,7 +7063,7 @@
                     // Markup
 
                     instruction.command.collection =
-                        Array.prototype.slice.call(h.createElement(arg).children);
+                        h.arrayFromList(h.createElement(arg).childNodes);
                 } else if (typeof arg === 'object' && h.isElement(arg, self.dom.document)) {
                     // Single element
 
@@ -6955,7 +7080,7 @@
                     // Document fragment
 
                     !instruction.command.collection.length ?
-                        instruction.command.collection = Array.prototype.slice.call(arg.childNodes) :
+                        instruction.command.collection = h.arrayFromList(arg.childNodes) :
                         instruction.command.sibling = arg.childNodes[0];
                 } else if (typeof arg === 'object') {
                     // Insert command
@@ -7014,7 +7139,7 @@
 
                         break;
                     case 'string':
-                        instruction.command.collection = Array.prototype.slice.call(self.dom.parent.querySelectorAll(arg));
+                        instruction.command.collection = h.arrayFromList(self.dom.parent.querySelectorAll(arg));
 
                         break;
                     case 'object':
@@ -7243,20 +7368,22 @@
 
             operation.newOrder = operation.show;
 
-            self.getStartMixData(operation);
-            self.setInter(operation);
+            if (self.config.animation.enable) {
+                self.getStartMixData(operation);
+                self.setInter(operation);
 
-            operation.docState = h.getDocumentState(self.dom.document);
+                operation.docState = h.getDocumentState(self.dom.document);
 
-            self.getInterMixData(operation);
-            self.setFinal(operation);
-            self.getFinalMixData(operation);
+                self.getInterMixData(operation);
+                self.setFinal(operation);
+                self.getFinalMixData(operation);
 
-            self.parseEffects();
+                self.parseEffects();
 
-            operation.hasEffect = self.hasEffect();
+                operation.hasEffect = self.hasEffect();
 
-            self.getTweenData(operation);
+                self.getTweenData(operation);
+            }
 
             self.targets = operation.show.slice();
 
@@ -8076,22 +8203,24 @@
                 }
             }
 
-            // Populate the operation's position data
+            if (self.config.animation.enable) {
+                // Populate the operation's position data
 
-            self.getStartMixData(operation);
-            self.setInter(operation);
+                self.getStartMixData(operation);
+                self.setInter(operation);
 
-            operation.docState = h.getDocumentState(self.dom.document);
+                operation.docState = h.getDocumentState(self.dom.document);
 
-            self.getInterMixData(operation);
-            self.setFinal(operation);
-            self.getFinalMixData(operation);
+                self.getInterMixData(operation);
+                self.setFinal(operation);
+                self.getFinalMixData(operation);
 
-            self.parseEffects();
+                self.parseEffects();
 
-            operation.hasEffect = self.hasEffect();
+                operation.hasEffect = self.hasEffect();
 
-            self.getTweenData(operation);
+                self.getTweenData(operation);
+            }
 
             operation.newState = self.buildState(operation);
 

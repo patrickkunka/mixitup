@@ -40,12 +40,7 @@
             ElementPrototype.oMatchesSelector ||
             ElementPrototype.webkitMatchesSelector ||
             function (selector) {
-                var nodes = (this.parentNode || this.doc).querySelectorAll(selector),
-                    i = -1;
-
-                while (nodes[++i] && nodes[i] != this) {
-                    return !!nodes[i];
-                }
+                return Array.prototype.indexOf.call(this.parentElement.querySelectorAll(selector), this) > -1;
             };
     })(window.Element.prototype);
 
@@ -144,5 +139,99 @@
                 return result;
             };
         })();
+    }
+
+    // String.prototyoe.trim
+
+    if (!String.prototype.trim) {
+        String.prototype.trim = function() {
+            return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+        };
+    }
+
+    // Array.prototype.indexOf
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+
+    if (!Array.prototype.indexOf) {
+        Array.prototype.indexOf = function(searchElement) {
+            var n, k, t, len;
+
+            if (this === null) {
+                throw new TypeError();
+            }
+
+            t = Object(this);
+
+            len = t.length >>> 0;
+
+            if (len === 0) {
+                return -1;
+            }
+
+            n = 0;
+
+            if (arguments.length > 1) {
+                n = Number(arguments[1]);
+
+                if (n !== n) {
+                    n = 0;
+                } else if (n !== 0 && n !== Infinity && n !== -Infinity) {
+                    n = (n > 0 || -1) * Math.floor(Math.abs(n));
+                }
+            }
+
+            if (n >= len) {
+                return -1;
+            }
+
+            for (k = n >= 0 ? n : Math.max(len - Math.abs(n), 0); k < len; k++) {
+                if (k in t && t[k] === searchElement) {
+                    return k;
+                }
+            }
+
+            return -1;
+        };
+    }
+
+    // Function.prototype.bind
+    // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_objects/Function/bind
+
+    if (!Function.prototype.bind) {
+        Function.prototype.bind = function(oThis) {
+            var aArgs, self, FNOP, fBound;
+
+            if (typeof this !== 'function') {
+                throw new TypeError();
+            }
+
+            aArgs = Array.prototype.slice.call(arguments, 1);
+
+            self = this;
+
+            FNOP = function() {};
+
+            fBound = function() {
+                return self.apply(this instanceof FNOP ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
+            };
+
+            if (this.prototype) {
+                FNOP.prototype = this.prototype;
+            }
+
+            fBound.prototype = new FNOP();
+
+            return fBound;
+        };
+    }
+
+    // Element.prototype.dispatchEvent
+
+    if (!window.Element.prototype.dispatchEvent) {
+        window.Element.prototype.dispatchEvent = function(event) {
+            try {
+                return this.fireEvent('on' + event.type, event);
+            } catch (err) {}
+        };
     }
 })();
