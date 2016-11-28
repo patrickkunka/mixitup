@@ -61,7 +61,7 @@ $('.container').mixItUp('filter', '.category-a');
 mixer.filter('.category-a');
 ```
 
-As you can see, mixers in MixItUp 3 have many of the same API methods as were available in MixItUp 2, but are called using standard method invocation syntax, with any arguments passed in the standard form rather than the jQuery-UI-like syntax of MixItUp 2.
+As you may have noticed, mixers in MixItUp 3 have many of the same API methods as were available in MixItUp 2, but are called using standard method invocation syntax, with arguments passed in the standard form rather than the jQuery-UI-like syntax of MixItUp 2.
 
 MixItUp 3 adds many new API methods, and renames or removes some of those from MixItUp 2.
 
