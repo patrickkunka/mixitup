@@ -16,6 +16,7 @@ $('.container').mixItUp();
 
 ```js
 // MixItUp 3
+
 var mixer = mixitup('.container');
 ```
 
@@ -41,7 +42,7 @@ var mixer = mixitup('.container', {
 });
 ```
 
-Note that the `mixitup()` factory function is now all lowercase, as apposed to the camel case MixItUp 2 jQuery method (`.mixItUp()`).
+Note that the `mixitup()` factory function is now all lowercase, as apposed to the camel case MixItUp 2 jQuery method `.mixItUp()`.
 
 MixItUp 3 adds many new configuration options, and renames or removes some of those from MixItUp 2. Visit the [Configuration Object](/docs/mixitup.Config.md) documentation page for more information.
 
@@ -69,6 +70,8 @@ In MixItUp 2, asyncronous operations (those involving animation) allowed optiona
 ###### Example: Providing a callback function to a MixItUp 2 asyncronous method
 
 ```js
+// MixItUp 2
+
 $('.container').mixItUp('filter', '.category-a', function(state) {
     // Operation finished, the new state is:
 
@@ -81,6 +84,8 @@ With MixItUp 3, all asyncronous methods return a promise resolving with a state 
 ###### Example: Using promises to manage asyncronous operations in MixItUp 3
 
 ```js
+// MixItUp 3
+
 mixer.filter('.category-a')
     .then(function(state) {
         // Operation finished, the new state is:
