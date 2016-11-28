@@ -6,15 +6,24 @@ With MixItUp 3, we can now interact with MixItUp instances ('mixers') directly w
 
 ## Instantiation
 
-###### Example: Instantiating MixItUp 2 on a container with jQuery
+###### Example: Basic Instantiating
 
 ```js
+// MixItUp 2
+
 $('.container').mixItUp();
 ```
 
-###### Example: Instantiating MixItUp 2 on a container with jQuery, passing a configuration object
+```js
+// MixItUp 3
+var mixer = mixitup('.container');
+```
+
+###### Example: Passing a configuration object during instantiation
 
 ```js
+// MixItUp 2
+
 $('.container').mixItUp({
     selectors: {
         target: '.item'
@@ -22,15 +31,9 @@ $('.container').mixItUp({
 });
 ```
 
-###### Example: Instantiating MixItUp 3 on a container using the mixitup() factory function
-
 ```js
-var mixer = mixitup('.container');
-```
+// MixItUp 3
 
-###### Example: Instantiating MixItUp 3 on a container using the mixitup() factory function, passing a configuration object
-
-```js
 var mixer = mixitup('.container', {
     selectors: {
         target: '.item'
@@ -44,15 +47,14 @@ MixItUp 3 adds many new configuration options, and renames or removes some of th
 
 ## Method Invocation
 
-###### Example: Calling a MixItUp 2 method with jQuery
-
 ```js
+// MixItUp 2
+
 $('.container').mixItUp('filter', '.category-a');
 ```
-
-###### Example: Calling a MixItUp 3 method using the mixer's public API
-
 ```js
+// MixItUp 3
+
 mixer.filter('.category-a');
 ```
 
