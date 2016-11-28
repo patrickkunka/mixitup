@@ -69,9 +69,9 @@ MixItUp 3 adds many new API methods, and renames or removes some of those from M
 
 ## Promises and Callbacks
 
-In MixItUp 2, asyncronous operations (those involving animation) accepted an optional callback function to be invoked on completion.
+In MixItUp 2, asynchronous operations (those involving animation) accepted an optional callback function to be invoked on completion.
 
-With MixItUp 3, all asyncronous methods return a promise resolving with a state object. Callback functions are still permitted as an optional argument, but promises should be considered the preferred method for dealing with asyncronous operations.
+With MixItUp 3, all asynchronous methods return a promise resolving with a state object. Callback functions are still permitted as an optional argument, but promises should be considered the preferred method for dealing with asynchronous operations.
 
 ```js
 // MixItUp 2 (callbacks)
