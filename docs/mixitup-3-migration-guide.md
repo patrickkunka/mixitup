@@ -6,7 +6,7 @@ With MixItUp 3, we can now interact with MixItUp instances ('mixers') directly w
 
 ## Instantiation
 
-###### Example: Basic Instantiating
+###### Example: Basic Instantiation
 
 ```js
 // MixItUp 2
@@ -20,7 +20,7 @@ $('.container').mixItUp();
 var mixer = mixitup('.container');
 ```
 
-###### Example: Passing a configuration object during instantiation
+###### Example: Passing the configuration object
 
 ```js
 // MixItUp 2
@@ -44,7 +44,9 @@ var mixer = mixitup('.container', {
 
 Note that the `mixitup()` factory function is now all lowercase, as apposed to the camel case MixItUp 2 jQuery method `.mixItUp()`.
 
-MixItUp 3 adds many new configuration options, and renames or removes some of those from MixItUp 2. Visit the [Configuration Object](/docs/mixitup.Config.md) documentation page for more information.
+MixItUp 3 adds many new configuration options, and renames or removes some of those from MixItUp 2.
+
+*Further reading: [Configuration Object](/docs/mixitup.Config.md)*
 
 ## Method Invocation
 
@@ -61,16 +63,18 @@ mixer.filter('.category-a');
 
 As you can see, mixers in MixItUp 3 have many of the same API methods as were available in MixItUp 2, but are called using standard method invocation syntax, with any arguments passed in the standard form rather than the jQuery-UI-like syntax of MixItUp 2.
 
-MixItUp 3 adds many new API methods, and renames or removes some of those from MixItUp 2. Visit the [Mixer API Methods](/docs/mixitup.Mixer.md) documentation page for more information.
+MixItUp 3 adds many new API methods, and renames or removes some of those from MixItUp 2.
+
+*Further reading: [Mixer API Methods](/docs/mixitup.Mixer.md)*
 
 ## Promises and Callbacks
 
-In MixItUp 2, asyncronous operations (those involving animation) allowed optional callback functions to be provided to be invoked on completion.
+In MixItUp 2, asyncronous operations (those involving animation) accepted an optional callback function to be invoked on completion.
 
-###### Example: Providing a callback function to a MixItUp 2 asyncronous method
+With MixItUp 3, all asyncronous methods return a promise resolving with a state object. Callback functions are still permitted as an optional argument, but promises should be considered the preferred method for dealing with asyncronous operations.
 
 ```js
-// MixItUp 2
+// MixItUp 2 (callbacks)
 
 $('.container').mixItUp('filter', '.category-a', function(state) {
     // Operation finished, the new state is:
@@ -79,12 +83,8 @@ $('.container').mixItUp('filter', '.category-a', function(state) {
 });
 ```
 
-With MixItUp 3, all asyncronous methods return a promise resolving with a state object. Callback functions are still permitted as an optional argument, but promises should be considered the preferred method for dealing with asyncronous operations.
-
-###### Example: Using promises to manage asyncronous operations in MixItUp 3
-
 ```js
-// MixItUp 3
+// MixItUp 3 (promises)
 
 mixer.filter('.category-a')
     .then(function(state) {
