@@ -13,6 +13,14 @@ For a live sandbox, full documentation, tutorials and more, please visit [Websit
 
 MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [Website Pending](#).
 
+#### Documentation
+
+- [Factory Function](./docs/mixitup.md)
+- [Configuration Object](./docs/mixitup.Config.md)
+- [Mixer API Methods](./docs/mixitup.Mixer.md)
+- [State Object](./docs/mixitup.State.md)
+- [Mixer Events](./docs/mixitup.Events.md)
+
 #### Browser Support
 
 MixItUp 3 has been tested for compatibility with the following browsers.
@@ -23,14 +31,6 @@ MixItUp 3 has been tested for compatibility with the following browsers.
 - Yandex 14+
 - Edge 13+
 - IE 10+ (with animations), IE 8-9 (no animations)
-
-#### Documentation
-
-- [Factory Function](./docs/mixitup.md)
-- [Configuration Object](./docs/mixitup.Config.md)
-- [Mixer API Methods](./docs/mixitup.Mixer.md)
-- [State Object](./docs/mixitup.State.md)
-- [Mixer Events](./docs/mixitup.Events.md)
 
 ## Getting Started
 
