@@ -9,7 +9,7 @@ MixItUp plays nice with your existing HTML and CSS, making it a great choice for
 
 For a live sandbox, full documentation, tutorials and more, please visit [Website Pending](#).
 
-Migrating from MixItUp 2? Check out the [MixItUp 3 Migration Guide]('./docs/mixitup-3-migration-guide.md').
+Migrating from MixItUp 2? Check out the [MixItUp 3 Migration Guide](./docs/mixitup-3-migration-guide.md).
 
 #### Licensing
 
