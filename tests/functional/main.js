@@ -140,7 +140,7 @@ var dataMixer = mixitup('#sandbox-2', {
         dataset: dataset
     },
     data: {
-        uid: 'id',
+        uidKey: 'id',
         dirtyCheck: true
     },
     render: {
