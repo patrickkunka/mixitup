@@ -98,7 +98,7 @@ mixer.filter('.category-a')
 
 In MixItUp 2, it was required that a CSS `display: none` rule be applied to all target elements by default, with MixItUp adding the `display` value of your choice (e.g. `inline-block`) to only those targets to be shown. This was intended to prevent a flash-of-content before MixItUp 2's loading animation started.
 
-With MixItUp 3, loading animations are removed by default, and mixers are instantiated syncronously and instantly. Because of this, it is assumed that all targets in the DOM are already shown, so MixItUp only needs to add `display: none` to those targets to be hidden, using whatever `display` value is declared in your CSS for shown targets.
+With MixItUp 3, loading animations are removed by default, and mixers are instantiated synchronously and instantly. Because of this, it is assumed that all targets in the DOM are already shown, so MixItUp only needs to add `display: none` to those targets to be hidden, using whatever `display` value is declared in your CSS for shown targets.
 
 In short – you no longer need to set `display: none` in your CSS. Simply use whatever display value your layout would require, regardless of MixItUp.
 
