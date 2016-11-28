@@ -1,0 +1,98 @@
+# MixItUp 3 Migration Guide
+
+The biggest change to MixItUp with v3, is the dropping of jQuery as a dependency. MixItUp 1 and 2 both existed as jQuery plugins, with instantiation and API calls abstracted away through a typical jQuery-plugin interface.
+
+With MixItUp 3, we can now interact with MixItUp instances ('mixers') directly with minimal abstraction.
+
+## Instantiation
+
+###### Example: Instantiating MixItUp 2 on a container with jQuery
+
+```js
+$('.container').mixItUp();
+```
+
+###### Example: Instantiating MixItUp 2 on a container with jQuery, passing a configuration object
+
+```js
+$('.container').mixItUp({
+    selectors: {
+        target: '.item'
+    }
+});
+```
+
+###### Example: Instantiating MixItUp 3 on a container using the mixitup() factory function
+
+```js
+var mixer = mixitup('.container');
+```
+
+###### Example: Instantiating MixItUp 3 on a container using the mixitup() factory function, passing a configuration object
+
+```js
+var mixer = mixitup('.container', {
+    selectors: {
+        target: '.item'
+    }
+});
+```
+
+Note that the `mixitup()` factory function is now all lowercase, as apposed to the camel case MixItUp 2 jQuery method (`.mixItUp()`).
+
+MixItUp 3 adds many new configuration options, and renames or removes some of those from MixItUp 2. Visit the [Configuration Object](/docs/mixitup.Config.md) documentation page for more information.
+
+## Method Invocation
+
+###### Example: Calling a MixItUp 2 method with jQuery
+
+```js
+$('.container').mixItUp('filter', '.category-a');
+```
+
+###### Example: Calling a MixItUp 3 method using the mixer's public API
+
+```js
+mixer.filter('.category-a');
+```
+
+As you can see, mixers in MixItUp 3 have many of the same API methods as were available in MixItUp 2, but are called using standard method invocation syntax, with any arguments passed in the standard form rather than the jQuery-UI-like syntax of MixItUp 2.
+
+MixItUp 3 adds many new API methods, and renames or removes some of those from MixItUp 2. Visit the [Mixer API Methods](/docs/mixitup.Mixer.md) documentation page for more information.
+
+## Promises and Callbacks
+
+In MixItUp 2, asyncronous operations (those involving animation) allowed optional callback functions to be provided to be invoked on completion.
+
+###### Example: Providing a callback function to a MixItUp 2 asyncronous method
+
+```js
+$('.container').mixItUp('filter', '.category-a', function(state) {
+    // Operation finished, the new state is:
+
+    console.log(state);
+});
+```
+
+With MixItUp 3, all asyncronous methods return a promise resolving with a state object. Callback functions are still permitted as an optional argument, but promises should be considered the preferred method for dealing with asyncronous operations.
+
+###### Example: Using promises to manage asyncronous operations in MixItUp 3
+
+```js
+mixer.filter('.category-a')
+    .then(function(state) {
+        // Operation finished, the new state is:
+
+        console.log(state);
+    });
+```
+
+## CSS
+
+In MixItUp 2, it was required that a CSS `display: none` rule be applied to all target elements by default, with MixItUp adding the `display` value of your choice (e.g. `inline-block`) to only those targets to be shown. This was intended to prevent a flash-of-content before MixItUp 2's loading animation started.
+
+With MixItUp 3, loading animations are removed by default, and mixers are instantiated syncronously and instantly. Because of this, it is assumed that all targets in the DOM are already shown, so MixItUp only needs to add `display: none` to those targets to be hidden, using whatever `display` value is declared in your CSS for shown targets.
+
+In short – you no longer need to set `display: none` in your CSS. Simply use whatever display value your layout would require, regardless of MixItUp.
+
+Loading animations are still possible in MixItUp 3 as demonstrated in the [Loading Animation](http://demos.kunkalabs.com/mixitup/loading-animation/) demo. The code for this demo is available [here](/demos/loading-animation/).

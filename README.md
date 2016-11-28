@@ -9,6 +9,8 @@ MixItUp plays nice with your existing HTML and CSS, making it a great choice for
 
 For a live sandbox, full documentation, tutorials and more, please visit [Website Pending](#).
 
+Migrating from MixItUp 2? Check out the [MixItUp 3 Migration Guide]('./docs/mixitup-3-migration-guide.md').
+
 #### Licensing
 
 MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [Website Pending](#).
