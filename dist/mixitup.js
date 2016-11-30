@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 72dfa26e-fe0f-4197-afc9-cc171d383ccd
+ * Build 72ad51ad-d452-444f-9972-ac9066f67385
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -300,7 +300,7 @@
      * @param       {object}            [foreignDoc]
      *      An optional reference to a `document`, which can be used to control a MixItUp instance in an iframe.
      * @return      {mixitup.Mixer}
-     *      A "mixer" object representing the instance of MixItUp
+     *      A "mixer" object holding the MixItUp instance.
      */
 
     mixitup = function(container, config, foreignDoc) {

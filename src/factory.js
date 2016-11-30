@@ -42,7 +42,7 @@
  * @param       {object}            [foreignDoc]
  *      An optional reference to a `document`, which can be used to control a MixItUp instance in an iframe.
  * @return      {mixitup.Mixer}
- *      A "mixer" object representing the instance of MixItUp
+ *      A "mixer" object holding the MixItUp instance.
  */
 
 mixitup = function(container, config, foreignDoc) {

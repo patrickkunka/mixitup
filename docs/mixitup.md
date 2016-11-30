@@ -17,7 +17,7 @@ exported into your module when you require the MixItUp library.
 |Param   |`Element, string` | `container` | A DOM element or selector string representing the container(s) on which to instantiate MixItUp.
 |Param   |`object` | `[config]` | An optional "configuration object" used to customize the behavior of the MixItUp instance.
 |Param   |`object` | `[foreignDoc]` | An optional reference to a `document`, which can be used to control a MixItUp instance in an iframe.
-|Returns |`mixitup.Mixer` | A "mixer" object representing the instance of MixItUp
+|Returns |`mixitup.Mixer` | A "mixer" object holding the MixItUp instance.
 
 ###### Example 1: Creating a mixer instance with an element reference
 
