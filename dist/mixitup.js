@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 50279e6d-d48c-4c42-8baf-d1b80681ab7d
+ * Build 72dfa26e-fe0f-4197-afc9-cc171d383ccd
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -299,7 +299,7 @@
      *      An optional "configuration object" used to customize the behavior of the MixItUp instance.
      * @param       {object}            [foreignDoc]
      *      An optional reference to a `document`, which can be used to control a MixItUp instance in an iframe.
-     * @return      {(mixitup.Mixer|mixer.Facade)}
+     * @return      {mixitup.Mixer}
      *      A "mixer" object representing the instance of MixItUp
      */
 
