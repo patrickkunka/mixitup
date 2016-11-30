@@ -6,7 +6,7 @@ With MixItUp 3, we can now interact with MixItUp instances ('mixers') directly w
 
 ## Instantiation
 
-###### Example: Basic Instantiating
+###### Example: Basic Instantiation
 
 ```js
 // MixItUp 2
@@ -20,7 +20,7 @@ $('.container').mixItUp();
 var mixer = mixitup('.container');
 ```
 
-###### Example: Passing a configuration object during instantiation
+###### Example: Passing the configuration object
 
 ```js
 // MixItUp 2
@@ -44,7 +44,9 @@ var mixer = mixitup('.container', {
 
 Note that the `mixitup()` factory function is now all lowercase, as apposed to the camel case MixItUp 2 jQuery method `.mixItUp()`.
 
-MixItUp 3 adds many new configuration options, and renames or removes some of those from MixItUp 2. Visit the [Configuration Object](/docs/mixitup.Config.md) documentation page for more information.
+MixItUp 3 adds many new configuration options, and renames or removes some of those from MixItUp 2.
+
+*Further reading: [Configuration Object](/docs/mixitup.Config.md)*
 
 ## Method Invocation
 
@@ -59,18 +61,20 @@ $('.container').mixItUp('filter', '.category-a');
 mixer.filter('.category-a');
 ```
 
-As you can see, mixers in MixItUp 3 have many of the same API methods as were available in MixItUp 2, but are called using standard method invocation syntax, with any arguments passed in the standard form rather than the jQuery-UI-like syntax of MixItUp 2.
+As you may have noticed, mixers in MixItUp 3 have many of the same API methods as were available in MixItUp 2, but are called using standard method invocation syntax, with arguments passed in the standard form rather than the jQuery-UI-like syntax of MixItUp 2.
 
-MixItUp 3 adds many new API methods, and renames or removes some of those from MixItUp 2. Visit the [Mixer API Methods](/docs/mixitup.Mixer.md) documentation page for more information.
+MixItUp 3 adds many new API methods, and renames or removes some of those from MixItUp 2.
+
+*Further reading: [Mixer API Methods](/docs/mixitup.Mixer.md)*
 
 ## Promises and Callbacks
 
-In MixItUp 2, asyncronous operations (those involving animation) allowed optional callback functions to be provided to be invoked on completion.
+In MixItUp 2, asynchronous operations (those involving animation) accepted an optional callback function to be invoked on completion.
 
-###### Example: Providing a callback function to a MixItUp 2 asyncronous method
+With MixItUp 3, all asynchronous methods return a promise resolving with a state object. Callback functions are still permitted as an optional argument, but promises should be considered the preferred method for dealing with asynchronous operations.
 
 ```js
-// MixItUp 2
+// MixItUp 2 (callbacks)
 
 $('.container').mixItUp('filter', '.category-a', function(state) {
     // Operation finished, the new state is:
@@ -79,12 +83,8 @@ $('.container').mixItUp('filter', '.category-a', function(state) {
 });
 ```
 
-With MixItUp 3, all asyncronous methods return a promise resolving with a state object. Callback functions are still permitted as an optional argument, but promises should be considered the preferred method for dealing with asyncronous operations.
-
-###### Example: Using promises to manage asyncronous operations in MixItUp 3
-
 ```js
-// MixItUp 3
+// MixItUp 3 (promises)
 
 mixer.filter('.category-a')
     .then(function(state) {
@@ -98,7 +98,7 @@ mixer.filter('.category-a')
 
 In MixItUp 2, it was required that a CSS `display: none` rule be applied to all target elements by default, with MixItUp adding the `display` value of your choice (e.g. `inline-block`) to only those targets to be shown. This was intended to prevent a flash-of-content before MixItUp 2's loading animation started.
 
-With MixItUp 3, loading animations are removed by default, and mixers are instantiated syncronously and instantly. Because of this, it is assumed that all targets in the DOM are already shown, so MixItUp only needs to add `display: none` to those targets to be hidden, using whatever `display` value is declared in your CSS for shown targets.
+With MixItUp 3, loading animations are removed by default, and mixers are instantiated synchronously and instantly. Because of this, it is assumed that all targets in the DOM are already shown, so MixItUp only needs to add `display: none` to those targets to be hidden, using whatever `display` value is declared in your CSS for shown targets.
 
 In short – you no longer need to set `display: none` in your CSS. Simply use whatever display value your layout would require, regardless of MixItUp.
 
