@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp Demo - Filtering by URL</title>
+    </head>
+    <body>
+        <div class="controls">
+            <button type="button" class="control" data-filter="all">All</button>
+            <button type="button" class="control" data-filter=".green">Green</button>
+            <button type="button" class="control" data-filter=".blue">Blue</button>
+            <button type="button" class="control" data-filter=".pink">Pink</button>
+            <button type="button" class="control" data-filter="none">None</button>
+        </div>
+
+        <div class="container">
+            <div class="mix green"></div>
+            <div class="mix green"></div>
+            <div class="mix blue"></div>
+            <div class="mix pink"></div>
+            <div class="mix green"></div>
+            <div class="mix blue"></div>
+            <div class="mix pink"></div>
+            <div class="mix blue"></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+
+        <script>
+            // As we have no server, we will use a URL "hash" for this demo, but we
+            // chould just as easily use a URL segment and the HTML5 History API.
+
+            var containerEl = document.querySelector('.container');
+            var targetSelector = '.mix';
+
+            function getSelectorFromHash() {
+                var hash = window.location.hash.replace(/^#/g, '');
+
+                // If a hash is present, transform it into a class selector string,
+                // otherwise default to the target selector, which is equivalent to 'all'
+
+                var selector = hash ? '.' + hash : targetSelector;
+
+                return selector;
+            }
+
+            var mixer = mixitup(containerEl, {
+                selectors: {
+                    target: targetSelector
+                },
+                load: {
+                    filter: getSelectorFromHash() // Set load.filter to any hash present at startup
+                },
+                callbacks: {
+                    onMixEnd: function(state) {
+                        var selector = state.activeFilter.selector;
+                        var newHash;
+
+                        if (selector === targetSelector) {
+                            // Equivalent to filter "all", clear the hash
+
+                            if (window.location.hash) {
+                                history.pushState('', document.title, window.location.pathname);
+                            }
+                        } else {
+                            newHash = '#' + selector.replace(/^./g, '');
+                        }
+
+                        if (newHash === window.location.hash || !newHash) return;
+
+                        window.location.hash = newHash;
+                    }
+                }
+            });
+
+            // Add an "onhashchange" handler to keep the mixer in sync as the user goes
+            // back and forward through their history. NB: This may or may not be the
+            // desired behavior for your project.
+
+            window.onhashchange = function() {
+                var selector = getSelectorFromHash();
+
+                if (selector === mixer.getState().activeFilter.selector) return; // no change
+
+                mixer.filter(selector);
+            };
+        </script>
+    </body>
+</html>
