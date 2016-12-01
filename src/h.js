@@ -75,7 +75,7 @@ h = {
             for (i = 0; i < sourceKeys.length; i++) {
                 key = sourceKeys[i];
 
-                if (!deep || typeof source[key] !== 'object') {
+                if (!deep || typeof source[key] !== 'object' || this.isElement(source[key])) {
                     // All non-object properties, or all properties if shallow extend
 
                     destination[key] = source[key];

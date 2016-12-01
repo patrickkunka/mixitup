@@ -1451,6 +1451,56 @@ mixer.changeLayout('list')
          console.log(state.activeContainerClass); // "list"
     });
 ```
+### siblingBefore
+
+
+
+
+A reference to a non-target sibling element after to which to insert targets
+when there are no targets in the container.
+
+
+|Type | Default
+|---  | ---
+|`HTMLElement`| `null`
+
+###### Example: Setting a `siblingBefore` reference element
+
+```js
+
+var addButton = containerEl.querySelector('button');
+
+var mixer = mixitup(containerEl, {
+    layout: {
+        siblingBefore: addButton
+    }
+});
+```
+### siblingAfter
+
+
+
+
+A reference to a non-target sibling element before to which to insert targets
+when there are no targets in the container.
+
+
+|Type | Default
+|---  | ---
+|`HTMLElement`| `null`
+
+###### Example: Setting an `siblingAfter` reference element
+
+```js
+
+var gap = containerEl.querySelector('.gap');
+
+var mixer = mixitup(containerEl, {
+    layout: {
+        siblingAfter: gap
+    }
+});
+```
 
 <h2 id="load">load</h2>
 

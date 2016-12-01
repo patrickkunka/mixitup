@@ -86,6 +86,52 @@ mixitup.ConfigLayout = function() {
 
     this.containerClassName = '';
 
+    /**
+     * A reference to a non-target sibling element after to which to insert targets
+     * when there are no targets in the container.
+     *
+     * @example <caption>Example: Setting a `siblingBefore` reference element</caption>
+     *
+     * var addButton = containerEl.querySelector('button');
+     *
+     * var mixer = mixitup(containerEl, {
+     *     layout: {
+     *         siblingBefore: addButton
+     *     }
+     * });
+     *
+     * @name        siblingBefore
+     * @memberof    mixitup.Config.layout
+     * @instance
+     * @type        {HTMLElement}
+     * @default     null
+     */
+
+    this.siblingBefore = null;
+
+    /**
+     * A reference to a non-target sibling element before to which to insert targets
+     * when there are no targets in the container.
+     *
+     * @example <caption>Example: Setting an `siblingAfter` reference element</caption>
+     *
+     * var gap = containerEl.querySelector('.gap');
+     *
+     * var mixer = mixitup(containerEl, {
+     *     layout: {
+     *         siblingAfter: gap
+     *     }
+     * });
+     *
+     * @name        siblingAfter
+     * @memberof    mixitup.Config.layout
+     * @instance
+     * @type        {HTMLElement}
+     * @default     null
+     */
+
+    this.siblingAfter = null;
+
     this.callActions('afterConstruct');
 
     h.seal(this);

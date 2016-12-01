@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 72ad51ad-d452-444f-9972-ac9066f67385
+ * Build b758a68b-fcb3-4ff1-92ed-3fb1b08617ac
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -571,7 +571,7 @@
                 for (i = 0; i < sourceKeys.length; i++) {
                     key = sourceKeys[i];
 
-                    if (!deep || typeof source[key] !== 'object') {
+                    if (!deep || typeof source[key] !== 'object' || this.isElement(source[key])) {
                         // All non-object properties, or all properties if shallow extend
 
                         destination[key] = source[key];
@@ -3275,6 +3275,52 @@
 
         this.containerClassName = '';
 
+        /**
+         * A reference to a non-target sibling element after to which to insert targets
+         * when there are no targets in the container.
+         *
+         * @example <caption>Example: Setting a `siblingBefore` reference element</caption>
+         *
+         * var addButton = containerEl.querySelector('button');
+         *
+         * var mixer = mixitup(containerEl, {
+         *     layout: {
+         *         siblingBefore: addButton
+         *     }
+         * });
+         *
+         * @name        siblingBefore
+         * @memberof    mixitup.Config.layout
+         * @instance
+         * @type        {HTMLElement}
+         * @default     null
+         */
+
+        this.siblingBefore = null;
+
+        /**
+         * A reference to a non-target sibling element before to which to insert targets
+         * when there are no targets in the container.
+         *
+         * @example <caption>Example: Setting an `siblingAfter` reference element</caption>
+         *
+         * var gap = containerEl.querySelector('.gap');
+         *
+         * var mixer = mixitup(containerEl, {
+         *     layout: {
+         *         siblingAfter: gap
+         *     }
+         * });
+         *
+         * @name        siblingAfter
+         * @memberof    mixitup.Config.layout
+         * @instance
+         * @type        {HTMLElement}
+         * @default     null
+         */
+
+        this.siblingAfter = null;
+
         this.callActions('afterConstruct');
 
         h.seal(this);
@@ -5455,15 +5501,31 @@
             index = Math.max(index, 0);
 
             if (sibling && position === 'before') {
+                // Explicit sibling
+
                 element = sibling;
             } else if (sibling && position === 'after') {
+                // Explicit sibling
+
                 element = sibling.nextElementSibling || null;
-            } else if (self.targets.length && typeof index !== 'undefined') {
+            } else if (self.targets.length > 0 && typeof index !== 'undefined') {
+                // Index and targets exist
+
                 element = (index < self.targets.length || !self.targets.length) ?
                     self.targets[index].dom.el :
                     self.targets[self.targets.length - 1].dom.el.nextElementSibling;
+            } else if (self.targets.length === 0 && self.dom.parent.children.length > 0) {
+                // No targets but other siblings
+
+                if (self.config.layout.siblingAfter) {
+                    element = self.config.layout.siblingAfter;
+                } else if (self.config.layout.siblingBefore) {
+                    element = self.config.layout.siblingBefore.nextElementSibling;
+                } else {
+                    self.dom.parent.children[0];
+                }
             } else {
-                element = self.dom.parent.children.length ? self.dom.parent.children[0] : null;
+                element === null;
             }
 
             return self.callFilters('elementGetNextSibling', element, arguments);
@@ -7467,6 +7529,8 @@
                     // Adding to DOM
 
                     if (!frag) {
+                        // Open frag
+
                         frag = self.dom.document.createDocumentFragment();
                     }
 
@@ -7487,6 +7551,12 @@
                     persistantNewIds.push(id);
 
                     if (frag) {
+                        // Close and insert frag
+
+                        if (frag.lastElementChild) {
+                            frag.appendChild(self.dom.document.createTextNode(' '));
+                        }
+
                         self.dom.parent.insertBefore(frag, target.dom.el);
 
                         frag = null;
@@ -7497,6 +7567,14 @@
             }
 
             if (frag) {
+                // Unclosed frag remaining
+
+                nextEl = nextEl || self.config.layout.siblingAfter;
+
+                if (nextEl) {
+                    frag.appendChild(self.dom.document.createTextNode(' '));
+                }
+
                 self.dom.parent.insertBefore(frag, nextEl);
             }
 

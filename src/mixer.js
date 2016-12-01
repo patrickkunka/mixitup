@@ -675,15 +675,31 @@ h.extend(mixitup.Mixer.prototype,
         index = Math.max(index, 0);
 
         if (sibling && position === 'before') {
+            // Explicit sibling
+
             element = sibling;
         } else if (sibling && position === 'after') {
+            // Explicit sibling
+
             element = sibling.nextElementSibling || null;
-        } else if (self.targets.length && typeof index !== 'undefined') {
+        } else if (self.targets.length > 0 && typeof index !== 'undefined') {
+            // Index and targets exist
+
             element = (index < self.targets.length || !self.targets.length) ?
                 self.targets[index].dom.el :
                 self.targets[self.targets.length - 1].dom.el.nextElementSibling;
+        } else if (self.targets.length === 0 && self.dom.parent.children.length > 0) {
+            // No targets but other siblings
+
+            if (self.config.layout.siblingAfter) {
+                element = self.config.layout.siblingAfter;
+            } else if (self.config.layout.siblingBefore) {
+                element = self.config.layout.siblingBefore.nextElementSibling;
+            } else {
+                self.dom.parent.children[0];
+            }
         } else {
-            element = self.dom.parent.children.length ? self.dom.parent.children[0] : null;
+            element === null;
         }
 
         return self.callFilters('elementGetNextSibling', element, arguments);
@@ -2687,6 +2703,8 @@ h.extend(mixitup.Mixer.prototype,
                 // Adding to DOM
 
                 if (!frag) {
+                    // Open frag
+
                     frag = self.dom.document.createDocumentFragment();
                 }
 
@@ -2707,6 +2725,12 @@ h.extend(mixitup.Mixer.prototype,
                 persistantNewIds.push(id);
 
                 if (frag) {
+                    // Close and insert frag
+
+                    if (frag.lastElementChild) {
+                        frag.appendChild(self.dom.document.createTextNode(' '));
+                    }
+
                     self.dom.parent.insertBefore(frag, target.dom.el);
 
                     frag = null;
@@ -2717,6 +2741,14 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         if (frag) {
+            // Unclosed frag remaining
+
+            nextEl = nextEl || self.config.layout.siblingAfter;
+
+            if (nextEl) {
+                frag.appendChild(self.dom.document.createTextNode(' '));
+            }
+
             self.dom.parent.insertBefore(frag, nextEl);
         }
 
