@@ -16,21 +16,47 @@
             <button type="button" class="control control-filter" data-ref="filter" data-color="pink">Pink</button>
             <button type="button" class="control control-filter" data-ref="filter" data-color="none">None</button>
 
-            <button type="button" class="control control-sort" data-ref="sort" data-order="asc">Asc</button>
-            <button type="button" class="control control-sort" data-ref="sort" data-order="desc">Desc</button>
+            <button type="button" class="control control-sort" data-ref="sort" data-key="publishedDate" data-order="asc">Asc</button>
+            <button type="button" class="control control-sort" data-ref="sort" data-key="publishedDate" data-order="desc">Desc</button>
         </div>
 
         <div class="container" data-ref="container">
-            <div class="item green" data-ref="item"></div>
-            <div class="item green" data-ref="item"></div>
-            <div class="item blue" data-ref="item"></div>
-            <div class="item pink" data-ref="item"></div>
-            <div class="item green" data-ref="item"></div>
-            <div class="item blue" data-ref="item"></div>
-            <div class="item pink" data-ref="item"></div>
-            <div class="item blue" data-ref="item"></div>
+            <div class="item green" data-ref="item">
+                <time class="published-date">2015-10-03</time>
+            </div>
 
-            <div class="gap" data-ref="first-gap"></div>
+            <div class="item green" data-ref="item">
+                <time class="published-date">2015-12-22</time>
+            </div>
+
+            <div class="item blue" data-ref="item">
+                <time class="published-date">2016-02-15</time>
+            </div>
+
+            <div class="item pink" data-ref="item">
+                <time class="published-date">2016-02-15</time>
+            </div>
+
+            <div class="item green" data-ref="item">
+                <time class="published-date">2016-04-25</time>
+            </div>
+
+            <div class="item blue" data-ref="item">
+                <time class="published-date">2016-05-02</time>
+            </div>
+
+            <div class="item pink" data-ref="item">
+                <time class="published-date">2016-10-07</time>
+            </div>
+
+            <div class="item blue" data-ref="item">
+                <time class="published-date">2016-11-13</time>
+            </div>
+
+            <div class="gap" data-ref="first-gap">
+                <time class="published-date">2016-12-01</time>
+            </div>
+
             <div class="gap"></div>
             <div class="gap"></div>
         </div>
@@ -44,42 +70,50 @@
             var items = [
                 {
                     id: 1,
-                    color: 'green'
+                    color: 'green',
+                    publishedDate: '2015-10-03'
                 },
                 {
                     id: 2,
-                    color: 'green'
+                    color: 'green',
+                    publishedDate: '2015-12-22'
                 },
                 {
                     id: 3,
-                    color: 'blue'
+                    color: 'blue',
+                    publishedDate: '2016-02-15'
                 },
                 {
                     id: 4,
-                    color: 'pink'
+                    color: 'pink',
+                    publishedDate: '2016-04-25'
                 },
                 {
                     id: 5,
-                    color: 'green'
+                    color: 'green',
+                    publishedDate: '2016-05-02'
                 },
                 {
                     id: 6,
-                    color: 'blue'
+                    color: 'blue',
+                    publishedDate: '2016-10-07'
                 },
                 {
                     id: 7,
-                    color: 'pink'
+                    color: 'pink',
+                    publishedDate: '2016-11-13'
                 },
                 {
                     id: 8,
-                    color: 'blue'
+                    color: 'blue',
+                    publishedDate: '2016-12-01'
                 }
             ];
 
             // As you can see, this data matches the pre-rendered targets, which would have been
             // pre-rendered from the same data, either by the server or your client-side app.
 
-            // Alternatively, we can also start with an empty container, and render everything via MixItUp.
+            // Alternatively, we could also start with an empty container, and render everything via MixItUp.
 
             // As we'll be building and binding our own UI, we'll start with caching
             // references to any DOM elements we'll need to work with
@@ -91,16 +125,16 @@
             var firstGap     = document.querySelector('[data-ref="first-gap"]');
 
             // NB: "Gap" elements are used to maintain even columns in a justified grid. See our
-            // MixItUp Grid Layouts tutorial for more information.
+            // "MixItUp Grid Layouts" tutorial for more information.
 
-            // Now we instantiate a mixer, configured to use the Dataset API
+            // Instantiate and configure the mixer
 
             var mixer = mixitup(container, {
                 selectors: {
                     target: '[data-ref="item"]' // Query targets with an attribute selector to keep our JS and styling classes seperate
                 },
                 load: {
-                    dataset: items.slice() // Give mixitup the underlying data for pre-rendered targets
+                    dataset: items // Provide mixitup with the underlying data for the pre-rendered targets
                 },
                 layout: {
                     siblingAfter: firstGap // Ensure the first "gap" element is known to mixitup incase of insertion into an empty container
@@ -108,12 +142,21 @@
                 data: {
                     uidKey: 'id' // Our data model must have a unique id. In this case, its key is 'id'
                 },
-                render: { // Provide a target render function incase we need to show items not in the initial dataset
+                render: { // Provide a target render function incase we need to render new items not in the initial dataset (not used in this demo)
                     target: function(item) {
-                        return '<div class="item ' + item.color + '" data-ref="item"></div>';
+                        return '<div class="item ' + item.color + '" data-ref="item"><time class="published-date">' + item.publishedDate + '</time></div>';
                     }
                 }
             });
+
+            /**
+             * Sets an active styling class on an active button, and removes
+             * it from all its siblings of the same type.
+             *
+             * @param {HTMLElement} activeButton
+             * @param {HTMLELement[]} siblings
+             * @return {void}
+             */
 
             function activateButton(activeButton, siblings) {
                 var button;
@@ -126,11 +169,17 @@
                 }
             }
 
-            // The following two functions would be replaced with asyncronous API calls to
-            // query the DB, but we will use native JS array filtering for illustration.
+            /**
+             * Receives a DB-like query object, and mocks the process of hitting an API
+             * to get back matching items, using JavaScript array filtering. This would
+             * be replaced in your application with a call to your API.
+             *
+             * @param  {object}     query   A object containing one or more key-value pairs to filter by
+             * @return {Promise}
+             */
 
             function filter(query) {
-                return Promise.resolve()
+                return Promise.resolve() // Mock async
                     .then(function() {
                         // Filter the items array as per the query
 
@@ -160,14 +209,37 @@
                     });
             }
 
-            function sort(order) {
-                return Promise.resolve()
+            /**
+             * Receives a key to sort by and a sorting order, and mocks the process of hitting an API
+             * to get back items from the DB in the desired order using JavaScript array sorting.
+             * This would be replaced in your application with a call to your API.
+             *
+             * @param  {string}         key     The key in the data model by which to sort by
+             * @param  {('asc'|'desc')} order   The order to sort by
+             * @return {Promise}
+             */
+
+            function sort(key, order) {
+                return Promise.resolve() // Mock asyc
                     .then(function() {
-                        // As there are only two possible orders in this example, we'll
-                        // simply flip the activeDataset on each click regardless of order
+                        // This function would also need to be provided with the filter
+                        // query in order to limit sorting to the current set, but we
+                        // will use the activeDataset from the state for simplicity.
 
                         var activeDataset = mixer.getState().activeDataset;
-                        var sortedItems = activeDataset.slice().reverse();
+
+                        var sortedItems = activeDataset.slice().sort(function(a, b) {
+                            var valueA = a[key];
+                            var valueB = b[key];
+
+                            if (valueA > valueB) {
+                                return order === 'asc' ? 1 : -1;
+                            } else if (valueA < valueB) {
+                                return order === 'asc' ? -1 : 1;
+                            } else {
+                                return 0;
+                            }
+                        })
 
                         // Send the sorted dataset to MixItUp
 
@@ -181,14 +253,16 @@
                     });
             }
 
-            // Bind click events to the controls wrapper element
+            // Set up a handler to listen for control "click" events
 
             controls.addEventListener('click', function(e) {
                 var button = e.target;
 
-                // If button is already active, or an operation is in progress, ignore click
+                // If button is already active, or an operation is in progress, ignore the click
 
                 if (button.classList.contains('control-active') || mixer.isMixing()) return;
+
+                // Else, check what type of button it is, if any
 
                 if (button.matches('[data-ref="filter"]')) {
                     // Filter button
@@ -205,18 +279,19 @@
 
                     activateButton(button, sorts);
 
-                    sort(button.getAttribute('data-order'));
+                    sort(button.getAttribute('data-key'), button.getAttribute('data-order'));
                 }
             });
 
-            // Activate controls in their initial state to match the pre-rendered targets
+            // Set controls the active controls on startup to match the default filter and sort
 
             activateButton(controls.querySelector('[data-color="all"]'), filters);
             activateButton(controls.querySelector('[data-order="asc"]'), sorts);
 
-            // NB: If you're using MixItUp within a UI component, always remember to destroy
-            // the instance (mixer.destroy()) when your component unmounts to ensure that event
-            // handlers are unbound and the instance can be garbage collected.
+            // NB: If you're using MixItUp within a browser-rendered UI component,
+            // always remember to destroy the instance (mixer.destroy()) when your
+            // component unmounts to ensure that event handlers are unbound and the
+            // instance can be garbage collected.
         </script>
     </body>
 </html>

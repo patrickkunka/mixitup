@@ -150,6 +150,17 @@ body {
     color: #5ecdde;
 }
 
+.item .published-date {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 1rem;
+    font-size: 1rem;
+    color: #333;
+    font-family: 'helvetica-neue', arial, sans-serif;
+    font-weight:  700;
+}
+
 /* Grid Breakpoints
 ---------------------------------------------------------------------- */
 
