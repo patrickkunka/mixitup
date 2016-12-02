@@ -87,7 +87,7 @@ mixitup.ConfigLayout = function() {
     this.containerClassName = '';
 
     /**
-     * A reference to a non-target sibling element after to which to insert targets
+     * A reference to a non-target sibling element after which to insert targets
      * when there are no targets in the container.
      *
      * @example <caption>Example: Setting a `siblingBefore` reference element</caption>
@@ -110,7 +110,7 @@ mixitup.ConfigLayout = function() {
     this.siblingBefore = null;
 
     /**
-     * A reference to a non-target sibling element before to which to insert targets
+     * A reference to a non-target sibling element before which to insert targets
      * when there are no targets in the container.
      *
      * @example <caption>Example: Setting an `siblingAfter` reference element</caption>

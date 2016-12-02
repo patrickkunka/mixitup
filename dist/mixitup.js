@@ -1,6 +1,6 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build b758a68b-fcb3-4ff1-92ed-3fb1b08617ac
+ * Build 407f25fc-a217-4339-923f-b9aadeaf2a61
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3276,7 +3276,7 @@
         this.containerClassName = '';
 
         /**
-         * A reference to a non-target sibling element after to which to insert targets
+         * A reference to a non-target sibling element after which to insert targets
          * when there are no targets in the container.
          *
          * @example <caption>Example: Setting a `siblingBefore` reference element</caption>
@@ -3299,7 +3299,7 @@
         this.siblingBefore = null;
 
         /**
-         * A reference to a non-target sibling element before to which to insert targets
+         * A reference to a non-target sibling element before which to insert targets
          * when there are no targets in the container.
          *
          * @example <caption>Example: Setting an `siblingAfter` reference element</caption>
