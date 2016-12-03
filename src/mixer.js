@@ -2169,6 +2169,14 @@ h.extend(mixitup.Mixer.prototype,
         return instruction;
     },
 
+    /**
+     * @private
+     * @instance
+     * @since   2.0.0
+     * @param   {Array<*>}  args
+     * @return  {mixitup.UserInstruction}
+     */
+
     parseFilterArgs: function(args) {
         var self        = this,
             instruction = new mixitup.UserInstruction(),

@@ -1,7 +1,7 @@
 /**!
  * MixItUp v3.0.0-beta
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build e3fe59d7-5657-4ef8-a62d-eedea2f5fd4b
+ * Build 19d891b3-b174-4f62-9d49-9302e94b6a16
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -6995,6 +6995,14 @@
 
             return instruction;
         },
+
+        /**
+         * @private
+         * @instance
+         * @since   2.0.0
+         * @param   {Array<*>}  args
+         * @return  {mixitup.UserInstruction}
+         */
 
         parseFilterArgs: function(args) {
             var self        = this,
