@@ -1456,7 +1456,7 @@ mixer.changeLayout('list')
 
 
 
-A reference to a non-target sibling element after to which to insert targets
+A reference to a non-target sibling element after which to insert targets
 when there are no targets in the container.
 
 
@@ -1481,7 +1481,7 @@ var mixer = mixitup(containerEl, {
 
 
 
-A reference to a non-target sibling element before to which to insert targets
+A reference to a non-target sibling element before which to insert targets
 when there are no targets in the container.
 
 

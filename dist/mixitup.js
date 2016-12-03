@@ -1,6 +1,7 @@
 /**!
  * MixItUp v3.0.0-beta
- * Build 407f25fc-a217-4339-923f-b9aadeaf2a61
+ * A high-performance, dependency-free library for animated filtering, sorting and more
+ * Build e3fe59d7-5657-4ef8-a62d-eedea2f5fd4b
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -4965,13 +4966,17 @@
         sanitizeConfig: function() {
             var self = this;
 
-            // Sanitize strings
+            self.callActions('beforeSanitizeConfig', arguments);
+
+            // Sanitize enum/string config options
 
             self.config.controls.scope          = self.config.controls.scope.toLowerCase().trim();
             self.config.controls.toggleLogic    = self.config.controls.toggleLogic.toLowerCase().trim();
             self.config.controls.toggleDefault  = self.config.controls.toggleDefault.toLowerCase().trim();
 
             self.config.animation.effects       = self.config.animation.effects.trim();
+
+            self.callActions('afterSanitizeConfig', arguments);
         },
 
         /**

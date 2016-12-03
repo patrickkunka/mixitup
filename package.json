@@ -2,7 +2,7 @@
   "name": "mixitup",
   "title": "MixItUp",
   "version": "3.0.0-beta",
-  "description": "A UI powerhouse for animated filtering and sorting",
+  "description": "A high-performance, dependency-free library for animated filtering, sorting and more",
   "author": "KunkaLabs Limited",
   "homepage": "https://www.kunkalabs.com/mixitup/",
   "license": "SEE LICENSE IN license.md",

@@ -139,13 +139,17 @@ h.extend(mixitup.Mixer.prototype,
     sanitizeConfig: function() {
         var self = this;
 
-        // Sanitize strings
+        self.callActions('beforeSanitizeConfig', arguments);
+
+        // Sanitize enum/string config options
 
         self.config.controls.scope          = self.config.controls.scope.toLowerCase().trim();
         self.config.controls.toggleLogic    = self.config.controls.toggleLogic.toLowerCase().trim();
         self.config.controls.toggleDefault  = self.config.controls.toggleDefault.toLowerCase().trim();
 
         self.config.animation.effects       = self.config.animation.effects.trim();
+
+        self.callActions('afterSanitizeConfig', arguments);
     },
 
     /**
