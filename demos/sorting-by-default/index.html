@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp Demo - Sorting by Default</title>
+    </head>
+    <body>
+        <div class="controls">
+            <button type="button" class="control" data-sort="default:asc">Asc</button>
+            <button type="button" class="control" data-sort="default:desc">Desc</button>
+        </div>
+
+        <div class="container">
+            <div class="mix"></div>
+            <div class="mix"></div>
+            <div class="mix"></div>
+            <div class="mix"></div>
+            <div class="mix"></div>
+            <div class="mix"></div>
+            <div class="mix"></div>
+            <div class="mix"></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+
+        <script>
+            var containerEl = document.querySelector('.container');
+
+            var mixer = mixitup(containerEl);
+        </script>
+    </body>
+</html>
