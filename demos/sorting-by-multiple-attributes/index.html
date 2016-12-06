@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp Demo - Sorting by Multiple Attributes</title>
+    </head>
+    <body>
+        <div class="controls">
+            <button type="button" class="control" data-sort="published-date:desc name:asc">Desc</button>
+            <button type="button" class="control" data-sort="published-date:asc name:asc">Asc</button>
+        </div>
+
+        <div class="container">
+            <div class="mix" data-published-date="2016-11-24" data-name="Oscar"><h4>Oscar</h4></div>
+            <div class="mix" data-published-date="2016-10-12" data-name="Charlie"><h4>Charlie</h4></div>
+            <div class="mix" data-published-date="2016-09-30" data-name="Lima"><h4>Lima</h4></div>
+            <div class="mix" data-published-date="2016-09-03" data-name="Alpha"><h4>Alpha</h4></div>
+            <div class="mix" data-published-date="2016-09-03" data-name="Mike"><h4>Mike</h4></div>
+            <div class="mix" data-published-date="2016-09-03" data-name="Zulu"><h4>Zulu</h4></div>
+            <div class="mix" data-published-date="2016-04-30" data-name="Tango"><h4>Tango</h4></div>
+            <div class="mix" data-published-date="2016-04-24" data-name="Sierra"><h4>Sierra</h4></div>
+            <div class="mix" data-published-date="2016-03-12" data-name="Bravo"><h4>Bravo</h4></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+
+        <script>
+            var containerEl = document.querySelector('.container');
+
+            var mixer = mixitup(containerEl, {
+                load: {
+                    sort: 'published-date:desc name:asc'
+                }
+            });
+        </script>
+    </body>
+</html>
