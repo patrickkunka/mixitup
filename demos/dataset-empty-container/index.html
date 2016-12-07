@@ -6,7 +6,7 @@
         <link href="../reset.css" rel="stylesheet"/>
         <link href="./style.css" rel="stylesheet"/>
 
-        <title>MixItUp Demo - Filtering &amp; Sorting with Dataset</title>
+        <title>MixItUp Demo - Dataset with an Empty Container</title>
     </head>
     <body>
         <div class="controls" data-ref="controls">
@@ -21,42 +21,7 @@
         </div>
 
         <div class="container" data-ref="container">
-            <div class="item green" data-ref="item">
-                <time class="published-date">2015-10-03</time>
-            </div>
-
-            <div class="item green" data-ref="item">
-                <time class="published-date">2015-12-22</time>
-            </div>
-
-            <div class="item blue" data-ref="item">
-                <time class="published-date">2016-02-15</time>
-            </div>
-
-            <div class="item pink" data-ref="item">
-                <time class="published-date">2016-02-15</time>
-            </div>
-
-            <div class="item green" data-ref="item">
-                <time class="published-date">2016-04-25</time>
-            </div>
-
-            <div class="item blue" data-ref="item">
-                <time class="published-date">2016-05-02</time>
-            </div>
-
-            <div class="item pink" data-ref="item">
-                <time class="published-date">2016-10-07</time>
-            </div>
-
-            <div class="item blue" data-ref="item">
-                <time class="published-date">2016-11-13</time>
-            </div>
-
-            <div class="gap" data-ref="first-gap">
-                <time class="published-date">2016-12-01</time>
-            </div>
-
+            <div class="gap" data-ref="first-gap"></div>
             <div class="gap"></div>
             <div class="gap"></div>
         </div>
@@ -65,7 +30,7 @@
 
         <script>
             // Typically, our data would live in a DB and be retrieved via a JSON API, but in
-            // this demo we will create a mock dataset for illustration:
+            // this demo we will create a mock dataset using an array literal:
 
             var items = [
                 {
@@ -110,11 +75,6 @@
                 }
             ];
 
-            // As you can see, this data matches the pre-rendered targets, which would have been
-            // pre-rendered from the same data, either by the server or your client-side app.
-
-            // Alternatively, we could also start with an empty container, and render everything via MixItUp.
-
             // As we'll be building and binding our own UI, we'll start with caching
             // references to any DOM elements we'll need to work with
 
@@ -133,16 +93,13 @@
                 selectors: {
                     target: '[data-ref="item"]' // Query targets with an attribute selector to keep our JS and styling classes seperate
                 },
-                load: {
-                    dataset: items // Provide mixitup with the underlying data for the pre-rendered targets
-                },
                 layout: {
                     siblingAfter: firstGap // Ensure the first "gap" element is known to mixitup incase of insertion into an empty container
                 },
                 data: {
                     uidKey: 'id' // Our data model must have a unique id. In this case, its key is 'id'
                 },
-                render: { // Provide a target render function incase we need to render new items not in the initial dataset (not used in this demo)
+                render: { // We must provide a target render function incase we need to render new items not in the initial dataset (not used in this demo)
                     target: function(item) {
                         return '<div class="item ' + item.color + '" data-ref="item"><time class="published-date">' + item.publishedDate + '</time></div>';
                     }
@@ -202,7 +159,7 @@
                         return mixer.dataset(filteredItems);
                     })
                     .then(function(state) {
-                        console.log('filtered the dataset', state.activeDataset);
+                        console.log('filtered the dataset to ' + state.activeDataset.length + ' items');
                     })
                     .catch(function(err) {
                         console.error(err);
@@ -246,7 +203,7 @@
                         return mixer.dataset(sortedItems);
                     })
                     .then(function(state) {
-                        console.log('sorted the dataset', state.activeDataset);
+                        console.log('sorted the dataset');
                     })
                     .catch(function(err) {
                         console.error(err);
@@ -287,6 +244,13 @@
 
             activateButton(controls.querySelector('[data-color="all"]'), filters);
             activateButton(controls.querySelector('[data-order="asc"]'), sorts);
+
+            // Finally load the full dataset into the mixer
+
+            mixer.dataset(items)
+                .then(function(state) {
+                    console.log('loaded ' + state.activeDataset.length + ' items');
+                });
 
             // NB: If you're using MixItUp within a browser-rendered UI component,
             // always remember to destroy the instance (mixer.destroy()) when your

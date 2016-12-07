@@ -52,7 +52,7 @@ mixitup.Messages = function() {
         '[MixItUp] Please provide either a selector or collection `.filter()`, not both';
 
     this.ERROR_DATASET_NOT_SET =
-        '[MixItUp] To use the dataset API, a starting dataset must be set using `config.load.dataset`';
+        '[MixItUp] To use the dataset API with pre-rendered targets, a starting dataset must be set using `config.load.dataset`';
 
     this.ERROR_DATASET_PRERENDERED_MISMATCH =
         '[MixItUp] `config.load.dataset` does not match pre-rendered targets';

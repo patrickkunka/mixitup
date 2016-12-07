@@ -1,7 +1,7 @@
 /**!
  * MixItUp v3.0.0-beta
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 19d891b3-b174-4f62-9d49-9302e94b6a16
+ * Build 45093a8b-9012-47e3-a702-e3cbc0ead47a
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -7425,11 +7425,11 @@
         getDataOperation: function(newDataset) {
             var self                = this,
                 operation           = new mixitup.Operation(),
-                startDataset        = null;
+                startDataset        = [];
 
             operation = self.callFilters('operationUnmappedGetDataOperation', operation, arguments);
 
-            if (!(startDataset = self.state.activeDataset)) {
+            if (self.dom.targets.length && !(startDataset = (self.state.activeDataset || [])).length) {
                 throw new Error(mixitup.messages.errorDatasetNotSet());
             }
 
@@ -10167,7 +10167,7 @@
             '[MixItUp] Please provide either a selector or collection `.filter()`, not both';
 
         this.ERROR_DATASET_NOT_SET =
-            '[MixItUp] To use the dataset API, a starting dataset must be set using `config.load.dataset`';
+            '[MixItUp] To use the dataset API with pre-rendered targets, a starting dataset must be set using `config.load.dataset`';
 
         this.ERROR_DATASET_PRERENDERED_MISMATCH =
             '[MixItUp] `config.load.dataset` does not match pre-rendered targets';

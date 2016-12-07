@@ -2598,11 +2598,11 @@ h.extend(mixitup.Mixer.prototype,
     getDataOperation: function(newDataset) {
         var self                = this,
             operation           = new mixitup.Operation(),
-            startDataset        = null;
+            startDataset        = [];
 
         operation = self.callFilters('operationUnmappedGetDataOperation', operation, arguments);
 
-        if (!(startDataset = self.state.activeDataset)) {
+        if (self.dom.targets.length && !(startDataset = (self.state.activeDataset || [])).length) {
             throw new Error(mixitup.messages.errorDatasetNotSet());
         }
 
