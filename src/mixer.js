@@ -3166,7 +3166,7 @@ h.extend(mixitup.Mixer.prototype,
      * @public
      * @instance
      * @since       2.0.0
-     * @param       {(string|Array.<HTMLElement>}    sortString
+     * @param       {(string|Array.<HTMLElement>)}    sortString
      *      A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`). The sort method also accepts an array of all target elements in a user-defined order.
      * @param       {boolean}   [animate=true]
      *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.

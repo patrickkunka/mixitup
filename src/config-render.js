@@ -54,7 +54,6 @@ mixitup.ConfigRender = function() {
      * {{{{raw}}}}
      * var targetTemplate = Handlebars.compile('&lt;div class="mix"&gt;&lt;h2&gt;{{title}}&lt;/h2&gt;&lt;/div&gt;');
      * {{{{/raw}}}}
-     *
      * var mixer = mixitup(containerEl, {
      *     render: {
      *         target: targetTemplate

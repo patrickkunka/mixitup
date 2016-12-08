@@ -1,7 +1,7 @@
 /**!
  * MixItUp v3.0.0-beta
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 99b3485b-815f-4996-b892-3d3fa7457de9
+ * Build 4ef6a092-d6e1-4a60-a92d-f630f6bd52dc
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3550,9 +3550,9 @@
          * var mixer = mixitup(containerEl, {
          *     render: {
          *         target: function(item) {
-         *             return '<div class="mix">' +
-         *                 '<h2>' + item.title + '</h2>' +
-         *             '</div>';
+         *             return '&lt;div class="mix"&gt;' +
+         *                 '&lt;h2&gt;' + item.title + '&lt;/h2&gt;' +
+         *             '&lt;/div&gt;';
          *         }
          *     }
          * });
@@ -3562,17 +3562,16 @@
          * var mixer = mixitup(containerEl, {
          *     render: {
          *         target: function(item) {
-         *             return `<div class="mix">
-         *                 <h2>${item.title}</h2>
-         *             </div>`;
+         *             return `&lt;div class="mix"&gt;
+         *                 &lt;h2&gt;${item.title}&lt;/h2&gt;
+         *             &lt;/div&gt;`;
          *         }
          *     }
          * });
          *
          * @example <caption>Example 3: Using a Handlebars template</caption>
          *
-         * var targetTemplate = Handlebars.compile('<div class="mix"><h2>{{title}}</h2></div>');
-         *
+         * var targetTemplate = Handlebars.compile('&lt;div class="mix"&gt;&lt;h2&gt;{{title}}&lt;/h2&gt;&lt;/div&gt;');
          *
          * var mixer = mixitup(containerEl, {
          *     render: {
@@ -7993,7 +7992,7 @@
          * @public
          * @instance
          * @since       2.0.0
-         * @param       {(string|Array.<HTMLElement>}    sortString
+         * @param       {(string|Array.<HTMLElement>)}    sortString
          *      A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`). The sort method also accepts an array of all target elements in a user-defined order.
          * @param       {boolean}   [animate=true]
          *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.

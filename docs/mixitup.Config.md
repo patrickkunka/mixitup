@@ -1686,9 +1686,9 @@ The function receives the relevant dataset item as its first parameter.
 var mixer = mixitup(containerEl, {
     render: {
         target: function(item) {
-            return '<div class="mix">' +
-                '<h2>' + item.title + '</h2>' +
-            '</div>';
+            return '&lt;div class="mix"&gt;' +
+                '&lt;h2&gt;' + item.title + '&lt;/h2&gt;' +
+            '&lt;/div&gt;';
         }
     }
 });
@@ -1700,9 +1700,9 @@ var mixer = mixitup(containerEl, {
 var mixer = mixitup(containerEl, {
     render: {
         target: function(item) {
-            return `<div class="mix">
-                <h2>${item.title}</h2>
-            </div>`;
+            return `&lt;div class="mix"&gt;
+                &lt;h2&gt;${item.title}&lt;/h2&gt;
+            &lt;/div&gt;`;
         }
     }
 });
@@ -1711,8 +1711,7 @@ var mixer = mixitup(containerEl, {
 
 ```js
 
-var targetTemplate = Handlebars.compile('<div class="mix"><h2>{{title}}</h2></div>');
-
+var targetTemplate = Handlebars.compile('&lt;div class="mix"&gt;&lt;h2&gt;{{title}}&lt;/h2&gt;&lt;/div&gt;');
 
 var mixer = mixitup(containerEl, {
     render: {

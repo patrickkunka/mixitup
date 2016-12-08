@@ -117,7 +117,7 @@ or `'none'`. Only targets matching the selector will be shown.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`string, HTMLElement, Array.<HTMLElement>, mixitup.CommandFilter` | `selector` | Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`. The filter function also accepts a reference to single target element or a collection of target elements to show.
+|Param   |`string, HTMLElement, Array.<HTMLElement>` | `selector` | Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`. The filter method also accepts a reference to single target element or a collection of target elements to show.
 |Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
@@ -243,7 +243,7 @@ Sorts all targets in the container according to a provided sort string.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`string` | `sortString` | A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`).
+|Param   |`string, Array.<HTMLElement>` | `sortString` | A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`). The sort method also accepts an array of all target elements in a user-defined order.
 |Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
@@ -295,6 +295,26 @@ mixer.sort('published-date:desc data-title:asc')
 mixer.sort('random')
     .then(function(state) {
         console.log(state.activeSort.order === 'random') // true
+    });
+```
+###### Example 5: Sorting via an element collection
+
+```js
+
+var collection = Array.from(container.querySelectorAll('.mix'));
+
+// Swap the position of two elements in the collection:
+
+var temp = collection[1];
+
+collection[1] = collection[0];
+collection[0] = temp;
+
+// Pass the sorted collection to MixItUp
+
+mixer.sort(collection)
+    .then(function(state) {
+        console.log(state.targets[0] === collection[0]); // true
     });
 ```
 
