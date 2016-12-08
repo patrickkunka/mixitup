@@ -522,7 +522,7 @@ console.log(mixer.getState().totalShow); // 1
 
 // Create a new element via reference
 
-var newElementHtml = '&lt;div class="mix"&gt;&lt/div&gt;';
+var newElementHtml = '<div class="mix"></div>';
 
 // Create and insert the new element at index 1
 
@@ -563,7 +563,7 @@ mixer.insert(newElementsCollection, 1)
 
 console.log(mixer.getState().totalShow); // 4
 
-var $newElement = $('&lt;div class="mix"&gt;&lt/div&gt;');
+var $newElement = $('<div class="mix"></div>');
 
 // Insert the new elements starting at index 3
 

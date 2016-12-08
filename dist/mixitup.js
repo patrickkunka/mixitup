@@ -1,7 +1,7 @@
 /**!
  * MixItUp v3.0.0-beta
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 4ef6a092-d6e1-4a60-a92d-f630f6bd52dc
+ * Build 919492af-fbe1-4c34-a2e3-7005f6af88ab
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -8437,7 +8437,7 @@
          *
          * // Create a new element via reference
          *
-         * var newElementHtml = '&lt;div class="mix"&gt;&lt/div&gt;';
+         * var newElementHtml = '&lt;div class="mix"&gt;&lt;/div&gt;';
          *
          * // Create and insert the new element at index 1
          *
@@ -8474,7 +8474,7 @@
          *
          * console.log(mixer.getState().totalShow); // 4
          *
-         * var $newElement = $('&lt;div class="mix"&gt;&lt/div&gt;');
+         * var $newElement = $('&lt;div class="mix"&gt;&lt;/div&gt;');
          *
          * // Insert the new elements starting at index 3
          *
