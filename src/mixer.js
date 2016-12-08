@@ -2985,8 +2985,7 @@ h.extend(mixitup.Mixer.prototype,
      * @instance
      * @since       2.0.0
      * @param       {(string|HTMLElement|Array.<HTMLElement>|mixitup.CommandFilter)} selector
-     *      Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`. The filter function
-     *      also accepts a reference to single target element or a collection of target elements to show.
+     *      Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`. The filter function also accepts a reference to single target element or a collection of target elements to show.
      * @param       {boolean}   [animate=true]
      *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
