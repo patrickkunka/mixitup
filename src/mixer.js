@@ -2985,7 +2985,7 @@ h.extend(mixitup.Mixer.prototype,
      * @instance
      * @since       2.0.0
      * @param       {(string|HTMLElement|Array.<HTMLElement>|mixitup.CommandFilter)} selector
-     *      Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`. The filter function also accepts a reference to single target element or a collection of target elements to show.
+     *      Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`. The filter method also accepts a reference to single target element or a collection of target elements to show.
      * @param       {boolean}   [animate=true]
      *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
@@ -3145,11 +3145,29 @@ h.extend(mixitup.Mixer.prototype,
      *         console.log(state.activeSort.order === 'random') // true
      *     });
      *
+     * @example <caption>Example 5: Sorting via an element collection</caption>
+     *
+     * var collection = Array.from(container.querySelectorAll('.mix'));
+     *
+     * // Swap the position of two elements in the collection:
+     *
+     * var temp = collection[1];
+     *
+     * collection[1] = collection[0];
+     * collection[0] = temp;
+     *
+     * // Pass the sorted collection to MixItUp
+     *
+     * mixer.sort(collection)
+     *     .then(function(state) {
+     *         console.log(state.targets[0] === collection[0]); // true
+     *     });
+     *
      * @public
      * @instance
      * @since       2.0.0
-     * @param       {string}    sortString
-     *      A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`).
+     * @param       {(string|Array.<HTMLElement>}    sortString
+     *      A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`). The sort method also accepts an array of all target elements in a user-defined order.
      * @param       {boolean}   [animate=true]
      *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
      * @param       {function}  [callback=null]
