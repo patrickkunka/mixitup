@@ -41,11 +41,11 @@ mixitup.ConfigAnimation = function() {
      * A string of one or more space-seperated properties to which transitions will be
      * applied for all filtering animations.
      *
-     * properties can be listed any order or combination, although they will be applied in a specific
+     * Properties can be listed any order or combination, although they will be applied in a specific
      * predefined order to produce consistent results.
      *
-     * For more information about the available effects, please see our tutorial on customising
-     * MixItUp's animation options, or experiment with our sandbox demo.
+     * To learn more about available effects, experiment with our <a href="https://www.kunkalabs.com/mixitup/">
+     * sandbox demo</a> and try out the "Export config" button in the Animation options drop down.
      *
      * @example <caption>Example: Apply "fade" and "translateZ" effects to all animations</caption>
      * // As targets are filtered in and out, they will fade between

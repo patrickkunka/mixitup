@@ -31,7 +31,7 @@ body {
     transition: background 150ms;
 }
 
-.control:hover {
+.control:not(.control-active):hover {
     background: #3f3f3f;
 }
 

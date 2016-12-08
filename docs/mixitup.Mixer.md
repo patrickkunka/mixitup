@@ -117,7 +117,8 @@ or `'none'`. Only targets matching the selector will be shown.
 
 |   |Type | Name | Description
 |---|--- | --- | ---
-|Param   |`string` | `selector` | Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`.
+|Param   |`string, HTMLElement, Array.<HTMLElement>, mixitup.CommandFilter` | `selector` | Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`. The filter function
+     also accepts a reference to single target element or a collection of target elements to show.
 |Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
@@ -151,6 +152,29 @@ mixer.filter('.category-a.category-c')
     .then(function(state) {
         console.log(state.totalShow === containerEl.querySelectorAll('.category-a.category-c').length); // true
     });
+```
+###### Example 4: Filtering via an element collection
+
+```js
+
+var collection = Array.from(container.querySelectorAll('.mix'));
+
+console.log(collection.length); // 34
+
+// Filter the collection manually using Array.prototype.filter
+
+var filtered = collection.filter(function(target) {
+   return parseInt(target.getAttribute('data-price')) > 10;
+});
+
+console.log(filtered.length); // 22
+
+// Pass the filtered collection to MixItUp
+
+mixer.filter(filtered)
+   .then(function(state) {
+       console.log(state.activeFilter.collection.length === 22); // true
+   });
 ```
 
 <h3 id="toggleOn">toggleOn()</h3>

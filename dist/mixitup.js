@@ -1,7 +1,7 @@
 /**!
  * MixItUp v3.0.0-beta
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 605f224e-d8ce-4c27-a243-382cba5050ef
+ * Build a5cebcf5-4631-4f48-91be-190c3ca4dc21
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1844,11 +1844,11 @@
          * A string of one or more space-seperated properties to which transitions will be
          * applied for all filtering animations.
          *
-         * properties can be listed any order or combination, although they will be applied in a specific
+         * Properties can be listed any order or combination, although they will be applied in a specific
          * predefined order to produce consistent results.
          *
-         * For more information about the available effects, please see our tutorial on customising
-         * MixItUp's animation options, or experiment with our sandbox demo.
+         * To learn more about available effects, experiment with our <a href="https://www.kunkalabs.com/mixitup/">
+         * sandbox demo</a> and try out the "Export config" button in the Animation options drop down.
          *
          * @example <caption>Example: Apply "fade" and "translateZ" effects to all animations</caption>
          * // As targets are filtered in and out, they will fade between
@@ -7787,11 +7787,33 @@
          *         console.log(state.totalShow === containerEl.querySelectorAll('.category-a.category-c').length); // true
          *     });
          *
+         * @example <caption>Example 4: Filtering via an element collection</caption>
+         *
+         * var collection = Array.from(container.querySelectorAll('.mix'));
+         *
+         * console.log(collection.length); // 34
+         *
+         * // Filter the collection manually using Array.prototype.filter
+         *
+         * var filtered = collection.filter(function(target) {
+         *    return parseInt(target.getAttribute('data-price')) > 10;
+         * });
+         *
+         * console.log(filtered.length); // 22
+         *
+         * // Pass the filtered collection to MixItUp
+         *
+         * mixer.filter(filtered)
+         *    .then(function(state) {
+         *        console.log(state.activeFilter.collection.length === 22); // true
+         *    });
+         *
          * @public
          * @instance
          * @since       2.0.0
-         * @param       {string}    selector
-         *      Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`.
+         * @param       {(string|HTMLElement|Array.<HTMLElement>|mixitup.CommandFilter)} selector
+         *      Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`. The filter function
+         *      also accepts a reference to single target element or a collection of target elements to show.
          * @param       {boolean}   [animate=true]
          *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
