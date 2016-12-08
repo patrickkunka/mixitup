@@ -1,7 +1,7 @@
 /**!
  * MixItUp v3.0.0-beta
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 6b06fe81-4ea9-43cd-95ec-e53682227df3
+ * Build 99b3485b-815f-4996-b892-3d3fa7457de9
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -7811,7 +7811,7 @@
          * @public
          * @instance
          * @since       2.0.0
-         * @param       {(string|HTMLElement|Array.<HTMLElement>|mixitup.CommandFilter)} selector
+         * @param       {(string|HTMLElement|Array.<HTMLElement>)} selector
          *      Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`. The filter method also accepts a reference to single target element or a collection of target elements to show.
          * @param       {boolean}   [animate=true]
          *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.

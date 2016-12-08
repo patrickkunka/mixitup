@@ -31,9 +31,9 @@ mixitup.ConfigRender = function() {
      * var mixer = mixitup(containerEl, {
      *     render: {
      *         target: function(item) {
-     *             return '<div class="mix">' +
-     *                 '<h2>' + item.title + '</h2>' +
-     *             '</div>';
+     *             return '&lt;div class="mix"&gt;' +
+     *                 '&lt;h2&gt;' + item.title + '&lt;/h2&gt;' +
+     *             '&lt;/div&gt;';
      *         }
      *     }
      * });
@@ -43,16 +43,16 @@ mixitup.ConfigRender = function() {
      * var mixer = mixitup(containerEl, {
      *     render: {
      *         target: function(item) {
-     *             return `<div class="mix">
-     *                 <h2>${item.title}</h2>
-     *             </div>`;
+     *             return `&lt;div class="mix"&gt;
+     *                 &lt;h2&gt;${item.title}&lt;/h2&gt;
+     *             &lt;/div&gt;`;
      *         }
      *     }
      * });
      *
      * @example <caption>Example 3: Using a Handlebars template</caption>
      * {{{{raw}}}}
-     * var targetTemplate = Handlebars.compile('<div class="mix"><h2>{{title}}</h2></div>');
+     * var targetTemplate = Handlebars.compile('&lt;div class="mix"&gt;&lt;h2&gt;{{title}}&lt;/h2&gt;&lt;/div&gt;');
      * {{{{/raw}}}}
      *
      * var mixer = mixitup(containerEl, {
