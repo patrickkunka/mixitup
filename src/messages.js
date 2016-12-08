@@ -22,10 +22,10 @@ mixitup.Messages = function() {
         '[MixItUp] The provided selector yielded no container element';
 
     this.ERROR_CONFIG_INVALID_ANIMATION_EFFECTS =
-        '[MixItUp] Invalid value for `config.animation.effects`';
+        '[MixItUp] Invalid value for `animation.effects`';
 
     this.ERROR_CONFIG_INVALID_CONTROLS_SCOPE =
-        '[MixItUp] Invalid value for `config.controls.scope`';
+        '[MixItUp] Invalid value for `controls.scope`';
 
     this.ERROR_CONFIG_INVALID_PROPERTY =
         '[MixitUp] Invalid configuration object property "${erroneous}"${suggestion}';
@@ -34,7 +34,7 @@ mixitup.Messages = function() {
         '. Did you mean "${probableMatch}"?';
 
     this.ERROR_CONFIG_DATA_UID_KEY_NOT_SET =
-        '[MixItUp] To use the dataset API, a UID key must be specified using `config.data.uidKey`';
+        '[MixItUp] To use the dataset API, a UID key must be specified using `data.uidKey`';
 
     this.ERROR_DATASET_INVALID_UID_KEY =
         '[MixItUp] The specified UID key "${uidKey}" is not present on one or more dataset items';
@@ -52,13 +52,13 @@ mixitup.Messages = function() {
         '[MixItUp] Please provide either a selector or collection `.filter()`, not both';
 
     this.ERROR_DATASET_NOT_SET =
-        '[MixItUp] To use the dataset API with pre-rendered targets, a starting dataset must be set using `config.load.dataset`';
+        '[MixItUp] To use the dataset API with pre-rendered targets, a starting dataset must be set using `load.dataset`';
 
     this.ERROR_DATASET_PRERENDERED_MISMATCH =
-        '[MixItUp] `config.load.dataset` does not match pre-rendered targets';
+        '[MixItUp] `load.dataset` does not match pre-rendered targets';
 
     this.ERROR_DATASET_RENDERER_NOT_SET =
-        '[MixItUp] To insert an element via the dataset API, a target renderer function must be provided to `config.render.target`';
+        '[MixItUp] To insert an element via the dataset API, a target renderer function must be provided to `render.target`';
 
     /* Warnings
     ----------------------------------------------------------------------------- */

@@ -58,11 +58,14 @@
             <div class="gap"></div>
         </div>
 
+        <script src="../mock-api.js"></script>
         <script src="../mixitup.min.js"></script>
 
         <script>
             // Typically, our data would live in a DB and be retrieved via a JSON API, but in
-            // this demo we will create a mock dataset using an array literal:
+            // this demo we will create a mock dataset using an array literal.
+
+            // You will notice that this data exactly matches our pre-rendered targets.
 
             var items = [
                 {
@@ -107,20 +110,30 @@
                 }
             ];
 
-            // As you can see, this data matches the pre-rendered targets, which would have been
-            // pre-rendered from the same data, either by the server or your client-side app.
+            // The `Api` class is not part of MixItUp and has been created to mock
+            // the asyncronous fetching of data for this demo. To use it, we must
+            // create an api instance, passing in our mock data to represent the
+            // contents of a DB.
+
+            var api = new Api(items);
 
             // As we'll be building and binding our own UI, we'll start with caching
             // references to any DOM elements we'll need to work with
 
-            var controls     = document.querySelector('[data-ref="controls"]');
-            var filters      = document.querySelectorAll('[data-ref="filter"]');
-            var sorts        = document.querySelectorAll('[data-ref="sort"]');
-            var container    = document.querySelector('[data-ref="container"]');
-            var firstGap     = document.querySelector('[data-ref="first-gap"]');
+            var controls  = document.querySelector('[data-ref="controls"]');
+            var filters   = document.querySelectorAll('[data-ref="filter"]');
+            var sorts     = document.querySelectorAll('[data-ref="sort"]');
+            var container = document.querySelector('[data-ref="container"]');
 
-            // NB: "Gap" elements are used to maintain even columns in a justified grid. See our
+            // "Gap" elements are used to maintain even columns in a justified grid. See our
             // "MixItUp Grid Layouts" tutorial for more information.
+
+            var firstGap = document.querySelector('[data-ref="first-gap"]');
+
+            // We'll need to keep track of our active current filter so
+            // that we can sort within the current filter.
+
+            var activeColor = '';
 
             // Instantiate and configure the mixer
 
@@ -128,11 +141,11 @@
                 selectors: {
                     target: '[data-ref="item"]' // Query targets with an attribute selector to keep our JS and styling classes seperate
                 },
-                load: {
-                    dataset: items // Provide mixitup with the underlying data for the pre-rendered targets
-                },
                 layout: {
                     siblingAfter: firstGap // Ensure the first "gap" element is known to mixitup incase of insertion into an empty container
+                },
+                load: {
+                    dataset: items // As we have pre-rendered targets, we must "prime" MixItUp with their underlying data
                 },
                 data: {
                     uidKey: 'id' // Our data model must have a unique id. In this case, its key is 'id'
@@ -145,8 +158,8 @@
             });
 
             /**
-             * Sets an active styling class on an active button, and removes
-             * it from all its siblings of the same type.
+             * A helper function to set an active styling class on an active button,
+             * and remove it from its siblings at the same time.
              *
              * @param {HTMLElement} activeButton
              * @param {HTMLELement[]} siblings
@@ -165,93 +178,20 @@
             }
 
             /**
-             * Receives a DB-like query object, and mocks the process of hitting an API
-             * to get back matching items, using JavaScript array filtering. This would
-             * be replaced in your application with a call to your API.
+             * A click handler to detect the type of button clicked, read off the
+             * relevent attributes, call the API, and trigger a dataset operation.
              *
-             * @param  {object}     query   A object containing one or more key-value pairs to filter by
-             * @return {Promise}
+             * @param   {HTMLElement} button
+             * @return  {void}
              */
 
-            function filter(query) {
-                return Promise.resolve() // Mock async
-                    .then(function() {
-                        // Filter the items array as per the query
+            function handleButtonClick(button) {
+                // Define default values for color, sortBy and order
+                // incase they are not present in the clicked button
 
-                        var filteredItems = items.filter(function(item) {
-                            var value;
-
-                            for (key in query) {
-                                value = query[key];
-
-                                if (value === 'all') return true;
-
-                                if (item[key] !== value) return false;
-                            }
-
-                            return true;
-                        });
-
-                        // Send the filtered dataset to MixItUp
-
-                        return mixer.dataset(filteredItems);
-                    })
-                    .then(function(state) {
-                        console.log('filtered the dataset to ' + state.activeDataset.length + ' items');
-                    })
-                    .catch(function(err) {
-                        console.error(err);
-                    });
-            }
-
-            /**
-             * Receives a key to sort by and a sorting order, and mocks the process of hitting an API
-             * to get back items from the DB in the desired order using JavaScript array sorting.
-             * This would be replaced in your application with a call to your API.
-             *
-             * @param  {string}         key     The key in the data model by which to sort by
-             * @param  {('asc'|'desc')} order   The order to sort by
-             * @return {Promise}
-             */
-
-            function sort(key, order) {
-                return Promise.resolve() // Mock asyc
-                    .then(function() {
-                        // This function would also need to be provided with the filter
-                        // query in order to limit sorting to the current set, but we
-                        // will use the activeDataset from the state for simplicity.
-
-                        var activeDataset = mixer.getState().activeDataset;
-
-                        var sortedItems = activeDataset.slice().sort(function(a, b) {
-                            var valueA = a[key];
-                            var valueB = b[key];
-
-                            if (valueA > valueB) {
-                                return order === 'asc' ? 1 : -1;
-                            } else if (valueA < valueB) {
-                                return order === 'asc' ? -1 : 1;
-                            } else {
-                                return 0;
-                            }
-                        })
-
-                        // Send the sorted dataset to MixItUp
-
-                        return mixer.dataset(sortedItems);
-                    })
-                    .then(function(state) {
-                        console.log('sorted the dataset');
-                    })
-                    .catch(function(err) {
-                        console.error(err);
-                    });
-            }
-
-            // Set up a handler to listen for control "click" events
-
-            controls.addEventListener('click', function(e) {
-                var button = e.target;
+                var color  = activeColor;
+                var sortBy = 'id';
+                var order  = 'asc';
 
                 // If button is already active, or an operation is in progress, ignore the click
 
@@ -264,18 +204,43 @@
 
                     activateButton(button, filters);
 
-                    // Mock a DB-query:
-
-                    filter({
-                        color: button.getAttribute('data-color')
-                    });
+                    color = activeColor = button.getAttribute('data-color');
                 } else if (button.matches('[data-ref="sort"]')) {
                     // Sort button
 
                     activateButton(button, sorts);
 
-                    sort(button.getAttribute('data-key'), button.getAttribute('data-order'));
+                    sortBy = button.getAttribute('data-key');
+                    order = button.getAttribute('data-order');
+                } else {
+                    // Not a button
+
+                    return;
                 }
+
+                // Now that we have our color filter and sorting order, we can fetch some data from the API.
+
+                api.get({
+                    color: color,
+                    $sort_by: sortBy,
+                    $order: order
+                })
+                    .then(function(items) {
+                        // Our api returns an array of items which we can send
+                        // straight to our mixer using the .dataset() method
+
+                        return mixer.dataset(items);
+                    })
+                    .then(function(state) {
+                        console.log('fetched ' + state.activeDataset.length + ' items');
+                    })
+                    .catch(console.error.bind(console));
+            }
+
+            // We can now set up a handler to listen for "click" events on our UI buttons
+
+            controls.addEventListener('click', function(e) {
+                handleButtonClick(e.target);
             });
 
             // Set controls the active controls on startup to match the default filter and sort
@@ -283,8 +248,7 @@
             activateButton(controls.querySelector('[data-color="all"]'), filters);
             activateButton(controls.querySelector('[data-order="asc"]'), sorts);
 
-            // NB: If you're using MixItUp within a browser-rendered UI component,
-            // always remember to destroy the instance (mixer.destroy()) when your
+            // NB: Always remember to destroy the instance with mixer.destroy() when your
             // component unmounts to ensure that event handlers are unbound and the
             // instance can be garbage collected.
         </script>
