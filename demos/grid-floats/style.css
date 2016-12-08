@@ -1,0 +1,73 @@
+html,
+body {
+    height: 100%;
+    background: #f2f2f2;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+/* Container
+---------------------------------------------------------------------- */
+
+.container {
+    padding: 1rem .5rem;
+    overflow: hidden;
+}
+
+/* Target Elements
+---------------------------------------------------------------------- */
+
+.mix {
+    float: left;
+    margin: 0 .5rem 1rem;
+    background: #fff;
+    border-radius: 2px;
+    position: relative;
+}
+
+.mix:before {
+    content: '';
+    display: inline-block;
+    padding-top: 56.25%;
+}
+
+/* Grid Breakpoints
+---------------------------------------------------------------------- */
+
+/* 2 Columns */
+
+.mix {
+    width: calc(50% - 1rem);
+}
+
+/* 3 Columns */
+
+@media screen and (min-width: 541px) {
+    .mix {
+        width: calc(100%/3 - 1rem);
+    }
+}
+
+/* 4 Columns */
+
+@media screen and (min-width: 961px) {
+    .mix,
+    .gap {
+        width: calc(100%/4 - 1rem);
+    }
+}
+
+/* 5 Columns */
+
+@media screen and (min-width: 1281px) {
+    .mix,
+    .gap {
+        width: calc(100%/5 - 1rem);
+    }
+}
+
+
