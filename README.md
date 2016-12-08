@@ -7,13 +7,13 @@ MixItUp is a high-performance, dependency-free library for animated DOM manipula
 
 MixItUp plays nice with your existing HTML and CSS, making it a great choice for responsive layouts and compatible with inline-flow, percentages, media queries, flexbox and more.
 
-For a live sandbox, full documentation, tutorials and more, please visit [Website Pending](#).
+For a live sandbox, full documentation, tutorials and more, please visit the [kunkalabs.com/mixitup](https://www.kunkalabs.com/mixitup/).
 
 Migrating from MixItUp 2? Check out the [MixItUp 3 Migration Guide](./docs/mixitup-3-migration-guide.md).
 
 #### Licensing
 
-MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see [Website Pending](#).
+MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see the [MixItUp Licenses](https://www.kunkalabs.com/mixitup/licenses/) page.
 
 #### Documentation
 
@@ -81,7 +81,7 @@ Filter controls are queried based on the presence of a `data-filter` attribute, 
 <button type="button" data-filter=".category-c">Category C</button>
 ```
 
-Further reading: [Advanced Filtering](#)
+Further reading: [Filtering with MixItUp](https://www.kunkalabs.com/mixitup/tutorials/filtering-with-mixitup/)
 
 #### Sort Controls
 
@@ -95,13 +95,13 @@ Sort controls are queried based on the presence of a `data-sort` attribute, whos
 
 The values `'default'` and `'random'` are also valid, with `'default'` referring to the original order of target elements in the DOM at the time of mixer instantiation.
 
-Further reading: [Advanced Sorting](#)
+Further reading: [Sorting with MixItUp](https://www.kunkalabs.com/mixitup/tutorials/sorting-with-mixitup/)
 
 ### Styling the Container
 
 While MixItUp can be added on top of any existing CSS layout, we strongly recommend inline-block or flexbox-based styling over floats and legacy grid frameworks when dealing with grid-based designs for a number of reasons.
 
-Further reading: [MixItUp Grid Layouts](#)
+Further reading: [MixItUp Grid Layouts](https://www.kunkalabs.com/mixitup/tutorials/mixitup-grid-layouts/)
 
 ### Loading MixItUp
 
@@ -204,4 +204,4 @@ Further reading: [Mixer API Methods](./docs/mixitup.Mixer.md)
 
 You may wish to use MixItUp 3's new "dataset" API. Dataset is designed for use in API-driven JavaScript applications, and can be used instead of DOM-based methods such as `.filter()`, `.sort()`, `.insert()`, etc. When used, insertion, removal, sorting and pagination can be achieved purely via changes to your data model, without the uglyness of having to interact with or query the DOM directly.
 
-Further reading: [Introducing the Dataset API](#)
+Further reading: [Using the Dataset API](https://www.kunkalabs.com/mixitup/tutorials/using-the-dataset-api/)
