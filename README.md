@@ -81,7 +81,7 @@ Filter controls are queried based on the presence of a `data-filter` attribute, 
 <button type="button" data-filter=".category-c">Category C</button>
 ```
 
-Further reading: [Filtering with MixItUp](https://www.kunkalabs.com/mixitup/tutorials/filtering-with-mixitup/)
+Further reading: [Filtering with MixItUp](https://www.kunkalabs.com/tutorials/filtering-with-mixitup/)
 
 #### Sort Controls
 
@@ -95,13 +95,13 @@ Sort controls are queried based on the presence of a `data-sort` attribute, whos
 
 The values `'default'` and `'random'` are also valid, with `'default'` referring to the original order of target elements in the DOM at the time of mixer instantiation.
 
-Further reading: [Sorting with MixItUp](https://www.kunkalabs.com/mixitup/tutorials/sorting-with-mixitup/)
+Further reading: [Sorting with MixItUp](https://www.kunkalabs.com/tutorials/sorting-with-mixitup/)
 
 ### Styling the Container
 
 While MixItUp can be added on top of any existing CSS layout, we strongly recommend inline-block or flexbox-based styling over floats and legacy grid frameworks when dealing with grid-based designs for a number of reasons.
 
-Further reading: [MixItUp Grid Layouts](https://www.kunkalabs.com/mixitup/tutorials/mixitup-grid-layouts/)
+Further reading: [MixItUp Grid Layouts](https://www.kunkalabs.com/tutorials/mixitup-grid-layouts/)
 
 ### Loading MixItUp
 
@@ -204,4 +204,4 @@ Further reading: [Mixer API Methods](./docs/mixitup.Mixer.md)
 
 You may wish to use MixItUp 3's new "dataset" API. Dataset is designed for use in API-driven JavaScript applications, and can be used instead of DOM-based methods such as `.filter()`, `.sort()`, `.insert()`, etc. When used, insertion, removal, sorting and pagination can be achieved purely via changes to your data model, without the uglyness of having to interact with or query the DOM directly.
 
-Further reading: [Using the Dataset API](https://www.kunkalabs.com/mixitup/tutorials/using-the-dataset-api/)
+Further reading: [Using the Dataset API](https://www.kunkalabs.com/tutorials/using-the-dataset-api/)
