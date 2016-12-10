@@ -6,7 +6,6 @@
   "author": "KunkaLabs Limited",
   "homepage": "https://www.kunkalabs.com/mixitup/",
   "license": "SEE README.md",
-  "private": true,
   "main": "./dist/mixitup.js",
   "scripts": {
     "test": "mocha ./tests/unit/main.js",

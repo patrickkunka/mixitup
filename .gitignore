@@ -3,4 +3,5 @@ components
 .tmp
 .DS_Store
 .log
+npm-debug.*
 coverage/
