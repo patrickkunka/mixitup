@@ -64,7 +64,7 @@ By default, MixItUp will query the container for targets matching the selector `
 
 Targets can be filtered using any valid selector e.g. `'.category-a'`, and are sorted via optional custom data attributes e.g. `'data-order'`.
 
-Further reading: [Marking-up MixItUp Containers](#)
+Further reading: [Marking-up MixItUp Containers](https://www.kunkalabs.com/tutorials/marking-up-mixitup-containers/)
 
 ### Building Controls
 
