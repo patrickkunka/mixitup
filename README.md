@@ -7,7 +7,7 @@ MixItUp is a high-performance, dependency-free library for animated DOM manipula
 
 MixItUp plays nice with your existing HTML and CSS, making it a great choice for responsive layouts and compatible with inline-flow, percentages, media queries, flexbox and more.
 
-For a live sandbox, full documentation, tutorials and more, please visit the [kunkalabs.com/mixitup](https://www.kunkalabs.com/mixitup/).
+For a live sandbox, full documentation, tutorials and more, please visit [kunkalabs.com/mixitup](https://www.kunkalabs.com/mixitup/).
 
 Migrating from MixItUp 2? Check out the [MixItUp 3 Migration Guide](./docs/mixitup-3-migration-guide.md).
 
