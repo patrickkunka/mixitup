@@ -10,6 +10,6 @@
  * @license   Commercial use requires a commercial license.
  *            {{commercialLicenseUrl}}
  *
- *            Non-commercial use permitted under same terms as {{nonComercialLicenseTitle}} license.
+ *            Non-commercial use permitted under same terms as CC BY-NC 3.0 license.
  *            {{nonCommercialLicenseUrl}}
  */
