@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.0.0
+ * MixItUp v3.0.1
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 47693865-4fa6-4558-8a21-d91e4c4dd7c8
+ * Build 5e143f29-5caa-4949-8a63-877d229a1338
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -4992,7 +4992,9 @@
 
             self.callActions('beforeGetInitialState', arguments);
 
-            // Map initial values into a mock state object
+            // Map initial values into a mock state object in order to construct an operation
+
+            state.activeContainerClassName = self.config.layout.containerClassName;
 
             if (self.config.load.dataset) {
                 // Dataset API
@@ -5002,6 +5004,7 @@
                 }
 
                 operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset.slice();
+                operation.startContainerClassName = operation.newContainerClassName = state.activeContainerClassName;
                 operation.show = self.targets.slice();
 
                 state = self.callFilters('stateGetInitialState', state, arguments);
@@ -5010,7 +5013,6 @@
 
                 state.activeFilter              = self.parseFilterArgs([self.config.load.filter]).command;
                 state.activeSort                = self.parseSortArgs([self.config.load.sort]).command;
-                state.activeContainerClassName  = self.config.layout.containerClassName;
                 state.totalTargets              = self.targets.length;
 
                 state = self.callFilters('stateGetInitialState', state, arguments);
@@ -5032,8 +5034,9 @@
                     operation.startOrder = operation.newOrder = self.targets;
                 }
 
-                operation.startFilter   = operation.newFilter   = state.activeFilter;
-                operation.startSort     = operation.newSort     = state.activeSort;
+                operation.startFilter               = operation.newFilter               = state.activeFilter;
+                operation.startSort                 = operation.newSort                 = state.activeSort;
+                operation.startContainerClassName   = operation.newContainerClassName   = state.activeContainerClassName;
 
                 if (operation.newFilter.selector === 'all') {
                     operation.newFilter.selector = self.config.selectors.target;
@@ -10333,5 +10336,5 @@
         mixitup.registerJqPlugin(jq);
     }
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.0.0';
+    mixitup.CORE_VERSION = '3.0.1';
 })(window);

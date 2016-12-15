@@ -166,7 +166,9 @@ h.extend(mixitup.Mixer.prototype,
 
         self.callActions('beforeGetInitialState', arguments);
 
-        // Map initial values into a mock state object
+        // Map initial values into a mock state object in order to construct an operation
+
+        state.activeContainerClassName = self.config.layout.containerClassName;
 
         if (self.config.load.dataset) {
             // Dataset API
@@ -176,6 +178,7 @@ h.extend(mixitup.Mixer.prototype,
             }
 
             operation.startDataset = operation.newDataset = state.activeDataset = self.config.load.dataset.slice();
+            operation.startContainerClassName = operation.newContainerClassName = state.activeContainerClassName;
             operation.show = self.targets.slice();
 
             state = self.callFilters('stateGetInitialState', state, arguments);
@@ -184,7 +187,6 @@ h.extend(mixitup.Mixer.prototype,
 
             state.activeFilter              = self.parseFilterArgs([self.config.load.filter]).command;
             state.activeSort                = self.parseSortArgs([self.config.load.sort]).command;
-            state.activeContainerClassName  = self.config.layout.containerClassName;
             state.totalTargets              = self.targets.length;
 
             state = self.callFilters('stateGetInitialState', state, arguments);
@@ -206,8 +208,9 @@ h.extend(mixitup.Mixer.prototype,
                 operation.startOrder = operation.newOrder = self.targets;
             }
 
-            operation.startFilter   = operation.newFilter   = state.activeFilter;
-            operation.startSort     = operation.newSort     = state.activeSort;
+            operation.startFilter               = operation.newFilter               = state.activeFilter;
+            operation.startSort                 = operation.newSort                 = state.activeSort;
+            operation.startContainerClassName   = operation.newContainerClassName   = state.activeContainerClassName;
 
             if (operation.newFilter.selector === 'all') {
                 operation.newFilter.selector = self.config.selectors.target;

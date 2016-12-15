@@ -244,4 +244,19 @@ describe('mixitup()', () => {
 
         mixer.destroy();
     });
+
+    it('should add a `layout.containerClassName` class if specified and be reflected in state', () => {
+        let container = dom.getContainer();
+        let mixer = mixitup(container, {
+            layout: {
+                containerClassName: 'grid'
+            }
+        });
+
+        let state = mixer.getState();
+
+        chai.assert.equal(state.activeContainerClassName, 'grid');
+
+        mixer.destroy();
+    });
 });
