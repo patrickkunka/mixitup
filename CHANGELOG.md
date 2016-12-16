@@ -13,4 +13,9 @@ Change Log
 
 - Added `selectors.controls` configuration option to allow for further specificity of control querying
 in addition to the mandatory data attirbutes.
-- Fixed package.json issues
+- Fixed package.json issues.
+
+## 3.1.1
+
+- Fixed issue where `transitionend` event handlers were not rebound to re-rendered targets during dirtyCheck updates.
+- Fixed issue where dataset operation objects where created on push to queue, resulting in corrupted target data.

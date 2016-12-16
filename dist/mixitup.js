@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.1.0
+ * MixItUp v3.1.1
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build d6e794dc-5811-4a4e-a2d9-fd3e620c147d
+ * Build 089145d5-822b-4610-879b-c9f0026e27a6
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -7558,9 +7558,13 @@
 
                         target.data = data;
 
+                        target.unbindEvents();
+
                         self.dom.parent.replaceChild(el, target.dom.el);
 
                         target.dom.el = el;
+
+                        target.bindEvents();
                     }
 
                     el = target.dom.el;
@@ -8161,7 +8165,7 @@
         dataset: function() {
             var self        = this,
                 instruction = self.parseDatasetArgs(arguments),
-                operation   = self.getDataOperation(instruction.command.dataset),
+                operation   = null,
                 queueItem   = null,
                 animate     = false;
 
@@ -8171,6 +8175,8 @@
                 if (instruction.callback) self.userCallback = instruction.callback;
 
                 animate = (instruction.animate ^ self.config.animation.enable) ? instruction.animate : self.config.animation.enable;
+
+                operation = self.getDataOperation(instruction.command.dataset);
 
                 return self.goMix(animate, operation);
             } else {
@@ -10370,5 +10376,5 @@
         mixitup.registerJqPlugin(jq);
     }
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.1.0';
+    mixitup.CORE_VERSION = '3.1.1';
 })(window);
