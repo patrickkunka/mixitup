@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.0.1
+ * MixItUp v3.1.0
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 5e143f29-5caa-4949-8a63-877d229a1338
+ * Build d6e794dc-5811-4a4e-a2d9-fd3e620c147d
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -3508,6 +3508,38 @@
 
         this.target = '.mix';
 
+        /**
+         * A optional selector string used to add further specificity to the querying of control elements,
+         * in addition to their mandatory data attribute (e.g. `data-filter`, `data-toggle`, `data-sort`).
+         *
+         * This can be used if other elements in your document must contain the above attributes
+         * (e.g. for use in third-party scripts), and would otherwise interfere with MixItUp. Adding
+         * an additional `control` selector of your choice allows MixItUp to restrict event handling
+         * to only those elements matching the defined selector.
+         *
+         * @name        control
+         * @memberof    mixitup.Config.selectors
+         * @instance
+         * @type        {string}
+         * @default     ''
+         *
+         * @example <caption>Example 1: Adding a `selectors.control` selector</caption>
+         *
+         * var mixer = mixitup(containerEl, {
+         *     selectors: {
+         *         control: '.mixitup-control'
+         *     }
+         * });
+         *
+         * // Will not be handled:
+         * // <button data-filter=".category-a"></button>
+         *
+         * // Will be handled:
+         * // <button class="mixitup-control" data-filter=".category-a"></button>
+         */
+
+        this.control = '';
+
         this.callActions('afterConstruct');
 
         h.seal(this);
@@ -4211,10 +4243,12 @@
 
             this.pending = 0;
 
+            mixer = self.bound[0];
+
             if (!self.selector) {
                 button = self.el;
             } else {
-                button = h.closestParent(e.target, self.selector, true, self.bound[0].dom.document);
+                button = h.closestParent(e.target, mixer.config.selectors.control + self.selector, true, mixer.dom.document);
             }
 
             if (!button) {
@@ -5174,7 +5208,7 @@
 
                     self.controls.push(control);
                 } else {
-                    controlElements = parent.querySelectorAll(definition.selector);
+                    controlElements = parent.querySelectorAll(self.config.selectors.control + definition.selector);
 
                     for (j = 0; el = controlElements[j]; j++) {
                         control = self.getControl(el, definition.type, '');
@@ -10336,5 +10370,5 @@
         mixitup.registerJqPlugin(jq);
     }
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.0.1';
+    mixitup.CORE_VERSION = '3.1.0';
 })(window);

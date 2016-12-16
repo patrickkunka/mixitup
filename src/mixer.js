@@ -348,7 +348,7 @@ h.extend(mixitup.Mixer.prototype,
 
                 self.controls.push(control);
             } else {
-                controlElements = parent.querySelectorAll(definition.selector);
+                controlElements = parent.querySelectorAll(self.config.selectors.control + definition.selector);
 
                 for (j = 0; el = controlElements[j]; j++) {
                     control = self.getControl(el, definition.type, '');

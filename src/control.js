@@ -214,10 +214,12 @@ h.extend(mixitup.Control.prototype,
 
         this.pending = 0;
 
+        mixer = self.bound[0];
+
         if (!self.selector) {
             button = self.el;
         } else {
-            button = h.closestParent(e.target, self.selector, true, self.bound[0].dom.document);
+            button = h.closestParent(e.target, mixer.config.selectors.control + self.selector, true, mixer.dom.document);
         }
 
         if (!button) {

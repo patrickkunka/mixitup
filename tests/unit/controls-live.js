@@ -113,5 +113,44 @@ describe('Controls', () => {
             chai.assert.equal(mixer2.getState().activeFilter.selector, '.category-a');
             chai.assert.isOk(filter.matches('.mixitup-control-active'));
         });
+
+        it ('should restrict control clicks to only those matching is a control selector is defined', () => {
+            let frag = document.createDocumentFragment();
+
+            let container = dom.getContainer();
+            let controls = dom.getFilterControls();
+
+            let config = {
+                controls: {
+                    live: true
+                },
+                selectors: {
+                    control: '.mixitup-control-restrict'
+                }
+            };
+
+            frag.appendChild(controls);
+            frag.appendChild(container);
+
+            let mixer = mixitup(container, config, frag);
+
+            after(() => {
+                mixer.destroy();
+            });
+
+            let filter1 = controls.querySelector('[data-filter=".category-a"]');
+
+            filter1.classList.add('mixitup-control-restrict');
+
+            filter1.click();
+
+            let filter2 = controls.querySelector('[data-filter=".category-b"]');
+
+            filter2.click();
+
+            chai.assert.equal(mixer.getState().activeFilter.selector, '.category-a');
+            chai.assert.isOk(filter1.matches('.mixitup-control-active'));
+            chai.assert.isNotOk(filter2.matches('.mixitup-control-active'));
+        });
     });
 });

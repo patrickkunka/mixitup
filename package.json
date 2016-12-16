@@ -1,12 +1,16 @@
 {
   "name": "mixitup",
   "title": "MixItUp",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "A high-performance, dependency-free library for animated filtering, sorting and more",
   "author": "KunkaLabs Limited",
   "homepage": "https://www.kunkalabs.com/mixitup/",
-  "license": "SEE README.md",
+  "license": "SEE LICENSE IN README.md",
   "main": "./dist/mixitup.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/patrickkunka/mixitup/"
+  },
   "scripts": {
     "test": "mocha ./tests/unit/main.js",
     "cover": "istanbul cover _mocha ./tests/unit/main.js",
