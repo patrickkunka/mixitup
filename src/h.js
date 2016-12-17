@@ -889,8 +889,8 @@ h = {
             i               = -1;
 
         for (i = 0; i < controlParts.length; i++) {
-            controlPart     = parseInt(controlParts[i]);
-            specimenPart    = parseInt(specimenParts[i] || 0);
+            controlPart     = parseInt(controlParts[i].replace(/[^\d.]/g, ''));
+            specimenPart    = parseInt(specimenParts[i].replace(/[^\d.]/g, '') || 0);
 
             if (specimenPart < controlPart) {
                 return false;

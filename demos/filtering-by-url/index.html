@@ -75,7 +75,7 @@
                     // Equivalent to filter "all", remove the hash
 
                     history.pushState(null, document.title, window.location.pathname); // or history.replaceState()
-                } else if (newHash !== window.location.hash) {
+                } else if (newHash !== window.location.hash && selector !== targetSelector) {
                     // Change the hash
 
                     history.pushState(null, document.title, window.location.pathname + newHash); // or history.replaceState()
