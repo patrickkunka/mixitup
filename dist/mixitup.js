@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.1.2
+ * MixItUp v3.1.3
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 8db25e3d-698e-4c92-9857-72cb05b80ed1
+ * Build 77da8fe0-b52d-4313-bdfc-2b5eb8b683b8
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -17,9 +17,9 @@
 (function(window) {
     'use strict';
 
-    var mixitup         = null,
-        h               = null,
-        jq              = null;
+    var mixitup = null,
+        h       = null,
+        jq      = null;
 
     (function() {
         var VENDORS = ['webkit', 'moz', 'o', 'ms'],
@@ -430,6 +430,8 @@
      */
 
     mixitup.use = function(extension) {
+        mixitup.Base.prototype.callActions.call(mixitup, 'beforeUse', arguments);
+
         // Call the extension's factory function, passing
         // the mixitup factory as a paramater
 
@@ -450,6 +452,8 @@
 
             mixitup.registerJqPlugin(extension);
         }
+
+        mixitup.Base.prototype.callActions.call(mixitup, 'afterUse', arguments);
     };
 
     /**
@@ -3582,9 +3586,11 @@
          * var mixer = mixitup(containerEl, {
          *     render: {
          *         target: function(item) {
-         *             return '&lt;div class="mix"&gt;' +
-         *                 '&lt;h2&gt;' + item.title + '&lt;/h2&gt;' +
-         *             '&lt;/div&gt;';
+         *             return (
+         *                 '&lt;div class="mix"&gt;' +
+         *                     '&lt;h2&gt;' + item.title + '&lt;/h2&gt;' +
+         *                 '&lt;/div&gt;'
+         *             );
          *         }
          *     }
          * });
@@ -3594,9 +3600,11 @@
          * var mixer = mixitup(containerEl, {
          *     render: {
          *         target: function(item) {
-         *             return `&lt;div class="mix"&gt;
-         *                 &lt;h2&gt;${item.title}&lt;/h2&gt;
-         *             &lt;/div&gt;`;
+         *             return (
+         *                 `&lt;div class="mix"&gt;
+         *                     &lt;h2&gt;${item.title}&lt;/h2&gt;
+         *                  &lt;/div&gt;`
+         *             );
          *         }
          *     }
          * });
@@ -7554,28 +7562,30 @@
                     if (self.config.data.dirtyCheck && !h.deepEquals(data, target.data)) {
                         // change detected
 
-                        el = self.renderTarget(data);
+                        el = target.render(data);
 
                         target.data = data;
 
-                        target.unbindEvents();
+                        if (el !== target.dom.el) {
+                            target.unbindEvents();
 
-                        self.dom.parent.replaceChild(el, target.dom.el);
+                            self.dom.parent.replaceChild(el, target.dom.el);
 
-                        target.dom.el = el;
+                            target.dom.el = el;
 
-                        target.bindEvents();
+                            target.bindEvents();
+                        }
                     }
 
                     el = target.dom.el;
                 } else {
                     // New target
 
-                    el = el = self.renderTarget(data);
-
                     target = new mixitup.Target();
 
-                    target.init(el, self, data);
+                    target.init(null, self, data);
+
+                    target.hide();
                 }
 
                 if (!target.isInDom) {
@@ -7591,7 +7601,7 @@
                         frag.appendChild(self.dom.document.createTextNode(' '));
                     }
 
-                    frag.appendChild(el);
+                    frag.appendChild(target.dom.el);
 
                     target.isInDom = true;
 
@@ -7652,36 +7662,6 @@
             }
 
             self.callActions('afterDiffDatasets', arguments);
-        },
-
-        /**
-         * @private
-         * @instance
-         * @since   3.0.0
-         * @param   {object} data
-         * @return  {void}
-         */
-
-        renderTarget: function(data) {
-            var self    = this,
-                render  = null,
-                el      = null,
-                temp    = document.createElement('div'),
-                html    = '';
-
-            self.callActions('beforeRenderTarget', arguments);
-
-            if (typeof (render = self.config.render.target) !== 'function') {
-                throw new TypeError(mixitup.messages.errorDatasetRendererNotSet());
-            }
-
-            html = render(data);
-
-            temp.innerHTML = html;
-
-            el = temp.firstElementChild;
-
-            return self.callFilters('elRenderTarget', el, arguments);
         },
 
         /**
@@ -9138,9 +9118,9 @@
          * @private
          * @instance
          * @since   3.0.0
-         * @param   {Element}   el
-         * @param   {object}    mixer
-         * @param   {object}    [data]
+         * @param   {(Element|null)}    el
+         * @param   {object}            mixer
+         * @param   {object}            [data]
          * @return  {void}
          */
 
@@ -9151,6 +9131,12 @@
             self.callActions('beforeInit', arguments);
 
             self.mixer = mixer;
+
+            if (!el) {
+                // If no element is provided, render it
+
+                el = self.render(data);
+            }
 
             self.cacheDom(el);
 
@@ -9174,6 +9160,45 @@
             }
 
             self.callActions('afterInit', arguments);
+        },
+
+        /**
+         * Renders the target element using a user-defined renderer function.
+         *
+         * @private
+         * @instance
+         * @since   3.1.3
+         * @param   {object} data
+         * @return  {void}
+         */
+
+        render: function(data) {
+            var self    = this,
+                render  = null,
+                el      = null,
+                temp    = null,
+                output  = '';
+
+            self.callActions('beforeRender', arguments);
+
+            render = self.callFilters('renderRender', self.mixer.config.render.target, arguments);
+
+            if (typeof render !== 'function') {
+                throw new TypeError(mixitup.messages.errorDatasetRendererNotSet());
+            }
+
+            output = render(data);
+
+            if (output && typeof output === 'object' && h.isElement(output)) {
+                el = output;
+            } else if (typeof output === 'string') {
+                temp = document.createElement('div');
+                temp.innerHTML = output;
+
+                el = temp.firstElementChild;
+            }
+
+            return self.callFilters('elRender', el, arguments);
         },
 
         /**
@@ -10375,6 +10400,8 @@
     if ((jq = window.$ || window.jQuery) && jq.fn.jquery) {
         mixitup.registerJqPlugin(jq);
     }
+    mixitup.BaseStatic.call(mixitup.constructor);
+
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.1.2';
+    mixitup.CORE_VERSION = '3.1.3';
 })(window);

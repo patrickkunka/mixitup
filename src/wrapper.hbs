@@ -3,9 +3,9 @@
 (function(window) {
     'use strict';
 
-    var mixitup         = null,
-        h               = null,
-        jq              = null;
+    var mixitup = null,
+        h       = null,
+        jq      = null;
 
     {{>polyfills}}
 
@@ -96,6 +96,8 @@
     {{>facade}}
 
     {{>module-definitions}}
+
+    mixitup.BaseStatic.call(mixitup.constructor);
 
     mixitup.NAME = '{{name}}';
     mixitup.CORE_VERSION = '{{version}}';

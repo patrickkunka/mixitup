@@ -2694,28 +2694,30 @@ h.extend(mixitup.Mixer.prototype,
                 if (self.config.data.dirtyCheck && !h.deepEquals(data, target.data)) {
                     // change detected
 
-                    el = self.renderTarget(data);
+                    el = target.render(data);
 
                     target.data = data;
 
-                    target.unbindEvents();
+                    if (el !== target.dom.el) {
+                        target.unbindEvents();
 
-                    self.dom.parent.replaceChild(el, target.dom.el);
+                        self.dom.parent.replaceChild(el, target.dom.el);
 
-                    target.dom.el = el;
+                        target.dom.el = el;
 
-                    target.bindEvents();
+                        target.bindEvents();
+                    }
                 }
 
                 el = target.dom.el;
             } else {
                 // New target
 
-                el = el = self.renderTarget(data);
-
                 target = new mixitup.Target();
 
-                target.init(el, self, data);
+                target.init(null, self, data);
+
+                target.hide();
             }
 
             if (!target.isInDom) {
@@ -2731,7 +2733,7 @@ h.extend(mixitup.Mixer.prototype,
                     frag.appendChild(self.dom.document.createTextNode(' '));
                 }
 
-                frag.appendChild(el);
+                frag.appendChild(target.dom.el);
 
                 target.isInDom = true;
 
@@ -2792,36 +2794,6 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         self.callActions('afterDiffDatasets', arguments);
-    },
-
-    /**
-     * @private
-     * @instance
-     * @since   3.0.0
-     * @param   {object} data
-     * @return  {void}
-     */
-
-    renderTarget: function(data) {
-        var self    = this,
-            render  = null,
-            el      = null,
-            temp    = document.createElement('div'),
-            html    = '';
-
-        self.callActions('beforeRenderTarget', arguments);
-
-        if (typeof (render = self.config.render.target) !== 'function') {
-            throw new TypeError(mixitup.messages.errorDatasetRendererNotSet());
-        }
-
-        html = render(data);
-
-        temp.innerHTML = html;
-
-        el = temp.firstElementChild;
-
-        return self.callFilters('elRenderTarget', el, arguments);
     },
 
     /**

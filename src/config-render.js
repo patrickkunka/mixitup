@@ -31,9 +31,11 @@ mixitup.ConfigRender = function() {
      * var mixer = mixitup(containerEl, {
      *     render: {
      *         target: function(item) {
-     *             return '&lt;div class="mix"&gt;' +
-     *                 '&lt;h2&gt;' + item.title + '&lt;/h2&gt;' +
-     *             '&lt;/div&gt;';
+     *             return (
+     *                 '&lt;div class="mix"&gt;' +
+     *                     '&lt;h2&gt;' + item.title + '&lt;/h2&gt;' +
+     *                 '&lt;/div&gt;'
+     *             );
      *         }
      *     }
      * });
@@ -43,9 +45,11 @@ mixitup.ConfigRender = function() {
      * var mixer = mixitup(containerEl, {
      *     render: {
      *         target: function(item) {
-     *             return `&lt;div class="mix"&gt;
-     *                 &lt;h2&gt;${item.title}&lt;/h2&gt;
-     *             &lt;/div&gt;`;
+     *             return (
+     *                 `&lt;div class="mix"&gt;
+     *                     &lt;h2&gt;${item.title}&lt;/h2&gt;
+     *                  &lt;/div&gt;`
+     *             );
      *         }
      *     }
      * });
