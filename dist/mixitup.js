@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.1.2
+ * MixItUp v3.1.3
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 8db25e3d-698e-4c92-9857-72cb05b80ed1
+ * Build dce0f083-453a-4a55-91fb-7e61d1c4633f
  *
  * @copyright Copyright 2014-2016 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -10331,6 +10331,8 @@
         this.show               = mixer.show.bind(mixer);
         this.hide               = mixer.hide.bind(mixer);
         this.filter             = mixer.filter.bind(mixer);
+        this.toggleOn           = mixer.toggleOn.bind(mixer);
+        this.toggleOff          = mixer.toggleOff.bind(mixer);
         this.sort               = mixer.sort.bind(mixer);
         this.changeLayout       = mixer.changeLayout.bind(mixer);
         this.multimix           = mixer.multimix.bind(mixer);
@@ -10376,5 +10378,5 @@
         mixitup.registerJqPlugin(jq);
     }
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.1.2';
+    mixitup.CORE_VERSION = '3.1.3';
 })(window);

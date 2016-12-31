@@ -164,6 +164,18 @@ describe('Controls', () => {
                 chai.assert.equal(state.totalHide, 0);
                 chai.assert.isNotOk(toggle.matches('.mixitup-control-active'));
             });
+
+            it('should allow toggles to activated via the API', () => {
+                let totalMatching = container.querySelectorAll('.category-a.category-c').length;
+
+                mixer.toggleOn('.category-a');
+                mixer.toggleOn('.category-c');
+
+                let state = mixer.getState();
+
+                chai.assert.equal(state.activeFilter.selector, '.category-a.category-c');
+                chai.assert.equal(state.totalShow, totalMatching);
+            });
         });
 
         describe('Defaults', () => {

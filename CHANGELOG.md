@@ -24,3 +24,7 @@ in addition to the mandatory data attributes.
 
 - Improved `compareVersions` util function to handle semver notation correctly (e.g. `'^'`, `'~'`, `'-beta'`, etc).
 - Fixed issue with "Filtering by URL" demo that added a `#mix` segment to the URL for filter "all"
+
+## 3.1.3
+
+- Exposed `.toggleOn()` and `.toggleOff()` API methods publicly via the mixer facade, as were accidently missed out previously.
