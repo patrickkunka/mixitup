@@ -44,9 +44,9 @@ h.extend(mixitup.Target.prototype, {
      * @private
      * @instance
      * @since   3.0.0
-     * @param   {Element}   el
-     * @param   {object}    mixer
-     * @param   {object}    [data]
+     * @param   {(Element|null)}    el
+     * @param   {object}            mixer
+     * @param   {object}            [data]
      * @return  {void}
      */
 
@@ -57,6 +57,12 @@ h.extend(mixitup.Target.prototype, {
         self.callActions('beforeInit', arguments);
 
         self.mixer = mixer;
+
+        if (!el) {
+            // If no element is provided, render it
+
+            el = self.render(data);
+        }
 
         self.cacheDom(el);
 
@@ -80,6 +86,45 @@ h.extend(mixitup.Target.prototype, {
         }
 
         self.callActions('afterInit', arguments);
+    },
+
+    /**
+     * Renders the target element using a user-defined renderer function.
+     *
+     * @private
+     * @instance
+     * @since   3.1.4
+     * @param   {object} data
+     * @return  {void}
+     */
+
+    render: function(data) {
+        var self    = this,
+            render  = null,
+            el      = null,
+            temp    = null,
+            output  = '';
+
+        self.callActions('beforeRender', arguments);
+
+        render = self.callFilters('renderRender', self.mixer.config.render.target, arguments);
+
+        if (typeof render !== 'function') {
+            throw new TypeError(mixitup.messages.errorDatasetRendererNotSet());
+        }
+
+        output = render(data);
+
+        if (output && typeof output === 'object' && h.isElement(output)) {
+            el = output;
+        } else if (typeof output === 'string') {
+            temp = document.createElement('div');
+            temp.innerHTML = output;
+
+            el = temp.firstElementChild;
+        }
+
+        return self.callFilters('elRender', el, arguments);
     },
 
     /**

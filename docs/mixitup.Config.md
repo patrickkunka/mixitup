@@ -1701,7 +1701,8 @@ All render functions receive a data object, and should return a valid HTML strin
 
 
 
-A function returning an HTML string representing a target element.
+A function returning an HTML string representing a target element, or a reference to a
+single DOM element.
 
 The function is invoked as part of the `.dataset()` API, whenever a new item is added
 to the dataset, or an item in the dataset changes (if `dataset.dirtyCheck` is enabled).
@@ -1720,9 +1721,11 @@ The function receives the relevant dataset item as its first parameter.
 var mixer = mixitup(containerEl, {
     render: {
         target: function(item) {
-            return '<div class="mix">' +
-                '<h2>' + item.title + '</h2>' +
-            '</div>';
+            return (
+                '<div class="mix">' +
+                    '<h2>' + item.title + '</h2>' +
+                '</div>'
+            );
         }
     }
 });
@@ -1734,9 +1737,11 @@ var mixer = mixitup(containerEl, {
 var mixer = mixitup(containerEl, {
     render: {
         target: function(item) {
-            return `<div class="mix">
-                <h2>${item.title}</h2>
-            </div>`;
+            return (
+                `<div class="mix">
+                    <h2>${item.title}</h2>
+                 </div>`
+            );
         }
     }
 });
@@ -1750,6 +1755,22 @@ var targetTemplate = Handlebars.compile('<div class="mix"><h2>{{title}}</h2></di
 var mixer = mixitup(containerEl, {
     render: {
         target: targetTemplate
+    }
+});
+```
+###### Example 4: Returning a DOM element
+
+```js
+
+var mixer = mixitup(containerEl, {
+    render: {
+        target: function(item) {
+             // Create a single element using your framework's built-in renderer
+
+             var el = ...
+
+             return el;
+        }
     }
 });
 ```

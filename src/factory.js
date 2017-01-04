@@ -171,6 +171,8 @@ mixitup = function(container, config, foreignDoc) {
  */
 
 mixitup.use = function(extension) {
+    mixitup.Base.prototype.callActions.call(mixitup, 'beforeUse', arguments);
+
     // Call the extension's factory function, passing
     // the mixitup factory as a paramater
 
@@ -191,6 +193,8 @@ mixitup.use = function(extension) {
 
         mixitup.registerJqPlugin(extension);
     }
+
+    mixitup.Base.prototype.callActions.call(mixitup, 'afterUse', arguments);
 };
 
 /**

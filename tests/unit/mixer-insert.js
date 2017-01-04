@@ -294,6 +294,22 @@ describe('mixitup.Mixer', () => {
                     mixer.destroy();
                 });
         });
+
+        it('should accept accept a document fragment as an argument to append', () => {
+            let container = dom.getContainer();
+            let mixer = mixitup(container);
+            let newTarget = dom.getTarget();
+            let frag = document.createDocumentFragment();
+
+            frag.appendChild(newTarget);
+
+            return mixer.append(frag)
+                .then(state => {
+                    chai.assert.equal(state.show[6].id, 7);
+
+                    mixer.destroy();
+                });
+        });
     });
 
     describe('#insertBefore()', () => {

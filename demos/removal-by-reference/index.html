@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp Demo - Removal by Reference</title>
+    </head>
+    <body>
+        <div class="controls">
+            <button type="button" class="control" data-filter="all">All</button>
+            <button type="button" class="control" data-filter=".green">Green</button>
+            <button type="button" class="control" data-filter=".blue">Blue</button>
+            <button type="button" class="control" data-filter=".pink">Pink</button>
+            <button type="button" class="control" data-filter="none">None</button>
+
+            <button type="button" class="control" data-sort="default:asc">Asc</button>
+            <button type="button" class="control" data-sort="default:desc">Desc</button>
+        </div>
+
+        <div class="container">
+            <div class="mix green"></div>
+            <div class="mix green"></div>
+            <div class="mix blue"></div>
+            <div class="mix pink"></div>
+            <div class="mix green"></div>
+            <div class="mix blue"></div>
+            <div class="mix pink"></div>
+            <div class="mix blue"></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+
+        <script>
+            var containerEl = document.querySelector('.container');
+
+            var mixer = mixitup(containerEl);
+
+            function handleTargetClick(e) {
+                var targetEl;
+
+                if (!(targetEl = e.target).matches('.mix')) {
+                    // If clicked element is not a target, return
+
+                    return;
+                }
+
+                // Pass the reference to the target element to the remove method
+
+                mixer.remove(targetEl);
+            }
+
+            containerEl.addEventListener('click', handleTargetClick);
+        </script>
+    </body>
+</html>

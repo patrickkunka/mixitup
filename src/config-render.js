@@ -19,7 +19,8 @@ mixitup.ConfigRender = function() {
     this.callActions('beforeConstruct');
 
     /**
-     * A function returning an HTML string representing a target element.
+     * A function returning an HTML string representing a target element, or a reference to a
+     * single DOM element.
      *
      * The function is invoked as part of the `.dataset()` API, whenever a new item is added
      * to the dataset, or an item in the dataset changes (if `dataset.dirtyCheck` is enabled).
@@ -31,9 +32,11 @@ mixitup.ConfigRender = function() {
      * var mixer = mixitup(containerEl, {
      *     render: {
      *         target: function(item) {
-     *             return '&lt;div class="mix"&gt;' +
-     *                 '&lt;h2&gt;' + item.title + '&lt;/h2&gt;' +
-     *             '&lt;/div&gt;';
+     *             return (
+     *                 '&lt;div class="mix"&gt;' +
+     *                     '&lt;h2&gt;' + item.title + '&lt;/h2&gt;' +
+     *                 '&lt;/div&gt;'
+     *             );
      *         }
      *     }
      * });
@@ -43,9 +46,11 @@ mixitup.ConfigRender = function() {
      * var mixer = mixitup(containerEl, {
      *     render: {
      *         target: function(item) {
-     *             return `&lt;div class="mix"&gt;
-     *                 &lt;h2&gt;${item.title}&lt;/h2&gt;
-     *             &lt;/div&gt;`;
+     *             return (
+     *                 `&lt;div class="mix"&gt;
+     *                     &lt;h2&gt;${item.title}&lt;/h2&gt;
+     *                  &lt;/div&gt;`
+     *             );
      *         }
      *     }
      * });
@@ -57,6 +62,20 @@ mixitup.ConfigRender = function() {
      * var mixer = mixitup(containerEl, {
      *     render: {
      *         target: targetTemplate
+     *     }
+     * });
+     *
+     * @example <caption>Example 4: Returning a DOM element</caption>
+     *
+     * var mixer = mixitup(containerEl, {
+     *     render: {
+     *         target: function(item) {
+     *              // Create a single element using your framework's built-in renderer
+     *
+     *              var el = ...
+     *
+     *              return el;
+     *         }
      *     }
      * });
      *
