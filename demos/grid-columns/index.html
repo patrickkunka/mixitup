@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp Demo - Columns Grid</title>
+    </head>
+    <body>
+        <div class="controls">
+            <button type="button" class="control" data-filter="all">All</button>
+            <button type="button" class="control" data-filter=".green">Green</button>
+            <button type="button" class="control" data-filter=".blue">Blue</button>
+            <button type="button" class="control" data-filter=".pink">Pink</button>
+            <button type="button" class="control" data-filter="none">None</button>
+
+            <button type="button" class="control" data-sort="default:asc">Asc</button>
+            <button type="button" class="control" data-sort="default:desc">Desc</button>
+
+            <button type="button" class="control text" data-sort="random">Shuffle</button>
+        </div>
+
+        <div class="container">
+            <div class="mix green"></div>
+            <div class="mix green"></div>
+            <div class="mix blue"></div>
+            <div class="mix pink"></div>
+            <div class="mix green"></div>
+            <div class="mix blue"></div>
+            <div class="mix pink"></div>
+            <div class="mix blue"></div>
+            <div class="mix green"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+
+        <script>
+            var containerEl = document.querySelector('.container');
+
+            var mixer = mixitup(containerEl, {
+                animation: {
+                    animateResizeContainer: false // required to prevent column algorithm bug
+                }
+            });
+
+            // NB: See comments in stylesheet regarding fixes for chrome and safari "flickering"
+        </script>
+    </body>
+</html>
