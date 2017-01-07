@@ -69,7 +69,7 @@
 
                     searchValue = '';
                 } else {
-                    searchValue = inputSearch.value;
+                    searchValue = inputSearch.value.toLowerCase().trim();
                 }
 
                 // Very basic throttling to prevent mixer thrashing. Only search
