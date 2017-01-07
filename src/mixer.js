@@ -2011,8 +2011,6 @@ h.extend(mixitup.Mixer.prototype,
 
         if (operation.willSort) {
             self.printSort(false, operation);
-
-            self.targets = operation.newOrder;
         }
 
         // Remove any styles applied to the parent container
@@ -2038,7 +2036,11 @@ h.extend(mixitup.Mixer.prototype,
                         h.removeWhitespace(whitespaceBefore);
                     }
 
-                    self.dom.parent.removeChild(target.dom.el);
+                    if (!operation.willSort) {
+                        // NB: Sorting will remove targets as a bi-product of `printSort()`
+
+                        self.dom.parent.removeChild(target.dom.el);
+                    }
 
                     self.targets.splice(i, 1);
 
@@ -2051,6 +2053,10 @@ h.extend(mixitup.Mixer.prototype,
             // Since targets have been removed, the original order must be updated
 
             self.origOrder = self.targets;
+        }
+
+        if (operation.willSort) {
+            self.targets = operation.newOrder;
         }
 
         self.state = operation.newState;
@@ -2620,12 +2626,12 @@ h.extend(mixitup.Mixer.prototype,
 
         operation.id            = h.randomHex();
         operation.startState    = self.state;
-        operation.startOrder    = self.targets;
         operation.startDataset  = startDataset;
         operation.newDataset    = newDataset.slice();
 
         self.diffDatasets(operation);
 
+        operation.startOrder = self.targets;
         operation.newOrder = operation.show;
 
         if (self.config.animation.enable) {
@@ -2671,6 +2677,7 @@ h.extend(mixitup.Mixer.prototype,
         var self                = this,
             persistantStartIds  = [],
             persistantNewIds    = [],
+            insertedTargets     = [],
             data                = null,
             target              = null,
             el                  = null,
@@ -2678,7 +2685,7 @@ h.extend(mixitup.Mixer.prototype,
             nextEl              = null,
             uids                = {},
             id                  = '',
-            i                   = 0;
+            i                   = -1;
 
         self.callActions('beforeDiffDatasets', arguments);
 
@@ -2708,13 +2715,23 @@ h.extend(mixitup.Mixer.prototype,
                     target.data = data;
 
                     if (el !== target.dom.el) {
-                        target.unbindEvents();
+                        // Update target element reference
 
-                        self.dom.parent.replaceChild(el, target.dom.el);
+                        if (target.isInDom) {
+                            target.unbindEvents();
+
+                            self.dom.parent.replaceChild(el, target.dom.el);
+                        }
+
+                        if (!target.isShown) {
+                            el.style.display = 'none';
+                        }
 
                         target.dom.el = el;
 
-                        target.bindEvents();
+                        if (target.isInDom) {
+                            target.bindEvents();
+                        }
                     }
                 }
 
@@ -2746,7 +2763,13 @@ h.extend(mixitup.Mixer.prototype,
 
                 target.isInDom = true;
 
+                target.unbindEvents();
+                target.bindEvents();
+                target.hide();
+
                 operation.toShow.push(target);
+
+                insertedTargets.push(target);
             } else {
                 // Already in DOM
 
@@ -2755,13 +2778,13 @@ h.extend(mixitup.Mixer.prototype,
                 persistantNewIds.push(id);
 
                 if (frag) {
-                    // Close and insert frag
+                    // Close and insert previously opened frag
 
                     if (frag.lastElementChild) {
                         frag.appendChild(self.dom.document.createTextNode(' '));
                     }
 
-                    self.dom.parent.insertBefore(frag, target.dom.el);
+                    self.insertDatasetFrag(frag, target.dom.el, self.targets.indexOf(target), insertedTargets);
 
                     frag = null;
                 }
@@ -2779,7 +2802,7 @@ h.extend(mixitup.Mixer.prototype,
                 frag.appendChild(self.dom.document.createTextNode(' '));
             }
 
-            self.dom.parent.insertBefore(frag, nextEl);
+            self.insertDatasetFrag(frag, nextEl, self.dom.targets.length, insertedTargets);
         }
 
         for (i = 0; data = operation.startDataset[i]; i++) {
@@ -2803,6 +2826,29 @@ h.extend(mixitup.Mixer.prototype,
         }
 
         self.callActions('afterDiffDatasets', arguments);
+    },
+
+    /**
+     * @private
+     * @instance
+     * @since   3.1.5
+     * @param   {DocumentFragment}          frag
+     * @param   {(HTMLElement|null)}        nextEl
+     * @param   {number}                    insertionIndex
+     * @param   {Array.<mixitup.Target>}    targets
+     * @return  {void}
+     */
+
+    insertDatasetFrag: function(frag, nextEl, insertionIndex, targets) {
+        var self = this;
+
+        self.dom.parent.insertBefore(frag, nextEl);
+
+        while (targets.length) {
+            self.targets.splice(insertionIndex, 0, targets.shift());
+
+            insertionIndex++;
+        }
     },
 
     /**

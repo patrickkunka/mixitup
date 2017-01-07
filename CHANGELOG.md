@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## 3.1.5
+
+- Fixed several issues relating to the Dataset API and multimix-like operations (i.e. simultaneous insertion/removal/sorting/dirty-checking)
+
 ## 3.1.4
 
 - Added ability to extend static factory methods (such as `mixitup.use`) with hooks.
