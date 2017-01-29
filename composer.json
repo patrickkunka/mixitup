@@ -1,0 +1,19 @@
+{
+    "name": "patrickkunka/mixitup",
+    "type": "library",
+    "homepage": "https://www.kunkalabs.com/mixitup/",
+    "license": [
+       "proprietary"
+    ],
+    "authors": [
+        {
+            "name": "KunkaLabs Limited",
+            "homepage": "https://www.kunkalabs.com/"
+        }
+    ],
+    "support": {
+        "docs": "https://www.kunkalabs.com/mixitup/docs/get-started/"
+    },
+    "description": "A high-performance, dependency-free library for animated filtering, sorting and more",
+    "keywords": ["javascript", "animate", "filtering", "sorting"]
+}

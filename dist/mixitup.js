@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.1.5
+ * MixItUp v3.1.6
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 8e050b2e-5ae0-443c-b990-d2c1d27c2bc1
+ * Build 82b49dcf-748d-446f-b5f7-ab14043f4c0f
  *
  * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -10475,5 +10475,5 @@
     mixitup.BaseStatic.call(mixitup.constructor);
 
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.1.5';
+    mixitup.CORE_VERSION = '3.1.6';
 })(window);
