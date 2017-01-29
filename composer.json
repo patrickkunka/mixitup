@@ -1,0 +1,17 @@
+{
+    "name": "patrickkunka/mixitup",
+    "type": "library",
+    "homepage": "https://mixitup.kunkalabs.com/",
+    "license": [
+       "CC-BY-NC-4.0",
+       "proprietary"
+    ],
+    "authors": [
+        {
+            "name": "KunkaLabs Limited",
+            "homepage": "https://kunkalabs.com/"
+        }
+    ],
+    "description": "MixItUp is a jQuery plugin providing animated filtering and sorting.",
+    "keywords": ["javascript", "mix", "animate", "grid", "jquery", "filtering", "sorting"]
+}
