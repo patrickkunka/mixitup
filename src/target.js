@@ -144,7 +144,7 @@ h.extend(mixitup.Target.prototype, {
 
         self.dom.el = el;
 
-        self.callActions('beforeCacheDom', arguments);
+        self.callActions('afterCacheDom', arguments);
     },
 
     /**

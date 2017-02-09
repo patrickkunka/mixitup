@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## 3.1.7
+
+- Fixed duplicate hook `beforeCacheDom` in `Target#cacheDom`. Now renamed to `afterCacheDom`.
+
 ## 3.1.6
 
 - Added composer.json
