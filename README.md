@@ -13,7 +13,7 @@ Migrating from MixItUp 2? Check out the [MixItUp 3 Migration Guide](./docs/mixit
 
 #### Licensing
 
-MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, a commercial license is required. For licensing information and FAQs please see the [MixItUp Licenses](https://www.kunkalabs.com/mixitup/licenses/) page.
+MixItUp is open source and free to use for non-commercial, educational and non-profit use. For use in commercial projects, **a commercial license is required**. For licensing information and FAQs please see the [MixItUp Licenses](https://www.kunkalabs.com/mixitup/licenses/) page.
 
 #### Documentation
 
