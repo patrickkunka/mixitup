@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## 3.1.8
+
+- Adds ability to bind live controls where multiple parents exist. Required for Pagination 3.2.0.
+
 ## 3.1.7
 
 - Fixed duplicate hook `beforeCacheDom` in `Target#cacheDom`. Now renamed to `afterCacheDom`.

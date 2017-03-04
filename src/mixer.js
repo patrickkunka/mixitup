@@ -323,7 +323,7 @@ h.extend(mixitup.Mixer.prototype,
             controlElements     = null,
             el                  = null,
             parent              = null,
-            delagator           = null,
+            delagators          = null,
             control             = null,
             i                   = -1,
             j                   = -1;
@@ -346,20 +346,26 @@ h.extend(mixitup.Mixer.prototype,
         for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
             if (self.config.controls.live || definition.live) {
                 if (definition.parent) {
-                    delagator = self.dom[definition.parent];
+                    delagators = self.dom[definition.parent];
 
-                    if (!delagator) continue;
+                    if (!delagators || delagators.length < 0) continue;
+
+                    if (typeof delagators.length !== 'number') {
+                        delagators = [delagators];
+                    }
                 } else {
-                    delagator = parent;
+                    delagators = [parent];
                 }
 
-                control = self.getControl(delagator,  definition.type, definition.selector);
+                for (j = 0; (el = delagators[j]); j++) {
+                    control = self.getControl(el,  definition.type, definition.selector);
 
-                self.controls.push(control);
+                    self.controls.push(control);
+                }
             } else {
                 controlElements = parent.querySelectorAll(self.config.selectors.control + definition.selector);
 
-                for (j = 0; el = controlElements[j]; j++) {
+                for (j = 0; (el = controlElements[j]); j++) {
                     control = self.getControl(el, definition.type, '');
 
                     if (!control) continue;

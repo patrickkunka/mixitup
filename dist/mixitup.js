@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.1.7
+ * MixItUp v3.1.8
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build dcb11d27-0cb4-45f7-949b-e3742b467160
+ * Build 8b4a57ae-dad2-4d16-bc0b-024c6a7b1cb0
  *
  * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -5206,7 +5206,7 @@
                 controlElements     = null,
                 el                  = null,
                 parent              = null,
-                delagator           = null,
+                delagators          = null,
                 control             = null,
                 i                   = -1,
                 j                   = -1;
@@ -5229,20 +5229,26 @@
             for (i = 0; definition = mixitup.controlDefinitions[i]; i++) {
                 if (self.config.controls.live || definition.live) {
                     if (definition.parent) {
-                        delagator = self.dom[definition.parent];
+                        delagators = self.dom[definition.parent];
 
-                        if (!delagator) continue;
+                        if (!delagators || delagators.length < 0) continue;
+
+                        if (typeof delagators.length !== 'number') {
+                            delagators = [delagators];
+                        }
                     } else {
-                        delagator = parent;
+                        delagators = [parent];
                     }
 
-                    control = self.getControl(delagator,  definition.type, definition.selector);
+                    for (j = 0; (el = delagators[j]); j++) {
+                        control = self.getControl(el,  definition.type, definition.selector);
 
-                    self.controls.push(control);
+                        self.controls.push(control);
+                    }
                 } else {
                     controlElements = parent.querySelectorAll(self.config.selectors.control + definition.selector);
 
-                    for (j = 0; el = controlElements[j]; j++) {
+                    for (j = 0; (el = controlElements[j]); j++) {
                         control = self.getControl(el, definition.type, '');
 
                         if (!control) continue;
@@ -10475,5 +10481,5 @@
     mixitup.BaseStatic.call(mixitup.constructor);
 
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.1.7';
+    mixitup.CORE_VERSION = '3.1.8';
 })(window);
