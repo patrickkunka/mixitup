@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## 3.1.9
+
+- Fixes issue relating to `animation.clampHeight` where the height was not correctly applied causing scroll jumping in certain situations.
+
 ## 3.1.8
 
 - Adds ability to bind live controls where multiple parents exist. Required for Pagination 3.2.0.

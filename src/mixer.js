@@ -1476,7 +1476,7 @@ h.extend(mixitup.Mixer.prototype,
         // Prevent scrollbar flicker on non-inertial scroll platforms by clamping height
 
         if (self.config.animation.clampHeight) {
-            self.dom.parent.style.height    = operation.startHeight;
+            self.dom.parent.style.height    = operation.startHeight + 'px';
             self.dom.parent.style.overflow  = 'hidden';
         }
 

@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.1.8
+ * MixItUp v3.1.9
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 8b4a57ae-dad2-4d16-bc0b-024c6a7b1cb0
+ * Build 659c281f-47ce-429c-a467-6e1d960b3f52
  *
  * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -6359,7 +6359,7 @@
             // Prevent scrollbar flicker on non-inertial scroll platforms by clamping height
 
             if (self.config.animation.clampHeight) {
-                self.dom.parent.style.height    = operation.startHeight;
+                self.dom.parent.style.height    = operation.startHeight + 'px';
                 self.dom.parent.style.overflow  = 'hidden';
             }
 
@@ -10481,5 +10481,5 @@
     mixitup.BaseStatic.call(mixitup.constructor);
 
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.1.8';
+    mixitup.CORE_VERSION = '3.1.9';
 })(window);
