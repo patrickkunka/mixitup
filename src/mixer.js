@@ -3538,14 +3538,16 @@ h.extend(mixitup.Mixer.prototype,
 
         self.filterOperation(operation);
 
-        if (changeLayoutCommand) {
-            operation.startContainerClassName = operation.startState.activeContainerClassName;
+        operation.startContainerClassName = operation.startState.activeContainerClassName;
 
+        if (changeLayoutCommand) {
             operation.newContainerClassName = changeLayoutCommand.containerClassName;
 
             if (operation.newContainerClassName !== operation.startContainerClassName) {
                 operation.willChangeLayout = true;
             }
+        } else {
+            operation.newContainerClassName = operation.startContainerClassName;
         }
 
         if (self.config.animation.enable) {

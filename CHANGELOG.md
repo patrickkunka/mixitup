@@ -1,9 +1,13 @@
 Change Log
 ==========
 
+## 3.1.10
+
+- Fixes an issue where the `activeContainerClass` did not persist between non-layout-change operations (e.g. sort, filter).
+
 ## 3.1.9
 
-- Fixes issue relating to `animation.clampHeight` where the height was not correctly applied causing scroll jumping in certain situations.
+- Fixes an issue relating to `animation.clampHeight` where the height was not correctly applied causing scroll jumping in certain situations.
 
 ## 3.1.8
 
