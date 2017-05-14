@@ -1384,12 +1384,32 @@ h.extend(mixitup.Mixer.prototype,
                 self.config.animation.perspectiveOrigin;
         }
 
-        if (self.config.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
+        if (
+            self.config.animation.animateResizeContainer &&
+            operation.startHeight !== operation.newHeight &&
+            operation.viewportDeltaY !== operation.startHeight - operation.newHeight
+        ) {
             self.dom.parent.style.height = operation.startHeight + 'px';
         }
 
-        if (self.config.animation.animateResizeContainer || operation.startWidth === operation.newWidth) {
+        if (
+            self.config.animation.animateResizeContainer &&
+            operation.startWidth !== operation.newWidth &&
+            operation.viewportDeltaX !== operation.startWidth - operation.newWidth
+        ) {
             self.dom.parent.style.width = operation.startWidth + 'px';
+        }
+
+        if (operation.startHeight === operation.newHeight) {
+            self.dom.parent.style.height = operation.startHeight + 'px';
+        }
+
+        if (operation.startWidth === operation.newWidth) {
+            self.dom.parent.style.width = operation.startWidth + 'px';
+        }
+
+        if (operation.startHeight === operation.newHeight && operation.startWidth === operation.newWidth) {
+            self.dom.parent.style.overflow = 'hidden';
         }
 
         requestAnimationFrame(function() {
@@ -1473,10 +1493,15 @@ h.extend(mixitup.Mixer.prototype,
 
         self.callActions('beforeSetInter', arguments);
 
-        // Prevent scrollbar flicker on non-inertial scroll platforms by clamping height
+        // Prevent scrollbar flicker on non-inertial scroll platforms by clamping height/width
 
         if (self.config.animation.clampHeight) {
             self.dom.parent.style.height    = operation.startHeight + 'px';
+            self.dom.parent.style.overflow  = 'hidden';
+        }
+
+        if (self.config.animation.clampWidth) {
+            self.dom.parent.style.width     = operation.startWidth + 'px';
             self.dom.parent.style.overflow  = 'hidden';
         }
 
@@ -1533,13 +1558,6 @@ h.extend(mixitup.Mixer.prototype,
 
         self.callActions('beforeSetFinal', arguments);
 
-        // Remove clamping
-
-        if (self.config.animation.clampHeight) {
-            self.dom.parent.style.height    =
-            self.dom.parent.style.overflow  = '';
-        }
-
         operation.willSort && self.printSort(false, operation);
 
         for (i = 0; target = operation.toHide[i]; i++) {
@@ -1560,13 +1578,9 @@ h.extend(mixitup.Mixer.prototype,
     getFinalMixData: function(operation) {
         var self        = this,
             parentStyle = null,
-            parentRect  = self.dom.parent.getBoundingClientRect(),
+            parentRect  = null,
             target      = null,
             i           = -1;
-
-        if (!self.incPadding) {
-            parentStyle = window.getComputedStyle(self.dom.parent);
-        }
 
         self.callActions('beforeGetFinalMixData', arguments);
 
@@ -1577,6 +1591,20 @@ h.extend(mixitup.Mixer.prototype,
         for (i = 0; target = operation.toHide[i]; i++) {
             operation.toHidePosData[i].finalPosData = target.getPosData();
         }
+
+        // Remove clamping
+
+        if (self.config.animation.clampHeight || self.config.animation.clampWidth) {
+            self.dom.parent.style.height    =
+            self.dom.parent.style.width     =
+            self.dom.parent.style.overflow  = '';
+        }
+
+        if (!self.incPadding) {
+            parentStyle = window.getComputedStyle(self.dom.parent);
+        }
+
+        parentRect  = self.dom.parent.getBoundingClientRect();
 
         operation.newX = parentRect.left;
         operation.newY = parentRect.top;
@@ -1596,6 +1624,9 @@ h.extend(mixitup.Mixer.prototype,
                 parseFloat(parentStyle.paddingRight) -
                 parseFloat(parentStyle.borderLeft) -
                 parseFloat(parentStyle.borderRight);
+
+        operation.viewportDeltaX = operation.docState.viewportWidth - this.dom.document.documentElement.clientWidth;
+        operation.viewportDeltaY = operation.docState.viewportHeight - this.dom.document.documentElement.clientHeight;
 
         if (operation.willSort) {
             self.printSort(true, operation);
@@ -1863,8 +1894,19 @@ h.extend(mixitup.Mixer.prototype,
                 'width ' + self.config.animation.duration + 'ms ease ';
 
             requestAnimationFrame(function() {
-                self.dom.parent.style.height = operation.newHeight + 'px';
-                self.dom.parent.style.width = operation.newWidth + 'px';
+                if (
+                    operation.startHeight !== operation.newHeight &&
+                    operation.viewportDeltaY !== operation.startHeight - operation.newHeight
+                ) {
+                    self.dom.parent.style.height = operation.newHeight + 'px';
+                }
+
+                if (
+                    operation.startWidth !== operation.newWidth &&
+                    operation.viewportDeltaX !== operation.startWidth - operation.newWidth
+                ) {
+                    self.dom.parent.style.width = operation.newWidth + 'px';
+                }
             });
         }
 
@@ -2024,6 +2066,7 @@ h.extend(mixitup.Mixer.prototype,
         self.dom.parent.style[mixitup.features.transitionProp]             =
             self.dom.parent.style.height                                   =
             self.dom.parent.style.width                                    =
+            self.dom.parent.style.overflow                                 =
             self.dom.parent.style[mixitup.features.perspectiveProp]        =
             self.dom.parent.style[mixitup.features.perspectiveOriginProp]  = '';
 

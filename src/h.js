@@ -808,7 +808,10 @@ h = {
         return {
             scrollTop: window.pageYOffset,
             scrollLeft: window.pageXOffset,
-            docHeight: doc.documentElement.scrollHeight
+            docHeight: doc.documentElement.scrollHeight,
+            docWidth: doc.documentElement.scrollWidth,
+            viewportHeight: doc.documentElement.clientHeight,
+            viewportWidth: doc.documentElement.clientWidth
         };
     },
 

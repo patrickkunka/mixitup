@@ -6,6 +6,7 @@
     "-W055": true,
     "-W069": true,
     "-W097": true,
+    "-W087": true,
     "undef": true,
     "unused": true,
     "laxbreak": true,

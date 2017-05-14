@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.1.10
+ * MixItUp v3.1.11
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build e6e7a2d0-7eef-4170-a198-9a6a2bd4e53e
+ * Build df0ecdbb-7676-4e95-b437-ba1d1a4bff66
  *
  * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -1309,7 +1309,10 @@
             return {
                 scrollTop: window.pageYOffset,
                 scrollLeft: window.pageXOffset,
-                docHeight: doc.documentElement.scrollHeight
+                docHeight: doc.documentElement.scrollHeight,
+                docWidth: doc.documentElement.scrollWidth,
+                viewportHeight: doc.documentElement.clientHeight,
+                viewportWidth: doc.documentElement.clientWidth
             };
         },
 
@@ -2259,6 +2262,32 @@
          */
 
         this.clampHeight = true;
+
+        /**
+         * A boolean dictating whether or not to clamp the width of the container while MixItUp's
+         * geometry tests are carried out before an operation.
+         *
+         * To prevent scroll-bar flicker, clamping is turned on by default. But in the case where the
+         * width of the container might affect its horitzontal positioning in the viewport
+         * (e.g. a horizontall-centered container), this should be turned off to ensure accurate
+         * test results and a smooth animation.
+         *
+         * @example <caption>Example: Disable container width-clamping</caption>
+         *
+         * var mixer = mixitup(containerEl, {
+         *     animation: {
+         *         clampWidth: false
+         *     }
+         * });
+         *
+         * @name        clampWidth
+         * @memberof    mixitup.Config.animation
+         * @instance
+         * @type        {boolean}
+         * @default     true
+         */
+
+        this.clampWidth = true;
 
         this.callActions('afterConstruct');
 
@@ -6267,12 +6296,32 @@
                     self.config.animation.perspectiveOrigin;
             }
 
-            if (self.config.animation.animateResizeContainer || operation.startHeight === operation.newHeight) {
+            if (
+                self.config.animation.animateResizeContainer &&
+                operation.startHeight !== operation.newHeight &&
+                operation.viewportDeltaY !== operation.startHeight - operation.newHeight
+            ) {
                 self.dom.parent.style.height = operation.startHeight + 'px';
             }
 
-            if (self.config.animation.animateResizeContainer || operation.startWidth === operation.newWidth) {
+            if (
+                self.config.animation.animateResizeContainer &&
+                operation.startWidth !== operation.newWidth &&
+                operation.viewportDeltaX !== operation.startWidth - operation.newWidth
+            ) {
                 self.dom.parent.style.width = operation.startWidth + 'px';
+            }
+
+            if (operation.startHeight === operation.newHeight) {
+                self.dom.parent.style.height = operation.startHeight + 'px';
+            }
+
+            if (operation.startWidth === operation.newWidth) {
+                self.dom.parent.style.width = operation.startWidth + 'px';
+            }
+
+            if (operation.startHeight === operation.newHeight && operation.startWidth === operation.newWidth) {
+                self.dom.parent.style.overflow = 'hidden';
             }
 
             requestAnimationFrame(function() {
@@ -6356,10 +6405,15 @@
 
             self.callActions('beforeSetInter', arguments);
 
-            // Prevent scrollbar flicker on non-inertial scroll platforms by clamping height
+            // Prevent scrollbar flicker on non-inertial scroll platforms by clamping height/width
 
             if (self.config.animation.clampHeight) {
                 self.dom.parent.style.height    = operation.startHeight + 'px';
+                self.dom.parent.style.overflow  = 'hidden';
+            }
+
+            if (self.config.animation.clampWidth) {
+                self.dom.parent.style.width     = operation.startWidth + 'px';
                 self.dom.parent.style.overflow  = 'hidden';
             }
 
@@ -6416,13 +6470,6 @@
 
             self.callActions('beforeSetFinal', arguments);
 
-            // Remove clamping
-
-            if (self.config.animation.clampHeight) {
-                self.dom.parent.style.height    =
-                self.dom.parent.style.overflow  = '';
-            }
-
             operation.willSort && self.printSort(false, operation);
 
             for (i = 0; target = operation.toHide[i]; i++) {
@@ -6443,13 +6490,9 @@
         getFinalMixData: function(operation) {
             var self        = this,
                 parentStyle = null,
-                parentRect  = self.dom.parent.getBoundingClientRect(),
+                parentRect  = null,
                 target      = null,
                 i           = -1;
-
-            if (!self.incPadding) {
-                parentStyle = window.getComputedStyle(self.dom.parent);
-            }
 
             self.callActions('beforeGetFinalMixData', arguments);
 
@@ -6460,6 +6503,20 @@
             for (i = 0; target = operation.toHide[i]; i++) {
                 operation.toHidePosData[i].finalPosData = target.getPosData();
             }
+
+            // Remove clamping
+
+            if (self.config.animation.clampHeight || self.config.animation.clampWidth) {
+                self.dom.parent.style.height    =
+                self.dom.parent.style.width     =
+                self.dom.parent.style.overflow  = '';
+            }
+
+            if (!self.incPadding) {
+                parentStyle = window.getComputedStyle(self.dom.parent);
+            }
+
+            parentRect  = self.dom.parent.getBoundingClientRect();
 
             operation.newX = parentRect.left;
             operation.newY = parentRect.top;
@@ -6479,6 +6536,9 @@
                     parseFloat(parentStyle.paddingRight) -
                     parseFloat(parentStyle.borderLeft) -
                     parseFloat(parentStyle.borderRight);
+
+            operation.viewportDeltaX = operation.docState.viewportWidth - this.dom.document.documentElement.clientWidth;
+            operation.viewportDeltaY = operation.docState.viewportHeight - this.dom.document.documentElement.clientHeight;
 
             if (operation.willSort) {
                 self.printSort(true, operation);
@@ -6746,8 +6806,19 @@
                     'width ' + self.config.animation.duration + 'ms ease ';
 
                 requestAnimationFrame(function() {
-                    self.dom.parent.style.height = operation.newHeight + 'px';
-                    self.dom.parent.style.width = operation.newWidth + 'px';
+                    if (
+                        operation.startHeight !== operation.newHeight &&
+                        operation.viewportDeltaY !== operation.startHeight - operation.newHeight
+                    ) {
+                        self.dom.parent.style.height = operation.newHeight + 'px';
+                    }
+
+                    if (
+                        operation.startWidth !== operation.newWidth &&
+                        operation.viewportDeltaX !== operation.startWidth - operation.newWidth
+                    ) {
+                        self.dom.parent.style.width = operation.newWidth + 'px';
+                    }
                 });
             }
 
@@ -6907,6 +6978,7 @@
             self.dom.parent.style[mixitup.features.transitionProp]             =
                 self.dom.parent.style.height                                   =
                 self.dom.parent.style.width                                    =
+                self.dom.parent.style.overflow                                 =
                 self.dom.parent.style[mixitup.features.perspectiveProp]        =
                 self.dom.parent.style[mixitup.features.perspectiveOriginProp]  = '';
 
@@ -10016,6 +10088,8 @@
         this.newFilter               = null;
         this.startDataset            = null;
         this.newDataset              = null;
+        this.viewportDeltaX          = 0;
+        this.viewportDeltaY          = 0;
         this.startX                  = 0;
         this.startY                  = 0;
         this.startHeight             = 0;
@@ -10483,5 +10557,5 @@
     mixitup.BaseStatic.call(mixitup.constructor);
 
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.1.10';
+    mixitup.CORE_VERSION = '3.1.11';
 })(window);

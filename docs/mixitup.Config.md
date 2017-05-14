@@ -509,6 +509,34 @@ var mixer = mixitup(containerEl, {
     }
 });
 ```
+### clampWidth
+
+
+
+
+A boolean dictating whether or not to clamp the width of the container while MixItUp's
+geometry tests are carried out before an operation.
+
+To prevent scroll-bar flicker, clamping is turned on by default. But in the case where the
+width of the container might affect its horitzontal positioning in the viewport
+(e.g. a horizontall-centered container), this should be turned off to ensure accurate
+test results and a smooth animation.
+
+
+|Type | Default
+|---  | ---
+|`boolean`| `true`
+
+###### Example: Disable container width-clamping
+
+```js
+
+var mixer = mixitup(containerEl, {
+    animation: {
+        clampWidth: false
+    }
+});
+```
 
 <h2 id="callbacks">callbacks</h2>
 

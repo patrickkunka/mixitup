@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## 3.1.11
+
+- Various geometry improvements related to scroll bar issues on desktop Windows and (non-inertial scroll) desktop Mac systems.
+- Addition of `animation.clampWidth` configuration option.
+
 ## 3.1.10
 
 - Fixes an issue where the `activeContainerClass` did not persist between non-layout-change operations (e.g. sort, filter).
