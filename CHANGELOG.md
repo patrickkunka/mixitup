@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## 3.1.12
+- Fixes issue where `state.targets` does not reflect the updated sort order after a sort operation.
+- Addition of `behavior.liveSort` configuration option.
+
 ## 3.1.11
 
 - Various geometry improvements related to scroll bar issues on desktop Windows and (non-inertial scroll) desktop Mac systems.

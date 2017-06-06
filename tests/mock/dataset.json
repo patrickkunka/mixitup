@@ -1,36 +1,36 @@
 [
     {
-        "id": 1,
+        "id": "target-1",
         "categories": ["a"],
         "published": "20161102",
         "views": 100
     },
     {
-        "id": 2,
+        "id": "target-2",
         "categories": ["a"],
         "published": "20130501",
         "views": 54
     },
     {
-        "id": 3,
+        "id": "target-3",
         "categories": ["b"],
         "published": "20121231",
         "views": 3
     },
     {
-        "id": 4,
+        "id": "target-4",
         "categories": ["b"],
         "published": "20160407",
         "views": 62
     },
     {
-        "id": 5,
+        "id": "target-5",
         "categories": ["c"],
         "published": "20160820",
         "views": 54
     },
     {
-        "id": 6,
+        "id": "target-6",
         "categories": ["a", "c"],
         "published": "20151020",
         "views": 95

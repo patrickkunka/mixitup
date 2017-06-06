@@ -53,6 +53,7 @@ mixitup.Config = function() {
     this.callActions('beforeConstruct');
 
     this.animation          = new mixitup.ConfigAnimation();
+    this.behavior           = new mixitup.ConfigBehavior();
     this.callbacks          = new mixitup.ConfigCallbacks();
     this.controls           = new mixitup.ConfigControls();
     this.classNames         = new mixitup.ConfigClassNames();

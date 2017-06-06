@@ -13,12 +13,12 @@ const renderElement = (html) => {
 module.exports = {
     getContainer() {
         return renderElement('<div class="mixitup-container" data-ref="container">' +
-            '<div id="1" class="mix category-a" data-ref="mix" data-category="a" data-published="20161102" data-views="100"></div> ' +
-            '<div id="2" class="mix category-a" data-ref="mix" data-category="a" data-published="20130501" data-views="54"></div> ' +
-            '<div id="3" class="mix category-b" data-ref="mix" data-category="b" data-published="20121231" data-views="3"></div> ' +
-            '<div id="4" class="mix category-b" data-ref="mix" data-category="b" data-published="20160407" data-views="62"></div> ' +
-            '<div id="5" class="mix category-c" data-ref="mix" data-category="c" data-published="20160820" data-views="54"></div> ' +
-            '<div id="6" class="mix category-a category-c" data-ref="mix" data-category="a c" data-published="20151020" data-views="95"></div>' +
+            '<div id="target-1" class="mix category-a" data-ref="mix" data-category="a" data-published="20161102" data-views="100"></div> ' +
+            '<div id="target-2" class="mix category-a" data-ref="mix" data-category="a" data-published="20130501" data-views="54"></div> ' +
+            '<div id="target-3" class="mix category-b" data-ref="mix" data-category="b" data-published="20121231" data-views="3"></div> ' +
+            '<div id="target-4" class="mix category-b" data-ref="mix" data-category="b" data-published="20160407" data-views="62"></div> ' +
+            '<div id="target-5" class="mix category-c" data-ref="mix" data-category="c" data-published="20160820" data-views="54"></div> ' +
+            '<div id="target-6" class="mix category-a category-c" data-ref="mix" data-category="a c" data-published="20151020" data-views="95"></div>' +
             '<span class="mixitup-container-gap></span>' +
         '</div>');
     },

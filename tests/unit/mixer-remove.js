@@ -12,14 +12,14 @@ chai.use(require('chai-as-promised'));
 describe('mixitup.Mixer', () => {
     describe('#remove()', () => {
         it('should accept an element as an argument', () => {
-            let container = dom.getContainer();
-            let mixer = mixitup(container);
-            let toRemove = container.children[3];
+            const container = dom.getContainer();
+            const mixer = mixitup(container);
+            const toRemove = container.children[3];
 
             return mixer.remove(toRemove)
                 .then(state => {
-                    chai.assert.notEqual(state.show[3].id, '4');
-                    chai.assert.equal(state.show[3].id, '5');
+                    chai.assert.notEqual(state.show[3].id, 'target-4');
+                    chai.assert.equal(state.show[3].id, 'target-5');
                     chai.assert.equal(state.totalShow, '5');
 
                     mixer.destroy();
@@ -27,14 +27,14 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should accept a collection of elements as an argument', () => {
-            let container = dom.getContainer();
-            let mixer = mixitup(container);
-            let toRemove = [container.children[3], container.children[0]];
+            const container = dom.getContainer();
+            const mixer = mixitup(container);
+            const toRemove = [container.children[3], container.children[0]];
 
             return mixer.remove(toRemove)
                 .then(state => {
-                    chai.assert.equal(state.show[0].id, '2');
-                    chai.assert.equal(state.show[3].id, '6');
+                    chai.assert.equal(state.show[0].id, 'target-2');
+                    chai.assert.equal(state.show[3].id, 'target-6');
                     chai.assert.equal(state.totalShow, '4');
 
                     mixer.destroy();
@@ -42,12 +42,12 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should accept an index as an argument', () => {
-            let container = dom.getContainer();
-            let mixer = mixitup(container);
+            const container = dom.getContainer();
+            const mixer = mixitup(container);
 
             return mixer.remove(3)
                 .then(state => {
-                    chai.assert.equal(state.show[3].id, '5');
+                    chai.assert.equal(state.show[3].id, 'target-5');
                     chai.assert.equal(state.totalShow, '5');
 
                     mixer.destroy();
@@ -55,8 +55,8 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should accept a selector as an argument', () => {
-            let container = dom.getContainer();
-            let mixer = mixitup(container);
+            const container = dom.getContainer();
+            const mixer = mixitup(container);
 
             return mixer.remove('.category-a')
                 .then(state => {
@@ -67,8 +67,8 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should allow no elements to be removed with a warning', () => {
-            let container = dom.getContainer();
-            let mixer = mixitup(container);
+            const container = dom.getContainer();
+            const mixer = mixitup(container);
 
             return mixer.remove()
                 .then(state => {
@@ -79,11 +79,11 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should accept a callback function which is invoked after removal', () => {
-            let container = dom.getContainer();
-            let mixer = mixitup(container);
-            let toRemove = container.children[0];
+            const container = dom.getContainer();
+            const mixer = mixitup(container);
+            const toRemove = container.children[0];
 
-            let promise = new Promise(resolve => mixer.insert(mixer.remove(toRemove), resolve));
+            const promise = new Promise(resolve => mixer.insert(mixer.remove(toRemove), resolve));
 
             chai.assert.isFulfilled(promise);
 
@@ -96,9 +96,9 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should accept a boolean allowing toggling off of animation', () => {
-            let container = dom.getContainer();
-            let mixer = mixitup(container);
-            let toRemove = container.children[0];
+            const container = dom.getContainer();
+            const mixer = mixitup(container);
+            const toRemove = container.children[0];
 
             return mixer.remove(toRemove, false)
                 .then(() => {

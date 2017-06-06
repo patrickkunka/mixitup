@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.1.11
+ * MixItUp v3.1.12
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build df0ecdbb-7676-4e95-b437-ba1d1a4bff66
+ * Build 99123294-5817-4da9-b352-e17eb8780170
  *
  * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -2301,6 +2301,78 @@
     mixitup.ConfigAnimation.prototype.constructor = mixitup.ConfigAnimation;
 
     /**
+     * A group of properties relating to the behavior of the Mixer.
+     *
+     * @constructor
+     * @memberof    mixitup.Config
+     * @name        behavior
+     * @namespace
+     * @public
+     * @since       3.1.12
+     */
+
+    mixitup.ConfigBehavior = function() {
+        mixitup.Base.call(this);
+
+        this.callActions('beforeConstruct');
+
+        /**
+         * A boolean dictating whether to allow "live" sorting of the mixer.
+         *
+         * Because of the expensive nature of sorting, MixItUp makes use of several
+         * internal optimizations to skip redundant sorting operations, such as when
+         * the newly requested sort command is the same as the active one. The caveat
+         * to this optimization is that "live" edits to the value of a target's sorting
+         * attribute will be ignored when requesting a re-sort by the same attribute.
+         *
+         * By setting to `behavior.liveSort` to `true`, the mixer will always re-sort
+         * regardless of whether or not the sorting attribute and order have changed.
+         *
+         * @example <caption>Example: Enabling `liveSort` to allow for re-sorting</caption>
+         *
+         * var mixer = mixitup(containerEl, {
+         *     behavior: {
+         *         liveSort: true
+         *     },
+         *     load: {
+         *         sort: 'edited:desc'
+         *     }
+         * });
+         *
+         * var target = containerEl.children[3];
+         *
+         * console.log(target.getAttribute('data-edited')); // '2015-04-24'
+         *
+         * target.setAttribute('data-edited', '2017-08-10'); // Update the target's edited date
+         *
+         * mixer.sort('edited:desc')
+         *     .then(function(state) {
+         *         // The target is now at the top of the list
+         *
+         *         console.log(state.targets[0] === target); // true
+         *     });
+         *
+         * @name        liveSort
+         * @memberof    mixitup.Config.behavior
+         * @instance
+         * @type        {boolean}
+         * @default     false
+         */
+
+        this.liveSort = false;
+
+        this.callActions('afterConstruct');
+
+        h.seal(this);
+    };
+
+    mixitup.BaseStatic.call(mixitup.ConfigBehavior);
+
+    mixitup.ConfigBehavior.prototype = Object.create(mixitup.Base.prototype);
+
+    mixitup.ConfigBehavior.prototype.constructor = mixitup.ConfigBehavior;
+
+    /**
      * A group of optional callback functions to be invoked at various
      * points within the lifecycle of a mixer operation.
      *
@@ -3759,6 +3831,7 @@
         this.callActions('beforeConstruct');
 
         this.animation          = new mixitup.ConfigAnimation();
+        this.behavior           = new mixitup.ConfigBehavior();
         this.callbacks          = new mixitup.ConfigCallbacks();
         this.controls           = new mixitup.ConfigControls();
         this.classNames         = new mixitup.ConfigClassNames();
@@ -7826,6 +7899,7 @@
                 result  = false;
 
             if (
+                self.config.behavior.liveSort ||
                 sortCommandA.order       === 'random' ||
                 sortCommandA.attribute   !== sortCommandB.attribute ||
                 sortCommandA.order       !== sortCommandB.order ||
@@ -8522,6 +8596,10 @@
                 operation.hasEffect = self.hasEffect();
 
                 self.getTweenData(operation);
+            }
+
+            if (operation.willSort) {
+                self.targets = operation.newOrder;
             }
 
             operation.newState = self.buildState(operation);
@@ -10557,5 +10635,5 @@
     mixitup.BaseStatic.call(mixitup.constructor);
 
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.1.11';
+    mixitup.CORE_VERSION = '3.1.12';
 })(window);

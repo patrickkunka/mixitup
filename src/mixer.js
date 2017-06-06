@@ -2914,6 +2914,7 @@ h.extend(mixitup.Mixer.prototype,
             result  = false;
 
         if (
+            self.config.behavior.liveSort ||
             sortCommandA.order       === 'random' ||
             sortCommandA.attribute   !== sortCommandB.attribute ||
             sortCommandA.order       !== sortCommandB.order ||
@@ -3610,6 +3611,10 @@ h.extend(mixitup.Mixer.prototype,
             operation.hasEffect = self.hasEffect();
 
             self.getTweenData(operation);
+        }
+
+        if (operation.willSort) {
+            self.targets = operation.newOrder;
         }
 
         operation.newState = self.buildState(operation);

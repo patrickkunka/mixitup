@@ -12,13 +12,13 @@ chai.use(require('chai-as-promised'));
 
 describe('mixitup.Mixer', () => {
     describe('#sort()', () => {
-        let container = dom.getContainer();
-        let originalOrder = Array.prototype.slice.call(container.children);
-        let mixer = mixitup(container);
+        const container = dom.getContainer();
+        const originalOrder = Array.prototype.slice.call(container.children);
+        const mixer = mixitup(container);
 
-        let idsByPublishedDate = dataset.slice().sort((a, b) => {
-            let dateA = a.published;
-            let dateB = b.published;
+        const idsByPublishedDate = dataset.slice().sort((a, b) => {
+            const dateA = a.published;
+            const dateB = b.published;
 
             if (dateA < dateB) {
                 return -1;
@@ -31,13 +31,13 @@ describe('mixitup.Mixer', () => {
             return 0;
         }).map(item => item.id.toString());
 
-        let idsByViewsThenPublishedDate = dataset.slice().sort((a, b) => {
-            let viewsA = a.views;
-            let viewsB = b.views;
+        const idsByViewsThenPublishedDate = dataset.slice().sort((a, b) => {
+            const viewsA = a.views;
+            const viewsB = b.views;
 
-            let sortByPublishedDate = function(a, b) {
-                let dateA = a.published;
-                let dateB = b.published;
+            const sortByPublishedDate = function(a, b) {
+                const dateA = a.published;
+                const dateB = b.published;
 
                 if (dateA < dateB) {
                     return -1;
@@ -117,7 +117,7 @@ describe('mixitup.Mixer', () => {
         it('should accept a data-attribute as a sort string, sorting by the attribute\'s value', () => {
             return mixer.sort('published')
                 .then(state => {
-                    let targetIds = state.show.map(el => el.id);
+                    const targetIds = state.show.map(el => el.id);
 
                     chai.assert.equal(state.activeSort.sortString, 'published');
                     chai.assert.equal(state.activeSort.order, 'asc');
@@ -128,11 +128,11 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should accept a data-attribute and an order as sorting, sorting by the attribute\'s value in the defined order', () => {
-            let idsByPublishedDateDesc = idsByPublishedDate.slice().reverse();
+            const idsByPublishedDateDesc = idsByPublishedDate.slice().reverse();
 
             return mixer.sort('published:desc')
                 .then(state => {
-                    let targetIds = state.show.map(el => el.id);
+                    const targetIds = state.show.map(el => el.id);
 
                     chai.assert.equal(state.activeSort.sortString, 'published:desc');
                     chai.assert.equal(state.activeSort.order, 'desc');
@@ -145,7 +145,7 @@ describe('mixitup.Mixer', () => {
         it('should accept multiple sort strings for multi attribute sorting', () => {
             return mixer.sort('views published')
                 .then(state => {
-                    let targetIds = state.show.map(el => el.id);
+                    const targetIds = state.show.map(el => el.id);
 
                     chai.assert.isOk(state.activeSort.next);
                     chai.assert.instanceOf(state.activeSort.next, mixitup.CommandSort);
@@ -163,29 +163,29 @@ describe('mixitup.Mixer', () => {
         });
 
         it('should accept multiple sort strings with orders for multi attribute sorting', () => {
-            let idsByViewsThenPublishedDateDesc = idsByViewsThenPublishedDate.slice().reverse();
+            const idsByViewsThenPublishedDateDesc = idsByViewsThenPublishedDate.slice().reverse();
 
             return mixer.sort('views:desc published:desc')
                 .then(state => {
-                    let targetIds = state.show.map(el => el.id);
+                    const targetIds = state.show.map(el => el.id);
 
                     chai.assert.deepEqual(targetIds, idsByViewsThenPublishedDateDesc);
                 });
         });
 
         it('should accept multiple sort strings with orders for multi attribute sorting', () => {
-            let idsByViewsThenPublishedDateDesc = idsByViewsThenPublishedDate.slice().reverse();
+            const idsByViewsThenPublishedDateDesc = idsByViewsThenPublishedDate.slice().reverse();
 
             return mixer.sort('views:desc published:desc')
                 .then(state => {
-                    let targetIds = state.show.map(el => el.id);
+                    const targetIds = state.show.map(el => el.id);
 
                     chai.assert.deepEqual(targetIds, idsByViewsThenPublishedDateDesc);
                 });
         });
 
         it('should accept a callback function which is invoked after sorting', () => {
-            let promise = new Promise(resolve => mixer.sort('random', resolve));
+            const promise = new Promise(resolve => mixer.sort('random', resolve));
 
             chai.assert.isFulfilled(promise);
 
@@ -196,6 +196,42 @@ describe('mixitup.Mixer', () => {
         it('should accept a boolean allowing toggling off of animation', () => {
             return mixer.sort('random', false)
                 .then(state => chai.assert.equal(state.activeSort.sortString, 'random'));
+        });
+
+        it('should resort when sorting attributes are dynamically edited, if `behavior.liveSort` is enabled', () => {
+            const newDate = '20170628';
+            let startOrder = null;
+
+            return mixer.sort('published', false)
+                .then(state => {
+                    const target4 = container.querySelector('#target-4');
+
+                    startOrder = state.targets;
+
+                    target4.setAttribute('data-published', newDate);
+
+                    return mixer.sort('published', false);
+                })
+                .then(state => {
+                    // Order has not changed
+
+                    chai.assert.deepEqual(state.targets, startOrder);
+                    chai.assert.notEqual(state.targets[5].getAttribute('data-published'), newDate);
+
+                    mixer.configure({
+                        behavior: {
+                            liveSort: true
+                        }
+                    });
+
+                    return mixer.sort('published', false);
+                })
+                .then(state => {
+                    // Order has changed
+
+                    chai.assert.notDeepEqual(state.targets, startOrder);
+                    chai.assert.equal(state.targets[5].getAttribute('data-published'), newDate);
+                });
         });
     });
 });
