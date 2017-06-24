@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.1.12
+ * MixItUp v3.2.0
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 99123294-5817-4da9-b352-e17eb8780170
+ * Build e8e67fcb-2ded-4918-8ade-151850d2c36e
  *
  * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -18,8 +18,7 @@
     'use strict';
 
     var mixitup = null,
-        h       = null,
-        jq      = null;
+        h       = null;
 
     (function() {
         var VENDORS = ['webkit', 'moz', 'o', 'ms'],
@@ -408,17 +407,6 @@
      *
      * var mixer = mixitup('.container');
      *
-     * @example <caption>Example 2: Activating the legacy jQuery API</caption>
-     *
-     * import mixitup from 'mixitup';
-     * import $ from 'jquery';
-     *
-     * mixitup.use($);
-     *
-     * // MixItUp can now be used as a jQuery plugin, as per the v2 API
-     *
-     * $('.container').mixitup();
-     *
      * @public
      * @name     use
      * @memberof mixitup
@@ -447,54 +435,9 @@
             // jQuery
 
             mixitup.libraries.$ = extension;
-
-            // Register MixItUp as a jQuery plugin to allow v2 API
-
-            mixitup.registerJqPlugin(extension);
         }
 
         mixitup.Base.prototype.callActions.call(mixitup, 'afterUse', arguments);
-    };
-
-    /**
-     * @private
-     * @static
-     * @since   3.0.0
-     * @param   {jQuery} $
-     * @return  {void}
-     */
-
-    mixitup.registerJqPlugin = function($) {
-        $.fn.mixItUp = function() {
-            var method  = arguments[0],
-                config  = arguments[1],
-                args    = Array.prototype.slice.call(arguments, 1),
-                outputs = [],
-                chain   = [];
-
-            chain = this.each(function() {
-                var instance = null,
-                    output   = null;
-
-                if (method && typeof method === 'string') {
-                    // jQuery-UI method syntax
-
-                    instance = mixitup.instances[this.id];
-
-                    output = instance[method].apply(instance, args);
-
-                    if (typeof output !== 'undefined' && output !== null && typeof output.then !== 'function') outputs.push(output);
-                } else {
-                    mixitup(this, config);
-                }
-            });
-
-            if (outputs.length) {
-                return outputs.length > 1 ? outputs : outputs[0];
-            } else {
-                return chain;
-            }
-        };
     };
 
     mixitup.instances   = {};
@@ -7836,7 +7779,7 @@
                     frag.appendChild(self.dom.document.createTextNode(' '));
                 }
 
-                self.insertDatasetFrag(frag, nextEl, self.dom.targets.length, insertedTargets);
+                self.insertDatasetFrag(frag, nextEl, self.targets.length, insertedTargets);
             }
 
             for (i = 0; data = operation.startDataset[i]; i++) {
@@ -10626,14 +10569,10 @@
             return mixitup;
         });
     } else if (typeof window.mixitup === 'undefined' || typeof window.mixitup !== 'function') {
-        window.mixitup = window.mixItUp = mixitup;
-    }
-
-    if ((jq = window.$ || window.jQuery) && jq.fn.jquery) {
-        mixitup.registerJqPlugin(jq);
+        window.mixitup = mixitup;
     }
     mixitup.BaseStatic.call(mixitup.constructor);
 
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.1.12';
+    mixitup.CORE_VERSION = '3.2.0';
 })(window);

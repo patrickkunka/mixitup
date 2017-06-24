@@ -149,17 +149,6 @@ mixitup = function(container, config, foreignDoc) {
  *
  * var mixer = mixitup('.container');
  *
- * @example <caption>Example 2: Activating the legacy jQuery API</caption>
- *
- * import mixitup from 'mixitup';
- * import $ from 'jquery';
- *
- * mixitup.use($);
- *
- * // MixItUp can now be used as a jQuery plugin, as per the v2 API
- *
- * $('.container').mixitup();
- *
  * @public
  * @name     use
  * @memberof mixitup
@@ -188,54 +177,9 @@ mixitup.use = function(extension) {
         // jQuery
 
         mixitup.libraries.$ = extension;
-
-        // Register MixItUp as a jQuery plugin to allow v2 API
-
-        mixitup.registerJqPlugin(extension);
     }
 
     mixitup.Base.prototype.callActions.call(mixitup, 'afterUse', arguments);
-};
-
-/**
- * @private
- * @static
- * @since   3.0.0
- * @param   {jQuery} $
- * @return  {void}
- */
-
-mixitup.registerJqPlugin = function($) {
-    $.fn.mixItUp = function() {
-        var method  = arguments[0],
-            config  = arguments[1],
-            args    = Array.prototype.slice.call(arguments, 1),
-            outputs = [],
-            chain   = [];
-
-        chain = this.each(function() {
-            var instance = null,
-                output   = null;
-
-            if (method && typeof method === 'string') {
-                // jQuery-UI method syntax
-
-                instance = mixitup.instances[this.id];
-
-                output = instance[method].apply(instance, args);
-
-                if (typeof output !== 'undefined' && output !== null && typeof output.then !== 'function') outputs.push(output);
-            } else {
-                mixitup(this, config);
-            }
-        });
-
-        if (outputs.length) {
-            return outputs.length > 1 ? outputs : outputs[0];
-        } else {
-            return chain;
-        }
-    };
 };
 
 mixitup.instances   = {};

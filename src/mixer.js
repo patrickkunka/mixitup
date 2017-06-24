@@ -2851,7 +2851,7 @@ h.extend(mixitup.Mixer.prototype,
                 frag.appendChild(self.dom.document.createTextNode(' '));
             }
 
-            self.insertDatasetFrag(frag, nextEl, self.dom.targets.length, insertedTargets);
+            self.insertDatasetFrag(frag, nextEl, self.targets.length, insertedTargets);
         }
 
         for (i = 0; data = operation.startDataset[i]; i++) {
