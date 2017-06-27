@@ -4222,7 +4222,7 @@ h.extend(mixitup.Mixer.prototype,
      *
      * @example <caption>Example: Force render targets after changing the target render function</caption>
      *
-     * console.log(container.innerHTML); // ... &lt;div class="mix"&gt;Foo&lt;/div&gt; ...
+     * console.log(container.innerHTML); // ... &lt;span class="mix"&gt;Foo&lt;/span&gt; ...
      *
      * mixer.configure({
      *     render: {
@@ -4232,7 +4232,7 @@ h.extend(mixitup.Mixer.prototype,
      *
      * mixer.forceRender();
      *
-     * console.log(container.innerHTML); // ... &lt;a href="/foo/" class="mix"&gt;Foo&lt;/div&gt; ...
+     * console.log(container.innerHTML); // ... &lt;a href="/foo/" class="mix"&gt;Foo&lt;/a&gt; ...
      *
      * @public
      * @instance
