@@ -967,12 +967,7 @@ Targets are rendered against their existing data.
 
 ```js
 
-console.log(container.innerHTML);
-
-// <div class="container">
-//     <div class="mix">Foo</div>
-//     <div class="mix">Bar</div>
-// </div>
+console.log(container.innerHTML); // ... <div class="mix">Foo</div> ...
 
 mixer.configure({
     render: {
@@ -982,12 +977,7 @@ mixer.configure({
 
 mixer.forceRender();
 
-console.log(container.innerHTML);
-
-// <div class="container">
-//     <a href="/foo/" class="mix">Foo</div>
-//     <a href="/bar/" class="mix">Bar</div>
-// </div>
+console.log(container.innerHTML); // ... <a href="/foo/" class="mix">Foo</div> ...
 ```
 
 <h3 id="destroy">destroy()</h3>

@@ -1,7 +1,7 @@
 /**!
  * MixItUp v3.2.1
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 3736716d-46de-4abf-9680-61448e3d126f
+ * Build 4688d223-0a25-45f2-ad6c-8de49ff3ed19
  *
  * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -9150,12 +9150,7 @@
          *
          * @example <caption>Example: Force render targets after changing the target render function</caption>
          *
-         * console.log(container.innerHTML);
-         *
-         * // &lt;div class="container"&gt;
-         * //     &lt;div class="mix"&gt;Foo&lt;/div&gt;
-         * //     &lt;div class="mix"&gt;Bar&lt;/div&gt;
-         * // &lt;/div&gt;
+         * console.log(container.innerHTML); // ... &lt;div class="mix"&gt;Foo&lt;/div&gt; ...
          *
          * mixer.configure({
          *     render: {
@@ -9165,12 +9160,7 @@
          *
          * mixer.forceRender();
          *
-         * console.log(container.innerHTML);
-         *
-         * // &lt;div class="container"&gt;
-         * //     &lt;a href="/foo/" class="mix"&gt;Foo&lt;/div&gt;
-         * //     &lt;a href="/bar/" class="mix"&gt;Bar&lt;/div&gt;
-         * // &lt;/div&gt;
+         * console.log(container.innerHTML); // ... &lt;a href="/foo/" class="mix"&gt;Foo&lt;/div&gt; ...
          *
          * @public
          * @instance
