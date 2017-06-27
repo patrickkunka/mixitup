@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.2.0
+ * MixItUp v3.2.1
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build e8e67fcb-2ded-4918-8ade-151850d2c36e
+ * Build 8064d103-d8f0-4f54-86d4-40e57700c549
  *
  * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -7761,7 +7761,7 @@
                             frag.appendChild(self.dom.document.createTextNode(' '));
                         }
 
-                        self.insertDatasetFrag(frag, target.dom.el, self.targets.indexOf(target), insertedTargets);
+                        self.insertDatasetFrag(frag, target.dom.el, insertedTargets);
 
                         frag = null;
                     }
@@ -7779,7 +7779,7 @@
                     frag.appendChild(self.dom.document.createTextNode(' '));
                 }
 
-                self.insertDatasetFrag(frag, nextEl, self.targets.length, insertedTargets);
+                self.insertDatasetFrag(frag, nextEl, insertedTargets);
             }
 
             for (i = 0; data = operation.startDataset[i]; i++) {
@@ -7811,20 +7811,20 @@
          * @since   3.1.5
          * @param   {DocumentFragment}          frag
          * @param   {(HTMLElement|null)}        nextEl
-         * @param   {number}                    insertionIndex
          * @param   {Array.<mixitup.Target>}    targets
          * @return  {void}
          */
 
-        insertDatasetFrag: function(frag, nextEl, insertionIndex, targets) {
+        insertDatasetFrag: function(frag, nextEl, targets) {
             var self = this;
+            var insertAt = nextEl ? Array.from(self.dom.parent.children).indexOf(nextEl) : self.targets.length;
 
             self.dom.parent.insertBefore(frag, nextEl);
 
             while (targets.length) {
-                self.targets.splice(insertionIndex, 0, targets.shift());
+                self.targets.splice(insertAt, 0, targets.shift());
 
-                insertionIndex++;
+                insertAt++;
             }
         },
 
@@ -9130,6 +9130,87 @@
             var self = this;
 
             self.indexTargets();
+        },
+
+        /**
+         * Forces the re-rendering of all targets when using the Dataset API.
+         *
+         * By default, targets are only re-rendered when `data.dirtyCheck` is
+         * enabled, and an item's data has changed when `dataset()` is called.
+         *
+         * The `forceRender()` method allows for the re-rendering of all targets
+         * in response to some arbitrary event, such as the changing of the target
+         * render function.
+         *
+         * Targets are rendered against their existing data.
+         *
+         * @example
+         *
+         * .forceRender()
+         *
+         * @example <caption>Example: Force render targets after changing the target render function</caption>
+         *
+         * console.log(container.innerHTML);
+         *
+         * // <div class="container">
+         * //     <div class="mix">Foo</div>
+         * //     <div class="mix">Bar</div>
+         * // </div>
+         *
+         * mixer.configure({
+         *     render: {
+         *         target: (item) => `<a href="/${item.slug}/" class="mix">${item.title}</div>`
+         *     }
+         * });
+         *
+         * mixer.forceRender();
+         *
+         * console.log(container.innerHTML);
+         *
+         * // <div class="container">
+         * //     <a href="/foo/" class="mix">Foo</div>
+         * //     <a href="/bar/" class="mix">Bar</div>
+         * // </div>
+         *
+         * @public
+         * @instance
+         * @since 3.2.1
+         * @return {void}
+         */
+
+        forceRender: function() {
+            var self    = this,
+                target  = null,
+                el      = null,
+                id      = '';
+
+            for (id in self.cache) {
+                target = self.cache[id];
+
+                el = target.render(target.data);
+
+                if (el !== target.dom.el) {
+                    // Update target element reference
+
+                    if (target.isInDom) {
+                        target.unbindEvents();
+
+                        self.dom.parent.replaceChild(el, target.dom.el);
+                    }
+
+                    if (!target.isShown) {
+                        el.style.display = 'none';
+                    }
+
+                    target.dom.el = el;
+
+                    if (target.isInDom) {
+                        target.bindEvents();
+                    }
+                }
+            }
+
+            self.state = self.buildState(self.lastOperation);
         },
 
         /**
@@ -10534,7 +10615,6 @@
         this.sort               = mixer.sort.bind(mixer);
         this.changeLayout       = mixer.changeLayout.bind(mixer);
         this.multimix           = mixer.multimix.bind(mixer);
-        this.multiMix           = mixer.multimix.bind(mixer);
         this.dataset            = mixer.dataset.bind(mixer);
         this.tween              = mixer.tween.bind(mixer);
         this.insert             = mixer.insert.bind(mixer);
@@ -10545,6 +10625,7 @@
         this.remove             = mixer.remove.bind(mixer);
         this.destroy            = mixer.destroy.bind(mixer);
         this.forceRefresh       = mixer.forceRefresh.bind(mixer);
+        this.forceRender        = mixer.forceRender.bind(mixer);
         this.isMixing           = mixer.isMixing.bind(mixer);
         this.getOperation       = mixer.getOperation.bind(mixer);
         this.getConfig          = mixer.getConfig.bind(mixer);
@@ -10574,5 +10655,5 @@
     mixitup.BaseStatic.call(mixitup.constructor);
 
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.2.0';
+    mixitup.CORE_VERSION = '3.2.1';
 })(window);

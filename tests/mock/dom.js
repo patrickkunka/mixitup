@@ -112,5 +112,7 @@ module.exports = {
         }
     },
 
-    ITEM_TEMPLATE: '<div id="${id}" class="${classList}" data-ref="mix" data-category="${categoryList}" data-published="${published}" data-views="${views}"></div>'
+    ITEM_TEMPLATE: '<div id="${id}" class="${classList}" data-ref="mix" data-category="${categoryList}" data-published="${published}" data-views="${views}"></div>',
+
+    ITEM_TEMPLATE_ALT: '<div id="${id}"></div>'
 };

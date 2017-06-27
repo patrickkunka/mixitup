@@ -31,6 +31,7 @@ insertion, removal and more.
 - [configure()](#configure)
 - [getState()](#getState)
 - [forceRefresh()](#forceRefresh)
+- [forceRender()](#forceRender)
 - [destroy()](#destroy)
 
 
@@ -938,6 +939,55 @@ mixer.forceRefresh();
 // After forceRefresh, the mixer is in sync again:
 
 console.log(mixer.getState().totalShow); // 2
+```
+
+<h3 id="forceRender">forceRender()</h3>
+
+*Version added: 3.2.1*
+
+`.forceRender()`
+
+Forces the re-rendering of all targets when using the Dataset API.
+
+By default, targets are only re-rendered when `data.dirtyCheck` is
+enabled, and an item's data has changed when `dataset()` is called.
+
+The `forceRender()` method allows for the re-rendering of all targets
+in response to some arbitrary event, such as the changing of the target
+render function.
+
+Targets are rendered against their existing data.
+
+|   |Type | Name | Description
+|---|--- | --- | ---
+|Returns |`void` | 
+
+
+###### Example: Force render targets after changing the target render function
+
+```js
+
+console.log(container.innerHTML);
+
+// <div class="container">
+//     <div class="mix">Foo</div>
+//     <div class="mix">Bar</div>
+// </div>
+
+mixer.configure({
+    render: {
+        target: (item) => `<a href="/${item.slug}/" class="mix">${item.title}</div>`
+    }
+});
+
+mixer.forceRender();
+
+console.log(container.innerHTML);
+
+// <div class="container">
+//     <a href="/foo/" class="mix">Foo</div>
+//     <a href="/bar/" class="mix">Bar</div>
+// </div>
 ```
 
 <h3 id="destroy">destroy()</h3>

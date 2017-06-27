@@ -278,5 +278,24 @@ describe('mixitup.Mixer', () => {
                     chai.assert.deepEqual(ids, elIds);
                 });
         });
+
+        it('should re-render targets reflective of template changes when `forceRender` is called', () => {
+            let firstTarget = mixer.getState().show[0];
+
+            chai.assert.equal(firstTarget.outerHTML, '<div id="target-6" class="mix category-a category-c category-z" data-ref="mix" data-category="a c z" data-published="20151020" data-views="95"></div>');
+
+            mixer.configure({
+                render: {
+                    target: mixitup.h.template(dom.ITEM_TEMPLATE_ALT)
+                }
+            });
+
+
+            mixer.forceRender();
+
+            firstTarget = mixer.getState().show[0];
+
+            chai.assert.equal(firstTarget.outerHTML, '<div id="target-6"></div>');
+        });
     });
 });
