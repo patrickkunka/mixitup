@@ -976,7 +976,7 @@ console.log(container.innerHTML);
 
 mixer.configure({
     render: {
-        target: (item) => `<a href="/${item.slug}/" class="mix">${item.title}</div>`
+        target: (item) => `<a href="/${item.slug}/" class="mix">${item.title}</a>`
     }
 });
 
