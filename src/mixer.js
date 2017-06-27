@@ -4224,14 +4224,14 @@ h.extend(mixitup.Mixer.prototype,
      *
      * console.log(container.innerHTML);
      *
-     * // <div class="container">
-     * //     <div class="mix">Foo</div>
-     * //     <div class="mix">Bar</div>
-     * // </div>
+     * // &lt;div class="container"&gt;
+     * //     &lt;div class="mix"&gt;Foo&lt;/div&gt;
+     * //     &lt;div class="mix"&gt;Bar&lt;/div&gt;
+     * // &lt;/div&gt;
      *
      * mixer.configure({
      *     render: {
-     *         target: (item) => `<a href="/${item.slug}/" class="mix">${item.title}</a>`
+     *         target: (item) => `&lt;a href="/${item.slug}/" class="mix"&gt;${item.title}&lt;/a&gt;`
      *     }
      * });
      *
@@ -4239,10 +4239,10 @@ h.extend(mixitup.Mixer.prototype,
      *
      * console.log(container.innerHTML);
      *
-     * // <div class="container">
-     * //     <a href="/foo/" class="mix">Foo</div>
-     * //     <a href="/bar/" class="mix">Bar</div>
-     * // </div>
+     * // &lt;div class="container"&gt;
+     * //     &lt;a href="/foo/" class="mix"&gt;Foo&lt;/div&gt;
+     * //     &lt;a href="/bar/" class="mix"&gt;Bar&lt;/div&gt;
+     * // &lt;/div&gt;
      *
      * @public
      * @instance

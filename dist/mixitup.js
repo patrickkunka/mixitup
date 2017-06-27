@@ -1,7 +1,7 @@
 /**!
  * MixItUp v3.2.1
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build ea75207d-1036-4d1b-af10-9800590d2906
+ * Build 3736716d-46de-4abf-9680-61448e3d126f
  *
  * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -9152,14 +9152,14 @@
          *
          * console.log(container.innerHTML);
          *
-         * // <div class="container">
-         * //     <div class="mix">Foo</div>
-         * //     <div class="mix">Bar</div>
-         * // </div>
+         * // &lt;div class="container"&gt;
+         * //     &lt;div class="mix"&gt;Foo&lt;/div&gt;
+         * //     &lt;div class="mix"&gt;Bar&lt;/div&gt;
+         * // &lt;/div&gt;
          *
          * mixer.configure({
          *     render: {
-         *         target: (item) => `<a href="/${item.slug}/" class="mix">${item.title}</a>`
+         *         target: (item) => `&lt;a href="/${item.slug}/" class="mix"&gt;${item.title}&lt;/a&gt;`
          *     }
          * });
          *
@@ -9167,10 +9167,10 @@
          *
          * console.log(container.innerHTML);
          *
-         * // <div class="container">
-         * //     <a href="/foo/" class="mix">Foo</div>
-         * //     <a href="/bar/" class="mix">Bar</div>
-         * // </div>
+         * // &lt;div class="container"&gt;
+         * //     &lt;a href="/foo/" class="mix"&gt;Foo&lt;/div&gt;
+         * //     &lt;a href="/bar/" class="mix"&gt;Bar&lt;/div&gt;
+         * // &lt;/div&gt;
          *
          * @public
          * @instance
