@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/patrickkunka/mixitup.svg?branch=v3)](https://travis-ci.org/patrickkunka/mixitup)
 [![Coverage Status](https://coveralls.io/repos/github/patrickkunka/mixitup/badge.svg?branch=v3)](https://coveralls.io/github/patrickkunka/mixitup?branch=v3)
+[![jsDelivr Hits](https://data.jsdelivr.com/v1/package/gh/patrickkunka/mixitup/badge?style=rounded)](https://www.jsdelivr.com/package/gh/patrickkunka/mixitup)
 
 MixItUp is a high-performance, dependency-free library for animated DOM manipulation, giving you the power to filter, sort, add and remove DOM elements with beautiful animations.
 
