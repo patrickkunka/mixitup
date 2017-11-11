@@ -3747,7 +3747,7 @@ h.extend(mixitup.Mixer.prototype,
      *
      * // Insert the new elements starting at index 3
      *
-     * mixer.insert(newElementsCollection, 3)
+     * mixer.insert($newElement, 3)
      *     .then(function(state) {
      *         console.log(state.totalShow === 5); // true
      *         console.log(state.show[3] === $newElement[0]); // true

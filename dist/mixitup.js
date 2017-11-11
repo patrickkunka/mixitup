@@ -1,7 +1,7 @@
 /**!
  * MixItUp v3.2.2
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 20a1a182-d7bd-4c8f-807d-b888e325e44d
+ * Build a482aefa-6333-4df4-8f7d-360a1589553d
  *
  * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -8675,7 +8675,7 @@
          *
          * // Insert the new elements starting at index 3
          *
-         * mixer.insert(newElementsCollection, 3)
+         * mixer.insert($newElement, 3)
          *     .then(function(state) {
          *         console.log(state.totalShow === 5); // true
          *         console.log(state.show[3] === $newElement[0]); // true
