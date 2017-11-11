@@ -387,7 +387,7 @@ h = {
         frag = doc.createDocumentFragment();
         temp = doc.createElement('div');
 
-        temp.innerHTML = htmlString;
+        temp.innerHTML = htmlString.trim();
 
         while (temp.firstChild) {
             frag.appendChild(temp.firstChild);

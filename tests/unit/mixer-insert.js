@@ -230,6 +230,19 @@ describe('mixitup.Mixer', () => {
                     mixer.destroy();
                 });
         });
+
+        it('should accept a HTML with padding whitespace as an argument', () => {
+            let container = dom.getContainer();
+            let mixer = mixitup(container);
+            let newTarget = ' ' + dom.getTarget().outerHTML + ' ';
+
+            return mixer.insert(newTarget)
+                .then(state => {
+                    chai.assert.equal(state.show[0].id, 7);
+
+                    mixer.destroy();
+                });
+        });
     });
 
     describe('#prepend()', () => {

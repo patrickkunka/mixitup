@@ -86,6 +86,30 @@ describe('Controls', () => {
                 chai.assert.equal(state.totalHide, 0);
                 chai.assert.isNotOk(toggle.matches('.mixitup-control-active'));
             });
+
+            it ('should activate the appropriate toggle controls on load for an OR compound selector', () => {
+                const frag = document.createDocumentFragment();
+
+                const container = dom.getContainer();
+                const controls = dom.getFilterControls();
+
+                frag.appendChild(controls);
+                frag.appendChild(container);
+
+                const mixer = mixitup(container, {
+                    load: {
+                        filter: '.category-a, .category-c'
+                    }
+                }, frag);
+
+                after(() => mixer.destroy());
+
+                const toggleA = controls.querySelector('[data-toggle=".category-a"]');
+                const toggleC = controls.querySelector('[data-toggle=".category-c"]');
+
+                chai.assert.isTrue(toggleA.classList.contains('mixitup-control-active'));
+                chai.assert.isTrue(toggleC.classList.contains('mixitup-control-active'));
+            });
         });
 
         describe('AND', () => {
@@ -175,6 +199,34 @@ describe('Controls', () => {
 
                 chai.assert.equal(state.activeFilter.selector, '.category-a.category-c');
                 chai.assert.equal(state.totalShow, totalMatching);
+            });
+
+
+            it ('should activate the appropriate toggle controls on load for an AND compound selector', () => {
+                const frag = document.createDocumentFragment();
+
+                const container = dom.getContainer();
+                const controls = dom.getFilterControls();
+
+                frag.appendChild(controls);
+                frag.appendChild(container);
+
+                const mixer = mixitup(container, {
+                    controls: {
+                        toggleLogic: 'and'
+                    },
+                    load: {
+                        filter: '.category-a.category-c'
+                    }
+                }, frag);
+
+                after(() => mixer.destroy());
+
+                const toggleA = controls.querySelector('[data-toggle=".category-a"]');
+                const toggleC = controls.querySelector('[data-toggle=".category-c"]');
+
+                chai.assert.isTrue(toggleA.classList.contains('mixitup-control-active'));
+                chai.assert.isTrue(toggleC.classList.contains('mixitup-control-active'));
             });
         });
 

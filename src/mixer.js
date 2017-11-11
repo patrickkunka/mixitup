@@ -125,12 +125,12 @@ h.extend(mixitup.Mixer.prototype,
         if (self.config.controls.enable) {
             self.initControls();
 
+            self.buildToggleArray(null, self.state);
+
             self.updateControls({
                 filter: self.state.activeFilter,
                 sort: self.state.activeSort
             });
-
-            self.buildToggleArray(null, self.state);
         }
 
         self.parseEffects();
@@ -3169,11 +3169,14 @@ h.extend(mixitup.Mixer.prototype,
         var self            = this,
             instruction     = self.parseFilterArgs(arguments),
             selector        = instruction.command.selector,
+            selectorIndex   = self.toggleArray.indexOf(selector),
             toggleSelector  = '';
 
         self.isToggling = true;
 
-        self.toggleArray.splice(self.toggleArray.indexOf(selector), 1);
+        if (selectorIndex > -1) {
+            self.toggleArray.splice(selectorIndex, 1);
+        }
 
         toggleSelector = self.getToggleSelector();
 

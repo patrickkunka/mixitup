@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp Demo - Radio Buttons</title>
+    </head>
+    <body>
+        <div class="controls">
+            <div class="radio-group radios-filter">
+                <div class="radio">
+                    <label class="radio-label">All</label>
+                    <input name="color" type="radio" value="all" checked/>
+                </div>
+
+                <div class="radio">
+                    <label class="radio-label">Green</label>
+                    <input name="color" type="radio" value=".green"/>
+                </div>
+
+                <div class="radio">
+                    <label class="radio-label">Blue</label>
+                    <input name="color" type="radio" value=".blue"/>
+                </div>
+
+                <div class="radio">
+                    <label class="radio-label">Pink</label>
+                    <input name="color" type="radio" value=".pink"/>
+                </div>
+            </div>
+
+            <div class="radio-group radios-sort">
+                <div class="radio">
+                    <label class="radio-label">Asc</label>
+                    <input name="order" type="radio" value="default:asc" checked/>
+                </div>
+
+                <div class="radio">
+                    <label class="radio-label">Desc</label>
+                    <input name="order" type="radio" value="default:desc"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="mix green"></div>
+            <div class="mix green"></div>
+            <div class="mix blue"></div>
+            <div class="mix pink"></div>
+            <div class="mix green"></div>
+            <div class="mix blue"></div>
+            <div class="mix pink"></div>
+            <div class="mix blue"></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+
+        <script>
+            // In this example, we must bind a 'change' event handler to
+            // our radios, then interact with the mixer via
+            // its .filter() API methods.
+
+            var containerEl = document.querySelector('.container');
+            var radiosFilter = document.querySelector('.radios-filter');
+            var radiosSort = document.querySelector('.radios-sort');
+
+            var mixer = mixitup(containerEl);
+
+            radiosFilter.addEventListener('change', function() {
+                var checked = radiosFilter.querySelector(':checked');
+
+                var selector = checked ? checked.value : 'all';
+
+                mixer.filter(selector);
+            });
+
+            radiosSort.addEventListener('change', function() {
+                var checked = radiosSort.querySelector(':checked');
+
+                var order = checked.value;
+
+                mixer.sort(order);
+            });
+        </script>
+    </body>
+</html>

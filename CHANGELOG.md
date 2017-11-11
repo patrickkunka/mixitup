@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## 3.2.2
+- Fixes issue where multiple toggle controls are not automatically activated when a compound selector is specified to `load.filter`.
+- Fixes issue where calling `.toggleOff()` and passing a non-existent selector will deactivate all other active toggles.
+- Fixes issue where padding whitespace around a DOM string when calling `.insert()` caused an exception.
+- Adds additional demos for non-standard UI.
+
 ## 3.2.1
 - Additional edge-case work relating to Dataset API fix in v3.2.0.
 - Addition of `.forceRender()` mixer API method.

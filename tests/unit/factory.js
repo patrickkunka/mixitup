@@ -197,7 +197,7 @@ describe('mixitup()', () => {
         mixer1.destroy();
     });
 
-    it('should respect a `load.filter` configuration option', () => {
+    it('should respect a `load.filter` configuration option of none', () => {
         let container = dom.getContainer();
         let mixer = mixitup(container, {
             load: {
@@ -210,6 +210,38 @@ describe('mixitup()', () => {
         chai.assert.equal(state.activeFilter.selector, '');
         chai.assert.equal(state.totalShow, 0);
         chai.assert.equal(state.hide[0].style.display, 'none');
+
+        mixer.destroy();
+    });
+
+    it('should respect a `load.filter` configuration option of a single selector', () => {
+        let container = dom.getContainer();
+        let mixer = mixitup(container, {
+            load: {
+                filter: '.category-a'
+            }
+        });
+
+        let state = mixer.getState();
+
+        chai.assert.equal(state.activeFilter.selector, '.category-a');
+        chai.assert.equal(state.totalShow, 3);
+
+        mixer.destroy();
+    });
+
+    it('should respect a `load.filter` configuration option of a compound selector', () => {
+        let container = dom.getContainer();
+        let mixer = mixitup(container, {
+            load: {
+                filter: '.category-a.category-c'
+            }
+        });
+
+        let state = mixer.getState();
+
+        chai.assert.equal(state.activeFilter.selector, '.category-a.category-c');
+        chai.assert.equal(state.totalShow, 1);
 
         mixer.destroy();
     });

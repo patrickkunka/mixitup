@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.2.1
+ * MixItUp v3.2.2
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build e686293a-a831-4453-8fff-74c886296ad0
+ * Build 20a1a182-d7bd-4c8f-807d-b888e325e44d
  *
  * @copyright Copyright 2014-2017 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -831,7 +831,7 @@
             frag = doc.createDocumentFragment();
             temp = doc.createElement('div');
 
-            temp.innerHTML = htmlString;
+            temp.innerHTML = htmlString.trim();
 
             while (temp.firstChild) {
                 frag.appendChild(temp.firstChild);
@@ -5053,12 +5053,12 @@
             if (self.config.controls.enable) {
                 self.initControls();
 
+                self.buildToggleArray(null, self.state);
+
                 self.updateControls({
                     filter: self.state.activeFilter,
                     sort: self.state.activeSort
                 });
-
-                self.buildToggleArray(null, self.state);
             }
 
             self.parseEffects();
@@ -8097,11 +8097,14 @@
             var self            = this,
                 instruction     = self.parseFilterArgs(arguments),
                 selector        = instruction.command.selector,
+                selectorIndex   = self.toggleArray.indexOf(selector),
                 toggleSelector  = '';
 
             self.isToggling = true;
 
-            self.toggleArray.splice(self.toggleArray.indexOf(selector), 1);
+            if (selectorIndex > -1) {
+                self.toggleArray.splice(selectorIndex, 1);
+            }
 
             toggleSelector = self.getToggleSelector();
 
@@ -10645,5 +10648,5 @@
     mixitup.BaseStatic.call(mixitup.constructor);
 
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.2.1';
+    mixitup.CORE_VERSION = '3.2.2';
 })(window);

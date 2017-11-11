@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp Demo - Select Dropdowns</title>
+    </head>
+    <body>
+        <div class="controls">
+            <select class="select-filter">
+                <option value="all">All</option>
+                <option value=".green">Green</option>
+                <option value=".blue">Blue</option>
+                <option value=".pink">Pink</option>
+            </select>
+
+            <select class="select-sort">
+                <option value="default:asc">Ascending</option>
+                <option value="default:desc">Descending</option>
+            </select>
+        </div>
+
+        <div class="container">
+            <div class="mix green"></div>
+            <div class="mix green"></div>
+            <div class="mix blue"></div>
+            <div class="mix pink"></div>
+            <div class="mix green"></div>
+            <div class="mix blue"></div>
+            <div class="mix pink"></div>
+            <div class="mix blue"></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+
+        <script>
+            // In this example, we must bind 'change' event handlers to
+            // our <select> elements, then interact with the mixer via
+            // its .filter() and .sort() API methods.
+
+            var containerEl = document.querySelector('.container');
+            var selectFilter = document.querySelector('.select-filter');
+            var selectSort = document.querySelector('.select-sort');
+
+            var mixer = mixitup(containerEl);
+
+            selectFilter.addEventListener('change', function() {
+                const selector = selectFilter.value;
+
+                mixer.filter(selector);
+            });
+
+            selectSort.addEventListener('change', function() {
+                const order = selectSort.value;
+
+                mixer.sort(order);
+            });
+        </script>
+    </body>
+</html>

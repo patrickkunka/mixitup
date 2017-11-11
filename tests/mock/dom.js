@@ -40,7 +40,7 @@ module.exports = {
             '<div class="mixitup-control" data-filter=".category-c">Category C</div> ' +
             '<div class="mixitup-control" data-filter=".category-d">Category D</div> ' +
             '<div class="mixitup-control" data-filter=".category-a, .category-b">Category A OR B</div> ' +
-            '<div class="mixitup-control" data-filter=".category-a.category-c">Category A AND B</div> ' +
+            '<div class="mixitup-control" data-filter=".category-a.category-c">Category A AND C</div> ' +
             '<div class="mixitup-control mixitup_control__attr-a" data-filter=\'[data-category="a"]\'>Category A (attribute)</div> ' +
             '<div class="mixitup-control mixitup_control__attr-a-or-b" data-filter=\'[data-category="a"], [data-category="b"]\'>Category A OR B (attribute)</div> ' +
             '<div class="mixitup-control mixitup_control__attr-a-and-c" data-filter=\'[data-category="a"][data-category="c"]\'>Category A AND C (attribute)</div> ' +
