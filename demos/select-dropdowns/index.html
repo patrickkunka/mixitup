@@ -52,13 +52,13 @@
             var mixer = mixitup(containerEl);
 
             selectFilter.addEventListener('change', function() {
-                const selector = selectFilter.value;
+                var selector = selectFilter.value;
 
                 mixer.filter(selector);
             });
 
             selectSort.addEventListener('change', function() {
-                const order = selectSort.value;
+                var order = selectSort.value;
 
                 mixer.sort(order);
             });
