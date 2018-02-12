@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="../reset.css" rel="stylesheet"/>
+        <link href="./style.css" rel="stylesheet"/>
+
+        <title>MixItUp Demo - Filtering by Range</title>
+
+        <!--
+        This demo hooks into MixItUp's plugins API to provide a means of applying
+        additional non-selector-based contraints to our filtering logic, such as a
+        minimum and maximum range.
+
+        Although this demo uses the native <input type="range"> only, you are free to use any
+        specialised range slider UI library instead (e.g. Bootstrap, jQuery UI, etc). Simply
+        update the `getRange()` function to read values in from your plugin's API instead.
+
+        NB: REQUIRES MixItUp v3.3.0 OR LATER!
+        -->
+    </head>
+    <body>
+        <div class="controls">
+            <button type="button" class="control" data-filter="all">All</button>
+            <button type="button" class="control" data-filter=".green">Green</button>
+            <button type="button" class="control" data-filter=".blue">Blue</button>
+            <button type="button" class="control" data-filter=".pink">Pink</button>
+            <button type="button" class="control" data-filter="none">None</button>
+
+            <button type="button" class="control" data-sort="size:asc">Asc</button>
+            <button type="button" class="control" data-sort="size:desc">Desc</button>
+
+            <datalist id="sizeLegend">
+                <option value="0">
+                <option value="1">
+                <option value="2">
+                <option value="3">
+                <option value="4">
+                <option value="6">
+                <option value="7">
+                <option value="8">
+                <option value="9">
+                <option value="10">
+            </datalist>
+
+            <div class="range-slider">
+                <label class="range-slider-label">Min</label>
+
+                <input name="minSize" class="range-slider-input" type="range" min="0" max="10" value="0" list="sizeLegend"/>
+            </div>
+
+            <div class="range-slider">
+                <label class="range-slider-label">Max</label>
+
+                <input name="maxSize" class="range-slider-input" type="range" min="0" max="10" value="10" list="sizeLegend"/>
+            </div>
+        </div>
+
+        <div class="container" data-ref="container">
+            <div class="mix green" data-size="1"></div>
+            <div class="mix green" data-size="3"></div>
+            <div class="mix blue" data-size="4"></div>
+            <div class="mix pink" data-size="5"></div>
+            <div class="mix green" data-size="0"></div>
+            <div class="mix green" data-size="3"></div>
+            <div class="mix blue" data-size="8"></div>
+            <div class="mix pink" data-size="2"></div>
+            <div class="mix blue" data-size="10"></div>
+            <div class="mix blue" data-size="7"></div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            <div class="gap"></div>
+        </div>
+
+        <script src="../mixitup.min.js"></script>
+
+        <script>
+            var container = document.querySelector('[data-ref="container"]');
+            var minSizeRangeInput = document.querySelector('[name="minSize"]');
+            var maxSizeRangeInput = document.querySelector('[name="maxSize"]');
+
+            var mixer = mixitup(container, {
+                animation: {
+                    duration: 350
+                }
+            });
+
+            /**
+             * Reads the values from our two native range inputs, returning an object
+             * with `min` and `max` numeric values.
+             *
+             * @return {object}
+             */
+
+            function getRange() {
+                var min = Number(minSizeRangeInput.value);
+                var max = Number(maxSizeRangeInput.value);
+
+                return {
+                    min: min,
+                    max: max
+                };
+            }
+
+            /**
+             * Ensures that the mixer is re-filtered whenever the value of a range
+             * input changes.
+             *
+             * @return {void}
+             */
+
+            function handleRangeInputChange() {
+                mixer.filter(mixer.getState().activeFilter);
+            }
+
+            /**
+             * Allows us to manipulate the test result (`true` or `false`) of a
+             * target against the current filter selector(s) (e.g. `.blue`).
+             *
+             * In this case we want to apply an additional constraint of whether or not the
+             * target is within an arbitrary range, and override the test result to `false`
+             * if not. The function must always return the test result.
+             *
+             * @param {boolean} testResult
+             *     A boolean indicating whether or not the target is passing the current filtering criteria.
+             * @param {mixitup.Target} target
+             *     A reference to the target being tested
+             * @return {boolean}
+             */
+
+            function filterTestResult(testResult, target) {
+                var size = Number(target.dom.el.getAttribute('data-size'));
+                var range = getRange();
+
+                if (size < range.min || size > range.max) {
+                    testResult = false;
+                }
+
+                return testResult;
+            }
+
+            // Using the static method `registerFilter` from the MixItUp plugins API, we can
+            // register the above function as a filter, to manipulate the value returned from the
+            // `testResultEvaluateHideShow` hook.
+
+            mixitup.Mixer.registerFilter('testResultEvaluateHideShow', 'range', filterTestResult);
+
+            // Listen for change events from the two range inputs
+
+            minSizeRangeInput.addEventListener('change', handleRangeInputChange);
+            maxSizeRangeInput.addEventListener('change', handleRangeInputChange);
+        </script>
+    </body>
+</html>

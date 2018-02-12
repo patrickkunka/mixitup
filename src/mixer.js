@@ -805,11 +805,18 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     evaluateHideShow: function(testResult, target, action, operation) {
-        var self = this;
+        var self = this,
+            filteredTestResult = false,
+            args = Array.prototype.slice.call(arguments, 1);
+
+        filteredTestResult = self.callFilters('testResultEvaluateHideShow', testResult, args);
 
         self.callActions('beforeEvaluateHideShow', arguments);
 
-        if (testResult === true && action === 'show' || testResult === false && action === 'hide') {
+        if (
+            filteredTestResult === true && action === 'show' ||
+            filteredTestResult === false && action === 'hide'
+        ) {
             operation.show.push(target);
 
             !target.isShown && operation.toShow.push(target);

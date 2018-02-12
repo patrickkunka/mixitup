@@ -1,9 +1,9 @@
 /**!
- * MixItUp v3.2.2
+ * MixItUp v3.3.0
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build a482aefa-6333-4df4-8f7d-360a1589553d
+ * Build 0be05511-2264-4384-8e31-c75554304cd0
  *
- * @copyright Copyright 2014-2017 KunkaLabs Limited.
+ * @copyright Copyright 2014-2018 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
  * @link      https://www.kunkalabs.com/mixitup/
  *
@@ -5733,11 +5733,18 @@
          */
 
         evaluateHideShow: function(testResult, target, action, operation) {
-            var self = this;
+            var self = this,
+                filteredTestResult = false,
+                args = Array.prototype.slice.call(arguments, 1);
+
+            filteredTestResult = self.callFilters('testResultEvaluateHideShow', testResult, args);
 
             self.callActions('beforeEvaluateHideShow', arguments);
 
-            if (testResult === true && action === 'show' || testResult === false && action === 'hide') {
+            if (
+                filteredTestResult === true && action === 'show' ||
+                filteredTestResult === false && action === 'hide'
+            ) {
                 operation.show.push(target);
 
                 !target.isShown && operation.toShow.push(target);
@@ -10648,5 +10655,5 @@
     mixitup.BaseStatic.call(mixitup.constructor);
 
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.2.2';
+    mixitup.CORE_VERSION = '3.3.0';
 })(window);

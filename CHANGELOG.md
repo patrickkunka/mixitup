@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## 3.3.0
+- Introduces new internal filter hook `testResultEvaluateHideShown` allowing plugins to manipulate the result of every filter test upon a target. Provides an convenient entry point for non-selector based filtering such as range slider inputs.
+- Adds range slider demo.
+
 ## 3.2.2
 - Fixes issue where multiple toggle controls are not automatically activated when a compound selector is specified to `load.filter`.
 - Fixes issue where calling `.toggleOff()` and passing a non-existent selector will deactivate all other active toggles.
