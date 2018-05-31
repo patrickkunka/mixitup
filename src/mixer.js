@@ -838,7 +838,10 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     sortOperation: function(operation) {
-        var self = this;
+        var self    = this,
+            target  = null,
+            el      = null,
+            i       = -1;
 
         self.callActions('beforeSortOperation', arguments);
 
@@ -847,7 +850,20 @@ h.extend(mixitup.Mixer.prototype,
         if (operation.newSort.collection) {
             // Sort by collection
 
-            operation.newOrder = operation.newSort.collection;
+            operation.newOrder = [];
+
+            for (i = 0; el = operation.newSort.collection[i]; i++) {
+                if (self.dom.targets.indexOf(el) == -1) {
+                    throw new Error(mixitup.messages.errorSortNotPreexistingElement());
+                }
+
+                target = new mixitup.Target();
+                target.init(el, self);
+                target.isInDom = true;
+
+                operation.newOrder.push(target);
+            }
+
         } else if (operation.newSort.order === 'random') {
             // Sort random
 

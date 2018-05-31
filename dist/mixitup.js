@@ -1,7 +1,7 @@
 /**!
  * MixItUp v3.3.0
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 0be05511-2264-4384-8e31-c75554304cd0
+ * Build 519a0ec2-cbee-4e60-b1e2-6c99b7ecea79
  *
  * @copyright Copyright 2014-2018 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -5766,7 +5766,10 @@
          */
 
         sortOperation: function(operation) {
-            var self = this;
+            var self    = this,
+                target  = null,
+                el      = null,
+                i       = -1;
 
             self.callActions('beforeSortOperation', arguments);
 
@@ -5775,7 +5778,20 @@
             if (operation.newSort.collection) {
                 // Sort by collection
 
-                operation.newOrder = operation.newSort.collection;
+                operation.newOrder = [];
+
+                for (i = 0; el = operation.newSort.collection[i]; i++) {
+                    if (self.dom.targets.indexOf(el) == -1) {
+                        throw new Error(mixitup.messages.errorSortNotPreexistingElement());
+                    }
+
+                    target = new mixitup.Target();
+                    target.init(el, self);
+                    target.isInDom = true;
+
+                    operation.newOrder.push(target);
+                }
+
             } else if (operation.newSort.order === 'random') {
                 // Sort random
 
@@ -10525,6 +10541,9 @@
 
         this.ERROR_FILTER_INVALID_ARGUMENTS =
             '[MixItUp] Please provide either a selector or collection `.filter()`, not both';
+
+        this.ERROR_SORT_NOT_PREEXISTING_ELEMENT =
+            '[MixItUp] An element to be sorted does not already exists in the container';
 
         this.ERROR_DATASET_NOT_SET =
             '[MixItUp] To use the dataset API with pre-rendered targets, a starting dataset must be set using `load.dataset`';
