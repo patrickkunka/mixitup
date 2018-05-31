@@ -51,6 +51,9 @@ mixitup.Messages = function() {
     this.ERROR_FILTER_INVALID_ARGUMENTS =
         '[MixItUp] Please provide either a selector or collection `.filter()`, not both';
 
+    this.ERROR_SORT_NOT_PREEXISTING_ELEMENT =
+        '[MixItUp] An element to be sorted does not already exists in the container';
+
     this.ERROR_DATASET_NOT_SET =
         '[MixItUp] To use the dataset API with pre-rendered targets, a starting dataset must be set using `load.dataset`';
 
