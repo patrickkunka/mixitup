@@ -60,6 +60,9 @@ mixitup.Messages = function() {
     this.ERROR_DATASET_RENDERER_NOT_SET =
         '[MixItUp] To insert an element via the dataset API, a target renderer function must be provided to `render.target`';
 
+    this.ERROR_SORT_NON_EXISTENT_ELEMENT =
+        '[MixItUp] An element to be sorted does not already exist in the container';
+
     /* Warnings
     ----------------------------------------------------------------------------- */
 

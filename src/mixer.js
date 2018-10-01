@@ -838,7 +838,11 @@ h.extend(mixitup.Mixer.prototype,
      */
 
     sortOperation: function(operation) {
-        var self = this;
+        var self     = this,
+            newOrder = [],
+            target   = null,
+            el       = null,
+            i        = -1;
 
         self.callActions('beforeSortOperation', arguments);
 
@@ -847,7 +851,23 @@ h.extend(mixitup.Mixer.prototype,
         if (operation.newSort.collection) {
             // Sort by collection
 
-            operation.newOrder = operation.newSort.collection;
+            newOrder = [];
+
+            for (i = 0; (el = operation.newSort.collection[i]); i++) {
+                if (self.dom.targets.indexOf(el) < 0) {
+                    throw new Error(mixitup.messages.errorSortNonExistentElement());
+                }
+
+                target = new mixitup.Target();
+
+                target.init(el, self);
+
+                target.isInDom = true;
+
+                newOrder.push(target);
+            }
+
+            operation.newOrder = newOrder;
         } else if (operation.newSort.order === 'random') {
             // Sort random
 
@@ -2896,7 +2916,7 @@ h.extend(mixitup.Mixer.prototype,
 
     insertDatasetFrag: function(frag, nextEl, targets) {
         var self = this;
-        var insertAt = nextEl ? Array.from(self.dom.parent.children).indexOf(nextEl) : self.targets.length;
+        var insertAt = nextEl ? h.arrayFromList(self.dom.parent.children).indexOf(nextEl) : self.targets.length;
 
         self.dom.parent.insertBefore(frag, nextEl);
 

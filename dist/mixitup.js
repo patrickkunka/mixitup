@@ -1,7 +1,7 @@
 /**!
- * MixItUp v3.3.0
+ * MixItUp v3.3.1
  * A high-performance, dependency-free library for animated filtering, sorting and more
- * Build 0be05511-2264-4384-8e31-c75554304cd0
+ * Build 94e0fbf6-cd0b-4987-b3c0-14b59b67b8a0
  *
  * @copyright Copyright 2014-2018 KunkaLabs Limited.
  * @author    KunkaLabs Limited.
@@ -5766,7 +5766,11 @@
          */
 
         sortOperation: function(operation) {
-            var self = this;
+            var self     = this,
+                newOrder = [],
+                target   = null,
+                el       = null,
+                i        = -1;
 
             self.callActions('beforeSortOperation', arguments);
 
@@ -5775,7 +5779,23 @@
             if (operation.newSort.collection) {
                 // Sort by collection
 
-                operation.newOrder = operation.newSort.collection;
+                newOrder = [];
+
+                for (i = 0; (el = operation.newSort.collection[i]); i++) {
+                    if (self.dom.targets.indexOf(el) < 0) {
+                        throw new Error(mixitup.messages.errorSortNonExistentElement());
+                    }
+
+                    target = new mixitup.Target();
+
+                    target.init(el, self);
+
+                    target.isInDom = true;
+
+                    newOrder.push(target);
+                }
+
+                operation.newOrder = newOrder;
             } else if (operation.newSort.order === 'random') {
                 // Sort random
 
@@ -7824,7 +7844,7 @@
 
         insertDatasetFrag: function(frag, nextEl, targets) {
             var self = this;
-            var insertAt = nextEl ? Array.from(self.dom.parent.children).indexOf(nextEl) : self.targets.length;
+            var insertAt = nextEl ? h.arrayFromList(self.dom.parent.children).indexOf(nextEl) : self.targets.length;
 
             self.dom.parent.insertBefore(frag, nextEl);
 
@@ -10535,6 +10555,9 @@
         this.ERROR_DATASET_RENDERER_NOT_SET =
             '[MixItUp] To insert an element via the dataset API, a target renderer function must be provided to `render.target`';
 
+        this.ERROR_SORT_NON_EXISTENT_ELEMENT =
+            '[MixItUp] An element to be sorted does not already exist in the container';
+
         /* Warnings
         ----------------------------------------------------------------------------- */
 
@@ -10655,5 +10678,5 @@
     mixitup.BaseStatic.call(mixitup.constructor);
 
     mixitup.NAME = 'mixitup';
-    mixitup.CORE_VERSION = '3.3.0';
+    mixitup.CORE_VERSION = '3.3.1';
 })(window);

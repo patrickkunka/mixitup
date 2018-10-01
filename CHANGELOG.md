@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## 3.3.1
+- Insures dataset uses polyfilled `Array.from` for old IE support.
+- Fixes support for sorting via element collection. This was not correctly implemented before although documented.
+- Fixes the "filter-by-url" demo to ensure that only leading `'.'` characters are stripped off rather than any character.
+
 ## 3.3.0
 - Introduces new internal filter hook `testResultEvaluateHideShown` allowing plugins to manipulate the result of every filter test upon a target. Provides an convenient entry point for non-selector based filtering such as range slider inputs.
 - Adds range slider demo.

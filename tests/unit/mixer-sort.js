@@ -63,7 +63,7 @@ describe('mixitup.Mixer', () => {
 
         after(() => mixer.destroy());
 
-        it('accept `default` as a sort string, but should have no effect on the order', () => {
+        it('accepts `default` as a sort string, but should have no effect on the order', () => {
             var startOrder = mixer.getState().show;
 
             return mixer.sort('default')
@@ -75,7 +75,7 @@ describe('mixitup.Mixer', () => {
                 });
         });
 
-        it('accept `default:asc` as a sort string, but should have no effect on the order', () => {
+        it('accepts `default:asc` as a sort string, but should have no effect on the order', () => {
             var startOrder = mixer.getState().show;
 
             return mixer.sort('default:asc')
@@ -87,7 +87,7 @@ describe('mixitup.Mixer', () => {
                 });
         });
 
-        it('accept `default:desc` as a sort string, which should reverse the order', () => {
+        it('accepts `default:desc` as a sort string, which should reverse the order', () => {
             var reversedOrder = mixer.getState().show.slice().reverse();
 
             return mixer.sort('default:desc')
@@ -182,6 +182,26 @@ describe('mixitup.Mixer', () => {
 
                     chai.assert.deepEqual(targetIds, idsByViewsThenPublishedDateDesc);
                 });
+        });
+
+        it('should accept a collection of elements by which to sort by', () => {
+            const firstTarget = mixer.getState().targets[0];
+            const collection = mixer.getState().targets.slice().reverse();
+
+            return mixer.sort(collection)
+                .then(state => {
+                    const lastTarget = state.targets[state.targets.length - 1];
+
+                    chai.assert.deepEqual(lastTarget, firstTarget);
+                });
+        });
+
+        it('should error if any element in the collection provided does not exist in the container', () => {
+            const mixer = mixitup(container);
+
+            const collection = [document.createElement('div')];
+
+            chai.assert.throws(() => mixer.sort(collection));
         });
 
         it('should accept a callback function which is invoked after sorting', () => {

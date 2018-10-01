@@ -69,7 +69,7 @@
 
             function setHash(state) {
                 var selector = state.activeFilter.selector;
-                var newHash = '#' + selector.replace(/^./g, '');
+                var newHash = '#' + selector.replace(/^\./g, '');
 
                 if (selector === targetSelector && window.location.hash) {
                     // Equivalent to filter "all", remove the hash
