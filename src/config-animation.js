@@ -18,7 +18,7 @@ mixitup.ConfigAnimation = function() {
 
     /**
      * A boolean dictating whether or not animation should be enabled for the MixItUp instance.
-     * If `false`, all operations will occur instantly and syncronously, although callback
+     * If `false`, all operations will occur instantly and synchronously, although callback
      * functions and any returned promises will still be fulfilled.
      *
      * @example <caption>Example: Create a mixer with all animations disabled</caption>
