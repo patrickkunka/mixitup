@@ -39,7 +39,7 @@ A group of properties defining the mixer's animation and effects settings.
 
 
 A boolean dictating whether or not animation should be enabled for the MixItUp instance.
-If `false`, all operations will occur instantly and syncronously, although callback
+If `false`, all operations will occur instantly and synchronously, although callback
 functions and any returned promises will still be fulfilled.
 
 
