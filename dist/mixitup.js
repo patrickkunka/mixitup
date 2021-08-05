@@ -21,241 +21,12 @@
         h       = null;
 
     (function() {
-        var VENDORS = ['webkit', 'moz', 'o', 'ms'],
-            canary  = window.document.createElement('div'),
-            i       = -1;
-
-        // window.requestAnimationFrame
-
-        for (i = 0; i < VENDORS.length && !window.requestAnimationFrame; i++) {
-            window.requestAnimationFrame = window[VENDORS[i] + 'RequestAnimationFrame'];
-        }
-
-        // Element.nextElementSibling
-
-        if (typeof canary.nextElementSibling === 'undefined') {
-            Object.defineProperty(window.Element.prototype, 'nextElementSibling', {
-                get: function() {
-                    var el = this.nextSibling;
-
-                    while (el) {
-                        if (el.nodeType === 1) {
-                            return el;
-                        }
-
-                        el = el.nextSibling;
-                    }
-
-                    return null;
-                }
-            });
-        }
-
-        // Element.matches
+        // Element.matches support for Internet Explorer 9 - 11
 
         (function(ElementPrototype) {
-            ElementPrototype.matches =
-                ElementPrototype.matches ||
-                ElementPrototype.machesSelector ||
-                ElementPrototype.mozMatchesSelector ||
-                ElementPrototype.msMatchesSelector ||
-                ElementPrototype.oMatchesSelector ||
-                ElementPrototype.webkitMatchesSelector ||
-                function (selector) {
-                    return Array.prototype.indexOf.call(this.parentElement.querySelectorAll(selector), this) > -1;
-                };
+            ElementPrototype.matches = ElementPrototype.matches || ElementPrototype.msMatchesSelector;
         })(window.Element.prototype);
 
-        // Object.keys
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
-
-        if (!Object.keys) {
-            Object.keys = (function() {
-                var hasOwnProperty      = Object.prototype.hasOwnProperty,
-                    hasDontEnumBug      = false,
-                    dontEnums           = [],
-                    dontEnumsLength     = -1;
-
-                hasDontEnumBug = !({
-                    toString: null
-                })
-                    .propertyIsEnumerable('toString');
-
-                dontEnums = [
-                    'toString',
-                    'toLocaleString',
-                    'valueOf',
-                    'hasOwnProperty',
-                    'isPrototypeOf',
-                    'propertyIsEnumerable',
-                    'constructor'
-                ];
-
-                dontEnumsLength = dontEnums.length;
-
-                return function(obj) {
-                    var result  = [],
-                        prop    = '',
-                        i       = -1;
-
-                    if (typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
-                        throw new TypeError('Object.keys called on non-object');
-                    }
-
-                    for (prop in obj) {
-                        if (hasOwnProperty.call(obj, prop)) {
-                            result.push(prop);
-                        }
-                    }
-
-                    if (hasDontEnumBug) {
-                        for (i = 0; i < dontEnumsLength; i++) {
-                            if (hasOwnProperty.call(obj, dontEnums[i])) {
-                                result.push(dontEnums[i]);
-                            }
-                        }
-                    }
-
-                    return result;
-                };
-            }());
-        }
-
-        // Array.isArray
-        // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
-
-        if (!Array.isArray) {
-            Array.isArray = function(arg) {
-                return Object.prototype.toString.call(arg) === '[object Array]';
-            };
-        }
-
-        // Object.create
-        // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/create
-
-        if (typeof Object.create !== 'function') {
-            Object.create = (function(undefined) {
-                var Temp = function() {};
-
-                return function (prototype, propertiesObject) {
-                    if (prototype !== Object(prototype) && prototype !== null) {
-                        throw TypeError('Argument must be an object, or null');
-                    }
-
-                    Temp.prototype = prototype || {};
-
-                    var result = new Temp();
-
-                    Temp.prototype = null;
-
-                    if (propertiesObject !== undefined) {
-                        Object.defineProperties(result, propertiesObject);
-                    }
-
-                    if (prototype === null) {
-                        /* jshint ignore:start */
-                        result.__proto__ = null;
-                        /* jshint ignore:end */
-                    }
-
-                    return result;
-                };
-            })();
-        }
-
-        // String.prototyoe.trim
-
-        if (!String.prototype.trim) {
-            String.prototype.trim = function() {
-                return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
-            };
-        }
-
-        // Array.prototype.indexOf
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
-
-        if (!Array.prototype.indexOf) {
-            Array.prototype.indexOf = function(searchElement) {
-                var n, k, t, len;
-
-                if (this === null) {
-                    throw new TypeError();
-                }
-
-                t = Object(this);
-
-                len = t.length >>> 0;
-
-                if (len === 0) {
-                    return -1;
-                }
-
-                n = 0;
-
-                if (arguments.length > 1) {
-                    n = Number(arguments[1]);
-
-                    if (n !== n) {
-                        n = 0;
-                    } else if (n !== 0 && n !== Infinity && n !== -Infinity) {
-                        n = (n > 0 || -1) * Math.floor(Math.abs(n));
-                    }
-                }
-
-                if (n >= len) {
-                    return -1;
-                }
-
-                for (k = n >= 0 ? n : Math.max(len - Math.abs(n), 0); k < len; k++) {
-                    if (k in t && t[k] === searchElement) {
-                        return k;
-                    }
-                }
-
-                return -1;
-            };
-        }
-
-        // Function.prototype.bind
-        // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_objects/Function/bind
-
-        if (!Function.prototype.bind) {
-            Function.prototype.bind = function(oThis) {
-                var aArgs, self, FNOP, fBound;
-
-                if (typeof this !== 'function') {
-                    throw new TypeError();
-                }
-
-                aArgs = Array.prototype.slice.call(arguments, 1);
-
-                self = this;
-
-                FNOP = function() {};
-
-                fBound = function() {
-                    return self.apply(this instanceof FNOP ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
-                };
-
-                if (this.prototype) {
-                    FNOP.prototype = this.prototype;
-                }
-
-                fBound.prototype = new FNOP();
-
-                return fBound;
-            };
-        }
-
-        // Element.prototype.dispatchEvent
-
-        if (!window.Element.prototype.dispatchEvent) {
-            window.Element.prototype.dispatchEvent = function(event) {
-                try {
-                    return this.fireEvent('on' + event.type, event);
-                } catch (err) {}
-            };
-        }
     })();
 
     /**
@@ -318,7 +89,7 @@
         doc = foreignDoc || window.document;
 
         if (returnCollection = arguments[3]) {
-            // A non-documented 4th paramater enabling control of multiple instances
+            // A non-documented 4th parameter enabling control of multiple instances
 
             returnCollection = typeof returnCollection === 'boolean';
         }
@@ -421,7 +192,7 @@
         mixitup.Base.prototype.callActions.call(mixitup, 'beforeUse', arguments);
 
         // Call the extension's factory function, passing
-        // the mixitup factory as a paramater
+        // the mixitup factory as a parameter
 
         if (typeof extension === 'function' && extension.TYPE === 'mixitup-extension') {
             // Mixitup extension
@@ -1027,7 +798,7 @@
         },
 
         /**
-         * Calcuates the area of intersection between two rectangles and expresses it as
+         * Calculates the area of intersection between two rectangles and expresses it as
          * a ratio in comparison to the area of the first rectangle.
          *
          * @private
@@ -1206,29 +977,6 @@
             }
 
             return [];
-        },
-
-        /**
-         * @private
-         * @param   {HTMLElement}   el
-         * @param   {string}        property
-         * @param   {Array<string>} vendors
-         * @return  {string}
-         */
-
-        getPrefix: function(el, property, vendors) {
-            var i       = -1,
-                prefix  = '';
-
-            if (h.dashCase(property) in el.style) return '';
-
-            for (i = 0; prefix = vendors[i]; i++) {
-                if (prefix + property in el.style) {
-                    return prefix.toLowerCase();
-                }
-            }
-
-            return 'unsupported';
         },
 
         /**
@@ -1600,8 +1348,8 @@
 
     /**
      * The `mixitup.Features` class performs all feature and CSS prefix detection
-     * neccessary for MixItUp to function correctly, as well as storing various
-     * string and array constants. All feature decection is on evaluation of the
+     * necessary for MixItUp to function correctly, as well as storing various
+     * string and array constants. All feature detection is on evaluation of the
      * library and stored in a singleton instance for use by other internal classes.
      *
      * @constructor
@@ -1616,27 +1364,7 @@
 
         this.callActions('beforeConstruct');
 
-        this.boxSizingPrefix            = '';
-        this.transformPrefix            = '';
-        this.transitionPrefix           = '';
-
-        this.boxSizingPrefix            = '';
-        this.transformProp              = '';
-        this.transformRule              = '';
-        this.transitionProp             = '';
-        this.perspectiveProp            = '';
-        this.perspectiveOriginProp      = '';
-
         this.has                        = new mixitup.Has();
-
-        this.canary                     = null;
-
-        this.BOX_SIZING_PROP            = 'boxSizing';
-        this.TRANSITION_PROP            = 'transition';
-        this.TRANSFORM_PROP             = 'transform';
-        this.PERSPECTIVE_PROP           = 'perspective';
-        this.PERSPECTIVE_ORIGIN_PROP    = 'perspectiveOrigin';
-        this.VENDORS                    = ['Webkit', 'moz', 'O', 'ms'];
 
         this.TWEENABLE = [
             'opacity',
@@ -1670,9 +1398,6 @@
 
             self.callActions('beforeInit', arguments);
 
-            self.canary = document.createElement('div');
-
-            self.setPrefixes();
             self.runTests();
 
             self.callActions('beforeInit', arguments);
@@ -1689,47 +1414,10 @@
             self.callActions('beforeRunTests', arguments);
 
             self.has.promises       = typeof window.Promise === 'function';
-            self.has.transitions    = self.transitionPrefix !== 'unsupported';
 
             self.callActions('afterRunTests', arguments);
 
             h.freeze(self.has);
-        },
-
-        /**
-         * @private
-         * @return  {void}
-         */
-
-        setPrefixes: function() {
-            var self = this;
-
-            self.callActions('beforeSetPrefixes', arguments);
-
-            self.transitionPrefix   = h.getPrefix(self.canary, 'Transition', self.VENDORS);
-            self.transformPrefix    = h.getPrefix(self.canary, 'Transform', self.VENDORS);
-            self.boxSizingPrefix    = h.getPrefix(self.canary, 'BoxSizing', self.VENDORS);
-
-            self.boxSizingProp = self.boxSizingPrefix ?
-                self.boxSizingPrefix + h.pascalCase(self.BOX_SIZING_PROP) : self.BOX_SIZING_PROP;
-
-            self.transitionProp = self.transitionPrefix ?
-                self.transitionPrefix + h.pascalCase(self.TRANSITION_PROP) : self.TRANSITION_PROP;
-
-            self.transformProp = self.transformPrefix ?
-                self.transformPrefix + h.pascalCase(self.TRANSFORM_PROP) : self.TRANSFORM_PROP;
-
-            self.transformRule = self.transformPrefix ?
-                '-' + self.transformPrefix + '-' + self.TRANSFORM_PROP : self.TRANSFORM_PROP;
-
-            self.perspectiveProp = self.transformPrefix ?
-                self.transformPrefix + h.pascalCase(self.PERSPECTIVE_PROP) : self.PERSPECTIVE_PROP;
-
-            self.perspectiveOriginProp = self.transformPrefix ?
-                self.transformPrefix + h.pascalCase(self.PERSPECTIVE_ORIGIN_PROP) :
-                self.PERSPECTIVE_ORIGIN_PROP;
-
-            self.callActions('afterSetPrefixes', arguments);
         }
     });
 
@@ -1741,7 +1429,6 @@
      */
 
     mixitup.Has = function() {
-        this.transitions    = false;
         this.promises       = false;
 
         h.seal(this);
@@ -1771,7 +1458,7 @@
 
         /**
          * A boolean dictating whether or not animation should be enabled for the MixItUp instance.
-         * If `false`, all operations will occur instantly and syncronously, although callback
+         * If `false`, all operations will occur instantly and synchronously, although callback
          * functions and any returned promises will still be fulfilled.
          *
          * @example <caption>Example: Create a mixer with all animations disabled</caption>
@@ -1791,7 +1478,7 @@
         this.enable = true;
 
         /**
-         * A string of one or more space-seperated properties to which transitions will be
+         * A string of one or more space-separated properties to which transitions will be
          * applied for all filtering animations.
          *
          * Properties can be listed any order or combination, although they will be applied in a specific
@@ -1821,7 +1508,7 @@
         this.effects = 'fade scale';
 
         /**
-         * A string of one or more space-seperated effects to be applied only to filter-in
+         * A string of one or more space-separated effects to be applied only to filter-in
          * animations, overriding `config.animation.effects` if set.
          *
          * @example <caption>Example: Apply downwards vertical translate to targets being filtered in</caption>
@@ -1842,7 +1529,7 @@
         this.effectsIn = '';
 
         /**
-         * A string of one or more space-seperated effects to be applied only to filter-out
+         * A string of one or more space-separated effects to be applied only to filter-out
          * animations, overriding `config.animation.effects` if set.
          *
          * @example <caption>Example: Apply upwards vertical translate to targets being filtered out</caption>
@@ -1864,7 +1551,7 @@
 
         /**
          * An integer dictating the duration of all MixItUp animations in milliseconds, not
-         * including any additional delay apllied via the `'stagger'` effect.
+         * including any additional delay applied via the `'stagger'` effect.
          *
          * @example <caption>Example: Apply an animation duration of 200ms to all mixitup animations</caption>
          *
@@ -1929,7 +1616,7 @@
          * @name        applyPerspective
          * @memberof    mixitup.Config.animation
          * @instance
-         * @type        {bolean}
+         * @type        {boolean}
          * @default     true
          */
 
@@ -1981,8 +1668,8 @@
          * A boolean dictating whether or not to enable the queuing of operations.
          *
          * If `true` (default), and a control is clicked or an API call is made while another
-         * operation is progress, the operation will go into the queue and will be automatically exectuted
-         * when the previous operaitons is finished.
+         * operation is progress, the operation will go into the queue and will be automatically executed
+         * when the previous operations is finished.
          *
          * If `false`, any requested operations will be ignored, and the `onMixBusy` callback and `mixBusy`
          * event will be fired. If `debug.showWarnings` is enabled, a console warning will also occur.
@@ -2004,7 +1691,7 @@
         this.queue = true;
 
         /**
-         * An integer dictacting the maximum number of operations allowed in the queue at
+         * An integer dictating the maximum number of operations allowed in the queue at
          * any time, when queuing is enabled.
          *
          * @example <caption>Example: Allow a maximum of 5 operations in the queue at any time</caption>
@@ -2130,7 +1817,7 @@
          * from opposite directions. If enabled, the effect `translateX(-100%)` for elements
          * being filtered in would become `translateX(100%)` for targets being filtered out.
          *
-         * This functionality can also be achieved by providing seperate effects
+         * This functionality can also be achieved by providing separate effects
          * strings for `config.animation.effectsIn` and `config.animation.effectsOut`.
          *
          * @example <caption>Example: Reverse the desired direction on any translate/rotate effect for targets being filtered out</caption>
@@ -2156,14 +1843,14 @@
 
         /**
          * A boolean dictating whether or not to "nudge" the animation path of targets
-         * when they are being filtered in and out simulatenously.
+         * when they are being filtered in and out simultaneously.
          *
          * This has been the default behavior of MixItUp since version 1, but it
          * may be desirable to disable this effect when filtering directly from
          * one exclusive set of targets to a different exclusive set of targets,
          * to create a carousel-like effect, or a generally more subtle animation.
          *
-         * @example <caption>Example: Disable the "nudging" of targets being filtered in and out simulatenously</caption>
+         * @example <caption>Example: Disable the "nudging" of targets being filtered in and out simultaneously</caption>
          *
          * var mixer = mixitup(containerEl, {
          *     animation: {
@@ -2211,8 +1898,8 @@
          * geometry tests are carried out before an operation.
          *
          * To prevent scroll-bar flicker, clamping is turned on by default. But in the case where the
-         * width of the container might affect its horitzontal positioning in the viewport
-         * (e.g. a horizontall-centered container), this should be turned off to ensure accurate
+         * width of the container might affect its horizontal positioning in the viewport
+         * (e.g. a horizontally-centered container), this should be turned off to ensure accurate
          * test results and a smooth animation.
          *
          * @example <caption>Example: Disable container width-clamping</caption>
@@ -2592,8 +2279,8 @@
          * to bind, or delegate click events from (see `config.controls.live`).
          *
          * When set to `'local'`, MixItUp will only query (or bind click events to) its own container element.
-         * This may be desireable if you require multiple active mixer instances within the same document, with
-         * controls that would otherwise intefere with each other if scoped globally.
+         * This may be desirable if you require multiple active mixer instances within the same document, with
+         * controls that would otherwise interfere with each other if scoped globally.
          *
          * Conversely, if you wish to control multiple instances with a single UI, you would create one
          * set of controls and keep the controls scope of each mixer set to `global`.
@@ -2628,7 +2315,7 @@
          * active toggle buttons (i.e. any clickable element with a `data-toggle` attribute).
          *
          * If set to `'or'` (default behavior), selectors will be concatenated together as
-         * a comma-seperated list. For example:
+         * a comma-separated list. For example:
          *
          * `'.cat-1, .cat-2'` (shows any elements matching `'.cat-1'` OR `'.cat-2'`)
          *
@@ -2961,7 +2648,7 @@
         /**
          * The delineator used between the "block" and "element" portions of any class name added by MixItUp.
          *
-         * If the block portion is ommited by setting it to an empty string, no delineator will be added.
+         * If the block portion is omitted by setting it to an empty string, no delineator will be added.
          *
          * @example <caption>Example: changing the delineator to match BEM convention</caption>
          * var mixer = mixitup(containerEl, {
@@ -2984,7 +2671,7 @@
         /**
          * The delineator used between the "element" and "modifier" portions of any class name added by MixItUp.
          *
-         * If the element portion is ommited by setting it to an empty string, no delineator will be added.
+         * If the element portion is omitted by setting it to an empty string, no delineator will be added.
          *
          * @example <caption>Example: changing both delineators to match BEM convention</caption>
          * var mixer = mixitup(containerEl, {
@@ -3291,7 +2978,7 @@
          *
          * By changing this class name or adding a class name to the container via the
          * `.changeLayout()` API method, the CSS layout of the container can be changed,
-         * and MixItUp will attemp to gracefully animate the container and its targets
+         * and MixItUp will attempt to gracefully animate the container and its targets
          * between states.
          *
          * @example <caption>Example 1: Specifying a container class name</caption>
@@ -3463,7 +3150,7 @@
          *
          * NB: If targets are pre-rendered when the mixer is instantiated, this must be set.
          *
-         * @example <caption>Example: Defining the initial underyling dataset</caption>
+         * @example <caption>Example: Defining the initial underlying dataset</caption>
          *
          * var myDataset = [
          *     {
@@ -3726,7 +3413,7 @@
      * mixer instance. It is organised into several semantically distinct sub-objects,
      * each one pertaining to a particular aspect of MixItUp functionality.
      *
-     * An object literal containing any or all of the available properies,
+     * An object literal containing any or all of the available properties,
      * known as the "configuration object", can be passed as the second parameter to
      * the `mixitup` factory function when creating a mixer instance to customise its
      * functionality as needed.
@@ -4599,7 +4286,7 @@
             }
 
             if (self.status !== 'live') {
-                // Update the control's status propery if not live
+                // Update the control's status properly if not live
 
                 self.status = status;
             }
@@ -4759,7 +4446,7 @@
      * upon.
      *
      * As with any event, registered event handlers receive the event object as a parameter
-     * which includes a `detail` property containting references to the current `state`,
+     * which includes a `detail` property containing references to the current `state`,
      * the `mixer` instance, and other event-specific properties described below.
      *
      * @constructor
@@ -4895,7 +4582,7 @@
         el.dispatchEvent(event);
     };
 
-    // Asign a singleton instance to `mixitup.events`:
+    // Assign a singleton instance to `mixitup.events`:
 
     mixitup.events = new mixitup.Events();
 
@@ -5026,10 +4713,6 @@
 
             if (self.config.layout.containerClassName) {
                 h.addClass(self.dom.container, self.config.layout.containerClassName);
-            }
-
-            if (!mixitup.features.has.transitions) {
-                self.config.animation.enable = false;
             }
 
             if (typeof window.console === 'undefined') {
@@ -5170,7 +4853,7 @@
         },
 
         /**
-         * Caches references of DOM elements neccessary for the mixer's functionality.
+         * Caches references of DOM elements necessary for the mixer's functionality.
          *
          * @private
          * @instance
@@ -6141,7 +5824,7 @@
                     self.staggerDuration = val ? parseFloat(val) : 100;
 
                     // TODO: Currently stagger must be applied globally, but
-                    // if seperate values are specified for in/out, this should
+                    // if separate values are specified for in/out, this should
                     // be respected
 
                     break;
@@ -6311,7 +5994,7 @@
 
             self.isBusy = true;
 
-            if (!shouldAnimate || !mixitup.features.has.transitions) {
+            if (!shouldAnimate) {
                 // Abort
 
                 if (self.config.debug.fauxAsync) {
@@ -6325,17 +6008,17 @@
                 return self.callFilters('promiseGoMix', deferred.promise, arguments);
             }
 
-            // If we should animate and the platform supports transitions, go for it
+            // If we should animate, go for it
 
             if (window.pageYOffset !== operation.docState.scrollTop) {
                 window.scrollTo(operation.docState.scrollLeft, operation.docState.scrollTop);
             }
 
             if (self.config.animation.applyPerspective) {
-                self.dom.parent.style[mixitup.features.perspectiveProp] =
+                self.dom.parent.style.perspective =
                     self.config.animation.perspectiveDistance;
 
-                self.dom.parent.style[mixitup.features.perspectiveOriginProp] =
+                self.dom.parent.style.perspectiveOrigin =
                     self.config.animation.perspectiveOrigin;
             }
 
@@ -6389,7 +6072,7 @@
                 target      = null,
                 data        = {},
                 i           = -1,
-                boxSizing   = parentStyle[mixitup.features.boxSizingProp];
+                boxSizing   = parentStyle.boxSizing;
 
             self.incPadding = (boxSizing === 'border-box');
 
@@ -6844,7 +6527,7 @@
             }
 
             if (self.config.animation.animateResizeContainer) {
-                self.dom.parent.style[mixitup.features.transitionProp] =
+                self.dom.parent.style.transition =
                     'height ' + self.config.animation.duration + 'ms ease, ' +
                     'width ' + self.config.animation.duration + 'ms ease ';
 
@@ -6913,7 +6596,7 @@
 
         /**
          * Determines if a target element will transition in
-         * some fasion and therefore requires binding of
+         * some fashion and therefore requires binding of
          * transitionEnd
          *
          * @private
@@ -7018,12 +6701,12 @@
 
             // Remove any styles applied to the parent container
 
-            self.dom.parent.style[mixitup.features.transitionProp]             =
-                self.dom.parent.style.height                                   =
-                self.dom.parent.style.width                                    =
-                self.dom.parent.style.overflow                                 =
-                self.dom.parent.style[mixitup.features.perspectiveProp]        =
-                self.dom.parent.style[mixitup.features.perspectiveOriginProp]  = '';
+            self.dom.parent.style.transition            =
+                self.dom.parent.style.height            =
+                self.dom.parent.style.width             =
+                self.dom.parent.style.overflow          =
+                self.dom.parent.style.perspective       =
+                self.dom.parent.style.perspectiveOrigin = '';
 
             if (operation.willChangeLayout) {
                 h.removeClass(self.dom.container, operation.startContainerClassName);
@@ -8026,7 +7709,7 @@
          * @param       {(string|HTMLElement|Array.<HTMLElement>)} selector
          *      Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`. The filter method also accepts a reference to single target element or a collection of target elements to show.
          * @param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8065,7 +7748,7 @@
          * @param       {string}    selector
          *      Any valid CSS selector (i.e. `'.category-a'`)
          * @param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8113,7 +7796,7 @@
          * @param       {string}    selector
          *      Any valid CSS selector (i.e. `'.category-a'`)
          * @param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8211,7 +7894,7 @@
          * @param       {(string|Array.<HTMLElement>)}    sortString
          *      A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`). The sort method also accepts an array of all target elements in a user-defined order.
          * @param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8257,7 +7940,7 @@
          * @param       {string}    containerClassName
          *      A layout-specific class name to add to the container.
          * @param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8280,7 +7963,7 @@
          * The dataset API is designed for use in API-driven JavaScript applications, and
          * can be used instead of DOM-based methods such as `.filter()`, `.sort()`,
          * `.insert()`, etc. When used, insertion, removal, sorting and pagination can be
-         * achieved purely via changes to your data model, without the uglyness of having
+         * achieved purely via changes to your data model, without the ugliness of having
          * to interact with or query the DOM directly.
          *
          * @example
@@ -8330,7 +8013,7 @@
          * @param       {Array.<object>}    dataset
          *      An array of objects, each one representing the underlying data model of a target to be rendered.
          * @param       {boolean}           [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}          [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8410,7 +8093,7 @@
          * @param       {object}    multimixCommand
          *      An object containing one or more things to do
          * @param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8716,7 +8399,7 @@
          * @param       {number}    index=0
          *      The index at which to insert the new element(s). `0` by default.
          * @param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8769,7 +8452,7 @@
          * @param       {HTMLElement}    referenceElement
          *      A reference to an existing element in the container to insert new elements before.
          *@param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8816,7 +8499,7 @@
          * @param       {HTMLElement}    referenceElement
          *      A reference to an existing element in the container to insert new elements after.
          * @param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8857,7 +8540,7 @@
          * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
          *      A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
          * @param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8898,7 +8581,7 @@
          * @param       {(HTMLElement|Array.<HTMLElement>|string)}    newElements
          *      A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
          * @param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -8965,7 +8648,7 @@
          * @param       {(HTMLElement|Array.<HTMLElement>|string|number)}    elements
          *      A reference to a single element to remove, an array-like collection of elements, a selector string, or the index of an element to remove.
          * @param       {boolean}   [animate=true]
-         *      An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+         *      An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
          * @param       {function}  [callback=null]
          *      An optional callback function to be invoked after the operation has completed.
          * @return      {Promise.<mixitup.State>}
@@ -9024,7 +8707,7 @@
         /**
          * Updates the configuration of the mixer, after it has been instantiated.
          *
-         * See the Configuration Object documentation for a full list of avilable
+         * See the Configuration Object documentation for a full list of available
          * configuration options.
          *
          * @example
@@ -9474,7 +9157,7 @@
         },
 
         /**
-         * Caches references of DOM elements neccessary for the target's functionality.
+         * Caches references of DOM elements necessary for the target's functionality.
          *
          * @private
          * @instance
@@ -9649,7 +9332,7 @@
             }
 
             if (currentTransformValues.length) {
-                self.dom.el.style[mixitup.features.transformProp] = currentTransformValues.join(' ');
+                self.dom.el.style.transform = currentTransformValues.join(' ');
             }
 
             self.callActions('afterApplyTween', arguments);
@@ -9693,7 +9376,7 @@
                 transformValues = transformValues.concat(self.mixer.transformIn);
             }
 
-            self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
+            self.dom.el.style.transform = transformValues.join(' ');
 
             self.callActions('afterApplyStylesIn', arguments);
         },
@@ -9720,7 +9403,7 @@
             // Build the transition rules
 
             transitionRules.push(self.writeTransitionRule(
-                mixitup.features.transformRule,
+                'transform',
                 moveData.staggerIndex
             ));
 
@@ -9769,7 +9452,7 @@
                 return;
             }
 
-            // If the target will transition in some fasion,
+            // If the target will transition in some fashion,
             // assign a callback function
 
             self.operation = moveData.operation;
@@ -9831,7 +9514,7 @@
 
             // Apply transforms
 
-            self.dom.el.style[mixitup.features.transformProp] = transformValues.join(' ');
+            self.dom.el.style.transform = transformValues.join(' ');
 
             self.callActions('afterApplyStylesOut', arguments);
         },
@@ -9902,7 +9585,7 @@
 
             self.callActions('beforeApplyTransition', arguments);
 
-            self.dom.el.style[mixitup.features.transitionProp] = transitionString;
+            self.dom.el.style.transition = transitionString;
 
             self.callActions('afterApplyTransition', arguments);
         },
@@ -9957,7 +9640,6 @@
             self.callActions('beforeEventBus', arguments);
 
             switch (e.type) {
-                case 'webkitTransitionEnd':
                 case 'transitionend':
                     self.handleTransitionEnd(e);
             }
@@ -9977,7 +9659,6 @@
 
             self.callActions('beforeUnbindEvents', arguments);
 
-            h.off(self.dom.el, 'webkitTransitionEnd', self.handler);
             h.off(self.dom.el, 'transitionend', self.handler);
 
             self.callActions('afterUnbindEvents', arguments);
@@ -9991,18 +9672,15 @@
          */
 
         bindEvents: function() {
-            var self                = this,
-                transitionEndEvent  = '';
+            var self = this;
 
             self.callActions('beforeBindEvents', arguments);
-
-            transitionEndEvent = mixitup.features.transitionPrefix === 'webkit' ? 'webkitTransitionEnd' : 'transitionend';
 
             self.handler = function(e) {
                 return self.eventBus(e);
             };
 
-            h.on(self.dom.el, transitionEndEvent, self.handler);
+            h.on(self.dom.el, 'transitionend', self.handler);
 
             self.callActions('afterBindEvents', arguments);
         },
@@ -10060,8 +9738,8 @@
 
             self.callActions('beforeCleanUp', arguments);
 
-            self.dom.el.style[mixitup.features.transformProp]  = '';
-            self.dom.el.style[mixitup.features.transitionProp] = '';
+            self.dom.el.style.transform  = '';
+            self.dom.el.style.transition = '';
             self.dom.el.style.opacity                          = '';
 
             if (self.mixer.config.animation.animateResizeTargets) {
@@ -10161,7 +9839,7 @@
     });
 
     /**
-     * `mixitup.Operation` objects contain all data neccessary to describe the full
+     * `mixitup.Operation` objects contain all data necessary to describe the full
      * lifecycle of any MixItUp operation. They can be used to compute and store an
      * operation for use at a later time (e.g. programmatic tweening).
      *
