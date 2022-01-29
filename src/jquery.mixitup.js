@@ -1243,7 +1243,7 @@
 			}
 
 			for(var i = 0; i < self._$toShow.length; i++){
-				var el = self._$toShow[i],
+				const el = self._$toShow[i],
 					$el = $(el),
 					translate = {
 						x: el.dataset.finalPosX - el.dataset.interPosX,
@@ -1273,7 +1273,7 @@
 
 				(self._ff && self._ff <= 20) ?
 					$el.css(toShowCSS) :
-					$el.css(self.effects.transition).css(toShowCSS);
+					requestAnimationFrame(()=>$el.css(self.effects.transition).css(toShowCSS));
 			}
 
 			for(var i = 0; i < self._$pre.length; i++){
