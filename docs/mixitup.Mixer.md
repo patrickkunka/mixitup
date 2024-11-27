@@ -119,7 +119,7 @@ or `'none'`. Only targets matching the selector will be shown.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`string, HTMLElement, Array.<HTMLElement>` | `selector` | Any valid CSS selector (i.e. `'.category-a'`), or the values `'all'` or `'none'`. The filter method also accepts a reference to single target element or a collection of target elements to show.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -189,7 +189,7 @@ as per the logic defined in `controls.toggleLogic`.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`string` | `selector` | Any valid CSS selector (i.e. `'.category-a'`)
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -217,7 +217,7 @@ Removes a selector from the active filter selector.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`string` | `selector` | Any valid CSS selector (i.e. `'.category-a'`)
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -245,7 +245,7 @@ Sorts all targets in the container according to a provided sort string.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`string, Array.<HTMLElement>` | `sortString` | A valid sort string (e.g. `'default'`, `'published-date:asc'`, or `'random'`). The sort method also accepts an array of all target elements in a user-defined order.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -333,7 +333,7 @@ and position of targets between layout states.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`string` | `containerClassName` | A layout-specific class name to add to the container.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -375,7 +375,7 @@ to interact with or query the DOM directly.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`Array.<object>` | `dataset` | An array of objects, each one representing the underlying data model of a target to be rendered.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -436,7 +436,7 @@ operations as requested.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`object` | `multimixCommand` | An object containing one or more things to do
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -494,7 +494,7 @@ selector (`'.mix'` by default).
 |---|--- | --- | ---
 |Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
 |Param   |`number` | `index` | The index at which to insert the new element(s). `0` by default.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -587,7 +587,7 @@ Inserts one or more new elements before a provided reference element.
 |---|--- | --- | ---
 |Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
 |Param   |`HTMLElement` | `referenceElement` | A reference to an existing element in the container to insert new elements before.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -629,7 +629,7 @@ Inserts one or more new elements after a provided reference element.
 |---|--- | --- | ---
 |Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
 |Param   |`HTMLElement` | `referenceElement` | A reference to an existing element in the container to insert new elements after.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -666,7 +666,7 @@ Inserts one or more new elements into the container before all existing targets.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -699,7 +699,7 @@ Inserts one or more new elements into the container after all existing targets.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`HTMLElement, Array.<HTMLElement>, string` | `newElements` | A reference to a single element to insert, an array-like collection of elements, or an HTML string representing a single element.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
@@ -732,7 +732,7 @@ Removes one or more existing target elements from the container.
 |   |Type | Name | Description
 |---|--- | --- | ---
 |Param   |`HTMLElement, Array.<HTMLElement>, string, number` | `elements` | A reference to a single element to remove, an array-like collection of elements, a selector string, or the index of an element to remove.
-|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur syncronously with no animation. `true` by default.
+|Param   |`boolean` | `[animate]` | An optional boolean dictating whether the operation should animate, or occur synchronously with no animation. `true` by default.
 |Param   |`function` | `[callback]` | An optional callback function to be invoked after the operation has completed.
 |Returns |`Promise.<mixitup.State>` | A promise resolving with the current state object.
 
